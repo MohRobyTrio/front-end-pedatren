@@ -1,0 +1,24 @@
+/* @import "tailwindcss"; */
+/* @import 'flowbite'; */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@media (max-width: 1300px) {
+  .listpesertadidik {
+      grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .listpesertadidik {
+      grid-template-columns: 1fr !important;
+  }
+}
