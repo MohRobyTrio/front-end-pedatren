@@ -28,7 +28,7 @@ const MainPage = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
 
     const menuDataPokokItems = [
-        { id: "orangtua", icon: "fa-user", text: "Orang Tu", content: <OrangTua /> },
+        { id: "orangtua", icon: "fa-user", text: "Orang Tua", content: <OrangTua /> },
         { id: "wali", icon: "fa-user-tie", text: "Wali", content: <Wali /> },
         { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", content: <Pengajar /> },
         { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", content: <Pengurus /> },
