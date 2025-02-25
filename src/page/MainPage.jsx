@@ -105,7 +105,7 @@ const MainPage = () => {
 
     return (
         <>
-            <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <nav className="fixed top-0 z-50 w-full bg-gray-800 border-b border-gray-700">
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start rtl:justify-end">
@@ -123,7 +123,7 @@ const MainPage = () => {
                             <a href="/" className="flex ms-2 md:me-24">
                                 <img src="https://storage.googleapis.com/a1aa/image/1dsIGwi4uJ6QEe_oGx13MQ1TbFWwv1BJ682AG_-wBxw.jpg" className="h-8 me-3" alt="Pedatren Logo" />
                                 <span
-                                    className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">PEDATREN</span>
+                                    className="self-center text-white text-xl font-semibold sm:text-2xl whitespace-nowrap ">PEDATREN</span>
                             </a>
                         </div>
                         <div className="flex items-center">
@@ -171,7 +171,7 @@ const MainPage = () => {
                                 <div className='flex flex-row-reverse'>
                                     <button
                                         type="button"
-                                        className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 cursor-pointer"
+                                        className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600 cursor-pointer"
                                         aria-expanded={isOpen}
                                         onClick={toggleDropdownProfil} // Toggle saat diklik
                                     >
@@ -185,17 +185,17 @@ const MainPage = () => {
                                 {/* Dropdown User */}
                                 {isOpen && (
                                     <div
-                                        className="absolute right-[-12px] mt-43 z-50 w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-md dark:bg-gray-700 dark:divide-gray-600"
+                                        className="absolute right-[-12px] mt-43 z-50 w-48 text-base list-none bg-gray-700 divide-y divide-gray-600 rounded-sm shadow-md"
                                     >
                                         <div className="px-4 py-3" role="none">
-                                            <p className="text-sm text-gray-900 dark:text-white" role="none">Nahrawi</p>
-                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                                            <p className="text-sm text-white" role="none">Nahrawi</p>
+                                            <p className="text-sm font-medium text-gray-300 truncate" role="none">
                                                 ( Supervisor )
                                             </p>
                                         </div>
                                         <ul className="py-1" role="none">
                                             <li>
-                                                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                                <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" role="menuitem">
                                                     Sign out
                                                 </a>
                                             </li>
@@ -255,7 +255,7 @@ const MainPage = () => {
                                         {submenuPesertaDidik && (
                                             <ul className="ml-4 mt-2">
                                                 <li className="mb-2">
-                                                    <a className="text-gray-700 flex items-center" href="/">
+                                                    <a className="text-gray-700 flex items-center" href="#">
                                                         <i className="fas fa-chevron-right mr-2"></i>
                                                         Santri
                                                     </a>
