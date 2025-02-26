@@ -23,17 +23,17 @@ const Dashboard = () => {
 
     const [birthdays, setBirthdays] = useState([]);
 
-    // useEffect(() => {
-    //     axios.get("https://example.com/api/birthdays")
-    //         .then(response => {
-    //             const today = new Date().toISOString().split("T")[0]; // Ambil tanggal hari ini (YYYY-MM-DD)
-    //             const filteredData = response.data.filter(person => person.birthday === today);
-    //             setBirthdays(filteredData);
-    //         })
-    //         .catch(error => {
-    //             console.error("Error fetching data:", error);
-    //         });
-    // }, []);
+    useEffect(() => {
+        axios.get("")
+            .then(response => {
+                const today = new Date().toISOString().split("T")[0]; // Ambil tanggal hari ini (YYYY-MM-DD)
+                const filteredData = response.data.filter(person => person.birthday === today);
+                setBirthdays(filteredData);
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }, []);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -45,7 +45,7 @@ const Dashboard = () => {
                     <div className="w-full min-h-screen">
 
                         {/* Kartu Statistik */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 [@media(min-width:714px)]:grid-cols-2 [@media(min-width:910px)]:grid-cols-3 grid-cols-custom gap-4">
                             {stats.map((stat, index) => (
                                 <div key={index} className={`p-4 rounded-lg shadow-lg text-white ${stat.color}`}>
                                     <div className="text-4xl">{stat.icon}</div>
@@ -53,7 +53,7 @@ const Dashboard = () => {
                                     <p>{stat.label}</p>
                                     {/* Tombol Selengkapnya dengan Ikon Panah */}
                                     <button
-                                        onClick={() => navigate(stat.link)}
+                                        // onClick={() => navigate(stat.link)}
                                         className="mt-3 flex justify-between items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition w-full"
                                     >
                                         <span>Selengkapnya</span> <FontAwesomeIcon icon={faArrowRight} />

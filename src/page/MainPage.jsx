@@ -12,13 +12,13 @@ import Karyawan from '../content_main_page/content_menu_data_pokok/Karyawan';
 import WaliKelas from '../content_main_page/content_menu_data_pokok/WaliKelas';
 import Khadam from '../content_main_page/content_menu_data_pokok/Khadam';
 import Alumni from '../content_main_page/content_menu_data_pokok/Alumni';
-import WaliAsuh from '../content_main_page/content_kewaliasuhan/WaliAsuh';
-import GroupKewaliasuhan from '../content_main_page/content_kewaliasuhan/GroupKewaliasuhan';
-import AnakAsuh from '../content_main_page/content_kewaliasuhan/AnakAsuh';
-import Perizinan from '../content_main_page/content _kepesantrenan/Perizinan';
-import Pelanggaran from '../content_main_page/content _kepesantrenan/Pelanggaran';
-import Presensi from '../content_main_page/content _kepesantrenan/Presensi';
-import CatatanAfektif from '../content_main_page/content _kepesantrenan/CatatanAfektif';
+import WaliAsuh from '../content_main_page/content_menu_kewaliasuhan/WaliAsuh';
+import GroupKewaliasuhan from '../content_main_page/content_menu_kewaliasuhan/GroupKewaliasuhan';
+import AnakAsuh from '../content_main_page/content_menu_kewaliasuhan/AnakAsuh';
+import Perizinan from '../content_main_page/content _menu_kepesantrenan/Perizinan';
+import Pelanggaran from '../content_main_page/content _menu_kepesantrenan/Pelanggaran';
+import Presensi from '../content_main_page/content _menu_kepesantrenan/Presensi';
+import CatatanAfektif from '../content_main_page/content _menu_kepesantrenan/CatatanAfektif';
 
 const MainPage = () => {
     const [dropdownDataPokok, setDropdownDataPokok] = useState(false);
@@ -303,7 +303,7 @@ const MainPage = () => {
                 </div>
             </aside>
 
-            <div className="pr-6 sm:ml-64 overflow-y-auto no-scrollbar w-full">
+            <div className="pr-6 sm:ml-64 overflow-y-auto w-full">
                 <div className="pt-8 mt-8">
                     {activeTab === 'dashboard' && <Dashboard />}
                     {activeTab === 'scanqrcode' && <ScanQRCode />}

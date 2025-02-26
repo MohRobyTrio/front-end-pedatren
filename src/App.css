@@ -22,3 +22,9 @@
       grid-template-columns: 1fr !important;
   }
 }
+
+@media (min-width: 1140px) {
+  .grid-cols-custom {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
