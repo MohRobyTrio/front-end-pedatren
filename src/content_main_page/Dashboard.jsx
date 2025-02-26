@@ -6,17 +6,17 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const Dashboard = () => {
     const stats = [
         { label: "Total Peserta Didik", value: 10213, color: "bg-green-500", icon: "📝" },
-        { label: "Total Santri", value: 7297, color: "bg-yellow-500", icon: "🧑📝" },
+        { label: "Total Santri", value: 7297, color: "bg-yellow-500", icon: "👥" },
         { label: "Total Pelajar", value: 9834, color: "bg-red-500", icon: "📚" },
         { label: "Total Wali Asuh", value: 552, color: "bg-blue-500", icon: "📖" },
         { label: "Total Pengajar", value: 476, color: "bg-gray-500", icon: "👨‍🏫" },
-        { label: "Total Pengurus", value: 333, color: "bg-pink-500", icon: "👥" },
-        { label: "Total Karyawan", value: 288, color: "bg-green-700", icon: "🧑‍💼" },
+        { label: "Total Pengurus", value: 333, color: "bg-pink-500", icon: "✍️" },
+        { label: "Total Karyawan", value: 288, color: "bg-green-700", icon: "👨🏻‍💻" },
         { label: "Total Pegawai", value: 906, color: "bg-yellow-700", icon: "👨‍💼" },
         { label: "Total Khadam", value: 83, color: "bg-red-700", icon: "👳" },
         { label: "Total Alumni", value: 15101, color: "bg-blue-700", icon: "🎓" },
         { label: "Total Orang Tua", value: 17188, color: "bg-purple-500", icon: "👨‍👨‍👦" },
-        { label: "Total Wali", value: 12705, color: "bg-indigo-500", icon: "📡" },
+        { label: "Total Wali", value: 12705, color: "bg-indigo-500", icon: "🔢" },
         { label: "Dalam Masa Izin", value: 1431, color: "bg-orange-500", icon: "⏳" },
         { label: "Telat Belum Kembali", value: 765, color: "bg-red-400", icon: "🚨" },
     ];

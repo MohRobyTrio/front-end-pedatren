@@ -1,7 +1,8 @@
 const DomisiliSantri = () => {
   return (
-      <div className="mt-5">
-          <h1 className="text-lg font-semibold">Domisili Santri</h1>
+      <div className="">
+         <h1 className="text-xl font-bold">Domisili Santri</h1>
+         <div className="mt-5"></div>
           {/* <div className="bg-white rounded-lg p-6"> */}
               <form className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                   <div>
@@ -46,12 +47,14 @@ const DomisiliSantri = () => {
                       </label>
                       <input className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" id="waktu-akhir" type="text" defaultValue="11/20/2020 09:03 PM" />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700"></label>
+                    <button type="button" className="mt-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none">
+                        Batal
+                    </button>
+                </div>
               </form>
-              <div className="mt-4">
-                  <button className="w-full md:w-auto px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none">
-                      Batal
-                  </button>
-              </div>
+              
           {/* </div> */}
       </div>
   );
