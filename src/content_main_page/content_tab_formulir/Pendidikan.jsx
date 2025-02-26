@@ -48,14 +48,14 @@ const Pendidikan = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium">Lembaga</label>
-              <select className="w-full border p-2 rounded">
+              <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                 <option>{formData.lembaga}</option>
               </select>
             </div>
             
             <div>
               <label className="block text-sm font-medium">Jurusan</label>
-              <select className="w-full border p-2 rounde">
+              <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                 <option>{formData.jurusan}</option>
               </select>
             </div>
@@ -64,7 +64,7 @@ const Pendidikan = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium">Kelas</label>
-              <select name="kelas" className="w-full border p-2 rounded" onChange={handleChange}>
+              <select name="kelas" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" onChange={handleChange}>
                 <option value="">Pilih Kelas</option>
                 {kelasOptions.map((kelas) => (
                   <option key={kelas} value={kelas}>{kelas}</option>
@@ -74,7 +74,7 @@ const Pendidikan = () => {
 
             <div>
               <label className="block text-sm font-medium">Rombel</label>
-              <select name="rombel" className="w-full border p-2 rounded" onChange={handleChange}>
+              <select name="rombel" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" onChange={handleChange}>
                 <option value="">Pilih Rombel</option>
                 {rombelOptions.map((rombel) => (
                   <option key={rombel} value={rombel}>{rombel}</option>
@@ -86,17 +86,20 @@ const Pendidikan = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium">No. Induk</label>
-              <input type="text" className="w-full border p-2 rounded" value={formData.noInduk} readOnly disabled />
+              <input type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={formData.noInduk} readOnly disabled />
             </div>
             
             <div>
               <label className="block text-sm font-medium">Tanggal Mulai</label>
-              <input type="date" name="tglMulai" className="w-full border p-2 rounded" value={formData.tglMulai} onChange={handleChange} />
+              <input type="date" name="tglMulai" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={formData.tglMulai} onChange={handleChange} />
             </div>
 
             <div>
               <label className="block text-sm font-medium">Tanggal Akhir</label>
-              <input type="date" name="tglAkhir" className="w-full border p-2 rounded" value={formData.tglAkhir} onChange={handleChange} />
+              <input type="date" name="tglAkhir" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={formData.tglAkhir} onChange={handleChange} />
             </div>
           </div>
 

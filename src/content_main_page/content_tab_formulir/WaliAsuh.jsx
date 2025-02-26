@@ -55,19 +55,19 @@ const WaliAsuh = () => {
       <form className="mt-6 space-y-4">
         <div>
           <label className="block text-sm font-medium">Nomor Induk Santri</label>
-          <select className="w-full border p-2 rounded">
+          <select className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
             <option value="2020712450">2020712450</option>
           </select>
         </div>
         
         <div>
           <label className="block text-sm font-medium">Waktu Mulai</label>
-          <input type="date" className="w-full border p-2 rounded"/>
+          <input type="date" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
         </div>
 
         <div>
           <label className="block text-sm font-medium">Waktu Akhir</label>
-          <input type="date" className="w-full border p-2 rounded"/>
+          <input type="date" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
         </div>
 
         <div>
