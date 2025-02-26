@@ -4,6 +4,11 @@ const GroupKewaliasuhan = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Group Kewaliasuhan</h1>
             </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="flex flex-wrap items-center mb-4">
+                    Edit disini
+                </div>
+            </div>
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchPengajar from '../../logic/logic_menu_data_pokok/Pengajar';
+import { OrbitProgress } from "react-loading-indicators";
 
 const Pengajar = () => {
     const { pengajar, loading } = useFetchPengajar();
@@ -94,7 +95,9 @@ const Pengajar = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
                     {loading ? (
-                        <p className="text-center col-span-3">Loading...</p>
+                        <div className="col-span-3 flex justify-center items-center">
+                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                        </div>
                     ) : pengajar.length === 0 ? (
                         <p className="text-center col-span-3">Tidak ada data</p>
                     ) : (

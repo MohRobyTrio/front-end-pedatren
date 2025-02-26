@@ -17,14 +17,24 @@ import GroupKewaliasuhan from '../content_main_page/content_menu_kewaliasuhan/Gr
 import AnakAsuh from '../content_main_page/content_menu_kewaliasuhan/AnakAsuh';
 import Perizinan from '../content_main_page/content _menu_kepesantrenan/Perizinan';
 import Pelanggaran from '../content_main_page/content _menu_kepesantrenan/Pelanggaran';
-import Presensi from '../content_main_page/content _menu_kepesantrenan/Presensi';
+import PresensiPesantren from '../content_main_page/content _menu_kepesantrenan/PresensiPesantren';
 import CatatanAfektif from '../content_main_page/content _menu_kepesantrenan/CatatanAfektif';
+import Pegawai from '../content_main_page/content_menu_kepegawaian/Pegawai';
+import AnakPegawai from '../content_main_page/content_menu_kepegawaian/AnakPegawai';
+import PresensiPegawai from '../content_main_page/content_menu_kepegawaian/PresensiPegawai';
+import Pengunjung from '../content_main_page/content_menu_mahrom/Pengunjung';
+import KehadiranRWS from '../content_main_page/content_menu_rws/KehadiranRWS';
+import CatatanKognitif from '../content_main_page/content _menu_kepesantrenan/CatatanKognitif';
+import ReservasiMakan from '../content_main_page/content _menu_kepesantrenan/ReservasiMakan';
 
 const MainPage = () => {
     const [dropdownDataPokok, setDropdownDataPokok] = useState(false);
     const [submenuPesertaDidik, setSubmenuPesertaDidik] = useState(false);
     const [dropdownDataKewaliasuhan, setDropdownKewaliasuhan] = useState(false);
     const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(false);
+    const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(false);
+    const [dropdownDataMahrom, setDropdownMahrom] = useState(false);
+    const [dropdownDataRWS, setDropdownRWS] = useState(false);
     const [activeTab, setActiveTab] = useState('dashboard');
 
     const menuDataPokokItems = [
@@ -47,15 +57,31 @@ const MainPage = () => {
     const menuKepesantrenanItems = [
         { id: "perizinan", icon: "fa-id-card", text: "Perizinan", content: <Perizinan /> },
         { id: "pelanggaran", icon: "fa-exclamation-triangle", text: "Pelanggaran", content: <Pelanggaran /> },
-        { id: "presensi", icon: "fa-calendar-check", text: "Presensi", content: <Presensi /> },
+        { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", content: <PresensiPesantren /> },
         { id: "catatanafektif", icon: "fa-hand-holding-heart", text: "Catatan Afektif", content: <CatatanAfektif /> },
+        { id: "catatankognitif", icon: "fa-brain", text: "Catatan Kognitif", content: <CatatanKognitif /> },
+        { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", content: <ReservasiMakan /> },
+    ];
+
+    const menuKepegawaianItems = [
+        { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", content: <Pegawai /> },
+        { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", content: <AnakPegawai /> },
+        { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", content: <PresensiPegawai /> },
+    ];
+
+    const menuMahromItems = [
+        { id: "pengunjung", icon: "fa-hands-helping", text: "Pengunjung", content: <Pengunjung /> },
+    ];
+
+    const menuRWSItems = [
+        { id: "kehadiranRWS", icon: "fa-list", text: "Kehadiran RWS", content: <KehadiranRWS /> },
     ];
 
     const MenuItem = ({ id, icon, text }) => {
         return (
             <li className="mb-2">
                 <a className={`flex items-center cursor-pointer ${activeTab === id ? "text-blue-500 font-bold" : "text-gray-700"}`} onClick={() => setActiveTab(id)}>
-                    <i className={`fas ${icon} mr-2`}></i>
+                    <i className={`fas ${icon} mr-4`}></i>
                     {text}
                 </a>
             </li>
@@ -299,6 +325,30 @@ const MainPage = () => {
                                 </ul>
                             )}
                         </div>
+                        <div className="mt-6 px-4">
+                            <MenuHeader name="KEPEGAWAIAN" isOpen={dropdownDataKepegawaian} onClick={() => toggleDropdown(setDropdownKepegawaian)} />
+                            {dropdownDataKepegawaian && (
+                                <ul className="mt-2">
+                                    <DropdownMenu items={menuKepegawaianItems} />
+                                </ul>
+                            )}
+                        </div>
+                        <div className="mt-6 px-4">
+                            <MenuHeader name="MAHROM" isOpen={dropdownDataMahrom} onClick={() => toggleDropdown(setDropdownMahrom)} />
+                            {dropdownDataMahrom && (
+                                <ul className="mt-2">
+                                    <DropdownMenu items={menuMahromItems} />
+                                </ul>
+                            )}
+                        </div>
+                        <div className="mt-6 px-4">
+                            <MenuHeader name="RAPAT WALI SANTRI" isOpen={dropdownDataRWS} onClick={() => toggleDropdown(setDropdownRWS)} />
+                            {dropdownDataRWS && (
+                                <ul className="mt-2">
+                                    <DropdownMenu items={menuRWSItems} />
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -312,6 +362,9 @@ const MainPage = () => {
                     {menuDataPokokItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
                     {menuKepesantrenanItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
                     {menuKewaliasuhanItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
+                    {menuKepegawaianItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
+                    {menuMahromItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
+                    {menuRWSItems.map((tab) => activeTab === tab.id && <div key={tab.id}>{tab.content}</div>)}
                 </div>
             </div>
         </>
