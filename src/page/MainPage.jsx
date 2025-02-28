@@ -122,10 +122,6 @@ const MainPage = () => {
 
     const toggleSidebar = () => {
         setIsSidebarOpen(prev => !prev);
-        // setIsSidebarOpen(prev => {
-        //     console.log(prev ? "tertutup" : "terbuka");
-        //     return !prev;
-        // });
     };
 
 
@@ -153,53 +149,13 @@ const MainPage = () => {
                             </a>
                         </div>
                         <div className="flex items-center">
-                            {/* <div className="flex items-center ms-3">
-                                <div className='flex flex-row-reverse'>
-                                    <button type="button"
-                                        className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 cursor-pointer"
-                                        aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                                        <span className="sr-only">Open user menu</span>
-                                        <img className="w-10 h-10 rounded-full"
-                                            src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
-                                            alt="user photo"></img>
-                                    </button>
-                                    <div className="px-4 text-center" role="none">
-                                        <p className="text-sm text-gray-900 dark:text-white" role="none">
-                                            Nahrawi
-                                        </p>
-                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                            ( Supervisor )
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
-                                    id="dropdown-user">
-                                    <div className="px-4 py-3" role="none">
-                                        <p className="text-sm text-gray-900 dark:text-white" role="none">
-                                            Nahrawi
-                                        </p>
-                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                            ( Supervisor )
-                                        </p>
-                                    </div>
-                                    <ul className="py-1" role="none">
-                                        <li>
-                                            <a href="#"
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                role="menuitem">Sign out
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div> */}
-
                             <div className="flex items-center ms-3 relative">
                                 <div className='flex flex-row-reverse'>
                                     <button
                                         type="button"
                                         className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-600 cursor-pointer"
                                         aria-expanded={isOpen}
-                                        onClick={toggleDropdownProfil} // Toggle saat diklik
+                                        onClick={toggleDropdownProfil}
                                     >
                                         <span className="sr-only">Open user menu</span>
                                         <img className="w-10 h-10 rounded-full"
@@ -208,7 +164,6 @@ const MainPage = () => {
                                     </button>
                                 </div>
 
-                                {/* Dropdown User */}
                                 {isOpen && (
                                     <div
                                         className="absolute right-[-12px] mt-43 z-50 w-48 text-base list-none bg-gray-700 divide-y divide-gray-600 rounded-sm shadow-md"
@@ -255,7 +210,6 @@ const MainPage = () => {
                                     </a>
                                 </li>
                                 <li className="mb-2">
-                                    {/* <a className="flex items-center active text-gray-700" href="#" to="/formulir"> */}
                                     <a className={`flex items-center cursor-pointer ${activeTab === 'formulir' ? "text-blue-500 font-bold" : "text-gray-700"}`} onClick={() => setActiveTab('formulir')}>
                                         <i className="fas fa-file-alt mr-2"></i>
                                         Formulir
