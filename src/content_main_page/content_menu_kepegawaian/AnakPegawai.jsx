@@ -4,17 +4,6 @@ const AnakPegawai = () => {
         <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Data Anak Pegawai</h1>
             <div className="flex items-center">
-                {/* <img
-                    alt="User Avatar"
-                    className="w-10 h-10 rounded-full"
-                    height={40}
-                    src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
-                    width={40}
-                /> */}
-                {/* <div className="ml-2">
-                    <p className="text-gray-700">Nahrawi</p>
-                    <p className="text-gray-500 text-sm">( supervisor )</p>
-                </div> */}
                 <div className="flex items-center space-x-2">
                     <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
                         Export
@@ -25,79 +14,15 @@ const AnakPegawai = () => {
                 </div>
             </div>
         </div>
-            <p className="text-red-500 text-sm italic mt-1">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex flex-wrap justify-between items-center mb-4">
+            <p className="text-red-500 text-sm italic">
                 *Merupakan data pesertadidik yang sekaligus juga putra putri
                 dari pegawai (pengurus/karyawan/pengajar)
             </p>
-            <br />
-            <div className="bg-blue-100 p-3 rounded-md mt-2 w-full">
+            <div className="bg-blue-100 p-3 rounded-md mt-2 w-full mb-4">
               Anak Pegawai
             </div>
-            <br />
-        <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex flex-wrap justify-between items-center mb-4">
-                {/* <div className="flex flex-wrap justify-between w-full gap-1">
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Negara</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Wilayah</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Lembaga</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Provinsi</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Blok</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Jurusan</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Status</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Kabupaten</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Kamar</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Kelas</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Angkatan Pelajar</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Kecamatan</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Rombel</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Semua Angkatan Santri</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Warga Pesantren</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Smartcard</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Phone Number</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Urut Berdasarkan</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>Urut Secara</option>
-                            </select>
-                            <select className="border border-gray-300 rounded p-2 mb-2 w-full sm:w-1/2 lg:w-1/3">
-                                <option>25</option>
-                            </select>
-                        </div> */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                     <select className="border border-gray-300 rounded p-2">
                         <option>Semua Negara</option>
