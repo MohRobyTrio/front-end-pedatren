@@ -1,16 +1,43 @@
 import { useState } from "react";
 
 const Biodata = () => {
-    const [jenisKelamin, setJenisKelamin] = useState("");
+    // const [jenisKelamin, setJenisKelamin] = useState("");
     const [jenjangPendidikanTerakhir, setJenjangPendidikanTerakhir] = useState("");
+    const [pekerjaan, setpekerjaan] = useState("");
+    const [penghasilan, setpenghasilan] = useState("");
+    const [negara, setnegara] = useState("");
+    const [provinsi, setprovinsi] = useState("");
+    const [kabupaten, setkabupaten] = useState("");
+    const [kecamatan, setkecamatan] = useState("");
+
+    const [tanggalLahir, setTanggalLahir] = useState({
+        tahun: "2001",
+        bulan: "Desember",
+        hari: "30",
+    });
+
+    const [umur, setUmur] = useState(22);
+
+    const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
+    const daftarBulan = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
+
+    // Menghitung umur saat tanggal lahir berubah
+    const hitungUmur = (tahun) => {
+        const tahunSekarang = new Date().getFullYear();
+        setUmur(tahunSekarang - tahun);
+    };
 
     return (
         <div className="relative p-2 bg-white ">
             {/* Judul Formulir */}
             <h1 className="text-xl font-bold mb-4">Formulir</h1>
 
-            {/* Foto di pojok kanan atas */}
-            <div className="absolute top-4 right-0 w-24 h-32 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow">
+            {/* Foto - dibuat responsif */}
+            <div className="w-24 h-32 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
                 <img
                     src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
                     alt="Foto Santri"
@@ -22,7 +49,7 @@ const Biodata = () => {
                 {/* Kewarganegaraan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="kewarganegaraan" className="lg:w-1/4 text-black">
-                        Kewarganegaraan
+                        Kewarganegaraan *
                     </label>
                     <div className="lg:w-3/4">
                         <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
@@ -59,7 +86,7 @@ const Biodata = () => {
                 {/* No Passport */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="passport" className="lg:w-1/4 text-black">
-                        No Passport
+                        No Passport *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -77,7 +104,7 @@ const Biodata = () => {
                 {/* Nomor KK */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="nokk" className="lg:w-1/4 text-black">
-                        Nomor KK
+                        Nomor KK *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -95,7 +122,7 @@ const Biodata = () => {
                 {/* NIK */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4 ">
                     <label htmlFor="nonik" className="lg:w-1/4 text-black">
-                        NIK
+                        NIK *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -114,7 +141,7 @@ const Biodata = () => {
                 {/* Nama Lengkap */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
-                        Nama Lengkap
+                        Nama Lengkap *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -132,31 +159,22 @@ const Biodata = () => {
                 {/* Jenis Kelamin */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="jenisKelamin" className="lg:w-1/4 text-black">
-                        Jenis Kelamin
+                        Jenis Kelamin *
                     </label>
-                    <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <select
-                                id="jenisKelamin"
-                                name="jenisKelamin"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenisKelamin}
-                                onChange={(e) => setJenisKelamin(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih
-                                </option>
-                                <option value="Laki-laki">Laki-laki</option>
-                                <option value="Perempuan">Perempuan</option>
-                            </select>
-                        </div>
-                    </div>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="jenisKelamin" value="Perempuan" className="w-4 h-4" />
+                        <span>Perempuan</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="jenisKelamin" value="Laki-Laki" className="w-4 h-4" />
+                        <span>Laki-Laki</span>
+                    </label>
                 </div>
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="tempatLahir" className="lg:w-1/4 text-black">
-                        Tempat Lahir
+                        Tempat Lahir *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -174,50 +192,75 @@ const Biodata = () => {
                 {/* Tanggal Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
-                        Tanggal Lahir
+                        Tanggal Lahir *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <input
-                                id="tanggalLahir"
-                                name="tanggalLahir"
-                                type="date"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            />
-                        </div>
-                    </div>
+                    <select
+                        value={tanggalLahir.tahun}
+                        onChange={(e) => {
+                            setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
+                            hitungUmur(e.target.value);
+                        }}
+                        className="border p-2 rounded-md"
+                    >
+                        {daftarTahun.map((tahun) => (
+                            <option key={tahun} value={tahun}>{tahun}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={tanggalLahir.bulan}
+                        onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })}
+                        className="border p-2 -md"
+                    >
+                        {daftarBulan.map((bulan) => (
+                            <option key={bulan} value={bulan}>{bulan}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={tanggalLahir.hari}
+                        onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })}
+                        className="border p-2 rounded-md"
+                    >
+                        {daftarHari.map((hari) => (
+                            <option key={hari} value={hari}>{hari}</option>
+                        ))}
+                    </select>
+                    {/* Label umur */}
+                    <span className="bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
+                        umur {umur} tahun
+                    </span>
                 </div>
 
                 {/* Anak Ke */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="anakKe" className="md:w-1/4 text-black">
-                        Anak Ke
+                        Anak Ke *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <input
-                                id="anakKe"
-                                name="anakKe"
-                                type="text"
-                                placeholder="Anak Keberapa"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            />
-                        </div>
-                    </div>
+                    <input
+                        type="number"
+                        min="1"
+                        className="border p-2 rounded-md w-16"
+                    />
+                    <span>Dari</span>
+                    <input
+                        type="number"
+                        min="1"
+                        className="border p-2 rounded-md w-16"
+                    />
                 </div>
+                <hr className="border-t border-gray-300 my-4" />
 
-                {/* Jumlah Saudara */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jumlahSaudara" className="md:w-1/4 text-black">
-                        Jumlah Saudara
+                {/* Tinggal Bersama */}
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="tinggalbersama" className="lg:w-1/4 text-black">
+                        Tinggal Bersama
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="jumlahSaudara"
-                                name="jumlahSaudara"
+                                id="tinggalbersama"
+                                name="tinggalbersama"
                                 type="text"
-                                placeholder="Masukkan Jumlah Saudara"
+                                placeholder="Masukkan Tinggal Bersama"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
                         </div>
@@ -254,18 +297,63 @@ const Biodata = () => {
                     </div>
                 </div>
 
-                {/* Nomor Telepon */}
+                {/* Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelpon" className="md:w-1/4 text-black">
-                        Nomor Telepon
+                    <label htmlFor="PendidikanTerakhir" className="md:w-1/4 text-black">
+                        Nama Pendidikan Terakhir
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                id="namapendidikanterakhir"
+                                name="namapendidikanterakhir"
+                                type="text"
+                                placeholder="Masukkan Nama Pendidikan Terakhir"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <p className="text-red-500 text-bold timesnewroman">
+                    Untuk nomor telepon milik orang tua/wali jangan diinputkan pada data peserta didik!
+                    <p className="text-red-500 text-sm italic">
+                        Karena manajemen nomor telepon Pedatren untuk sending bulk sms ortu, akan melihat nomor telepon pada entitas ortu/wali
+                        dengan priority urutan dimulai dari ayah kandung, ibu kandung kemudian yang dijadikan sebagai wali (jika tidaak ada ayah & ibu kandung)
+                    </p>
+                </p>
+
+                {/* Nomor Telepon 1 */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="noTelpon1" className="md:w-1/4 text-black">
+                        Nomor Telepon 1
                     </label>
                     <div className="md:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="noTelpon"
                                 name="noTelpon"
-                                type="number"
-                                placeholder="Masukkan Nomor Telepon"
+                                type="text"
+                                placeholder="+62"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Nomor Telepon 2 */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="noTelpon2" className="md:w-1/4 text-black">
+                        Nomor Telepon 2
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                id="noTelpon"
+                                name="noTelpon"
+                                type="text"
+                                placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
                         </div>
@@ -290,6 +378,191 @@ const Biodata = () => {
                     </div>
                 </div>
 
+                {/* Pekerjaan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Pekerjaan" className="md:w-1/4 text-black">
+                        Pekerjaan
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="Pekerjaan"
+                                name="pekerjaan"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={pekerjaan}
+                                onChange={(e) => setpekerjaan(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Pekerjaan
+                                </option>
+                                <option>Petani</option>
+                                <option>Pegawai Negeri</option>
+                                <option>Karyawan Swasta</option>
+                                <option>Wiraswasta</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Penghasilan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Penghasilan" className="md:w-1/4 text-black">
+                        Penghasilan
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="penghasilan"
+                                name="penghasilan"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={penghasilan}
+                                onChange={(e) => setpenghasilan(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Penghasilan
+                                </option>
+                                <option>&lt; 1 Juta</option>
+                                <option>1 - 3 Juta</option>
+                                <option>3 - 5 Juta</option>
+                                <option>&gt; 5 Juta</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr className="border-t border-gray-300 my-4" />
+
+                {/* Negara */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Negara" className="md:w-1/4 text-black">
+                        Negara *
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="negara"
+                                name="negara"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={negara}
+                                onChange={(e) => setnegara(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Negara
+                                </option>
+                                <option>Indonesia</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Provinsi */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
+                        Provinsi *
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="provinsi"
+                                name="provinsi"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={provinsi}
+                                onChange={(e) => setprovinsi(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Provinsi
+                                </option>
+                                <option>Jawa Timur</option>
+                                <option>Jawa Tengah</option>
+                                <option>Jawa Barat</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Kecamatan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
+                        Kecamatan *
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="kecamatan"
+                                name="kecamatan"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={kecamatan}
+                                onChange={(e) => setkecamatan(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Kecamatan
+                                </option>
+                                <option>Paiton</option>
+                                <option>Besuk</option>
+                                <option>Kraksaan</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr className="border-t border-gray-300 my-4" />
+
+                {/* Jalan */}
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
+                        Jalan *
+                    </label>
+                    <div className="lg:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                id="jalan"
+                                name="jalan"
+                                type="text"
+                                placeholder="Masukkan Nama Jalan"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Kode Pos */}
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
+                        Kode Pos *
+                    </label>
+                    <div className="lg:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                id="kodepos"
+                                name="kodepos"
+                                type="text"
+                                placeholder="Masukkan Kode Pos"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Masi Hidup/Tidak */}
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Wafat" className="lg:w-1/4 text-black">
+                        Wafat *
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="Wafat" value="Tidak" className="w-4 h-4" />
+                        <span>Tidak</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="Wafat" value="Ya" className="w-4 h-4" />
+                        <span>Ya</span>
+                    </label>
+                </div>
+
+
+                <br />
                 {/* Tombol Simpan */}
                 <div className="mt-4">
                     <button
