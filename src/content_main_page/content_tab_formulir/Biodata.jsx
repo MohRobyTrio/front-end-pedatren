@@ -74,6 +74,24 @@ const Biodata = () => {
                     </div>
                 </div>
 
+                {/* Nomor KK */}
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="nokk" className="lg:w-1/4 text-black">
+                        Nomor KK
+                    </label>
+                    <div className="lg:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                id="nokk"
+                                name="nokk"
+                                type="number"
+                                placeholder="Masukkan No KK"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* NIK */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4 ">
                     <label htmlFor="nonik" className="lg:w-1/4 text-black">
@@ -92,23 +110,6 @@ const Biodata = () => {
                     </div>
                 </div>
 
-                {/* Nomor KK */}
-                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="nokk" className="lg:w-1/4 text-black">
-                        Nomor KK
-                    </label>
-                    <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <input
-                                id="nokk"
-                                name="nokk"
-                                type="number"
-                                placeholder="Masukkan No KK"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            />
-                        </div>
-                    </div>
-                </div>
 
                 {/* Nama Lengkap */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
