@@ -37,7 +37,7 @@ const Biodata = () => {
             <h1 className="text-xl font-bold mb-4">Formulir</h1>
 
             {/* Foto - dibuat responsif */}
-            <div className="w-24 h-32 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
+            <div className="w-40 h-48 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
                 <img
                     src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
                     alt="Foto Santri"
@@ -45,7 +45,7 @@ const Biodata = () => {
                 />
             </div>
 
-            <form action="" method="POST" className="space-y-4 mt-6">
+            <form action="" method="POST" className="md:col-span-2 space-y-4 w-full">
                 {/* Kewarganegaraan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="kewarganegaraan" className="lg:w-1/4 text-black">
@@ -72,7 +72,7 @@ const Biodata = () => {
                                     type="radio"
                                     value="WNA"
                                     name="kewarganegaraan"
-                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+                                    className="w-4   h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
                                 />
                                 <label htmlFor="wna-radio" className="ml-2 text-sm font-medium text-gray-900">
                                     WNA
@@ -82,13 +82,12 @@ const Biodata = () => {
                     </div>
                 </div>
 
-
                 {/* No Passport */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="passport" className="lg:w-1/4 text-black">
                         No Passport *
                     </label>
-                    <div className="lg:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-xs">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="passport"
@@ -106,7 +105,7 @@ const Biodata = () => {
                     <label htmlFor="nokk" className="lg:w-1/4 text-black">
                         Nomor KK *
                     </label>
-                    <div className="lg:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-xs">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="nokk"
@@ -124,7 +123,7 @@ const Biodata = () => {
                     <label htmlFor="nonik" className="lg:w-1/4 text-black">
                         NIK *
                     </label>
-                    <div className="lg:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-xs">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="nonik"
@@ -334,7 +333,7 @@ const Biodata = () => {
                             <input
                                 id="noTelpon"
                                 name="noTelpon"
-                                type="text"
+                                type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -352,7 +351,7 @@ const Biodata = () => {
                             <input
                                 id="noTelpon"
                                 name="noTelpon"
-                                type="text"
+                                type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -482,6 +481,33 @@ const Biodata = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Kabupaten */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="Kabupaten" className="md:w-1/4 text-black">
+                        Kabupaten *
+                    </label>
+                    <div className="md:w-3/4 max-w-md">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <select
+                                id="kabupaten"
+                                name="kabupaten"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                value={kabupaten}
+                                onChange={(e) => setkabupaten(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Pilih Kabupaten
+                                </option>
+                                <option>Probolinggo</option>
+                                <option>Pasuruan</option>
+                                <option>Jember</option>
+                                <option>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
 
                 {/* Kecamatan */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
