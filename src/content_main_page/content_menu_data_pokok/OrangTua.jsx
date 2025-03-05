@@ -24,35 +24,35 @@ const OrangTua = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className="flex flex-wrap justify-between items-center mb-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                        <select className="border border-gray-300 rounded p-2">
+                    <select className="border border-gray-300 rounded p-2">
                             <option>Semua Negara</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Provinsi</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kabupaten</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kecamatan</option>
                         </select>
                         <select className="border border-gray-300 rounded p-2">
                             <option>Pilih Jenis Kelamin</option>
                         </select>
                         <select className="border border-gray-300 rounded p-2">
+                            <option>Pilih Wafat / Hidup</option>
+                        </select>
+                        <select className="border border-gray-300 rounded p-2">
+                            <option>Semua Provinsi</option>
+                        </select>
+                        <select className="border border-gray-300 rounded p-2">
                             <option>Pilih Jenis Kelamin Peserta Didik</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Orang Tuua Dari</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Wafat/Hidup</option>
                         </select>
                         <select className="border border-gray-300 rounded p-2">
                             <option>Smartcard</option>
                         </select>
                         <select className="border border-gray-300 rounded p-2">
-                            <option>Phone Number</option>
+                            <option>Pilih Kabupaten</option>
+                        </select>
+                        <select className="border border-gray-300 rounded p-2">
+                            <option>Semua Orang Tua Dari</option>
+                        </select>
+                        <select className="border border-gray-300 rounded p-2">
+                            <option>Semua Phone Number</option>
+                        </select>
+                        <select className="border border-gray-300 rounded p-2">
+                            <option>Kecamatan</option>
                         </select>
                         <select className="border border-gray-300 rounded p-2">
                             <option>25</option>
@@ -86,7 +86,7 @@ const OrangTua = () => {
                                 />
                                 <div>
                                     <h2 className="font-semibold">{item.nama}</h2>
-                                    <p className="text-gray-600">NIUP: {item.nik}</p>
+                                    <p className="text-gray-600">NIK: {item.nik}</p>
                                     <p className="text-gray-600">{item.telepon}</p>
                                 </div>
                             </div>
