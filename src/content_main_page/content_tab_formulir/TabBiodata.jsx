@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Biodata = () => {
+const TabBiodata = () => {
     // const [jenisKelamin, setJenisKelamin] = useState("");
     const [jenjangPendidikanTerakhir, setJenjangPendidikanTerakhir] = useState("");
     const [pekerjaan, setpekerjaan] = useState("");
@@ -317,11 +317,12 @@ const Biodata = () => {
                 <br />
                 <p className="text-red-500 text-bold timesnewroman">
                     Untuk nomor telepon milik orang tua/wali jangan diinputkan pada data peserta didik!
-                    <p className="text-red-500 text-sm italic">
+                    <span className="text-red-500 text-sm italic">
                         Karena manajemen nomor telepon Pedatren untuk sending bulk sms ortu, akan melihat nomor telepon pada entitas ortu/wali
-                        dengan priority urutan dimulai dari ayah kandung, ibu kandung kemudian yang dijadikan sebagai wali (jika tidaak ada ayah & ibu kandung)
-                    </p>
+                        dengan priority urutan dimulai dari ayah kandung, ibu kandung kemudian yang dijadikan sebagai wali (jika tidak ada ayah & ibu kandung)
+                    </span>
                 </p>
+
 
                 {/* Nomor Telepon 1 */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
@@ -603,4 +604,4 @@ const Biodata = () => {
     );
 };
 
-export default Biodata;
+export default TabBiodata;

@@ -9,7 +9,7 @@
 
 import React, { useState } from "react";
 
-const WargaPesantrenForm = () => {
+const TabWarPes = () => {
   const [niup, setNiup] = useState("12020511625");
   const [status, setStatus] = useState(1);
 
@@ -55,4 +55,4 @@ const WargaPesantrenForm = () => {
   );
 };
 
-export default WargaPesantrenForm;
+export default TabWarPes;

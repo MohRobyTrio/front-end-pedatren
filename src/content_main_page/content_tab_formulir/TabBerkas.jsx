@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 
-const BerkasSection = () => {
+const TabBerkas = () => {
   const [files, setFiles] = useState([]);
 
 
@@ -50,4 +50,4 @@ const BerkasSection = () => {
   );
 };
 
-export default BerkasSection;
+export default TabBerkas;

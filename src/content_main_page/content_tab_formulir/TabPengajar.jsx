@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const PengajarDashboard = () => {
+const TabPengajar = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,4 +40,4 @@ const PengajarDashboard = () => {
   );
 };
 
-export default PengajarDashboard;
+export default TabPengajar;

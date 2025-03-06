@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Progress = () => {
+const TabProgress = () => {
     const [activeTab, setActiveTab] = useState("Afektif");
 
     return (
@@ -31,5 +31,5 @@ const Progress = () => {
     )
 };
 
-export default Progress;
+export default TabProgress;
 

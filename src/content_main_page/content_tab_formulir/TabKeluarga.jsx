@@ -1,4 +1,4 @@
-const Keluarga = () => {
+const TabKeluarga = () => {
     return (
         <>
             <h1 className="text-xl font-bold">Relasi Keluarga</h1>
@@ -49,4 +49,4 @@ const Keluarga = () => {
     );
 };
 
-export default Keluarga;
+export default TabKeluarga;

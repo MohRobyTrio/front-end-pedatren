@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react";
 
-const WaliAsuh = () => {
+const TabWaliAsuh = () => {
   const [waliAsuhList, setWaliAsuhList] = useState([
     { id: 1, nomorInduk: "2020712450", mulai: "2021-01-29", akhir: "2022-05-17" },
     { id: 2, nomorInduk: "2020712450", mulai: "2022-12-02", akhir: "2023-05-29" },
@@ -81,4 +81,4 @@ const WaliAsuh = () => {
   );
 };
 
-export default WaliAsuh;
+export default TabWaliAsuh;

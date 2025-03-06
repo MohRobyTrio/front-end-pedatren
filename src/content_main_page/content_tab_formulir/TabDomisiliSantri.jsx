@@ -1,4 +1,4 @@
-const DomisiliSantri = () => {
+const TabDomisiliSantri = () => {
   return (
       <div className="">
          <h1 className="text-xl font-bold">Domisili Santri</h1>
@@ -60,4 +60,4 @@ const DomisiliSantri = () => {
   );
 }
 
-export default DomisiliSantri;
+export default TabDomisiliSantri;

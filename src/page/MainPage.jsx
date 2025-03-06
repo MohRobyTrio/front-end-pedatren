@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, Navigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'flowbite';
@@ -28,10 +28,26 @@ import Pengunjung from '../content_main_page/content_menu_mahrom/Pengunjung';
 import KehadiranRWS from '../content_main_page/content_menu_rws/KehadiranRWS';
 import CatatanKognitif from '../content_main_page/content _menu_kepesantrenan/CatatanKognitif';
 import ReservasiMakan from '../content_main_page/content _menu_kepesantrenan/ReservasiMakan';
+import TabBiodata from '../content_main_page/content_tab_formulir/TabBiodata';
+import TabKeluarga from '../content_main_page/content_tab_formulir/TabKeluarga';
+import TabSantri from '../content_main_page/content_tab_formulir/TabSantri';
+import TabDomisiliSantri from '../content_main_page/content_tab_formulir/TabDomisiliSantri';
+import TabWaliAsuh from '../content_main_page/content_tab_formulir/TabWaliAsuh';
+import TabPendidikan from '../content_main_page/content_tab_formulir/TabPendidikan';
+import TabPengajar from '../content_main_page/content_tab_formulir/TabPengajar';
+import TabKaryawan from '../content_main_page/content_tab_formulir/TabKaryawan';
+import TabPengurus from '../content_main_page/content_tab_formulir/TabPengurus';
+import TabKhadam from '../content_main_page/content_tab_formulir/TabKhadam';
+import TabBerkas from '../content_main_page/content_tab_formulir/TabBerkas';
+import TabWarPes from '../content_main_page/content_tab_formulir/TabWarPres';
+import TabProgress from '../content_main_page/content_tab_formulir/TabProgress';
 
 
 const MainPage = () => {
-    const [dropdownDataPokok, setDropdownDataPokok] = useState(false);
+    // const [dropdownDataPokok, setDropdownDataPokok] = useState(false);
+    const [dropdownDataPokok, setDropdownDataPokok] = useState(() => {
+        return localStorage.getItem("dropdownDataPokok") === "true";
+    });
     const [submenuPesertaDidik, setSubmenuPesertaDidik] = useState(false);
     const [dropdownDataKewaliasuhan, setDropdownKewaliasuhan] = useState(false);
     const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(false);
@@ -42,7 +58,7 @@ const MainPage = () => {
     const menuItems = [
         { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard /> },
         { id: "scanqrcode", icon: "fas fa-qrcode", text: "Scan QRCode", link: "/scanqrcode", content: <ScanQRCode /> },
-        { id: "formulir", icon: "fas fa-file-alt", text: "Formulir", link: "/formulir", content: <Formulir /> },
+        { id: "formulir", icon: "fas fa-file-alt", text: "Formulir", link: "/formulir" , content: <Formulir /> },
     ];
 
     const menuDataPokokItems = [
@@ -86,29 +102,50 @@ const MainPage = () => {
         { id: "kehadiranRWS", icon: "fa-list", text: "Kehadiran RWS", link: "/kehadiran-rws", content: <KehadiranRWS /> },
     ];
 
-    const NavigationMenu = () => {
-        const location = useLocation();
+    const tabsFormulir = [
+        { id: "biodata", label: "Biodata", link: "/formulir/biodata", content: <TabBiodata /> },
+        { id: "keluarga", label: "Keluarga", link: "/formulir/keluarga", content: <TabKeluarga /> },
+        { id: "santri", label: "Santri", link: "/formulir/santri", content: <TabSantri /> },
+        { id: "domisili", label: "Domisili Santri", link: "/formulir/domisili-santri", content: <TabDomisiliSantri /> },
+        { id: "waliasuh", label: "Wali Asuh", link: "/formulir/wali-asuh", content: <TabWaliAsuh /> },
+        { id: "pendidikan", label: "Pendidikan", link: "/formulir/pendidikan", content: <TabPendidikan /> },
+        { id: "pengajar", label: "Pengajar", link: "/formulir/pengajar", content: <TabPengajar /> },
+        { id: "karyawan", label: "Karyawan", link: "/formulir/karyawan", content: <TabKaryawan /> },
+        { id: "pengurus", label: "Pengurus", link: "/formulir/pengurus", content: <TabPengurus /> },
+        { id: "khadam", label: "Khadam", link: "/formulir/khadam", content: <TabKhadam /> },
+        { id: "berkas", label: "Berkas", link: "/formulir/berkas", content: <TabBerkas /> },
+        { id: "warpes", label: "Warga Pesantren", link: "/formulir/warga-pesantren", content: <TabWarPes /> },
+        { id: "progress", label: "Progress Report", link: "/formulir/progress-report", content: <TabProgress /> },
+      ];
 
+      const NavigationMenu = () => {
+        const location = useLocation();
+    
         return (
             <nav className="mt-4 px-4">
                 <ul>
-                    {menuItems.map((item) => (
-                        <li key={item.id} className="mb-2">
-                            <Link
-                                to={item.link}
-                                className={`flex items-center cursor-pointer ${location.pathname === item.link ? "text-blue-500 font-bold" : "text-gray-700"
-                                    }`}
-                            >
-                                <i className={`${item.icon} mr-2`}></i>
-                                {item.text}
-                            </Link>
-                        </li>
-                    ))}
+                    {menuItems.map((item) => {
+                        const isActive = item.link === "/formulir"
+                            ? location.pathname.includes("/formulir")
+                            : location.pathname === item.link;
+    
+                        return (
+                            <li key={item.id} className="mb-2">
+                                <Link
+                                    to={item.link}
+                                    className={`flex items-center cursor-pointer ${isActive ? "text-blue-500 font-bold" : "text-gray-700"}`}
+                                >
+                                    <i className={`${item.icon} mr-2`}></i>
+                                    {item.text}
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             </nav>
         );
     };
-
+    
     const MenuItem = ({ icon, text, link, onClick }) => {
         const location = useLocation();
         return (
@@ -176,6 +213,10 @@ const MainPage = () => {
             <i className={`fas fa-chevron-${isOpen ? "up" : "down"} ml-2`}></i>
         </h2>
     );
+
+    useEffect(() => {
+        localStorage.setItem("dropdownDataPokok", dropdownDataPokok);
+    }, [dropdownDataPokok]);
 
     const toggleDropdown = (setter) => {
         setter(prev => !prev);
@@ -321,6 +362,11 @@ const MainPage = () => {
                 <div className="pr-6 sm:ml-64 overflow-y-auto w-full">
                     <div className="pt-8 mt-8">
                         <Routes>
+                        <Route path="/formulir" element={<Formulir />}>
+                            {tabsFormulir.map((tab) => (
+                                <Route key={tab.id} path={tab.link} element={tab.content} />
+                            ))}
+                        </Route>
                         <Route path="/" element={<Navigate to="/dashboard" replace />} />
                             {menuItems.map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />

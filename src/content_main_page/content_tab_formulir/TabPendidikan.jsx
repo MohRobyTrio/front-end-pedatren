@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react";
 
-const Pendidikan = () => {
+const TabPendidikan = () => {
   const [formData, setFormData] = useState({
     lembaga: "UNUJA",
     jurusan: "S1 Informatika (IF)",
@@ -115,4 +115,4 @@ const Pendidikan = () => {
   );
 };
 
-export default Pendidikan;
+export default TabPendidikan;

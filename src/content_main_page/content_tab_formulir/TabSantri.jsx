@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Santri = () => {
+const TabSantri = () => {
     const [endDate, setEndDate] = useState("");
 
     return (
@@ -69,4 +69,4 @@ const Santri = () => {
     );
 };
 
-export default Santri;
+export default TabSantri;

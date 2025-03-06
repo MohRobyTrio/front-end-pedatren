@@ -5,7 +5,7 @@ export default function useFetchPengajar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/pengajarApi")
+    fetch("http://localhost:8000/api/v1/list-pengajar")
       .then((response) => response.json())
       .then((data) => {
         if (data.status) {
