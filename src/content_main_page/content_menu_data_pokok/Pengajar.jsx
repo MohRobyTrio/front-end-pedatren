@@ -1,9 +1,11 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchPengajar from '../../logic/logic_menu_data_pokok/Pengajar';
 import { OrbitProgress } from "react-loading-indicators";
+import defaultProfile from '/src/assets/blank_profile.png';
+
 
 const Pengajar = () => {
-    const { pengajar, loading } = useFetchPengajar();
+    const { pengajar, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchPengajar();
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
@@ -80,17 +82,24 @@ const Pengajar = () => {
                         <select className="border border-gray-300 rounded p-2">
                             <option>Urut Secara</option>
                         </select>
-                        <select className="border border-gray-300 rounded p-2">
+                        {/* <select className="border border-gray-300 rounded p-2">
                             <option>25</option>
-                        </select>
+                        </select> */}
                     </div>
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                    <span>Total data 10213</span>
+                    <div>
+                        <select className="border border-gray-300 rounded p-2 mr-4">
+                            <option>25</option>
+                        </select>
+                        <span>Total Data: {totalData} | Ditemukan: {totalFiltered}</span>
+                    </div>
                     <input
                         className="border border-gray-300 rounded p-2"
                         placeholder="Cari Karyawan..."
                         type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
@@ -102,11 +111,11 @@ const Pengajar = () => {
                         <p className="text-center col-span-3">Tidak ada data</p>
                     ) : (
                         pengajar.map((item) => (
-                            <div key={item.id_pengajar} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                            <div key={item.id_pengajar} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
                                 <img
-                                    alt={item.nama}
-                                    className="w-16 h-16 rounded-full object-cover"
-                                    src={item.image_url}
+                                    alt={item.nama || "-"}
+                                    className="w-20 h-24 object-cover"
+                                    src={item.image_url || defaultProfile}
                                     width={50}
                                     height={50}
                                 />
@@ -119,6 +128,98 @@ const Pengajar = () => {
                         ))
                     )}
                 </div>
+                <nav aria-label="Page navigation example" className="flex justify-end  mt-6">
+                    <ul className="flex items-center -space-x-px h-10 text-sm">
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                <span className="sr-only">Previous</span>
+                                <svg
+                                    className="w-3 h-3 rtl:rotate-180"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 6 10"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 1 1 5l4 4"
+                                    />
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                1
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                2
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                aria-current="page"
+                                className="z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
+                            >
+                                3
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                4
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                5
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                <span className="sr-only">Next</span>
+                                <svg
+                                    className="w-3 h-3 rtl:rotate-180"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 6 10"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="m1 9 4-4-4-4"
+                                    />
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
             </div>
         </div>
     )

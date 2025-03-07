@@ -363,6 +363,7 @@ const MainPage = () => {
                     <div className="pt-8 mt-8">
                         <Routes>
                         <Route path="/formulir" element={<Formulir />}>
+                        <Route path="/formulir" element={<Navigate to="/formulir/biodata" replace />} />
                             {tabsFormulir.map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />
                             ))}
