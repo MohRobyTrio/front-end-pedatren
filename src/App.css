@@ -1,5 +1,9 @@
 /* @import "tailwindcss"; */
 /* @import 'flowbite'; */
+body {
+  overflow-y: hidden;
+}
+
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -14,6 +18,7 @@
 @media (max-width: 1300px) {
   .listpesertadidik {
       grid-template-columns: repeat(2, 1fr) !important;
+      overflow-y: auto;
   }
 }
 

@@ -2,13 +2,29 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchPengajar from '../../logic/logic_menu_data_pokok/Pengajar';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
+import SearchBar from '../../components/SearchBar';
+import { useState } from 'react';
+import Filters from '../../components/filters';
 
 
 const Pengajar = () => {
     const { pengajar, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchPengajar();
+    const [showFilters, setShowFilters] = useState(false);
+
+    const filterOptions = {
+        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
+        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
+        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
+        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
+        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
+        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
+        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
+        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
+        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    };
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pengajar</h1>
                 <div className="flex items-center">
@@ -23,85 +39,15 @@ const Pengajar = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex flex-wrap justify-between items-center mb-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Negara</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Wilayah</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Lembaga</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Provinsi</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Blok</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Jurusan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Status</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kabupaten</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kamar</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kelas</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Angkatan Pelajar</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kecamatan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Rombel</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Angkatan Santri</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Warga Pesantren</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Smartcard</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Phone Number</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Urut Berdasarkan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Urut Secara</option>
-                        </select>
-                        {/* <select className="border border-gray-300 rounded p-2">
-                            <option>25</option>
-                        </select> */}
-                    </div>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                    <div>
-                        <select className="border border-gray-300 rounded p-2 mr-4">
-                            <option>25</option>
-                        </select>
-                        <span>Total Data: {totalData || 0} | Ditemukan: {totalFiltered || 0}</span>
-                    </div>
-                    <input
-                        className="border border-gray-300 rounded p-2"
-                        placeholder="Cari Karyawan..."
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
+                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    totalFiltered={totalFiltered}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
                     {loading ? (
                         <div className="col-span-3 flex justify-center items-center">

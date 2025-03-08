@@ -10,6 +10,29 @@ const PesertaDidik = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
+    const filterOptions = {
+        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
+        wilayah: ["Semua Wilayah", "Wilayah Utara", "Wilayah Selatan", "Wilayah Timur", "Wilayah Barat"],
+        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
+        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
+        blok: ["Semua Blok", "Blok A", "Blok B", "Blok C", "Blok D"],
+        jurusan: ["Semua Jurusan", "IPA", "IPS", "Bahasa", "Agama", "Teknik"],
+        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
+        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
+        kamar: ["Semua Kamar", "Kamar 101", "Kamar 102", "Kamar 103"],
+        kelas: ["Semua Kelas", "Kelas 1", "Kelas 2", "Kelas 3"],
+        angkatanPelajar: ["Semua Angkatan Pelajar", "2020", "2021", "2022", "2023"],
+        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
+        rombel: ["Semua Rombel", "Rombel 1", "Rombel 2", "Rombel 3"],
+        angkatanSantri: ["Semua Angkatan Santri", "2018", "2019", "2020", "2021"],
+        wargaPesantren: ["Warga Pesantren", "Santri Mukim", "Santri Non-Mukim"],
+        smartcard: ["Smartcard", "Ada", "Tidak Ada"],
+        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
+        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
+        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    };
+    
+
     // Filter peserta berdasarkan pencarian
     const filteredPeserta = pesertaDidik.filter((student) =>
         student.nama.toLowerCase().includes(searchTerm.toLowerCase())
@@ -35,14 +58,16 @@ const PesertaDidik = () => {
             
 
                 {/* Filter */}
-                <Filters showFilters={showFilters} />
+                <Filters showFilters={showFilters} filterOptions={filterOptions} />
 
                 {/* Pencarian & Total Data di Bawah */}
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
                     totalData={filteredPeserta.length}
+                    totalFiltered={0}
                     toggleFilters={() => setShowFilters(!showFilters)}
+
                 />
 
                 {/* List Peserta Didik */}

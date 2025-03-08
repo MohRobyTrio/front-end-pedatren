@@ -1,8 +1,11 @@
-const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters }) => {
+const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalFiltered }) => {
     return (
         <div className="flex justify-between items-center mb-4">
             <div>
-                <span>Total data: {totalData}</span>
+                <select className="border border-gray-300 rounded p-2 mr-4">
+                    <option>25</option>
+                </select>
+                <span>Total Data: {totalData || 0} | Ditemukan: {totalFiltered || 0}</span>
             </div>
             <div className="flex items-center space-x-2">
                 <input
@@ -12,8 +15,8 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters }) => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button className="p-2 bg-red-500 text-white rounded" onClick={toggleFilters}>
-                    <i className="fas fa-broom"></i>
+                <button className="p-2 px-3 bg-green-500 text-white rounded" onClick={toggleFilters}>
+                    <i className="fas fa-filter"></i>
                 </button>
             </div>
         </div>
