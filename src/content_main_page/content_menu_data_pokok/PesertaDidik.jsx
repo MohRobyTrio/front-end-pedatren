@@ -24,37 +24,39 @@ const PesertaDidik = () => {
                     <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
                 </div>
             </div>
-
-            {/* Pencarian & Total Data di Atas
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                {/* Pencarian & Total Data di Atas
             <SearchBar
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 totalData={filteredPeserta.length}
                 toggleFilters={() => setShowFilters(!showFilters)}
             /> */}
+            
 
-            {/* Filter */}
-            <Filters showFilters={showFilters} />
+                {/* Filter */}
+                <Filters showFilters={showFilters} />
 
-             {/* Pencarian & Total Data di Bawah */}
-             <SearchBar
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                totalData={filteredPeserta.length}
-                toggleFilters={() => setShowFilters(!showFilters)}
-            />
+                {/* Pencarian & Total Data di Bawah */}
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={filteredPeserta.length}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                />
 
-            {/* List Peserta Didik */}
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p className="text-red-500">{error}</p>
-                ) : filteredPeserta.length === 0 ? (
-                    <p>Tidak ada data peserta didik</p>
-                ) : (
-                    filteredPeserta.map((student, index) => <PesertaItem key={index} student={student} />)
-                )}
+                {/* List Peserta Didik */}
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : error ? (
+                        <p className="text-red-500">{error}</p>
+                    ) : filteredPeserta.length === 0 ? (
+                        <p>Tidak ada data peserta didik</p>
+                    ) : (
+                        filteredPeserta.map((student, index) => <PesertaItem key={index} student={student} />)
+                    )}
+                </div>
             </div>
         </div>
     );

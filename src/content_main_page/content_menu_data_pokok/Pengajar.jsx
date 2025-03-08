@@ -92,7 +92,7 @@ const Pengajar = () => {
                         <select className="border border-gray-300 rounded p-2 mr-4">
                             <option>25</option>
                         </select>
-                        <span>Total Data: {totalData} | Ditemukan: {totalFiltered}</span>
+                        <span>Total Data: {totalData || 0} | Ditemukan: {totalFiltered || 0}</span>
                     </div>
                     <input
                         className="border border-gray-300 rounded p-2"
