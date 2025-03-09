@@ -44,40 +44,33 @@ import TabProgress from '../content_main_page/content_tab_formulir/TabProgress';
 
 
 const MainPage = () => {
-    // const [dropdownDataPokok, setDropdownDataPokok] = useState(false);
     const [dropdownDataPokok, setDropdownDataPokok] = useState(() => {
-        return localStorage.getItem("dropdownDataPokok") === "true";
+        return sessionStorage.getItem("dropdownDataPokok") === "true";
     });
-    // const [submenuPesertaDidik, setSubmenuPesertaDidik] = useState(false);
-    // const [dropdownDataKewaliasuhan, setDropdownKewaliasuhan] = useState(false);
-    // const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(false);
-    // const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(false);
-    // const [dropdownDataMahrom, setDropdownMahrom] = useState(false);
-    // const [dropdownDataRWS, setDropdownRWS] = useState(false);
-
+    
     const [submenuPesertaDidik, setSubmenuPesertaDidik] = useState(() => {
-        return localStorage.getItem("submenuPesertaDidik") === "true";
+        return sessionStorage.getItem("submenuPesertaDidik") === "true";
     });
-
+    
     const [dropdownDataKewaliasuhan, setDropdownKewaliasuhan] = useState(() => {
-        return localStorage.getItem("dropdownDataKewaliasuhan") === "true";
+        return sessionStorage.getItem("dropdownDataKewaliasuhan") === "true";
     });
-
+    
     const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(() => {
-        return localStorage.getItem("dropdownDataKepesantrenan") === "true";
+        return sessionStorage.getItem("dropdownDataKepesantrenan") === "true";
     });
-
+    
     const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(() => {
-        return localStorage.getItem("dropdownDataKepegawaian") === "true";
+        return sessionStorage.getItem("dropdownDataKepegawaian") === "true";
     });
-
+    
     const [dropdownDataMahrom, setDropdownMahrom] = useState(() => {
-        return localStorage.getItem("dropdownDataMahrom") === "true";
+        return sessionStorage.getItem("dropdownDataMahrom") === "true";
     });
-
+    
     const [dropdownDataRWS, setDropdownRWS] = useState(() => {
-        return localStorage.getItem("dropdownDataRWS") === "true";
-    });
+        return sessionStorage.getItem("dropdownDataRWS") === "true";
+    });    
 
     const menuItems = [
         { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard /> },
@@ -149,89 +142,6 @@ const MainPage = () => {
         { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <PesertaDidik /> }
     ];
 
-    // const NavigationMenu = () => {
-    //     const location = useLocation();
-
-    //     return (
-    //         <nav className="mt-4 px-4">
-    //             <ul>
-    //                 {menuItems.map((item) => {
-    //                     const isActive = item.link === "/formulir"
-    //                     ? location.pathname.includes("/formulir")
-    //                     : location.pathname === item.link;
-    //                     const isActiveP = item.link === "/peserta-didik"
-    //                     ? location.pathname.includes("/peserta-didik")
-    //                     : location.pathname === item.link;
-
-    //                     return (
-    //                         <li key={item.id} className="mb-2">
-    //                             <Link
-    //                                 to={item.link}
-    //                                 className={`flex items-center cursor-pointer ${isActive || isActiveP ? "text-blue-500 font-bold" : "text-gray-700"}`}
-    //                             >
-    //                                 <i className={`${item.icon} mr-2`}></i>
-    //                                 {item.text}
-    //                             </Link>
-    //                         </li>
-    //                     );
-    //                 })}
-    //             </ul>
-    //         </nav>
-    //     );
-    // };
-
-    // const MenuItem = ({ icon, text, link, onClick }) => {
-    //     const location = useLocation();
-    //     return (
-    //         <li className="mb-2">
-    //             <Link to={link} className={`flex items-center cursor-pointer ${location.pathname === link ? "text-blue-500 font-bold" : "text-gray-700"}`} onClick={onClick}>
-    //                 <i className={`fas ${icon} mr-4`}></i>
-    //                 {text}
-    //             </Link>
-    //         </li>
-    //     );
-    // };
-
-    // const SubMenuDropdownPesertaDidik = () => {
-    //     return (
-    //         <ul className="ml-4 mt-2">
-    //             {subPesertaDidik.map(subItem => (
-    //                 <li key={subItem.id} className="mb-2">
-    //                     <Link to={subItem.link} className="text-gray-700 flex items-center">
-    //                         <i className="fas fa-chevron-right mr-2"></i>
-    //                         {subItem.text}
-    //                     </Link>
-    //                 </li>
-    //             ))}
-    //         </ul>
-    //     );
-    // };
-
-    // const DropdownMenu = ({ items }) => {
-    //     const location = useLocation();
-
-    //     return (
-    //         <ul className="mt-2">
-    //             {items.map((item) => (
-    //                 <div key={item.id}>
-    //                     <MenuItem
-    //                         icon={item.icon}
-    //                         text={item.text}
-    //                         link={item.link || `/${item.id}`}
-    //                         isActive={location.pathname.includes(item.link)}
-    //                         onClick={() => {
-    //                             if (item.id === "pesertadidik") {
-    //                                 setSubmenuPesertaDidik(!submenuPesertaDidik);
-    //                             }
-    //                         }}
-    //                     />
-
-    //                     {item.id === "pesertadidik" && submenuPesertaDidik && <SubMenuDropdownPesertaDidik />}
-    //                 </div>
-    //             ))}
-    //         </ul>
-    //     );
-    // };
     const NavigationMenu = () => {
         const location = useLocation();
     
@@ -348,33 +258,50 @@ const MainPage = () => {
     );
 
     useEffect(() => {
-        localStorage.setItem("dropdownDataPokok", dropdownDataPokok);
+        sessionStorage.setItem("dropdownDataPokok", dropdownDataPokok);
     }, [dropdownDataPokok]);
-
+    
     useEffect(() => {
-        localStorage.setItem("submenuPesertaDidik", submenuPesertaDidik);
+        sessionStorage.setItem("submenuPesertaDidik", submenuPesertaDidik);
     }, [submenuPesertaDidik]);
-
+    
     useEffect(() => {
-        localStorage.setItem("dropdownDataKewaliasuhan", dropdownDataKewaliasuhan);
+        sessionStorage.setItem("dropdownDataKewaliasuhan", dropdownDataKewaliasuhan);
     }, [dropdownDataKewaliasuhan]);
-
+    
     useEffect(() => {
-        localStorage.setItem("dropdownDataKepesantrenan", dropdownDataKepesantrenan);
+        sessionStorage.setItem("dropdownDataKepesantrenan", dropdownDataKepesantrenan);
     }, [dropdownDataKepesantrenan]);
-
+    
     useEffect(() => {
-        localStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
+        sessionStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
     }, [dropdownDataKepegawaian]);
-
+    
     useEffect(() => {
-        localStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
+        sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
     }, [dropdownDataMahrom]);
-
+    
     useEffect(() => {
-        localStorage.setItem("dropdownDataRWS", dropdownDataRWS);
+        sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
     }, [dropdownDataRWS]);
-
+    
+    // useEffect(() => {
+    //     const handleUnload = (event) => {
+    //         if (event.type === "unload") {
+    //             sessionStorage.removeItem("dropdownDataPokok");
+    //             sessionStorage.removeItem("submenuPesertaDidik");
+    //             sessionStorage.removeItem("dropdownDataKewaliasuhan");
+    //             sessionStorage.removeItem("dropdownDataKepesantrenan");
+    //             sessionStorage.removeItem("dropdownDataKepegawaian");
+    //             sessionStorage.removeItem("dropdownDataMahrom");
+    //             sessionStorage.removeItem("dropdownDataRWS");
+    //         }
+    //     };
+    
+    //     window.addEventListener("unload", handleUnload);
+    //     return () => window.removeEventListener("unload", handleUnload);
+    // }, []);    
+    
     const toggleDropdown = (setter) => {
         setter(prev => !prev);
     };
