@@ -32,7 +32,7 @@ Coba jalankan proyek:
 npm run dev
 ```
 
-keluar dari commit merge di terminal vscode:
+klik ESC dan ketik perintah ini untuk keluar dari commit merge di terminal vscode:
 ```sh
 :q!
 ```
