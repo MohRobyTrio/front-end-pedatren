@@ -32,4 +32,9 @@ Coba jalankan proyek:
 npm run dev
 ```
 
+keluar dari commit merge di terminal vscode:
+```sh
+:q!
+```
+
 🚀 Selamat ngoding! 🎉
