@@ -23,6 +23,16 @@ const AnakPegawai = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
+            <p className="text-red-500 text-bold timesnewroman">
+                    Merupakan data peserta didik yang sekaligus juga putra-putri dari pegawai (pengurus/karyawan/pengajar)
+                </p>
+                <br />  
+            <div className="bg-gray-100 p-3 rounded-md mt-2 w-full mb-4">
+                        {/* Breadcrumb */}
+                        <nav className="text-sm text-gray-500 mb-4">
+                            <span className="text-blue-500">Anak Pegawai</span>
+                        </nav>
+                    </div>
                 <div className="flex flex-wrap justify-between items-center mb-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                         <select className="border border-gray-300 rounded p-2">
