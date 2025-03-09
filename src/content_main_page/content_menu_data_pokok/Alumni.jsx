@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import useFetchPeserta from "../../hooks/useFetchPeserta";
 import AlumniItem from "../../components/AlumniItem";
 import SearchBar from "../../components/SearchBar";
-import Filters from "../../components/filters";
+import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Alumni = () => {

@@ -37,7 +37,7 @@ const TabBiodata = () => {
             <h1 className="text-xl font-bold mb-4">Formulir</h1>
 
             {/* Foto - dibuat responsif */}
-            <div className="w-40 h-48 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
+            <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
                 <img
                     src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
                     alt="Foto Santri"
@@ -51,43 +51,21 @@ const TabBiodata = () => {
                     <label htmlFor="kewarganegaraan" className="lg:w-1/4 text-black">
                         Kewarganegaraan *
                     </label>
-                    <div className="lg:w-3/4">
-                        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
-                            <div className="flex items-center">
-                                <input
-                                    id="wni-radio"
-                                    type="radio"
-                                    value="WNI"
-                                    name="kewarganegaraan"
-                                    defaultChecked
-                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-                                />
-                                <label htmlFor="wni-radio" className="ml-2 text-sm font-medium text-gray-900">
-                                    WNI
-                                </label>
-                            </div>
-                            <div className="flex items-center">
-                                <input
-                                    id="wna-radio"
-                                    type="radio"
-                                    value="WNA"
-                                    name="kewarganegaraan"
-                                    className="w-4   h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-                                />
-                                <label htmlFor="wna-radio" className="ml-2 text-sm font-medium text-gray-900">
-                                    WNA
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" />
+                        <span>WNI</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" />
+                        <span>WNA</span>
+                    </label>
                 </div>
-
                 {/* No Passport */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="passport" className="lg:w-1/4 text-black">
                         No Passport *
                     </label>
-                    <div className="lg:w-3/4 max-w-xs">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="passport"
@@ -105,7 +83,7 @@ const TabBiodata = () => {
                     <label htmlFor="nokk" className="lg:w-1/4 text-black">
                         Nomor KK *
                     </label>
-                    <div className="lg:w-3/4 max-w-xs">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="nokk"
@@ -123,7 +101,7 @@ const TabBiodata = () => {
                     <label htmlFor="nonik" className="lg:w-1/4 text-black">
                         NIK *
                     </label>
-                    <div className="lg:w-3/4 max-w-xs">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="nonik"
@@ -189,62 +167,76 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Tanggal Lahir */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="tanggalLahir" className="lg:w-1/4 text-black">
                         Tanggal Lahir *
                     </label>
-                    <select
-                        value={tanggalLahir.tahun}
-                        onChange={(e) => {
-                            setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                            hitungUmur(e.target.value);
-                        }}
-                        className="border p-2 rounded-md"
-                    >
-                        {daftarTahun.map((tahun) => (
-                            <option key={tahun} value={tahun}>{tahun}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={tanggalLahir.bulan}
-                        onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })}
-                        className="border p-2 -md"
-                    >
-                        {daftarBulan.map((bulan) => (
-                            <option key={bulan} value={bulan}>{bulan}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={tanggalLahir.hari}
-                        onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })}
-                        className="border p-2 rounded-md"
-                    >
-                        {daftarHari.map((hari) => (
-                            <option key={hari} value={hari}>{hari}</option>
-                        ))}
-                    </select>
-                    {/* Label umur */}
-                    <span className="bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                        umur {umur} tahun
-                    </span>
+                    <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
+                        <div className="flex space-x-1 mr-2">
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                    value={tanggalLahir.tahun}
+                                    onChange={(e) => {
+                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
+                                        hitungUmur(e.target.value);
+                                    }}
+                                >
+                                    {daftarTahun.map((tahun) => (
+                                        <option key={tahun} value={tahun}>{tahun}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                    value={tanggalLahir.bulan}
+                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
+                                    {daftarBulan.map((bulan) => (
+                                        <option key={bulan} value={bulan}>{bulan}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                    value={tanggalLahir.hari}
+                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
+                                    {daftarHari.map((hari) => (
+                                        <option key={hari} value={hari}>{hari}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        {/* Label umur */}
+                        <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
+                            umur {umur} tahun
+                        </span>
+                    </div>
                 </div>
 
                 {/* Anak Ke */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="anakKe" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="anakKe" className="lg:w-1/4 text-black">
                         Anak Ke *
                     </label>
-                    <input
-                        type="number"
-                        min="1"
-                        className="border p-2 rounded-md w-16"
-                    />
-                    <span>Dari</span>
-                    <input
-                        type="number"
-                        min="1"
-                        className="border p-2 rounded-md w-16"
-                    />
+                    <div className="flex space-x-4">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                type="number"
+                                min="1"
+                                className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                        <span>Dari</span>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <input
+                                type="number"
+                                min="1"
+                                className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                            />
+                        </div>
+                    </div>
                 </div>
                 <hr className="border-t border-gray-300 my-4" />
 
@@ -267,11 +259,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Jenjang Pendidikan Terakhir */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhir" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="jenjangPendidikanTerakhir" className="lg:w-1/4 text-black">
                         Jenjang Pendidikan Terakhir
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="jenjangPendidikanTerakhir"
@@ -297,11 +289,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Pendidikan Terakhir */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="PendidikanTerakhir" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="PendidikanTerakhir" className="lg:w-1/4 text-black">
                         Nama Pendidikan Terakhir
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="namapendidikanterakhir"
@@ -325,11 +317,11 @@ const TabBiodata = () => {
 
 
                 {/* Nomor Telepon 1 */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="noTelpon1" className="md:w-1/4 text-black">
                         Nomor Telepon 1
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="noTelpon"
@@ -343,11 +335,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Nomor Telepon 2 */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelpon2" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="noTelpon2" className="lg:w-1/4 text-black">
                         Nomor Telepon 2
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="noTelpon"
@@ -361,11 +353,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* E-Mail */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="email" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="email" className="lg:w-1/4 text-black">
                         E-Mail
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="email"
@@ -379,11 +371,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Pekerjaan */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Pekerjaan" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Pekerjaan" className="lg:w-1/4 text-black">
                         Pekerjaan
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="Pekerjaan"
@@ -406,11 +398,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Penghasilan */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Penghasilan" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Penghasilan" className="lg:w-1/4 text-black">
                         Penghasilan
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="penghasilan"
@@ -434,11 +426,11 @@ const TabBiodata = () => {
                 <hr className="border-t border-gray-300 my-4" />
 
                 {/* Negara */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Negara" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Negara" className="lg:w-1/4 text-black">
                         Negara *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="negara"
@@ -458,11 +450,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Provinsi */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Provinsi" className="lg:w-1/4 text-black">
                         Provinsi *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="provinsi"
@@ -484,11 +476,11 @@ const TabBiodata = () => {
                 </div>
 
                 {/* Kabupaten */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Kabupaten" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Kabupaten" className="lg:w-1/4 text-black">
                         Kabupaten *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="kabupaten"
@@ -511,11 +503,11 @@ const TabBiodata = () => {
 
 
                 {/* Kecamatan */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="Provinsi" className="lg:w-1/4 text-black">
                         Kecamatan *
                     </label>
-                    <div className="md:w-3/4 max-w-md">
+                    <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="kecamatan"
