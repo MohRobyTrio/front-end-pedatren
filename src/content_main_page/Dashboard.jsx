@@ -61,10 +61,11 @@ const Dashboard = () => {
                                 </div>
                             ))}
                         </div>
+                        <br />
 
                         {/* Tabel Ulang Tahun */}
                         <h2 className="text-2xl font-semibold mt-6">Ulang Tahun Hari Ini</h2>
-                        <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
+                        {/* <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md"> */}
                             <table className="w-full border-collapse border border-gray-300 mt-2">
                                 <thead>
                                     <tr className="bg-gray-200">
@@ -99,7 +100,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        // </div>
     )
 }
 
