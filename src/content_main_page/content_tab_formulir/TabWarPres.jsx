@@ -24,6 +24,7 @@ const TabWarPes = () => {
           value={niup}
           onChange={(e) => setNiup(e.target.value)}
           className="mt-1 block p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          disabled
         />
       </div>
       <div className="mb-4">
