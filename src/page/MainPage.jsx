@@ -149,7 +149,8 @@ const MainPage = () => {
             <nav className="mt-4 px-4">
                 <ul>
                     {menuItems.map((item) => {
-                        const isActive = location.pathname.startsWith(item.link);
+                        // const isActive = location.pathname.startsWith(item.link);
+                        const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
     
                         return (
                             <li key={item.id} className="mb-2">
@@ -172,7 +173,9 @@ const MainPage = () => {
 
     const MenuItem = ({ icon, text, link, onClick }) => {
         const location = useLocation();
-        const isActive = location.pathname.startsWith(link);
+        // const isActive = location.pathname.startsWith(link);
+        const isActive = location.pathname === link || location.pathname.startsWith(link + "/");
+
     
         return (
             <li className="mb-2">
@@ -196,7 +199,8 @@ const MainPage = () => {
         return (
             <ul className="mt-2">
                 {items.map((item) => {
-                    const isActive = location.pathname.startsWith(item.link);
+                    // const isActive = location.pathname.startsWith(item.link);
+                    const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
     
                     return (
                         <div key={item.id}>
