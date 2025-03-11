@@ -3,7 +3,7 @@ import useFetchPengajar from '../../logic/logic_menu_data_pokok/Pengajar';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
 
 
@@ -11,6 +11,13 @@ const Pengajar = () => {
     const { pengajar, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchPengajar();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode");
+        if (savedViewMode) {
+            setViewMode(savedViewMode);
+        }
+    }, []);
 
     const filterOptions = {
         negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
@@ -47,8 +54,7 @@ const Pengajar = () => {
                     totalData={totalData}
                     totalFiltered={totalFiltered}
                     toggleFilters={() => setShowFilters(!showFilters)}
-                    viewMode={viewMode}
-                    onToggleView={setViewMode}
+                    toggleView={setViewMode}
 
                 />
                 {viewMode === "list" ? (
@@ -89,16 +95,29 @@ const Pengajar = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {pengajar.map((item, index) => (
-                                <tr key={item.id_pengajar} className="text-center">
-                                    <td className="border p-2 w-16">{index + 1}</td>
-                                    <td className="border p-2">{item.niup}</td>
-                                    <td className="border p-2">{item.nama}</td>
-                                    <td className="border p-2">{item.nama_pendidikan_terakhir}</td>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="4" className="text-center p-4">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </td>
                                 </tr>
-                            ))}
+                            ) : pengajar.length === 0 ? (
+                                <tr>
+                                    <td colSpan="4" className="text-center p-4">Tidak ada data</td>
+                                </tr>
+                            ) : (
+                                pengajar.map((item, index) => (
+                                    <tr key={item.id_pengajar} className="text-center">
+                                        <td className="border p-2 w-16">{index + 1}</td>
+                                        <td className="border p-2">{item.niup}</td>
+                                        <td className="border p-2">{item.nama}</td>
+                                        <td className="border p-2">{item.nama_pendidikan_terakhir}</td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
+
 
                 )}
                 <nav aria-label="Page navigation example" className="flex justify-end  mt-6">

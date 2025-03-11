@@ -1,4 +1,20 @@
-const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalFiltered, viewMode, onToggleView }) => {
+import { useEffect, useState } from "react";
+
+const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalFiltered, toggleView  }) => {
+    const [viewMode, setViewMode] = useState("table");
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode");
+        if (savedViewMode) {
+            setViewMode(savedViewMode);
+        }
+    }, []);
+
+    const handleViewChange = (mode) => {
+        setViewMode(mode);
+        sessionStorage.setItem("viewMode", mode);
+        toggleView(mode);
+    };
     return (
         <div className="flex justify-between items-center mb-4">
             <div>
@@ -20,7 +36,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalF
                         className={`p-3 flex items-center justify-center cursor-pointer ${
                             viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
                         }`}
-                        onClick={() => onToggleView('list')}
+                        onClick={() => handleViewChange("list")}
                     >
                         <i className="fas fa-list text-lg"></i>
                     </button>
@@ -29,7 +45,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalF
                         className={`p-3 flex items-center justify-center cursor-pointer ${
                             viewMode === 'table' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
                         }`}
-                        onClick={() => onToggleView('table')}
+                        onClick={() => handleViewChange("table")}
                     >
                         <i className="fas fa-table text-lg"></i>
                     </button>
