@@ -6,13 +6,13 @@ export default function useFetchPegawai() {
   const [searchTerm, setSearchTerm] = useState(""); // 🔍 State untuk pencarian
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/list-pengajar")
+    fetch("") //Ini berisi url API
       .then((response) => response.json())
       .then((data) => {
         if (data.status) {
           setPegawai(data.data);
         } else {
-          setPengajar([]);
+          setPegawai([]);
         }
       })
       .catch((error) => console.error("Error fetching data:", error))
