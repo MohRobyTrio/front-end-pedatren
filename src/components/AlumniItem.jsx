@@ -11,7 +11,7 @@ const AlumniItem = ({ alumni }) => {
             <div>
                 <h2 className="font-semibold">{alumni.nama}</h2>
                 <p className="text-gray-600">Kab. {alumni.nama_kabupaten}</p>
-                <small className="text-gray-600">Pend.Terakhir :{alumni.lembaga}-{alumni.tahun_keluar}</small>
+                <p className="text-gray-600">Pend.Terakhir :{alumni.lembaga}-{alumni.tahun_keluar}</p>
             </div>
         </div>
     );

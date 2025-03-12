@@ -4,7 +4,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
 import { useState } from 'react';
-import Filters from '../../components/filters';
+import Filters from '../../components/Filters';
 
 
 const Pengajar = () => {

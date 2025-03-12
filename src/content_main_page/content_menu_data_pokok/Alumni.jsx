@@ -6,7 +6,7 @@ import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Alumni = () => {
-    const { pesertaDidik: alumni, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/fe-alumni");
+    const { pesertaDidik: alumni, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/list-alumni");
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 

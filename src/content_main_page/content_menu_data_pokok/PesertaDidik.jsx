@@ -2,11 +2,11 @@ import { useState } from "react";
 import useFetchPeserta from "../../hooks/useFetchPeserta";
 import PesertaItem from "../../components/PesertaItem";
 import SearchBar from "../../components/SearchBar";
-import Filters from "../../components/filters";
+import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const PesertaDidik = () => {
-    const { pesertaDidik, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/fe-peserta-didik");
+    const { pesertaDidik, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/pesertaDidik?page=1");
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
