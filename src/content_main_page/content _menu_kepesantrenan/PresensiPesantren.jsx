@@ -10,8 +10,9 @@ const PresensiPesantren = () => {
   ];
 
   return (
-    <div className="p-6">
+    <div className="flex-1 pl-6 pt-6 pb-6">
       <h1 className="text-2xl font-bold mb-4">Presensi Kegiatan</h1>
+      <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="bg-blue-100 p-4 rounded-md mb-4">
         Pilih salah satu kegiatan untuk melanjutkan <b>Presensi</b>.
       </div>
@@ -30,6 +31,7 @@ const PresensiPesantren = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };
