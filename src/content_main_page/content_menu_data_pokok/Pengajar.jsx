@@ -3,11 +3,7 @@ import useFetchPengajar from '../../logic/logic_menu_data_pokok/Pengajar';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
-<<<<<<< HEAD
-import { useState } from 'react';
-=======
 import { useEffect, useState } from 'react';
->>>>>>> 8d431122e131fd4d24d1f21271d5f8b2c2d61358
 import Filters from '../../components/Filters';
 
 
