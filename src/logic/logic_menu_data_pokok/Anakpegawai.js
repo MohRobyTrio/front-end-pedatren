@@ -6,7 +6,7 @@ export default function useFetchAnakPegawai() {
   const [searchTerm, setSearchTerm] = useState(""); // 🔍 State untuk pencarian
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/list-pengajar")
+    fetch("") //Isi dengan URL API dari backend
       .then((response) => response.json())
       .then((data) => {
         if (data.status) {

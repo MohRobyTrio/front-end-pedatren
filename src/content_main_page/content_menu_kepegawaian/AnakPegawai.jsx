@@ -2,13 +2,37 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchAnakPegawai from '../../logic/logic_menu_data_pokok/Anakpegawai';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
+import SearchBar from '../../components/SearchBar';
+import { useEffect, useState } from 'react';
+import Filters from '../../components/Filters';
 
 
 const AnakPegawai = () => {
     const { anakpegawai, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchAnakPegawai();
+    const [showFilters, setShowFilters] = useState(false);
+    const [viewMode, setViewMode] = useState("list");
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode");
+        if (savedViewMode) {
+            setViewMode(savedViewMode);
+        }
+    }, []);
+
+    const filterOptions = {
+        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
+        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
+        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
+        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
+        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
+        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
+        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
+        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
+        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    };
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Anak Pegawai</h1>
                 <div className="flex items-center">
@@ -23,121 +47,78 @@ const AnakPegawai = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-            <p className="text-red-500 text-bold timesnewroman">
-                    Merupakan data peserta didik yang sekaligus juga putra-putri dari pegawai (pengurus/karyawan/pengajar)
-                </p>
-                <br />  
-            <div className="bg-gray-100 p-3 rounded-md mt-2 w-full mb-4">
-                        {/* Breadcrumb */}
-                        <nav className="text-sm text-gray-500 mb-4">
-                            <span className="text-blue-500">Anak Pegawai</span>
-                        </nav>
-                    </div>
-                <div className="flex flex-wrap justify-between items-center mb-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Negara</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Wilayah</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Lembaga</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Provinsi</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Blok</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Jurusan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Status</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kabupaten</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kamar</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kelas</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Angkatan Pelajar</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Kecamatan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Rombel</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Angkatan Santri</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Warga Pesantren</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Smartcard</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Phone Number</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Urut Berdasarkan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Urut Secara</option>
-                        </select>
-                        {/* <select className="border border-gray-300 rounded p-2">
-                            <option>25</option>
-                        </select> */}
-                    </div>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                    <div>
-                        <select className="border border-gray-300 rounded p-2 mr-4">
-                            <option>25</option>
-                        </select>
-                        <span>Total Data: {totalData || 0} | Ditemukan: {totalFiltered || 0}</span>
-                    </div>
-                    <input
-                        className="border border-gray-300 rounded p-2"
-                        placeholder="Cari Anak Pegawai..."
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
-                    {loading ? (
-                        <div className="col-span-3 flex justify-center items-center">
-                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                        </div>
-                    ) : anakpegawai.length === 0 ? (
-                        <p className="text-center col-span-3">Tidak ada data</p>
-                    ) : (
-                        anakpegawai.map((item) => (
-                            <div key={item.id_anakpegawai} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
-                                <img
-                                    alt={item.nama || "-"}
-                                    className="w-20 h-24 object-cover"
-                                    src={item.image_url || defaultProfile}
-                                    width={50}
-                                    height={50}
-                                />
-                                <div>
-                                    <h2 className="font-semibold">{item.nama}</h2>
-                                    <p className="text-gray-600">NIUP: {item.niup}</p>
-                                    <p className="text-gray-600">{item.lembaga}</p>
-                                </div>
+                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    totalFiltered={totalFiltered}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    toggleView={setViewMode}
+
+                />
+                {viewMode === "list" ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
+                        {loading ? (
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ))
-                    )}
-                </div>
+                        ) : anakpegawai.length === 0 ? (
+                            <p className="text-center col-span-3">Tidak ada data</p>
+                        ) : (
+                            anakpegawai.map((item) => (
+                                <div key={item.id_anakpegawai} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <img
+                                        alt={item.nama || "-"}
+                                        className="w-20 h-24 object-cover"
+                                        src={item.image_url || defaultProfile}
+                                        width={50}
+                                        height={50}
+                                    />
+                                    <div>
+                                        <h2 className="font-semibold">{item.nama}</h2>
+                                        <p className="text-gray-600">NIUP: {item.niup}</p>
+                                        <p className="text-gray-600">{item.lembaga}</p>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                ) : (
+                    <table className="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="border p-2 w-16">No</th>
+                                <th className="border p-2">Nama</th>
+                                <th className="border p-2">Niup</th>
+                                <th className="border p-2">Lembaga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="4" className="text-center p-4">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </td>
+                                </tr>
+                            ) : anakpegawai.length === 0 ? (
+                                <tr>
+                                    <td colSpan="4" className="text-center p-4">Tidak ada data</td>
+                                </tr>
+                            ) : (
+                                anakpegawai.map((item, index) => (
+                                    <tr key={item.id_anakpegawai} className="text-center">
+                                        <td className="border p-2 w-16">{index + 1}</td>
+                                        <td className="border p-2">{item.nama}</td>
+                                        <td className="border p-2">{item.lembaga}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+
+
+                )}
                 <nav aria-label="Page navigation example" className="flex justify-end  mt-6">
                     <ul className="flex items-center -space-x-px h-10 text-sm">
                         <li>
