@@ -1,10 +1,36 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchWali from '../../logic/logic_menu_data_pokok/Wali';
 import { OrbitProgress } from "react-loading-indicators";
+import Filters from '../../components/Filters';
+import SearchBar from '../../components/SearchBar';
+import { useEffect, useState } from 'react';
 
 
 const Wali = () => {
     const { wali, loading } = useFetchWali();
+    const [showFilters, setShowFilters] = useState(false);
+    const [viewMode, setViewMode] = useState("list");
+
+    useEffect(() => {
+            const savedViewMode = sessionStorage.getItem("viewMode");
+            if (savedViewMode) {
+                setViewMode(savedViewMode);
+            }
+        }, []);
+    
+        const filterOptions = {
+            negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
+            jenisKelamin: ["Pilih Jenis Kelamin", "Laki-laki", "Perempuan"],
+            hidup: ["Pilih Wafat/Hidup", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
+            provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
+            smartcard: ["Smartcard", "Aktif", "Tidak Aktif", "Alumni"],
+            phoneNumber: ["Semua Phone Number", "Tersedia", "Tidak Tersedia"],
+            kabupaten: ["Pilih Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
+            ortuDari: ["Semua Wali Dari"],
+            urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
+            kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
+            urutSecara: ["Urut Secara", "Ascending", "Descending"]
+        };
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
@@ -22,51 +48,17 @@ const Wali = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex flex-wrap justify-between items-center mb-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Negara</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Jenis Kelamin</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Wafat / Hidup</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Provinsi</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Jenis Kelamin Peserta Didik</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Smartcard</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Pilih Kabupaten</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Wali Dari</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Semua Phone Number</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>Kecamatan</option>
-                        </select>
-                        <select className="border border-gray-300 rounded p-2">
-                            <option>25</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                    <span>Total data 10213</span>
-                    <input
-                        className="border border-gray-300 rounded p-2"
-                        placeholder="Cari Wali..."
-                        type="text"
-                    />
-                </div>
+                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <SearchBar
+                    searchTerm={""}
+                    setSearchTerm={""}
+                    totalData={0}
+                    totalFiltered={0}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    toggleView={setViewMode}
+
+                />
+                {viewMode === "list" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
                     {loading ? (
                         <div className="col-span-3 flex justify-center items-center">
@@ -93,6 +85,23 @@ const Wali = () => {
                         ))
                     )}
                 </div>
+                ) : (
+                    <table className="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-100">
+                                <th className="border p-2 w-16">No</th>
+                                <th className="border p-2">NIUP</th>
+                                <th className="border p-2">Nama</th>
+                                <th className="border p-2">Pendidikan Terakhir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colSpan="4" className="text-center p-4">Tidak ada data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     )

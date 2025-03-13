@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalFiltered, toggleView  }) => {
-    const [viewMode, setViewMode] = useState("table");
+    const [viewMode, setViewMode] = useState("list");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");
