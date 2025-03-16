@@ -13,7 +13,7 @@ export default function useFetchPengajar() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let url = `https://localhost:8000/api/v1/list/pengajars?limit=${limit}`;
+        let url = `http://localhost:8000/api/v1/list/pengajars?limit=${limit}`;
         if (currentPage > 1) {
           url += `&page=${currentPage}`;
         }
