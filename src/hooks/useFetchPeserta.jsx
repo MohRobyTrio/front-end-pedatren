@@ -11,6 +11,11 @@ const useFetchPeserta = (url) => {
 
             try {
                 const response = await fetch(url);
+                // const response = await fetch(url, {
+                //     headers: {
+                //       "ngrok-skip-browser-warning": "true", // Tambahkan header ini
+                //     },
+                //   });
                 console.log("Response status:", response.status); // Cek status HTTP
 
                 if (!response.ok) {

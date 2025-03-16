@@ -1,39 +1,76 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export default function useFetchPengajar() {
   const [pengajar, setPengajar] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(""); // 🔍 State untuk pencarian
+  const [searchTerm, setSearchTerm] = useState("");
+  const [limit, setLimit] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalData, setTotalData] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/list-pengajar")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status) {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        let url = `https://09cc-36-73-195-121.ngrok-free.app/api/v1/list/pengajars?limit=${limit}`;
+        if (currentPage > 1) {
+          url += `&page=${currentPage}`;
+        }
+        const response = await fetch(url);
+        // const response = await fetch(url, {
+        //   headers: {
+        //     "ngrok-skip-browser-warning": "true", // Tambahkan header ini
+        //   },
+        // });
+        const data = await response.json();
+
+        if (data.data) {
           setPengajar(data.data);
+          setTotalData(data.total_data);
+          setTotalPages(data.total_pages);
         } else {
           setPengajar([]);
+          setTotalData(0);
+          setTotalPages(1);
         }
-      })
-      .catch((error) => console.error("Error fetching data:", error))
-      .finally(() => setLoading(false));
-  }, []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setPengajar([]);
+        setTotalData(0);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // 🔍 Filter data berdasarkan pencarian
-  const filteredPengajar = pengajar
-    ? pengajar.filter((item) =>
-        (item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-         item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-         item?.nama_pendidikan_terakhir?.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    : [];
+    fetchData();
+  }, [limit, currentPage]);
 
-  return { 
-    pengajar: filteredPengajar, 
-    loading, 
-    searchTerm, 
-    setSearchTerm, 
-    totalData: pengajar.length, // Total sebelum filter
-    totalFiltered: filteredPengajar.length // Total setelah filter
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [limit]);
+
+  const filteredPengajar = useMemo(() => {
+    return pengajar.filter(
+      (item) =>
+        item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, pengajar]);
+
+  return {
+    pengajar: filteredPengajar,
+    loading,
+    searchTerm,
+    setSearchTerm,
+    totalData,
+    totalPages,
+    totalFiltered: filteredPengajar.length,
+    limit,
+    setLimit,
+    currentPage,
+    setCurrentPage,
   };
 }
