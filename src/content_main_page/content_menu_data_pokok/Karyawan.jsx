@@ -1,7 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import useFetchKaryawan from '../../logic/logic_menu_data_pokok/Kayawan';
 import { OrbitProgress } from "react-loading-indicators";
-import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
@@ -60,26 +59,26 @@ const Karyawan = () => {
                 {viewMode === "list" ? (
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
                         {loading ? (
-                        <div className="col-span-3 flex justify-center items-center">
-                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                        </div>
-                    ) : karyawan.length === 0 ? (
-                        <p className="text-center col-span-3">Tidak ada data</p>
-                    ) : (
-                        karyawan.map((item) => (
-                            <div key={item.id_karyawan} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
-                                <img
-                                    alt={item.nama}
-                                    className="w-16 h-16 rounded-full object-cover"
-                                    src={item.image_url}
-                                    width={50}
-                                    height={50}
-                                />
-                                <div>
-                                    <h2 className="font-semibold">NIUP: {item.niup}</h2>
-                                    <p className="text-gray-600">{item.nama}</p>
-                                    <p className="text-gray-600">{item.jabatan}</p>
-                                </div>
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                            </div>
+                        ) : karyawan.length === 0 ? (
+                            <p className="text-center col-span-3">Tidak ada data</p>
+                        ) : (
+                            karyawan.map((item) => (
+                                <div key={item.id_karyawan} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                                    <img
+                                        alt={item.nama}
+                                        className="w-16 h-16 rounded-full object-cover"
+                                        src={item.image_url}
+                                        width={50}
+                                        height={50}
+                                    />
+                                    <div>
+                                        <h2 className="font-semibold">NIUP: {item.niup}</h2>
+                                        <p className="text-gray-600">{item.nama}</p>
+                                        <p className="text-gray-600">{item.jabatan}</p>
+                                    </div>
                                 </div>
                             ))
                         )}
