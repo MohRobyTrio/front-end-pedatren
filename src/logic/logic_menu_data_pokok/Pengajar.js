@@ -13,7 +13,7 @@ export default function useFetchPengajar() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let url = `https://09cc-36-73-195-121.ngrok-free.app/api/v1/list/pengajars?limit=${limit}`;
+        let url = `https://localhost:8000/api/v1/list/pengajars?limit=${limit}`;
         if (currentPage > 1) {
           url += `&page=${currentPage}`;
         }

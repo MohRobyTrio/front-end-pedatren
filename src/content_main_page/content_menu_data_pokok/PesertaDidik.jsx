@@ -6,7 +6,7 @@ import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const PesertaDidik = () => {
-    const { pesertaDidik, loading, error } = useFetchPeserta("https://09cc-36-73-195-121.ngrok-free.app/api/v1/peserta-didik");
+    const { pesertaDidik, loading, error } = useFetchPeserta("https://localhost:8000/api/v1/peserta-didik");
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 

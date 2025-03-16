@@ -5,7 +5,7 @@ const PengurusItem = ({ pengurus }) => {
                 alt="Student Photo"
                 className="w-16 h-16 rounded-full"
                 height={50}
-                src={student.photo || "https://via.placeholder.com/50"}
+                src={pengurus.foto_profil || "https://via.placeholder.com/50"}
                 width={50}
             />
             <div>
