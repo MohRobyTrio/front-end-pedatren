@@ -21,7 +21,7 @@ const Pengajar = () => {
 
     const totalPages = Math.ceil(totalData / limit);
 
-    console.log(totalData);
+    // console.log(totalData);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

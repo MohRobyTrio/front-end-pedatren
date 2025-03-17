@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../config";
 
 const useFetchPengurus = () => {
     const [pengurus, setPengurus] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {

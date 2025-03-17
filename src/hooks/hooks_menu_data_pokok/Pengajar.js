@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { API_BASE_URL } from "../config";
 
 export default function useFetchPengajar() {
   const [pengajar, setPengajar] = useState([]);
@@ -8,7 +9,6 @@ export default function useFetchPengajar() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalData, setTotalData] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
