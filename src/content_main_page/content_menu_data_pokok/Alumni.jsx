@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
-import useFetchPeserta from "../../hooks/useFetchPeserta";
 import AlumniItem from "../../components/AlumniItem";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import useFetchPeserta from "../../hooks/hooks_menu_data_pokok/PesertaDidik";
 
 const Alumni = () => {
     const { pesertaDidik: alumni, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/list-alumni");

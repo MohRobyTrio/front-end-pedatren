@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react";
-import useFetchPeserta from "../../hooks/useFetchPeserta";
 import PengurusItem from "../../components/PengurusItem";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import useFetchPengurus from "../../hooks/hooks_menu_data_pokok/Pengurus";
 
 const Pengurus = () => {
-    const { pesertaDidik: pengurus, loading, error } = useFetchPeserta("http://127.0.0.1:8000/api/v1/list/pengurus");
+    const { pengurus, loading, error } = useFetchPengurus();
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
@@ -69,7 +69,7 @@ const Pengurus = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
-                        {filteredPengurus.length ? filteredPengurus.map((pengurus, index) => <PengurusItem key={index} Pengurus={pengurus} />) : <p className="text-gray-500">Tidak ada data pengurus.</p>}
+                        {filteredPengurus.length ? filteredPengurus.map((pengurus, index) => <PengurusItem key={index} pengurus={pengurus} />) : <p className="text-gray-500">Tidak ada data pengurus.</p>}
                     </div>
                 )}
             </div>

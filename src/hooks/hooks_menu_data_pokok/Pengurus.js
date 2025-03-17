@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 
-const useFetchPeserta = (url) => {
-    const [pesertaDidik, setPesertaDidik] = useState([]);
+const useFetchPengurus = () => {
+    const [pengurus, setPengurus] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const fetchData = async () => {
+            let url = `${API_BASE_URL}/list/pengurus`;
             console.log("Fetching data from:", url); // Cek apakah URL dipanggil
 
             try {
@@ -28,21 +30,21 @@ const useFetchPeserta = (url) => {
                 const data = JSON.parse(text); // Parsing manual agar tahu kalau JSON invalid
                 console.log("Data dari API:", data); // Log hasil parsing JSON
 
-                setPesertaDidik(Array.isArray(data.data) ? data.data : []);
+                setPengurus(Array.isArray(data.data) ? data.data : []);
 
             } catch (err) {
                 console.error("Fetch error:", err); // Log jika ada error
                 setError(err.message);
-                setPesertaDidik([]); 
+                setPengurus([]); 
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [url]);
+    }, [API_BASE_URL]);
 
-    return { pesertaDidik, loading, error };
+    return { pengurus, loading, error };
 };
 
-export default useFetchPeserta;
+export default useFetchPengurus;

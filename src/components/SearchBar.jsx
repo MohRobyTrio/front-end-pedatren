@@ -26,7 +26,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalF
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <div className="flex border rounded-sm overflow-hidden">
-                    <button
+                    <button aria-label="list"
                         className={`p-3 flex items-center justify-center cursor-pointer ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
                             }`}
                         onClick={() => handleViewChange("list")}
@@ -34,7 +34,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalF
                         <i className="fas fa-list text-lg"></i>
                     </button>
 
-                    <button
+                    <button aria-label="table"
                         className={`p-3 flex items-center justify-center cursor-pointer ${viewMode === 'table' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
                             }`}
                         onClick={() => handleViewChange("table")}
@@ -42,14 +42,14 @@ const SearchBar = ({ searchTerm, setSearchTerm, totalData, toggleFilters, totalF
                         <i className="fas fa-table text-lg"></i>
                     </button>
                 </div>
-                <button className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
+                <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
                     <i className="fas fa-filter text-lg"></i>
                 </button>
 
             </div>
 
             <div>
-                <select className="border border-gray-300 rounded p-2 mr-4" value={limit} onChange={toggleLimit}>
+                <select aria-label="limit" className="border border-gray-300 rounded p-2 mr-4" value={limit} onChange={toggleLimit}>
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>

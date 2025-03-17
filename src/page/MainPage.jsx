@@ -157,7 +157,7 @@ const MainPage = () => {
                                 <Link
                                     to={item.link}
                                     className={`flex items-center cursor-pointer ${
-                                        isActive ? "text-blue-500 font-bold" : "text-gray-700"
+                                        isActive ? "text-blue-700 font-bold" : "text-gray-700"
                                     }`}
                                 >
                                     <i className={`${item.icon} mr-2`}></i>
@@ -182,7 +182,7 @@ const MainPage = () => {
                 <Link
                     to={link}
                     className={`flex items-center cursor-pointer ${
-                        isActive ? "text-blue-500 font-bold" : "text-gray-700"
+                        isActive ? "text-blue-700 font-bold" : "text-gray-700"
                     }`}
                     onClick={onClick}
                 >
@@ -342,7 +342,7 @@ const MainPage = () => {
                                     </svg>
                                 </button>
                                 <a href="/" className="flex ms-2 md:me-24">
-                                    <img src="https://storage.googleapis.com/a1aa/image/1dsIGwi4uJ6QEe_oGx13MQ1TbFWwv1BJ682AG_-wBxw.jpg" className="h-8 me-3" alt="Pedatren Logo" />
+                                    <img height="32" width="32" src="https://storage.googleapis.com/a1aa/image/1dsIGwi4uJ6QEe_oGx13MQ1TbFWwv1BJ682AG_-wBxw.jpg" className="h-8 me-3" alt="Pedatren Logo" />
                                     <span
                                         className="self-center text-white text-xl font-semibold sm:text-2xl whitespace-nowrap ">PEDATREN</span>
                                 </a>
@@ -357,7 +357,7 @@ const MainPage = () => {
                                             onClick={toggleDropdownProfil}
                                         >
                                             <span className="sr-only">Open user menu</span>
-                                            <img className="w-10 h-10 rounded-full"
+                                            <img height="40" width="40" className="w-10 h-10 rounded-full"
                                                 src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
                                                 alt="user photo" />
                                         </button>

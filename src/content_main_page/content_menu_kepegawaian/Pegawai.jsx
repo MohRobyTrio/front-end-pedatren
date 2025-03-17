@@ -1,10 +1,10 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import useFetchPegawai from '../../logic/logic_menu_data_pokok/Pegawai';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
+import useFetchPegawai from '../../hooks/hooks_menu_kepegawaian/Pegawai';
 
 
 const Pegawai = () => {

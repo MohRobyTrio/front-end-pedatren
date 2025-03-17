@@ -1,10 +1,10 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import useFetchAnakPegawai from '../../logic/logic_menu_data_pokok/Anakpegawai';
 import { OrbitProgress } from "react-loading-indicators";
 import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
+import useFetchAnakPegawai from '../../hooks/hooks_menu_kepegawaian/Anakpegawai';
 
 
 const AnakPegawai = () => {

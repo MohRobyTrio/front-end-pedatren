@@ -7,6 +7,8 @@ const PesertaItem = ({ student }) => {
                 height={50}
                 src={student.foto_profil || "https://via.placeholder.com/50"}
                 width={50}
+                loading="lazy"
+                type="image/webp"
             />
             <div>
                 <h2 className="font-semibold">{student.nama}</h2> {/*diganti name*/}

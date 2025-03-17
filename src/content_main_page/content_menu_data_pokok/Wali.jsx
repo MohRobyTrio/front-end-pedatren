@@ -1,10 +1,9 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import useFetchWali from '../../logic/logic_menu_data_pokok/Wali';
 import { OrbitProgress } from "react-loading-indicators";
 import Filters from '../../components/Filters';
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
-
+import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
 
 const Wali = () => {
     const { wali, loading } = useFetchWali();

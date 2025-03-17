@@ -1,12 +1,12 @@
 import { useState } from "react";
-import useFetchPeserta from "../../hooks/useFetchPeserta";
+import useFetchPeserta from "../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import PesertaItem from "../../components/PesertaItem";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const PesertaDidik = () => {
-    const { pesertaDidik, loading, error } = useFetchPeserta("http://localhost:8000/api/v1/peserta-didik");
+    const { pesertaDidik, loading, error } = useFetchPeserta();
     const [searchTerm, setSearchTerm] = useState("");
     const [showFilters, setShowFilters] = useState(false);
 
@@ -43,7 +43,7 @@ const PesertaDidik = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Peserta Didik</h1>
                 <div className="flex items-center space-x-2">
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
                     <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
                 </div>
             </div>

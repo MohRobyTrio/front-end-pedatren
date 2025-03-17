@@ -1,9 +1,9 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import useFetchKaryawan from '../../logic/logic_menu_data_pokok/Kayawan';
 import { OrbitProgress } from "react-loading-indicators";
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
+import useFetchKaryawan from '../../hooks/hooks_menu_data_pokok/Kayawan';
 
 
 const Karyawan = () => {

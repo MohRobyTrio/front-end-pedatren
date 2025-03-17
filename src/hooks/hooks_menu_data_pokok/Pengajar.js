@@ -8,12 +8,13 @@ export default function useFetchPengajar() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalData, setTotalData] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let url = `http://localhost:8000/api/v1/list/pengajars?limit=${limit}`;
+        let url = `${API_BASE_URL}/list/pengajars?limit=${limit}`;
         if (currentPage > 1) {
           url += `&page=${currentPage}`;
         }
@@ -45,7 +46,7 @@ export default function useFetchPengajar() {
     };
 
     fetchData();
-  }, [limit, currentPage]);
+  }, [API_BASE_URL, limit, currentPage]);
 
   useEffect(() => {
     setCurrentPage(1);
