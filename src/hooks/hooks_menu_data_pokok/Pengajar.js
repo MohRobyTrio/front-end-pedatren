@@ -46,7 +46,7 @@ export default function useFetchPengajar() {
     };
 
     fetchData();
-  }, [API_BASE_URL, limit, currentPage]);
+  }, [limit, currentPage]);
 
   useEffect(() => {
     setCurrentPage(1);

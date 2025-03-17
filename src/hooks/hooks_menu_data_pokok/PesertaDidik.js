@@ -42,7 +42,7 @@ const useFetchPeserta = () => {
         };
 
         fetchData();
-    }, [API_BASE_URL]);
+    }, []);
 
     return { pesertaDidik, loading, error };
 };

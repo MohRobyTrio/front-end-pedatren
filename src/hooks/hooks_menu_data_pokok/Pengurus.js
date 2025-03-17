@@ -42,7 +42,7 @@ const useFetchPengurus = () => {
         };
 
         fetchData();
-    }, [API_BASE_URL]);
+    }, []);
 
     return { pengurus, loading, error };
 };
