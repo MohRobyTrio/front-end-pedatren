@@ -1,27 +1,10 @@
-// const KehadiranRWS = () => {
-//   return (
-//       <div className="flex-1 pl-6 pt-6 pb-6">
-//           <div className="flex justify-between items-center mb-6">
-//               <h1 className="text-2xl font-bold">Data Kehadiran RWS (Rapat Wali Santri)</h1>
-//           </div>
-//           <div className="bg-white p-6 rounded-lg shadow-md">
-//               <div className="flex flex-wrap items-center mb-4">
-//                   Edit disini
-//               </div>
-//           </div>
-//       </div>
-//   )
-// }
-
-// export default KehadiranRWS;
-
 import { useState } from "react";
 
 
 const KehadiranRWS = () => {
   const [search, setSearch] = useState("");
 
-  const dropdownOptions = {
+  const filterOptions = {
     negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura"],
     provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Tengah", "Jawa Timur"],
     kabupaten: ["Semua Kabupaten", "Bandung", "Semarang", "Surabaya"],
@@ -37,7 +20,7 @@ const KehadiranRWS = () => {
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          {Object.entries(dropdownOptions).map(([key, options]) => (
+          {Object.entries(filterOptions).map(([key, options]) => (
             <select key={key} className="border p-2 rounded">
               {options.map((option) => (
                 <option key={option} value={option}>{option}</option>
