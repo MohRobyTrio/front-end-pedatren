@@ -1,50 +1,84 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { API_BASE_URL } from "../config";
 
 const useFetchPeserta = () => {
     const [pesertaDidik, setPesertaDidik] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [limit, setLimit] = useState(25);
+    const [totalData, setTotalData] = useState(0);
+    const [totalPages, setTotalPages] = useState(1); // Tambahkan total halaman
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
-            let url = `${API_BASE_URL}/peserta-didik`;
-            console.log("Fetching data from:", url); // Cek apakah URL dipanggil
+            setLoading(true);
+            setError(null);
+
+            const url = `${API_BASE_URL}/peserta-didik?limit=${limit}&page=${currentPage}`;
+            console.log("Fetching data from:", url);
 
             try {
                 const response = await fetch(url);
-                // const response = await fetch(url, {
-                //     headers: {
-                //       "ngrok-skip-browser-warning": "true", // Tambahkan header ini
-                //     },
-                //   });
-                console.log("Response status:", response.status); // Cek status HTTP
+
+                console.log("Response status:", response.status);
 
                 if (!response.ok) {
+                    setTotalData(0);
+                    setTotalPages(1);
                     throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
                 }
 
-                const text = await response.text(); // Ambil respons sebagai teks mentah
-                console.log("Raw Response:", text); // Log untuk cek apakah JSON valid
+                const text = await response.text();
+                console.log("Raw Response:", text);
 
-                const data = JSON.parse(text); // Parsing manual agar tahu kalau JSON invalid
-                console.log("Data dari API:", data); // Log hasil parsing JSON
+                const data = JSON.parse(text);
+                console.log("Data dari API:", data);
 
                 setPesertaDidik(Array.isArray(data.data) ? data.data : []);
+                setTotalData(data.total_data || 0);
+                setTotalPages(data.total_pages || 1); // Ambil total halaman dari API
+                setCurrentPage(data.current_page || 1); // Pastikan currentPage sesuai dengan API
 
             } catch (err) {
-                console.error("Fetch error:", err); // Log jika ada error
+                console.error("Fetch error:", err);
                 setError(err.message);
-                setPesertaDidik([]); 
+                setPesertaDidik([]);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [currentPage, limit]);
 
-    return { pesertaDidik, loading, error };
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
+
+    const filteredPesertaDidik = useMemo(() => {
+        return pesertaDidik.filter(
+            (item) =>
+                item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [searchTerm, pesertaDidik]);
+
+    return {
+        pesertaDidik: filteredPesertaDidik,
+        loading,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages, // Kembalikan total halaman dari API
+        currentPage,
+        setCurrentPage
+    };
 };
 
 export default useFetchPeserta;

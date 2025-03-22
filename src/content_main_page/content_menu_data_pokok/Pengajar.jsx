@@ -5,6 +5,7 @@ import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
 import Filters from '../../components/Filters';
 import useFetchPengajar from '../../hooks/hooks_menu_data_pokok/Pengajar';
+import Pagination from '../../components/Pagination';
 
 
 const Pengajar = () => {
@@ -138,102 +139,7 @@ const Pengajar = () => {
                     </table>
                 )}
 
-                <nav aria-label="Page navigation example" className="flex justify-end mt-6">
-                    <ul className="flex items-center -space-x-px h-10 text-sm">
-                        {/* Tombol Previous */}
-                        <li>
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                                    }`}
-                            >
-                                <span className="sr-only">Previous</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 1 1 5l4 4"
-                                    />
-                                </svg>
-                            </button>
-                        </li>
-
-                        {/* Nomor Halaman */}
-                        {totalPages > 5
-                            ? (() => {
-                                let startPage = Math.max(1, currentPage - 2);
-                                let endPage = Math.min(totalPages, currentPage + 2);
-
-                                // Jika halaman pertama atau kedua dipilih, tampilkan 1 - 5
-                                if (currentPage <= 2) {
-                                    startPage = 1;
-                                    endPage = 5;
-                                }
-                                // Jika halaman terakhir atau sebelum terakhir dipilih, tampilkan (totalPages - 4) sampai totalPages
-                                else if (currentPage >= totalPages - 1) {
-                                    startPage = totalPages - 4;
-                                    endPage = totalPages;
-                                }
-
-                                return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
-                                    <li key={page}>
-                                        <button
-                                            onClick={() => handlePageChange(page)}
-                                            className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === page
-                                                    ? "z-10 text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
-                                                    : "text-gray-500 bg-white"
-                                                }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    </li>
-                                ));
-                            })()
-                            : Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                                <li key={page}>
-                                    <button
-                                        onClick={() => handlePageChange(page)}
-                                        className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${currentPage === page
-                                                ? "z-10 text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
-                                                : "text-gray-500 bg-white"
-                                            }`}
-                                    >
-                                        {page}
-                                    </button>
-                                </li>
-                            ))}
-
-                        {/* Tombol Next */}
-                        <li>
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-                                    }`}
-                            >
-                                <span className="sr-only">Next</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m1 9 4-4-4-4" />
-                                </svg>
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+                <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
             </div>
         </div>
     )

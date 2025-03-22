@@ -18,6 +18,7 @@ export default function useFetchPengajar() {
         if (currentPage > 1) {
           url += `&page=${currentPage}`;
         }
+        console.log("Fetching data from:", url);
         const response = await fetch(url);
         // const response = await fetch(url, {
         //   headers: {
