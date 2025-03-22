@@ -16,7 +16,10 @@ const useFetchPeserta = () => {
             setLoading(true);
             setError(null);
 
-            const url = `${API_BASE_URL}/peserta-didik?limit=${limit}&page=${currentPage}`;
+            let url = `${API_BASE_URL}/peserta-didik?limit=${limit}`;
+            // if (currentPage > 1) {
+            //     url += `&page=${currentPage}`;
+            //   }
             console.log("Fetching data from:", url);
 
             try {
@@ -62,7 +65,10 @@ const useFetchPeserta = () => {
             (item) =>
                 item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase())
+                item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item["nik/nopassport"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.wilayah?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item?.kota_asal?.toLowerCase().includes(searchTerm.toLowerCase()) 
         );
     }, [searchTerm, pesertaDidik]);
 

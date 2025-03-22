@@ -8,7 +8,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
 
 const PesertaDidik = () => {
-    const { pesertaDidik, loading, searchTerm, setSearchTerm, error, limit, setLimit, totalData, totalPages, currentPage, setCurrentPage } = useFetchPeserta();
+    const { pesertaDidik, loading, searchTerm, setSearchTerm, error, limit, setLimit, totalData, currentPage, setCurrentPage } = useFetchPeserta();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -19,7 +19,7 @@ const PesertaDidik = () => {
         }
     }, []);
 
-    // const totalPages = Math.ceil(totalData / limit);
+    const totalPages = Math.ceil(totalData / limit);
 
     // console.log(totalData);
 
