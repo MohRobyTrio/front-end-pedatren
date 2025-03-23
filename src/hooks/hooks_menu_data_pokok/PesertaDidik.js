@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 
-const useFetchPeserta = () => {
+const useFetchPeserta = (filters) => {
     const [pesertaDidik, setPesertaDidik] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -12,14 +12,43 @@ const useFetchPeserta = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
+        console.log("Filters updated:", filters); // Debugging
         const fetchData = async () => {
             setLoading(true);
             setError(null);
 
             let url = `${API_BASE_URL}/peserta-didik?limit=${limit}`;
-            // if (currentPage > 1) {
-            //     url += `&page=${currentPage}`;
-            //   }
+            if (currentPage > 1) {
+                url += `&page=${currentPage}`;
+              }
+
+            if (searchTerm) {
+                url += `&search=${encodeURIComponent(searchTerm)}`;
+            }
+            if (filters?.phoneNumber) {
+                url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
+            }
+            if (filters?.wargaPesantren) {
+                url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`
+            }
+            if (filters?.status) {
+                url += `&status=${encodeURIComponent(filters.status)}`
+            }
+            if (filters?.jenisKelamin) {
+                url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`
+            }
+            if (filters?.smartcard) {
+                url += `&smartcard=${encodeURIComponent(filters.smartcard)}`
+            }
+            if (filters?.pemberkasan) {
+                url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`
+            }
+            if (filters?.urutBerdasarkan) {
+                url += `&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`
+            }
+            if (filters?.urutSecara) {
+                url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`
+            }
             console.log("Fetching data from:", url);
 
             try {
@@ -30,11 +59,11 @@ const useFetchPeserta = () => {
                 if (!response.ok) {
                     setTotalData(0);
                     setTotalPages(1);
-                    throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
+                    throw new Error(`Gagal mengambil data: ${response.status} ${response.message}`);
                 }
 
                 const text = await response.text();
-                console.log("Raw Response:", text);
+                // console.log("Raw Response:", text);
 
                 const data = JSON.parse(text);
                 console.log("Data dari API:", data);
@@ -54,26 +83,27 @@ const useFetchPeserta = () => {
         };
 
         fetchData();
-    }, [currentPage, limit]);
+    }, [currentPage, filters, limit, searchTerm]);
 
     useEffect(() => {
         setCurrentPage(1);
     }, [limit]);
 
-    const filteredPesertaDidik = useMemo(() => {
-        return pesertaDidik.filter(
-            (item) =>
-                item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item["nik/nopassport"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item?.wilayah?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item?.kota_asal?.toLowerCase().includes(searchTerm.toLowerCase()) 
-        );
-    }, [searchTerm, pesertaDidik]);
+    // const filteredPesertaDidik = useMemo(() => {
+    //     return pesertaDidik.filter(
+    //         (item) =>
+    //             item?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             item?.niup?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             item?.lembaga?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             item["nik/nopassport"]?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             item?.wilayah?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //             item?.kota_asal?.toLowerCase().includes(searchTerm.toLowerCase()) 
+    //     );
+    // }, [searchTerm, pesertaDidik]);
 
     return {
-        pesertaDidik: filteredPesertaDidik,
+        // pesertaDidik: filteredPesertaDidik,
+        pesertaDidik,
         loading,
         searchTerm,
         setSearchTerm,

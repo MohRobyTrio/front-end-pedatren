@@ -8,7 +8,17 @@ import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
 
 const PesertaDidik = () => {
-    const { pesertaDidik, loading, searchTerm, setSearchTerm, error, limit, setLimit, totalData, currentPage, setCurrentPage } = useFetchPeserta();
+    const [filters, setFilters] = useState({
+        phoneNumber: "",
+        wargaPesantren: "",
+        status: "",
+        jenisKelamin: "",
+        smartcard: "",
+        pemberkasan: "",
+        urutBerdasarkan: "",
+        urutSecara: "",
+    })
+    const { pesertaDidik, loading, searchTerm, setSearchTerm, error, limit, setLimit, totalData, currentPage, setCurrentPage } = useFetchPeserta(filters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -30,25 +40,153 @@ const PesertaDidik = () => {
     };
 
     const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
-        wilayah: ["Semua Wilayah", "Wilayah Utara", "Wilayah Selatan", "Wilayah Timur", "Wilayah Barat"],
-        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
-        blok: ["Semua Blok", "Blok A", "Blok B", "Blok C", "Blok D"],
-        jurusan: ["Semua Jurusan", "IPA", "IPS", "Bahasa", "Agama", "Teknik"],
-        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
-        kamar: ["Semua Kamar", "Kamar 101", "Kamar 102", "Kamar 103"],
-        kelas: ["Semua Kelas", "Kelas 1", "Kelas 2", "Kelas 3"],
-        angkatanPelajar: ["Semua Angkatan Pelajar", "2020", "2021", "2022", "2023"],
-        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
-        rombel: ["Semua Rombel", "Rombel 1", "Rombel 2", "Rombel 3"],
-        angkatanSantri: ["Semua Angkatan Santri", "2018", "2019", "2020", "2021"],
-        wargaPesantren: ["Warga Pesantren", "Santri Mukim", "Santri Non-Mukim"],
-        smartcard: ["Smartcard", "Ada", "Tidak Ada"],
-        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
-        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
-        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+        negara: [
+            { label: "Semua Negara", value: "" },
+            { label: "Indonesia", value: "id" },
+            { label: "Malaysia", value: "my" },
+            { label: "Singapura", value: "sg" },
+            { label: "Brunei", value: "bn" },
+            { label: "Thailand", value: "th" }
+        ],
+        wilayah: [
+            { label: "Semua Wilayah", value: "" },
+            { label: "Wilayah Utara", value: "north" },
+            { label: "Wilayah Selatan", value: "south" },
+            { label: "Wilayah Timur", value: "east" },
+            { label: "Wilayah Barat", value: "west" }
+        ],
+        lembaga: [
+            { label: "Semua Lembaga", value: "" },
+            { label: "Madrasah", value: "madrasah" },
+            { label: "Pesantren", value: "pesantren" },
+            { label: "Universitas", value: "university" },
+            { label: "Sekolah", value: "school" }
+        ],
+        provinsi: [
+            { label: "Semua Provinsi", value: "" },
+            { label: "Jawa Barat", value: "jabar" },
+            { label: "Jawa Timur", value: "jatim" },
+            { label: "Jawa Tengah", value: "jateng" },
+            { label: "DKI Jakarta", value: "jakarta" }
+        ],
+        blok: [
+            { label: "Semua Blok", value: "" },
+            { label: "Blok A", value: "blok_a" },
+            { label: "Blok B", value: "blok_b" },
+            { label: "Blok C", value: "blok_c" },
+            { label: "Blok D", value: "blok_d" }
+        ],
+        jurusan: [
+            { label: "Semua Jurusan", value: "" },
+            { label: "IPA", value: "ipa" },
+            { label: "IPS", value: "ips" },
+            { label: "Bahasa", value: "bahasa" },
+            { label: "Agama", value: "agama" },
+            { label: "Teknik", value: "teknik" }
+        ],
+        kabupaten: [
+            { label: "Semua Kabupaten", value: "" },
+            { label: "Bandung", value: "bandung" },
+            { label: "Surabaya", value: "surabaya" },
+            { label: "Semarang", value: "semarang" },
+            { label: "Medan", value: "medan" }
+        ],
+        // Sudah
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        // Sudah
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Santri", value: "santri" },
+            { label: "Santri Non Pelajar", value: "santri non pelajar" },
+            { label: "Pelajar", value: "pelajar" },
+            { label: "Pelajar Non Santri", value: "pelajar non santri" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+        ],
+        kamar: [
+            { label: "Semua Kamar", value: "" },
+            { label: "Kamar 101", value: "101" },
+            { label: "Kamar 102", value: "102" },
+            { label: "Kamar 103", value: "103" }
+        ],
+        kelas: [
+            { label: "Semua Kelas", value: "" },
+            { label: "Kelas 1", value: "kelas_1" },
+            { label: "Kelas 2", value: "kelas_2" },
+            { label: "Kelas 3", value: "kelas_3" }
+        ],
+        angkatanPelajar: [
+            { label: "Semua Angkatan Pelajar", value: "" },
+            { label: "2020", value: "2020" },
+            { label: "2021", value: "2021" },
+            { label: "2022", value: "2022" },
+            { label: "2023", value: "2023" }
+        ],
+        kecamatan: [
+            { label: "Semua Kecamatan", value: "" },
+            { label: "Kecamatan A", value: "kec_a" },
+            { label: "Kecamatan B", value: "kec_b" },
+            { label: "Kecamatan C", value: "kec_c" }
+        ],
+        rombel: [
+            { label: "Semua Rombel", value: "" },
+            { label: "Rombel 1", value: "rombel_1" },
+            { label: "Rombel 2", value: "rombel_2" },
+            { label: "Rombel 3", value: "rombel_3" }
+        ],
+        angkatanSantri: [
+            { label: "Semua Angkatan Santri", value: "" },
+            { label: "2018", value: "2018" },
+            { label: "2019", value: "2019" },
+            { label: "2020", value: "2020" },
+            { label: "2021", value: "2021" }
+        ],
+        // Sudah
+        wargaPesantren: [
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" }
+        ],
+        // Sudah
+        smartcard: [
+            { label: "Smartcard", value: "" },
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        ],
+        // Sudah
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ],
+        // Sudah
+        pemberkasan: [
+            { label: "Pemberkasan", value: "" },
+            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+            { label: "Tidak Ada KK", value: "tidak ada kk" },
+            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+        ],
+        // Sudah
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIUP", value: "niup" },
+            { label: "Angkatan", value: "angkatan" },
+            { label: "Jenis Kelamin", value: "jenis kelamin" },
+            { label: "Tempat Lahir", value: "tempat lahir" }
+        ],
+        // Sudah
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" }
+        ]
     };
 
     return (
@@ -61,7 +199,7 @@ const PesertaDidik = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <Filters showFilters={showFilters} filterOptions={filterOptions} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} />
 
                 <SearchBar
                     searchTerm={searchTerm}
@@ -69,7 +207,7 @@ const PesertaDidik = () => {
                     totalData={totalData}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={0}
+                    totalFiltered={pesertaDidik.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />
@@ -111,7 +249,7 @@ const PesertaDidik = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-4">
+                                    <td colSpan="9" className="text-center p-4">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </td>
                                 </tr>
@@ -138,7 +276,9 @@ const PesertaDidik = () => {
                     </table>
                 )}
 
-                <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
             </div>
         </div>
     );
