@@ -41,6 +41,7 @@ import TabKhadam from '../content_main_page/content_tab_formulir/TabKhadam';
 import TabBerkas from '../content_main_page/content_tab_formulir/TabBerkas';
 import TabWarPes from '../content_main_page/content_tab_formulir/TabWarPres';
 import TabProgress from '../content_main_page/content_tab_formulir/TabProgress';
+import NotFound from './NotFound';
 
 
 const MainPage = () => {
@@ -481,6 +482,8 @@ const MainPage = () => {
                             {subPesertaDidik.map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />
                             ))}
+
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </div>
                 </div>

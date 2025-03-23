@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination';
 
 
 const Pengajar = () => {
-    const { pengajar, loading, searchTerm, setSearchTerm, totalData, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar();
+    const { pengajar, loading, searchTerm, setSearchTerm, totalDataPengajar, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -20,7 +20,7 @@ const Pengajar = () => {
         }
     }, []);
 
-    const totalPages = Math.ceil(totalData / limit);
+    const totalPages = Math.ceil(totalDataPengajar / limit);
 
     // console.log(totalData);
 
@@ -70,7 +70,7 @@ const Pengajar = () => {
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
-                    totalData={totalData}
+                    totalData={totalDataPengajar}
                     totalFiltered={totalFiltered}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}

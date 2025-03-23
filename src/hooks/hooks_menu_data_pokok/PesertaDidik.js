@@ -6,7 +6,7 @@ const useFetchPeserta = (filters) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
-    const [totalData, setTotalData] = useState(0);
+    const [totalDataPesertaDidik, setTotalDataPesertaDidik] = useState(0);
     const [totalPages, setTotalPages] = useState(1); // Tambahkan total halaman
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -57,7 +57,7 @@ const useFetchPeserta = (filters) => {
                 console.log("Response status:", response.status);
 
                 if (!response.ok) {
-                    setTotalData(0);
+                    setTotalDataPesertaDidik(0);
                     setTotalPages(1);
                     throw new Error(`Gagal mengambil data: ${response.status} ${response.message}`);
                 }
@@ -69,7 +69,7 @@ const useFetchPeserta = (filters) => {
                 console.log("Data dari API:", data);
 
                 setPesertaDidik(Array.isArray(data.data) ? data.data : []);
-                setTotalData(data.total_data || 0);
+                setTotalDataPesertaDidik(data.total_data || 0);
                 setTotalPages(data.total_pages || 1); // Ambil total halaman dari API
                 setCurrentPage(data.current_page || 1); // Pastikan currentPage sesuai dengan API
 
@@ -110,7 +110,7 @@ const useFetchPeserta = (filters) => {
         error,
         limit,
         setLimit,
-        totalData,
+        totalDataPesertaDidik,
         totalPages, // Kembalikan total halaman dari API
         currentPage,
         setCurrentPage

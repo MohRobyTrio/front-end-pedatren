@@ -7,7 +7,7 @@ export default function useFetchPengajar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [limit, setLimit] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalData, setTotalData] = useState(0);
+  const [totalDataPengajar, setTotalDataPengajar] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
@@ -29,17 +29,17 @@ export default function useFetchPengajar() {
 
         if (data.data) {
           setPengajar(data.data);
-          setTotalData(data.total_data);
+          setTotalDataPengajar(data.total_data);
           setTotalPages(data.total_pages);
         } else {
           setPengajar([]);
-          setTotalData(0);
+          setTotalDataPengajar(0);
           setTotalPages(1);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
         setPengajar([]);
-        setTotalData(0);
+        setTotalDataPengajar(0);
         setTotalPages(1);
       } finally {
         setLoading(false);
@@ -67,7 +67,7 @@ export default function useFetchPengajar() {
     loading,
     searchTerm,
     setSearchTerm,
-    totalData,
+    totalDataPengajar,
     totalPages,
     totalFiltered: filteredPengajar.length,
     limit,
