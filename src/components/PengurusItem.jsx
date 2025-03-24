@@ -1,8 +1,8 @@
 const PengurusItem = ({ pengurus }) => {
     return (
-        <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+        <div className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
             <img
-                alt="Student Photo"
+                alt="Pengurus Photo"
                 className="w-20 h-24 object-cover"
                 height={50}
                 src={pengurus?.foto_profil || "https://via.placeholder.com/50"}

@@ -17,7 +17,7 @@ const useFetchPeserta = (filters) => {
             setLoading(true);
             setError(null);
 
-            let url = `${API_BASE_URL}/peserta-didik?limit=${limit}`;
+            let url = `${API_BASE_URL}data-pokok/peserta-didik?limit=${limit}`;
             if (currentPage > 1) {
                 url += `&page=${currentPage}`;
               }
