@@ -16,7 +16,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen }) => {
                             </svg>
                         </button>
                         <a href="/" className="flex ms-2 md:me-24">
-                            <img height="32" width="32" src="https://storage.googleapis.com/a1aa/image/1dsIGwi4uJ6QEe_oGx13MQ1TbFWwv1BJ682AG_-wBxw.jpg" className="h-8 me-3" alt="Pedatren Logo" />
+                            <img height="32" width="32" src="https://play-lh.googleusercontent.com/AfPIZgh2gk3qe92PeBz9TLcQ6HzXWbScrgWGa7tr-pXS0tXm_g1duxHNBsDvlh-Q_Q=w480-h960-rw" className="h-8 me-3" alt="Pedatren Logo" />
                             <span
                                 className="self-center text-white text-xl font-semibold sm:text-2xl whitespace-nowrap ">PEDATREN</span>
                         </a>

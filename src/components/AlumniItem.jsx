@@ -5,7 +5,7 @@ const AlumniItem = ({ alumni }) => {
                 alt="Student Photo"
                 className="w-16 h-16 rounded-full"
                 height={50}
-                src={student.photo || "https://via.placeholder.com/50"}
+                src={alumni.photo || "https://via.placeholder.com/50"}
                 width={50}
             />
             <div>
