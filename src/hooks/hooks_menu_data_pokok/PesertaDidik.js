@@ -49,6 +49,27 @@ const useFetchPeserta = (filters) => {
             if (filters?.urutSecara) {
                 url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`
             }
+            if (filters?.negara && filters.negara !== "Semua Negara") {
+                url += `&negara=${encodeURIComponent(filters.negara)}`;
+            }
+            if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") {
+                url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
+            }
+            if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") {
+                url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
+            }
+            if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") {
+                url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+            }
+            if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") {
+                url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
+            }
+            if (filters?.blok && filters.blok !== "Semua Blok") {
+                url += `&blok=${encodeURIComponent(filters.blok)}`;
+            }
+            if (filters?.kamar && filters.kamar !== "Semua Kamar") {
+                url += `&kamar=${encodeURIComponent(filters.kamar)}`;
+            }
             console.log("Fetching data from:", url);
 
             try {
