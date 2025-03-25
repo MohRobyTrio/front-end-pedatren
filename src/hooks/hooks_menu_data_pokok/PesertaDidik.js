@@ -124,7 +124,18 @@ const useFetchPeserta = (filters) => {
 
     return {
         // pesertaDidik: filteredPesertaDidik,
-        pesertaDidik,
+        pesertaDidik: pesertaDidik.map(item => ({
+            id: item.tampilan_awal.id,
+            nik: item.tampilan_awal["nik/nopassport"],
+            nama: item.tampilan_awal.nama,
+            niup: item.tampilan_awal.niup,
+            wilayah: item.tampilan_awal.wilayah,
+            lembaga: item.tampilan_awal.lembaga,
+            kota_asal: item.tampilan_awal.kota_asal,
+            tgl_input: item.tampilan_awal.tgl_input,
+            tgl_update: item.tampilan_awal.tgl_update,
+            foto_profil: item.tampilan_awal.foto_profil
+        })),
         loading,
         searchTerm,
         setSearchTerm,

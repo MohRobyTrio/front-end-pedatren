@@ -261,7 +261,7 @@ const PesertaDidik = () => {
                                         <tr key={item.id_pengajar || index} className="text-center">
                                             <td className="border p-2 w-16">{index + 1 || "-"}</td>
                                             <td className="border p-2">{item.niup || "-"}</td>
-                                            <td className="border p-2">{item["nik/nopassport"] || "-"}</td>
+                                            <td className="border p-2">{item.nik || "-"}</td>
                                             <td className="border p-2">{item.nama}</td>
                                             <td className="border p-2">{item.lembaga || "-"}</td>
                                             <td className="border p-2">{item.wilayah || "-"}</td>
