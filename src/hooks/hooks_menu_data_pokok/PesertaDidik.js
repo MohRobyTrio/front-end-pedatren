@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config";
 
 const useFetchPeserta = (filters) => {
     const [pesertaDidik, setPesertaDidik] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingPesertaDidik, setLoadingPesertaDidik] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalDataPesertaDidik, setTotalDataPesertaDidik] = useState(0);
@@ -14,7 +14,7 @@ const useFetchPeserta = (filters) => {
     useEffect(() => {
         console.log("Filters updated:", filters); // Debugging
         const fetchData = async () => {
-            setLoading(true);
+            setLoadingPesertaDidik(true);
             setError(null);
 
             let url = `${API_BASE_URL}data-pokok/peserta-didik?limit=${limit}`;
@@ -70,6 +70,24 @@ const useFetchPeserta = (filters) => {
             if (filters?.kamar && filters.kamar !== "Semua Kamar") {
                 url += `&kamar=${encodeURIComponent(filters.kamar)}`;
             }
+            if (filters?.angkatanPelajar) {
+                url += `&angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`;
+            }
+            if (filters?.angkatanSantri) {
+                url += `&angkatan_santri=${encodeURIComponent(filters.angkatanSantri)}`;
+            }
+            if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") {
+                url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+            }
+            if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") {
+                url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
+            }
+            if (filters?.kelas && filters.kelas !== "Semua Kelas") {
+                url += `&kelas=${encodeURIComponent(filters.kelas)}`;
+            }
+            if (filters?.rombel && filters.rombel !== "Semua Rombel") {
+                url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+            }
             console.log("Fetching data from:", url);
 
             try {
@@ -99,7 +117,7 @@ const useFetchPeserta = (filters) => {
                 setError(err.message);
                 setPesertaDidik([]);
             } finally {
-                setLoading(false);
+                setLoadingPesertaDidik(false);
             }
         };
 
@@ -136,7 +154,7 @@ const useFetchPeserta = (filters) => {
             tgl_update: item.tampilan_awal.tgl_update,
             foto_profil: item.tampilan_awal.foto_profil
         })),
-        loading,
+        loadingPesertaDidik,
         searchTerm,
         setSearchTerm,
         error,

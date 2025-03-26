@@ -8,6 +8,8 @@ import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 
 const PesertaDidik = () => {
     const [filters, setFilters] = useState({
@@ -25,11 +27,15 @@ const PesertaDidik = () => {
         kecamatan: "",
         wilayah: "",
         blok: "",
-        kamar: ""
+        kamar: "",
+        angkatanPelajar: "",
+        angkatanSantri: ""
     })
     
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+    const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -38,7 +44,12 @@ const PesertaDidik = () => {
 
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
     const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
-    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
+    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";    
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
+    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
+    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
+    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
 
     // Gabungkan filter tambahan sebelum dipakai
     const updatedFilters = useMemo(() => ({
@@ -49,10 +60,14 @@ const PesertaDidik = () => {
         kecamatan: kecamatanTerpilih,
         wilayah: wilayahTerpilih,
         blok: blokTerpilih,
-        kamar: kamarTerpilih
-    }), [blokTerpilih, filters, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih, wilayahTerpilih]);
+        kamar: kamarTerpilih,
+        lembaga: lembagaTerpilih,
+        jurusan: jurusanTerpilih,
+        kelas: kelasTerpilih,
+        rombel: rombelTerpilih
+    }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
     
-    const { pesertaDidik, loading, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
+    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -73,36 +88,6 @@ const PesertaDidik = () => {
         }
     };
 
-    const lain = {
-        lembaga: [
-            { label: "Semua Lembaga", value: "" },
-            { label: "Madrasah", value: "madrasah" },
-            { label: "Pesantren", value: "pesantren" },
-            { label: "Universitas", value: "university" },
-            { label: "Sekolah", value: "school" }
-        ],
-
-        jurusan: [
-            { label: "Semua Jurusan", value: "" },
-            { label: "IPA", value: "ipa" },
-            { label: "IPS", value: "ips" },
-            { label: "Bahasa", value: "bahasa" },
-            { label: "Agama", value: "agama" },
-            { label: "Teknik", value: "teknik" }
-        ],
-        kelas: [
-            { label: "Semua Kelas", value: "" },
-            { label: "Kelas 1", value: "kelas_1" },
-            { label: "Kelas 2", value: "kelas_2" },
-            { label: "Kelas 3", value: "kelas_3" }
-        ],
-        rombel: [
-            { label: "Semua Rombel", value: "" },
-            { label: "Rombel 1", value: "rombel_1" },
-            { label: "Rombel 2", value: "rombel_2" },
-            { label: "Rombel 3", value: "rombel_3" }
-        ]
-    }
     const filter4 = {
         // Sudah
         jenisKelamin: [
@@ -120,22 +105,9 @@ const PesertaDidik = () => {
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
         
-        angkatanPelajar: [
-            { label: "Semua Angkatan Pelajar", value: "" },
-            { label: "2020", value: "2020" },
-            { label: "2021", value: "2021" },
-            { label: "2022", value: "2022" },
-            { label: "2023", value: "2023" }
-        ],
-
+        angkatanPelajar: menuAngkatanPelajar,
         
-        angkatanSantri: [
-            { label: "Semua Angkatan Santri", value: "" },
-            { label: "2018", value: "2018" },
-            { label: "2019", value: "2019" },
-            { label: "2020", value: "2020" },
-            { label: "2021", value: "2021" }
-        ]
+        angkatanSantri: menuAngkatanSantri
     }
     const filter5 = {
         // Sudah
@@ -168,7 +140,9 @@ const PesertaDidik = () => {
             { label: "Urut Secara", value: "" },
             { label: "A-Z / 0-9 (Ascending)", value: "asc" },
             { label: "Z-A / 9-0 (Descending)", value: "desc" }
-        ],
+        ]
+    }
+    const filter6 ={
         // Sudah
         smartcard: [
             { label: "Smartcard", value: "" },
@@ -196,9 +170,10 @@ const PesertaDidik = () => {
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara}/>
                     <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
-                    <Filters showFilters={showFilters} filterOptions={lain} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                 </div>
 
                 <SearchBar
@@ -220,7 +195,7 @@ const PesertaDidik = () => {
                 ) : (
                     viewMode === "list" ? (
                         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                            {loading ? (
+                            {loadingPesertaDidik ? (
                                 <div className="col-span-3 flex justify-center items-center">
                                     <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                 </div>
@@ -246,7 +221,7 @@ const PesertaDidik = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {loading ? (
+                                {loadingPesertaDidik ? (
                                     <tr>
                                         <td colSpan="9" className="text-center p-4">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />

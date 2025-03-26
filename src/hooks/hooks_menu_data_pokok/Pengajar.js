@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config";
 
 export default function useFetchPengajar() {
   const [pengajar, setPengajar] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingPengajar, setLoadingPengajar] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [limit, setLimit] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,9 +12,9 @@ export default function useFetchPengajar() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoadingPengajar(true);
       try {
-        let url = `${API_BASE_URL}/list/pengajars?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/list/pengajars?limit=${limit}`;
         if (currentPage > 1) {
           url += `&page=${currentPage}`;
         }
@@ -42,7 +42,7 @@ export default function useFetchPengajar() {
         setTotalDataPengajar(0);
         setTotalPages(1);
       } finally {
-        setLoading(false);
+        setLoadingPengajar(false);
       }
     };
 
@@ -64,7 +64,7 @@ export default function useFetchPengajar() {
 
   return {
     pengajar: filteredPengajar,
-    loading,
+    loadingPengajar,
     searchTerm,
     setSearchTerm,
     totalDataPengajar,

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 const DropdownWilayah = () => {
     const [data, setData] = useState([]);
@@ -6,7 +7,7 @@ const DropdownWilayah = () => {
     const [selectedWilayah, setselectedWilayah] = useState({ wilayah: "", blok: "", kamar: "" });
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/menu-wilayah")
+        fetch(`${API_BASE_URL}menu-wilayah`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data.wilayah);
@@ -16,7 +17,15 @@ const DropdownWilayah = () => {
                     kamar: [{ value: "", label: "Semua Kamar" }]
                 });
             })
-            .catch((error) => console.error("Error fetching data:", error));
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+                // Jika fetch gagal, tetap set "Semua Negara"
+                setFilterWilayah({
+                    wilayah: [{ value: "", label: "Semua Wilayah" }],
+                    blok: [{ value: "", label: "Semua Blok" }],
+                    kamar: [{ value: "", label: "Semua Kamar" }]
+                });
+            });
     }, []);
 
     const handleFilterChangeWilayah = (newFilter) => {

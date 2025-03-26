@@ -7,15 +7,23 @@ import { Link } from "react-router-dom";
 import useFetchPengajar from "../hooks/hooks_menu_data_pokok/Pengajar";
 
 const Dashboard = () => {
-    const { totalDataPesertaDidik } = useFetchPeserta();
-    const { totalDataPengajar } = useFetchPengajar();
+    const { loadingPesertaDidik, totalDataPesertaDidik } = useFetchPeserta();
+    const { loadingPengajar, totalDataPengajar } = useFetchPengajar();
+
+    const Load = () => {
+        return (
+            <div className="col-span-3 flex justify-left items-left p-1">
+                <i className="fas fa-spinner fa-spin text-2xl text-white"></i>
+            </div>
+        )
+    }
 
     const stats = [
-        { label: "Total Peserta Didik", value: totalDataPesertaDidik, color: "bg-green-500", icon: "📝", link: "/peserta-didik" },
+        { label: "Total Peserta Didik", value: loadingPesertaDidik ? <Load /> : totalDataPesertaDidik, color: "bg-green-500", icon: "📝", link: "/peserta-didik" },
         { label: "Total Santri", value: 7297, color: "bg-yellow-500", icon: "👥", link: "/peserta-didik/santri" },
         { label: "Total Pelajar", value: 9834, color: "bg-red-500", icon: "📚", link: "/peserta-didik/pelajar" },
         { label: "Total Wali Asuh", value: 552, color: "bg-blue-500", icon: "📖", link: "/wali-asuh" },
-        { label: "Total Pengajar", value: totalDataPengajar, color: "bg-gray-500", icon: "👨‍🏫", link: "/pengajar" },
+        { label: "Total Pengajar", value: loadingPengajar ? <Load /> : totalDataPengajar, color: "bg-gray-500", icon: "👨‍🏫", link: "/pengajar" },
         { label: "Total Pengurus", value: 333, color: "bg-pink-500", icon: "✍️", link: "/pengurus" },
         { label: "Total Karyawan", value: 288, color: "bg-green-700", icon: "👨🏻‍💻", link: "/peserta-didik" },
         { label: "Total Pegawai", value: 906, color: "bg-yellow-700", icon: "👨‍💼", link: "/karyawan" },

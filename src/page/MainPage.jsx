@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Outlet } from "react-router-dom";
+// import { Navigate, Outlet } from "react-router-dom";
+// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'flowbite';
-import Formulir from '../content_main_page/Formulir';
-import NotFound from './NotFound';
-import { menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems, menuKewaliasuhanItems, menuMahromItems, menuRWSItems, subPesertaDidik, tabsFormulir } from '../data/menuData';
+// import Formulir from '../content_main_page/Formulir';
+// import NotFound from './NotFound';
+import { subPesertaDidik } from '../data/menuData';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 
@@ -41,7 +42,9 @@ const MainPage = () => {
 
     return (
         <>
-            <Router>
+            {/* <Router> */}
+            <div className="flex h-screen overflow-hidden">
+
                 <Navbar
                     toggleDropdownProfil={toggleDropdownProfil}
                     toggleSidebar={toggleSidebar}
@@ -68,7 +71,8 @@ const MainPage = () => {
 
                 <div className="pr-6 sm:ml-64 overflow-y-auto w-full">
                     <div className="pt-8 mt-8">
-                        <Routes>
+                        <Outlet />
+                        {/* <Routes>
                             <Route path="/formulir" element={<Formulir />}>
                                 <Route path="/formulir" element={<Navigate to="/formulir/biodata" replace />} />
                                 {tabsFormulir.map((tab) => (
@@ -90,10 +94,11 @@ const MainPage = () => {
                             ))}
 
                             <Route path="*" element={<NotFound />} />
-                        </Routes>
+                        </Routes> */}
                     </div>
                 </div>
-            </Router>
+            {/* </Router> */}
+            </div>
         </>
     );
 };

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 const DropdownNegara = () => {
     const [data, setData] = useState([]);
@@ -6,7 +7,7 @@ const DropdownNegara = () => {
     const [selectedNegara, setSelectedNegara] = useState({ negara: "", provinsi: "", kabupaten: "", kecamatan: "" });
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/menu-negara")
+        fetch(`${API_BASE_URL}menu-negara`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data.negara);
@@ -17,7 +18,16 @@ const DropdownNegara = () => {
                     kecamatan: [{ value: "", label: "Semua Kecamatan" }]
                 });
             })
-            .catch((error) => console.error("Error fetching data:", error));
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+                // Jika fetch gagal, tetap set "Semua Negara"
+                setFilterNegara({
+                    negara: [{ value: "", label: "Semua Negara" }],
+                    provinsi: [{ value: "", label: "Semua Provinsi" }],
+                    kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+                    kecamatan: [{ value: "", label: "Semua Kecamatan" }]
+                });
+            });
     }, []);
 
     const handleFilterChangeNegara = (newFilter) => {

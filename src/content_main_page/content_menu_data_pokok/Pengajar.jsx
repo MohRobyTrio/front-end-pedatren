@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination';
 
 
 const Pengajar = () => {
-    const { pengajar, loading, searchTerm, setSearchTerm, totalDataPengajar, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar();
+    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -79,7 +79,7 @@ const Pengajar = () => {
                 />
                 {viewMode === "list" ? (
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                        {loading ? (
+                        {loadingPengajar ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
@@ -115,7 +115,7 @@ const Pengajar = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (
+                            {loadingPengajar ? (
                                 <tr>
                                     <td colSpan="4" className="text-center p-4">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
