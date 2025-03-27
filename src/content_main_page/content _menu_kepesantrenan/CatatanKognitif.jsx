@@ -71,7 +71,7 @@ const CatatanKognitif = () => {
                             <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
                                 <img src="https://via.placeholder.com/60" alt="wali asuh" className="w-16 h-16 rounded-full" />
                                 <p className="text-sm font-bold">Sitti Naiesa</p>
-                                <p className="text-sm">(waliaush)</p>
+                                <p className="text-sm">(waliasuh)</p>
                                 <p className="text-xs text-gray-500">26 Nov 2024 14:42:51</p>
                             </div>
                         </div>
