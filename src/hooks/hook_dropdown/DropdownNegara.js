@@ -7,7 +7,7 @@ const DropdownNegara = () => {
     const [selectedNegara, setSelectedNegara] = useState({ negara: "", provinsi: "", kabupaten: "", kecamatan: "" });
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}menu-negara`)
+        fetch(`${API_BASE_URL}dropdown/negara`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data.negara);

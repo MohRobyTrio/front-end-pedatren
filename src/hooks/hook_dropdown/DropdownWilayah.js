@@ -7,7 +7,7 @@ const DropdownWilayah = () => {
     const [selectedWilayah, setselectedWilayah] = useState({ wilayah: "", blok: "", kamar: "" });
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}menu-wilayah`)
+        fetch(`${API_BASE_URL}dropdown/wilayah`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data.wilayah);

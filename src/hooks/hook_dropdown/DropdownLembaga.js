@@ -7,7 +7,7 @@ const DropdownLembaga = () => {
     const [selectedLembaga, setSelectedLembaga] = useState({ lembaga: "", jurusan: "", kelas: "", rombel: "" });
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}menu-lembaga`)
+        fetch(`${API_BASE_URL}dropdown/lembaga`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data.lembaga);

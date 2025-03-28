@@ -8,7 +8,7 @@ const DropdownAngkatan = () => {
     const [menuAngkatanKeluarSantri, setAngkatanKeluarSantri] = useState([]);
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}menu-angkatan`)
+        fetch(`${API_BASE_URL}dropdown/angkatan`)
             .then((res) => res.json())
             .then((data) => {
                 setAngkatanPelajar([
