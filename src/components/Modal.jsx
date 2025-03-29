@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import blankProfile from "../assets/blank_profile.png";
+import { Link } from "react-router-dom";
 
 const ModalPeserta = ({ student, onClose }) => {
     const [activeTab, setActiveTab] = useState("biodata");
@@ -25,50 +26,97 @@ const ModalPeserta = ({ student, onClose }) => {
 
     return (
         <Transition appear show={true} as={Fragment}>
-            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
-                <Transition.Child as={Fragment} enter="transition-opacity duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-                </Transition.Child>
+    <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+        <Transition.Child 
+            as={Fragment} 
+            enter="transition-opacity duration-300" 
+            enterFrom="opacity-0" 
+            enterTo="opacity-100" 
+            leave="transition-opacity duration-200" 
+            leaveFrom="opacity-100" 
+            leaveTo="opacity-0"
+        >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+        </Transition.Child>
 
-                <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-                    <Transition.Child as={Fragment} enter="transition-transform duration-300 ease-out" enterFrom="scale-95 opacity-0" enterTo="scale-100 opacity-100" leave="transition-transform duration-200 ease-in" leaveFrom="scale-100 opacity-100" leaveTo="scale-95 opacity-0">
-                        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full relative mt-40">
-                            <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
-                            </button>
-                            <Dialog.Title className="text-lg font-semibold text-gray-900">Data Pengajar</Dialog.Title>
+        <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <Transition.Child 
+                as={Fragment} 
+                enter="transition-transform duration-300 ease-out" 
+                enterFrom="scale-95 opacity-0" 
+                enterTo="scale-100 opacity-100" 
+                leave="transition-transform duration-200 ease-in" 
+                leaveFrom="scale-100 opacity-100" 
+                leaveTo="scale-95 opacity-0"
+            >
+                <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full relative max-h-[90vh] flex flex-col">
+                    
+                    {/* Tombol Close (Tetap di Atas) */}
+                    <button 
+                        onClick={onClose} 
+                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                    >
+                        <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                    </button>
 
-                            <div className="overflow-y-auto">
+                    {/* Header (Tidak Ikut Scroll) */}
+                    <div className="pb-4">
+                        <Dialog.Title className="text-lg font-semibold text-gray-900">Data Pengajar</Dialog.Title>
+                    </div>
 
-                            <div className="flex space-x-4 mt-4">
-                                <img src={student.foto_profil || blankProfile} alt="Foto Profil" className="w-40 h-48 object-cover rounded" />
-                                <div>
-                                    <p><strong>Nama:</strong> {student.nama}</p>
-                                    <p><strong>NIUP:</strong> {student.niup}</p>
-                                    <p><strong>NIK:</strong> {student.nik}</p>
-                                    <p><strong>Lembaga:</strong> {student.lembaga}</p>
-                                    <p><strong>Kota Asal:</strong> {student.kota_asal}</p>
-                                </div>
+                    {/* Konten yang Bisa Di-scroll */}
+                    <div className="flex-1 overflow-y-auto p-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-4">
+                    <img src={student.foto_profil || blankProfile} alt="Foto Profil" className="w-40 h-48 object-cover rounded" />
+                            <div>
+                                <p><strong>Nama:</strong> {student.nama}</p>
+                                <p><strong>NIUP:</strong> {student.niup}</p>
+                                <p><strong>NIK:</strong> {student.nik}</p>
+                                <p><strong>Lembaga:</strong> {student.lembaga}</p>
+                                <p><strong>Kota Asal:</strong> {student.kota_asal}</p>
                             </div>
+                        </div>
 
-                            <div className="mt-6 border-b pb-2 flex space-x-4 overflow-x-auto">
-                                {tabs.map((tab) => (
-                                    <button key={tab.id} className={`px-4 py-2 text-sm font-medium ${activeTab === tab.id ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`} onClick={() => setActiveTab(tab.id)}>
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
+                        {/* Tab Navigasi */}
+                        <div className="mt-6 border-b pb-2 flex space-x-4 overflow-x-auto">
+                            {tabs.map((tab) => (
+                                <button 
+                                    key={tab.id} 
+                                    className={`px-4 py-2 text-sm font-medium ${activeTab === tab.id ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`} 
+                                    onClick={() => setActiveTab(tab.id)}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
 
-                            <div className="p-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-                            </div>
-                            <div className="mt-4 text-right">
-                                <button onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Tutup</button>
-                            </div>
-                        </Dialog.Panel>
-                    </Transition.Child>
-                </div>
-            </Dialog>
-        </Transition>
+                        {/* Konten Tab */}
+                        <div className="p-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+                    </div>
+
+                    {/* Footer (Tidak Ikut Scroll) */}
+                    <div className="mt-4 pt-4 text-right space-x-2">
+                        <Link to="/formulir">
+                        <button 
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+                        >
+                            Buka di Formulir
+                        </button>
+                        </Link>
+                        <button 
+                            onClick={onClose} 
+                            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                        >
+                            Tutup
+                        </button>
+                    </div>
+                    
+                </Dialog.Panel>
+            </Transition.Child>
+        </div>
+    </Dialog>
+</Transition>
+
     );
 };
 

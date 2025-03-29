@@ -67,7 +67,7 @@ const PesertaDidik = () => {
         rombel: rombelTerpilih
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
     
-    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
+    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -78,9 +78,9 @@ const PesertaDidik = () => {
         }
     }, []);
 
-    const totalPages = Math.ceil(totalDataPesertaDidik / limit);
+    // const totalPages = Math.ceil(totalDataPesertaDidik / limit);
 
-    // console.log(totalData);
+    // console.log(totalPages);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

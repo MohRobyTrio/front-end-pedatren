@@ -1,15 +1,37 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { OrbitProgress } from "react-loading-indicators";
-import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Filters from '../../components/Filters';
 import useFetchPengajar from '../../hooks/hooks_menu_data_pokok/Pengajar';
 import Pagination from '../../components/Pagination';
+import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
+import PesertaItem from '../../components/PesertaItem';
 
 
 const Pengajar = () => {
-    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar();
+    const [filters, setFilters] = useState({
+        negara: "",       // Tambahkan default value
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: ""
+    })
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+    const updatedFilters = useMemo(() => ({
+        ...filters,
+        negara: negaraTerpilih,
+        provinsi: provinsiTerpilih,
+        kabupaten: kabupatenTerpilih,
+        kecamatan: kecamatanTerpilih
+    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
+
+    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -20,26 +42,14 @@ const Pengajar = () => {
         }
     }, []);
 
-    const totalPages = Math.ceil(totalDataPengajar / limit);
-
-    // console.log(totalData);
+    // const totalPages = pengajar.total_pages;
+    
+    // console.log(totalPages)  ;
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
-    };
-
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
-        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
-        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
-        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
-        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
-        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
-        urutSecara: ["Urut Secara", "Ascending", "Descending"]
     };
 
     // const handleLimitChange = (e) => {
@@ -48,6 +58,20 @@ const Pengajar = () => {
     //     setLimit(newLimit);
     // };
 
+    const filter6 = {
+        // Sudah
+        smartcard: [
+            { label: "Smartcard", value: "" },
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        ],
+        // Sudah
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ]
+    };
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -65,8 +89,10 @@ const Pengajar = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                
-                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
+                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                </div>
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -86,22 +112,7 @@ const Pengajar = () => {
                         ) : pengajar.length === 0 ? (
                             <p className="text-center col-span-3">Tidak ada data</p>
                         ) : (
-                            pengajar.map((item, index) => (
-                                <div key={item.id_pengajar || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
-                                    <img
-                                        alt={item.nama || "-"}
-                                        className="w-20 h-24 object-cover"
-                                        src={item.foto_profil || defaultProfile}
-                                        width={50}
-                                        height={50}
-                                    />
-                                    <div>
-                                        <h2 className="font-semibold">{item.nama}</h2>
-                                        <p className="text-gray-600">NIUP: {item.niup}</p>
-                                        <p className="text-gray-600">{item.lembaga}</p>
-                                    </div>
-                                </div>
-                            ))
+                            pengajar.map((student, index) => <PesertaItem key={index} student={student} />)
                         )}
                     </div>
                 ) : (
@@ -139,7 +150,9 @@ const Pengajar = () => {
                     </table>
                 )}
 
-                <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
             </div>
         </div>
     )
