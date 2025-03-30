@@ -7,16 +7,21 @@ import useFetchPengajar from '../../hooks/hooks_menu_data_pokok/Pengajar';
 import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import PesertaItem from '../../components/PesertaItem';
+import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
+import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 
 
 const Pengajar = () => {
     const [filters, setFilters] = useState({
-        negara: "",       // Tambahkan default value
+        negara: "", 
         provinsi: "",
         kabupaten: "",
         kecamatan: ""
     })
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+    // const { filterGolongan, selectedGolongan, handleFilterChangeGolongan } = DropdownGolongan();
+    const { kategoriGolongan, filteredGolongan, setSelectedKategori } = DropdownGolongan();
+    const { filterLembaga } = DropdownLembaga();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -52,13 +57,80 @@ const Pengajar = () => {
         }
     };
 
-    // const handleLimitChange = (e) => {
-    //     const newLimit = Number(e.target.value);
-    //     console.log("Limit changed to:", newLimit);
-    //     setLimit(newLimit);
-    // };
+    const filter2 = {
+        lembaga: filterLembaga.lembaga,
+        kategori: kategoriGolongan,
+        golongan: filteredGolongan,
+        totalMateriAjar: [
+            { label: "Pilih Total Materi Ajar", value: ""},
+            { label: "Kosong", value: "0"},
+            { label: "1 Materi", value: "1"},
+            { label: "Lebih dari 1 Materi", value: ">1"},
+            { label: "2 Materi", value: "2"},
+            { label: "Lebih dari 2 Materi", value: ">2"},
+            { label: "3 Materi", value: "3"},
+            { label: "Lebih dari 3 Materi", value: ">3"},
+        ]
+    }
+    const filter3 = {
+        // Sudah
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        // Sudah
+        jabatan: [
+            { label: "Pilih Jenis jabatan", value: "" },
+            { label: "Kultural", value: "kultural" },
+            { label: "Tetap", value: "tetap" },
+            { label: "Kontrak", value: "kontrak" },
+            { label: "Pengkaderan", value: "pengkaderan" }
+        ],
+        masaKerja: [
+            { label: "Pilih Masa Kerja", value: "" },
+            { label: "< 1 Tahun", value: "<1" },
+            { label: "1-5 Tahun", value: "1-5" },
+            { label: "6-10 Tahun", value: "6-10" },
+            { label: "11-15 Tahun", value: "11-15" },
+            { label: "16-20 Tahun", value: "16-20" },
+            { label: "21-25 Tahun", value: "21-25" },
+            { label: "26-30 Tahun", value: "26-30" },
+            { label: "31-40 Tahun", value: "31-40" },
+            { label: "> 40 Tahun", value: ">40" }
+        ]
+    }
 
-    const filter6 = {
+    const filter4 = {
+        // Sudah
+        wargaPesantren: [
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" }
+        ],
+        // Sudah
+        pemberkasan: [
+            { label: "Pemberkasan", value: "" },
+            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+            { label: "Tidak Ada KK", value: "tidak ada kk" },
+            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+        ],
+        umur: [
+            { label: "Semua Umur", value: "" },
+            { label: "< 20 Tahun", value: "<20" },
+            { label: "20-29 Tahun", value: "20-29" },
+            { label: "30-39 Tahun", value: "30-39" },
+            { label: "40-49 Tahun", value: "40-49" },
+            { label: "50-59 Tahun", value: "50-59" },
+            { label: "60-65 Tahun", value: "60-65" },
+            { label: "> 65 Tahun", value: ">65" }
+        ]
+    }
+
+    const filter5 = {
         // Sudah
         smartcard: [
             { label: "Smartcard", value: "" },
@@ -89,9 +161,13 @@ const Pengajar = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
-                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filterGolongan} onChange={handleFilterChangeGolongan} selectedFilters={selectedGolongan} /> */}
+                    <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
