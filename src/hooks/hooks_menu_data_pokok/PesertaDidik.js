@@ -14,7 +14,7 @@ const useFetchPeserta = (filters) => {
     const lastRequest = useRef("");
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/peserta-didik?limit=${limit}&page=${currentPage}`;
+        let url = `${API_BASE_URL}data-pokok/pesertadidik?limit=${limit}&page=${currentPage}`;
         
         if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
         // Object.entries(filters || {}).forEach(([key, value]) => {
@@ -59,7 +59,7 @@ const useFetchPeserta = (filters) => {
         try {
             const response = await fetch(url);
             if (!response.ok) {
-                throw new Error(`Gagal mengambil data: ${response.status}`);
+                throw new Error(`${response.message}: ${response.status}`);
             }
 
             const data = await response.json();
@@ -87,18 +87,7 @@ const useFetchPeserta = (filters) => {
     }, [limit]);
 
     return {
-        pesertaDidik : pesertaDidik.map(item => ({
-            id: item.tampilan_awal.id,
-            nik: item.tampilan_awal["nik/nopassport"],
-            nama: item.tampilan_awal.nama,
-            niup: item.tampilan_awal.niup,
-            wilayah: item.tampilan_awal.wilayah,
-            lembaga: item.tampilan_awal.lembaga,
-            kota_asal: item.tampilan_awal.kota_asal,
-            tgl_input: item.tampilan_awal.tgl_input,
-            tgl_update: item.tampilan_awal.tgl_update,
-            foto_profil: item.tampilan_awal.foto_profil
-        })),
+        pesertaDidik ,
         loadingPesertaDidik,
         searchTerm,
         setSearchTerm,
