@@ -62,7 +62,7 @@ const CatatanKognitif = () => {
                                 <p className="text-sm text-gray-600">Domisili: C.4 (Al-Mahdi) - Daerah Robi'ah Al-Adawiyah</p>
                                 <p className="text-sm text-gray-600">Pendidikan: IPS Reguler - SMA-NJ</p>
                             </div>
-                            <div className="space-y-2 min-w-[150px]">
+                            <div className="flex-1 space-y-2 min-w-[150px]">
                                 <h2>Kebahasaan: <span className="text-green-600">[ B ]</span></h2>
                                 <p className="text-sm">baik</p>
                                 <p className="text-sm font-semibold">Tindak Lanjut:</p>
