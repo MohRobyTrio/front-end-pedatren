@@ -1,4 +1,18 @@
+import { useNavigate } from "react-router-dom";
+import useLogout from "../hooks/Logout";
+
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen }) => {
+    const navigate = useNavigate();
+    const { logout, isLoggingOut, logoutError } = useLogout();
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate("/login"); // arahkan ke halaman login
+        } catch (error) {
+            console.error("Logout gagal:", error.message);
+        }
+    };
     return (
         <nav className="fixed top-0 z-50 w-full bg-gray-800 border-b border-gray-700">
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -49,9 +63,14 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen }) => {
                                     </div>
                                     <ul className="py-1" role="none">
                                         <li>
-                                            <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" role="menuitem">
-                                                Sign out
-                                            </a>
+                                            <button
+                                                onClick={handleLogout}
+                                                disabled={isLoggingOut}
+                                                className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
+                                                role="menuitem"
+                                            >
+                                                {isLoggingOut ? "Logging out..." : "Sign out"}
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
