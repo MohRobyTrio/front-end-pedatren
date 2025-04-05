@@ -19,7 +19,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faSearch,
     faFilter,
-    faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
 
 const GroupKewaliasuhan = () => {
