@@ -4,6 +4,7 @@ import useLogout from "../hooks/Logout";
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen }) => {
     const navigate = useNavigate();
     const { logout, isLoggingOut, logoutError } = useLogout();
+    const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
 
     const handleLogout = async () => {
         try {
@@ -56,7 +57,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen }) => {
                                     className="absolute right-[-12px] mt-43 z-50 w-48 text-base list-none bg-gray-700 divide-y divide-gray-600 rounded-sm shadow-md"
                                 >
                                     <div className="px-4 py-3" role="none">
-                                        <p className="text-sm text-white" role="none">Nahrawi</p>
+                                        <p className="text-sm text-white" role="none">{userName}</p>
                                         <p className="text-sm font-medium text-gray-300 truncate" role="none">
                                             ( Supervisor )
                                         </p>

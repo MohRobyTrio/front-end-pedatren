@@ -7,7 +7,7 @@ const useLogout = () => {
 
   const logout = useCallback(async () => {
     const url = `${API_BASE_URL}logout`;
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
     if (!token) {
       setLogoutError("Token tidak ditemukan");
@@ -36,6 +36,7 @@ const useLogout = () => {
 
       // ✅ Hapus token dari localStorage
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
 
       return data;
     } catch (error) {

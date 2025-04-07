@@ -8,49 +8,47 @@ const useLogin = () => {
   const [loginError, setLoginError] = useState(null);
 //   const lastLoginRequest = useRef("");
 
-  const login = useCallback(async ({ email, password }) => {
-    const url = `${API_BASE_URL}login`;
-    // const requestKey = `${url}?email=${email}`; // Optional, buat ngecek duplikat
-    // if (lastLoginRequest.current === requestKey) {
-    //   console.log("Skip login: Permintaan sama dengan sebelumnya");
-    //   return;
-    // }
+const login = useCallback(async ({ email, password, rememberMe }) => {
+  const url = `${API_BASE_URL}login`;
+  setIsLoggingIn(true);
+  setLoginError(null);
 
-    // lastLoginRequest.current = requestKey;
-    setIsLoggingIn(true);
-    setLoginError(null);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login gagal");
-      }
-
-      const data = await response.json();
-      console.log("Login berhasil:", data);
-
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        console.log(data.token);
-      }
-
-      return data;
-    } catch (error) {
-      console.error("Login error:", error);
-      setLoginError(error.message);
-      throw error;
-    } finally {
-      setIsLoggingIn(false);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Login gagal");
     }
-  }, []);
+
+    const data = await response.json();
+    console.log("Login berhasil:", data);
+
+    if (data.token) {
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.user.name); 
+      } else {
+        sessionStorage.setItem("token", data.token); 
+        sessionStorage.setItem("name", data.user.name); 
+      }
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Login error:", error);
+    setLoginError(error.message);
+    throw error;
+  } finally {
+    setIsLoggingIn(false);
+  }
+}, []);
 
   return {
     login,
