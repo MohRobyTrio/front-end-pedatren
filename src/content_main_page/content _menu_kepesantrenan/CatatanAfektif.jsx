@@ -55,7 +55,7 @@ const CatatanAfektif = () => {
                 </div>
                 <div className="space-y-4">
                     {[...Array(2)].map((_, i) => (
-                        <div key={i} className="flex flex-wrap p-4 border rounded-lg shadow-sm gap-4 items-center">
+                        <div key={i} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white">
                             <img src="https://via.placeholder.com/100" alt="foto" className="w-24 h-24 rounded-md" />
                             <div className="flex-1 space-y-2 min-w-[200px]">
                                 <h2 className="text-lg font-semibold">Bilqhis Madhania Faidah Putri</h2>

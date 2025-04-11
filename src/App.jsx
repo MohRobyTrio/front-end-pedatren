@@ -58,11 +58,15 @@ import {
 } from './data/menuData';
 
 // Helper untuk cek apakah user login
+// const isLoggedIn = () => {
+//   return (
+//     !!localStorage.getItem("token") ||
+//     !!sessionStorage.getItem("token")
+//   );
+// };
+
 const isLoggedIn = () => {
-  return (
-    !!localStorage.getItem("token") ||
-    !!sessionStorage.getItem("token")
-  );
+  return true
 };
 
 
