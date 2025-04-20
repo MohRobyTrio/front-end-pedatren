@@ -14,7 +14,7 @@ const SantriAfektifCard = ({ santri }) => {
     };
 
     return (
-        <div className="rounded-lg shadow-sm mb-4">
+        <div className="rounded-lg mb-4">
             {santri.catatan?.map((catatan, i) => (
                 <div key={i} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4">
                     {/* Foto Santri */}

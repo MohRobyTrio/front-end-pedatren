@@ -14,7 +14,21 @@ const CatatanAfektif = () => {
         wilayah: ''
     });
     const [page, setPage] = useState(1);
-    const { groupedData, loading, error, fetchData } = useFetchAfektif();
+    const {
+        groupedData,
+        loading,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        searchTerm,
+        setSearchTerm,
+        fetchData
+      } = useFetchAfektif();
+    const [showFilters, setShowFilters] = useState(false);
 
     // Fetch data saat filter/page berubah
     useEffect(() => {
@@ -30,40 +44,53 @@ const CatatanAfektif = () => {
                     <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Statistik</button>
                 </div>
             </div>
-            
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <Filters
+                {/* <Filters
                     filters={filters}
                     onChange={(newFilters) => {
                         setFilters(newFilters);
                         setPage(1); // Reset ke page 1 saat filter berubah
                     }}
+                /> */}
+                
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    totalFiltered={groupedData.length}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    showViewButtons={false}
+                    // toggleView={setViewMode}
                 />
 
-                {error && (
-                    <div className="bg-red-50 text-red-600 p-3 rounded mb-4">
-                        Error: {error}
-                    </div>
-                )}
-
-                <div className="space-y-4">
-                    {loading ? (
-                        <div className="text-center py-8">
-                            <i className="fas fa-spinner fa-spin text-2xl text-blue-500"></i>
+                <div>
+                    {error && (
+                        <div className="bg-red-50 text-red-600 p-3 rounded mb-4">
+                            Error: {error}
                         </div>
-                    ) : Object.values(groupedData).length > 0 ? (
-                        Object.values(groupedData).map(santri => (
-                            <SantriAfektifCard key={santri.id_santri} santri={santri} />
-                        ))
-                    ) : (
-                        <p className="text-center py-8 text-gray-500">Tidak ada data</p>
                     )}
+
+                    <div className="space-y-4">
+                        {loading ? (
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                            </div>
+                        ) : Object.values(groupedData).length > 0 ? (
+                            Object.values(groupedData).map(santri => (
+                                <SantriAfektifCard key={santri.id_santri} santri={santri} />
+                            ))
+                        ) : (
+                            <p className="text-center py-8 text-gray-500">Tidak ada data</p>
+                        )}
+                    </div>
                 </div>
 
                 <Pagination
                     currentPage={page}
-                    totalPages={10} // Ganti dengan nilai dinamis dari API
+                    totalPages={totalPages} // Ganti dengan nilai dinamis dari API
                     onChange={setPage}
                     className="mt-6"
                 />
