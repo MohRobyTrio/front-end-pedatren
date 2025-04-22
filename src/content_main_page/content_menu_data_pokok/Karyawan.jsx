@@ -84,38 +84,55 @@ const Karyawan = () => {
                         )}
                     </div>
                 ) : (
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-2 w-16">No</th>
-                                <th className="border p-2">NIUP</th>
-                                <th className="border p-2">Nama</th>
-                                <th className="border p-2">Jabatan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                    <div className="w-full border-collapse border border-gray-300">
+                        <table className="min-w-[900px] w-full border border-gray-200 text-sm">
+                            <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
                                 <tr>
-                                    <td colSpan="4" className="text-center p-4">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </td>
+                                    <th className="border border-gray-200 px-4 py-2 text-left w-12">#</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">NIUP</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Nama</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Umur</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Jabatan</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Lembaga</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Jenis</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Golongan</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Pendidikan Terakhir</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Update Karyawan</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Input Karyawan</th>
                                 </tr>
-                            ) : karyawan.length === 0 ? (
-                                <tr>
-                                    <td colSpan="4" className="text-center p-4">Tidak ada data</td>
-                                </tr>
-                            ) : (
-                                karyawan.map((item, index) => (
-                                    <tr key={item.id_pengajar} className="text-center">
-                                        <td className="border p-2 w-16">{index + 1}</td>
-                                        <td className="border p-2">{item.niup}</td>
-                                        <td className="border p-2">{item.nama}</td>
-                                        <td className="border p-2">{item.jabatan}</td>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="9" className="text-center py-6">
+                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                        </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : karyawan.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="9" className="text-center py-6">Tidak ada data</td>
+                                    </tr>
+                                ) : (
+                                    karyawan.map((item, index) => (
+                                        <tr key={item.id_karyawan} className="hover:bg-gray-50">
+                                            <td className="border px-4 py-2">{index + 1}</td>
+                                            <td className="border px-4 py-2">{item.niup}</td>
+                                            <td className="border px-4 py-2">{item.nama}</td>
+                                            <td className="border px-4 py-2">{item.umur}</td>
+                                            <td className="border px-4 py-2">{item.jabatan}</td>
+                                            <td className="border px-4 py-2">{item.lembaga}</td>
+                                            <td className="border px-4 py-2">{item.jenis}</td>
+                                            <td className="border px-4 py-2">{item.golongan}</td>
+                                            <td className="border px-4 py-2">{item.pendidikan_terakhir}</td>
+                                            <td className="border px-4 py-2">{item.updated_at}</td>
+                                            <td className="border px-4 py-2">{item.input_at}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
 
 
                 )}

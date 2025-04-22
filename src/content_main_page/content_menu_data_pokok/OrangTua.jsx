@@ -58,7 +58,7 @@ const OrangTua = () => {
 
                 />
                 {viewMode === "list" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listpesertadidik">
+                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listorangtua">
                         {loading ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
@@ -67,7 +67,7 @@ const OrangTua = () => {
                             <p className="text-center col-span-3">Tidak ada data</p>
                         ) : (
                             orangtua.map((item) => (
-                                <div key={item.id_pengajar} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                                <div key={item.id_orangtua} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
                                     <img
                                         alt={item.nama}
                                         className="w-16 h-16 rounded-full object-cover"
@@ -86,21 +86,48 @@ const OrangTua = () => {
                     </div>
 
                 ) : (
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-2 w-16">No</th>
-                                <th className="border p-2">NIUP</th>
-                                <th className="border p-2">Nama</th>
-                                <th className="border p-2">Pendidikan Terakhir</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colSpan="4" className="text-center p-4">Tidak ada data</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="w-full border-collapse border border-gray-300">
+                        <table className="min-w-[900px] w-full border border-gray-200 text-sm">
+                            <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
+                                <tr>
+                                    <th className="border border-gray-200 px-4 py-2 text-left w-12">#</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">NIK</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Nama</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Telepon 1</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Telepon 2</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Kota Asal</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Update Bio</th>
+                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Input Bio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="9" className="text-center py-6">
+                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                        </td>
+                                    </tr>
+                                ) : orangtua.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="9" className="text-center py-6">Tidak ada data</td>
+                                    </tr>
+                                ) : (
+                                    orangtua.map((item, index) => (
+                                        <tr key={item.id_orangtua} className="hover:bg-gray-50">
+                                            <td className="border px-4 py-2">{index + 1}</td>
+                                            <td className="border px-4 py-2">{item.nik}</td>
+                                            <td className="border px-4 py-2">{item.nama}</td>
+                                            <td className="border px-4 py-2">{item.telepon1}</td>
+                                            <td className="border px-4 py-2">{item.telepon2}</td>
+                                            <td className="border px-4 py-2">{item.kota_asal}</td>
+                                            <td className="border px-4 py-2">{item.updated_at}</td>
+                                            <td className="border px-4 py-2">{item.input_at}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>
