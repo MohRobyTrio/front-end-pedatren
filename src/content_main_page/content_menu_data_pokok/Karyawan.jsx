@@ -2,12 +2,20 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { OrbitProgress } from "react-loading-indicators";
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
-import Filters from '../../components/Filters';
 import useFetchKaryawan from '../../hooks/hooks_menu_data_pokok/Kayawan';
+import blankProfile from "../../assets/blank_profile.png";
+import Filters from '../../components/Filters';
 
 
 const Karyawan = () => {
-    const { karyawan, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchKaryawan();
+    const [filters, setFilters] = useState({});
+    const { karyawans, loadingKaryawans, searchTerm, setSearchTerm, error,
+        limit,
+        setLimit,
+        totalDataKaryawans,
+        totalPages,
+        currentPage,
+        setCurrentPage } = useFetchKaryawan();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -18,16 +26,69 @@ const Karyawan = () => {
         }
     }, []);
 
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
-        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
-        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
-        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
-        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
-        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
-        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    const filter4 = {
+        // Sudah
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        // Sudah
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Santri", value: "santri" },
+            { label: "Santri Non Pelajar", value: "santri non pelajar" },
+            { label: "Pelajar", value: "pelajar" },
+            { label: "Pelajar Non Santri", value: "pelajar non santri" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+        ]
+    }
+    const filter5 = {
+        // Sudah
+        wargaPesantren: [
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" }
+        ],
+        // Sudah
+        pemberkasan: [
+            { label: "Pemberkasan", value: "" },
+            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+            { label: "Tidak Ada KK", value: "tidak ada kk" },
+            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+        ],
+        // Sudah
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIUP", value: "niup" },
+            { label: "Angkatan", value: "angkatan" },
+            { label: "Jenis Kelamin", value: "jenis kelamin" },
+            { label: "Tempat Lahir", value: "tempat lahir" }
+        ],
+        // Sudah
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" }
+        ]
+    }
+    const filter6 ={
+        // Sudah
+        smartcard: [
+            { label: "Smartcard", value: "" },
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        ],
+        // Sudah
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ]
     };
 
     return (
@@ -46,86 +107,93 @@ const Karyawan = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                {/* <Filters showFilters={showFilters} filterOptions={filterOptions} /> */}
+
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                </div>
+
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
-                    totalData={totalData}
-                    totalFiltered={totalFiltered}
+                    totalData={ totalDataKaryawans}
+                    totalFiltered={karyawans.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
 
                 />
                 {viewMode === "list" ? (
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
-                        {loading ? (
+                        {loadingKaryawans ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : karyawan.length === 0 ? (
+                        ) : karyawans.length === 0 ? (
                             <p className="text-center col-span-3">Tidak ada data</p>
                         ) : (
-                            karyawan.map((item) => (
-                                <div key={item.id_karyawan} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                            karyawans.map((item) => (
+                                <div key={item.id} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
                                     <img
                                         alt={item.nama}
-                                        className="w-16 h-16 rounded-full object-cover"
-                                        src={item.image_url}
+                                        className="w-20 h-24 object-cover"
+                                        src={item.image_url || blankProfile}
                                         width={50}
                                         height={50}
                                     />
                                     <div>
-                                        <h2 className="font-semibold">NIUP: {item.niup}</h2>
-                                        <p className="text-gray-600">{item.nama}</p>
-                                        <p className="text-gray-600">{item.jabatan}</p>
+                                        <p className="font-semibold">{item.nama}</p>
+                                        <p className="text-gray-600">{item.nik}</p>
+                                        <p className="text-gray-600">{item.KeteranganJabatan} - {item.lembaga}</p>
                                     </div>
                                 </div>
                             ))
                         )}
                     </div>
                 ) : (
-                    <div className="w-full border-collapse border border-gray-300">
-                        <table className="min-w-[900px] w-full border border-gray-200 text-sm">
-                            <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
+                    <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm text-left">
+                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
-                                    <th className="border border-gray-200 px-4 py-2 text-left w-12">#</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">NIUP</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Nama</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Umur</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Jabatan</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Lembaga</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Jenis</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Golongan</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Pendidikan Terakhir</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Update Karyawan</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Input Karyawan</th>
+                                    <th className="px-3 py-2 border-b">#</th>
+                                    <th className="px-3 py-2 border-b">NIUP</th>
+                                    <th className="px-3 py-2 border-b">Nama</th>
+                                    <th className="px-3 py-2 border-b">Umur</th>
+                                    <th className="px-3 py-2 border-b">Jabatan</th>
+                                    <th className="px-3 py-2 border-b">Lembaga</th>
+                                    <th className="px-3 py-2 border-b">Jenis</th>
+                                    <th className="px-3 py-2 border-b">Golongan</th>
+                                    <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                    <th className="px-3 py-2 border-b">Tgl Update Karyawan</th>
+                                    <th className="px-3 py-2 border-b">Tgl Input Karyawan</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {loading ? (
+                            <tbody className="text-gray-800">
+                            {loadingKaryawans ? (
                                     <tr>
                                         <td colSpan="9" className="text-center py-6">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
                                     </tr>
-                                ) : karyawan.length === 0 ? (
+                                ) : karyawans.length === 0 ? (
                                     <tr>
                                         <td colSpan="9" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
-                                    karyawan.map((item, index) => (
-                                        <tr key={item.id_karyawan} className="hover:bg-gray-50">
-                                            <td className="border px-4 py-2">{index + 1}</td>
-                                            <td className="border px-4 py-2">{item.niup}</td>
-                                            <td className="border px-4 py-2">{item.nama}</td>
-                                            <td className="border px-4 py-2">{item.umur}</td>
-                                            <td className="border px-4 py-2">{item.jabatan}</td>
-                                            <td className="border px-4 py-2">{item.lembaga}</td>
-                                            <td className="border px-4 py-2">{item.jenis}</td>
-                                            <td className="border px-4 py-2">{item.golongan}</td>
-                                            <td className="border px-4 py-2">{item.pendidikan_terakhir}</td>
-                                            <td className="border px-4 py-2">{item.updated_at}</td>
-                                            <td className="border px-4 py-2">{item.input_at}</td>
+                                    karyawans.map((item, index) => (
+                                        <tr key={item.id_karyawan} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{item.niup  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.nama  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.umur  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.KeteranganJabatan || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.lembaga  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.jenisJabatan  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.golongan  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.pendidikanTerakhir  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_update  || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_input  || "-"}</td>
                                         </tr>
                                     ))
                                 )}
@@ -136,97 +204,9 @@ const Karyawan = () => {
 
 
                 )}
-                <nav aria-label="Page navigation example" className="flex justify-end  mt-6">
-                    <ul className="flex items-center -space-x-px h-10 text-sm">
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                <span className="sr-only">Previous</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 1 1 5l4 4"
-                                    />
-                                </svg>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                1
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                2
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                aria-current="page"
-                                className="z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
-                            >
-                                3
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                4
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                5
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                <span className="sr-only">Next</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="m1 9 4-4-4-4"
-                                    />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
 
             </div>
         </div>
