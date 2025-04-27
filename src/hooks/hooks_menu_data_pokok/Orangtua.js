@@ -5,7 +5,7 @@ export default function useFetchOrangTua() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/")
+    fetch("http://localhost:8000/api/data-pokok/orangtua")
       .then((response) => response.json())
       .then((data) => {
         if (data.status) {
