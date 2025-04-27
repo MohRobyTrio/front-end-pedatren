@@ -11,6 +11,10 @@ import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import Pengajar from "../content_main_page/content_menu_data_pokok/Pengajar";
 import Pengurus from "../content_main_page/content_menu_data_pokok/Pengurus";
 import PesertaDidik from "../content_main_page/content_menu_data_pokok/PesertaDidik";
+import BersaudaraKandung from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/BersaudaraKandung";
+import Pelajar from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Pelajar";
+import Santri from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Santri";
+import SantriNonDomisili from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/SantriNonDomisili";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import AnakPegawai from "../content_main_page/content_menu_kepegawaian/AnakPegawai";
@@ -102,8 +106,8 @@ export const tabsFormulir = [
 ];
 
 export const subPesertaDidik = [
-    { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <PesertaDidik /> },
-    { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <PesertaDidik /> },
-    { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <PesertaDidik /> },
-    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <PesertaDidik /> }
+    { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri /> },
+    { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <SantriNonDomisili /> },
+    { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar /> },
+    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung /> }
 ];
