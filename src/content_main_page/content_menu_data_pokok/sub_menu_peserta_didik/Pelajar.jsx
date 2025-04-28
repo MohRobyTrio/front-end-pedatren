@@ -32,7 +32,7 @@ const Pelajar = () => {
         angkatanPelajar: "",
         angkatanSantri: ""
     })
-    
+
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
@@ -45,7 +45,7 @@ const Pelajar = () => {
 
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
     const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
-    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";    
+    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
 
     const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
     const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
@@ -54,10 +54,10 @@ const Pelajar = () => {
 
     // Gabungkan filter tambahan sebelum dipakai
     const updatedFilters = useMemo(() => ({
-        ...filters, 
-        negara: negaraTerpilih, 
-        provinsi: provinsiTerpilih, 
-        kabupaten: kabupatenTerpilih, 
+        ...filters,
+        negara: negaraTerpilih,
+        provinsi: provinsiTerpilih,
+        kabupaten: kabupatenTerpilih,
         kecamatan: kecamatanTerpilih,
         wilayah: wilayahTerpilih,
         blok: blokTerpilih,
@@ -67,7 +67,7 @@ const Pelajar = () => {
         kelas: kelasTerpilih,
         rombel: rombelTerpilih
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
-    
+
     // const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const { pelajar, loadingPelajar, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPelajar, totalPages, currentPage, setCurrentPage } = useFetchPelajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
@@ -106,9 +106,9 @@ const Pelajar = () => {
             { label: "Pelajar Non Santri", value: "pelajar non santri" },
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
-        
+
         angkatanPelajar: menuAngkatanPelajar,
-        
+
         angkatanSantri: menuAngkatanSantri
     }
     const filter5 = {
@@ -144,7 +144,7 @@ const Pelajar = () => {
             { label: "Z-A / 9-0 (Descending)", value: "desc" }
         ]
     }
-    const filter6 ={
+    const filter6 = {
         // Sudah
         smartcard: [
             { label: "Smartcard", value: "" },
@@ -175,7 +175,7 @@ const Pelajar = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
-                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara}/>
+                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
@@ -213,52 +213,55 @@ const Pelajar = () => {
                             )}
                         </div>
                     ) : (
-                        <table className="w-full border-collapse border border-gray-300">
-                            <thead>
-                                <tr className="bg-gray-100">
-                                    <th className="border p-2 w-16">No.</th>
-                                    <th className="border p-2">No. Induk Santri</th>
-                                    <th className="border p-2">Nama</th>
-                                    <th className="border p-2">Kamar</th>
-                                    <th className="border p-2">Blok</th>
-                                    <th className="border p-2">Wilayah</th>
-                                    <th className="border p-2">Lembaga</th>
-                                    <th className="border p-2">Kota Asal</th>
-                                    <th className="border p-2">Angkatan</th>
-                                    <th className="border p-2">Tgl Update Bio</th>
-                                    <th className="border p-2">Tgl Input Bio</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loadingPelajar ? (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <td colSpan="9" className="text-center p-4">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                        </td>
+                                        <th className="px-3 py-2 border-b">No.</th>
+                                        <th className="px-3 py-2 border-b">No. Induk (Siswa/Mahasiswa)</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">Lembaga</th>
+                                        <th className="px-3 py-2 border-b">Jurusan</th>
+                                        <th className="px-3 py-2 border-b">Kelas</th>
+                                        <th className="px-3 py-2 border-b">Rombel</th>
+                                        <th className="px-3 py-2 border-b">Wilayah</th>
+                                        <th className="px-3 py-2 border-b">Kota Asal</th>
+                                        <th className="px-3 py-2 border-b">Tgl Update Bio</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th>
                                     </tr>
-                                ) : pelajar.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="9" className="text-center p-4">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    pelajar.map((item, index) => (
-                                        <tr key={item.id_pengajar || index} className="text-center">
-                                            <td className="border p-2 w-16">{index + 1 || "-"}</td>
-                                            <td className="border p-2">{item.nis || "-"}</td>
-                                            <td className="border p-2">{item.nama || "-"}</td>
-                                            <td className="border p-2">{item.kamar || "-"}</td>
-                                            <td className="border p-2">{item.blok || "-"}</td>
-                                            <td className="border p-2">{item.wilayah || "-"}</td>
-                                            <td className="border p-2">{item.lembaga || "-"}</td>
-                                            <td className="border p-2">{item.kota_asal || "-"}</td>
-                                            <td className="border p-2">{item.angkatan || "-"}</td>
-                                            <td className="border p-2">{item.tgl_update || "-"}</td>
-                                            <td className="border p-2">{item.tgl_input || "-"}</td>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingPelajar ? (
+                                        <tr>
+                                            <td colSpan="11" className="text-center py-6">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                            </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : pelajar.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="11" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        pelajar.map((item, index) => (
+                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                                <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.no_induk || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jurusan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.rombel || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
                     )
                 )}
 

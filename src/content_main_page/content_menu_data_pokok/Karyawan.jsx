@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import useFetchKaryawan from '../../hooks/hooks_menu_data_pokok/Kayawan';
 import blankProfile from "../../assets/blank_profile.png";
 import Filters from '../../components/Filters';
+import Pagination from '../../components/Pagination';
 
 
 const Karyawan = () => {

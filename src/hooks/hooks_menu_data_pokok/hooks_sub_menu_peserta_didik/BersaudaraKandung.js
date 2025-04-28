@@ -30,6 +30,8 @@ const useFetchPesertaDidikBersaudara = (filters) => {
 
         if (debouncedSearchTerm) url += `&search=${encodeURIComponent(debouncedSearchTerm)}`;
 
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
