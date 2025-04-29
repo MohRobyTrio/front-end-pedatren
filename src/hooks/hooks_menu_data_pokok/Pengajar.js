@@ -93,7 +93,7 @@ const useFetchPengajar = (filters) => {
     const lastRequest = useRef("");  // Untuk menyimpan request terakhir
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/list/pengajars?limit=${limit}&page=${currentPage}`;
+        let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}&page=${currentPage}`;
         
         if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;

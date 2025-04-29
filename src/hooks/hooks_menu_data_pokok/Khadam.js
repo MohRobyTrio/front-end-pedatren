@@ -1,24 +1,24 @@
+// src/hooks/useFetchKhadam.js
 import { useState, useEffect, useRef, useCallback } from "react";
-import { API_BASE_URL } from "../../config";
+import { API_BASE_URL } from "../config";
 
-const useFetchSantri = (filters) => {
-    const [santri, setSantri] = useState([]);
-    const [loadingSantri, setLoadingSantri] = useState(true);
+const useFetchKhadam = (filters) => {
+    const [khadam, setKhadam] = useState([]);
+    const [loadingKhadam, setLoadingKhadam] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
-    const [totalDataSantri, setTotalDataSantri] = useState(0);
+    const [totalDataKhadam, setTotalDataKhadam] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-
     const lastRequest = useRef("");
 
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 400);
+        }, 500);
 
         return () => {
             clearTimeout(handler);
@@ -26,7 +26,7 @@ const useFetchSantri = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/santri?limit=${limit}&page=${currentPage}`;
+        let url = `${API_BASE_URL}data-pokok/khadam?limit=${limit}&page=${currentPage}`;
 
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
@@ -43,16 +43,9 @@ const useFetchSantri = (filters) => {
         if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
         if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
-        if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
-        if (filters?.angkatanPelajar) url += `&angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`;
-        if (filters?.angkatanSantri) url += `&angkatan_santri=${encodeURIComponent(filters.angkatanSantri)}`;
         if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
         if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
-        if (filters?.urutBerdasarkan) url += `&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`;
-        if (filters?.urutSecara) url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`;
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
-
-        // if (filters?.kewaliasuhan) url += `&kewaliasuhan=${encodeURIComponent(filters.kewaliasuhan)}`;
 
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
@@ -62,28 +55,26 @@ const useFetchSantri = (filters) => {
         lastRequest.current = url;
         console.log("Fetching data from:", url);
 
-        setLoadingSantri(true);
+        setLoadingKhadam(true);
         setError(null);
 
         try {
             const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`${response.statusText}: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`Fetch error: ${response.status}`);
 
             const data = await response.json();
-            console.log("Data dari API Santri:", data);
+            console.log("Data Khadam dari API:", data);
 
-            setSantri(Array.isArray(data.data) ? data.data : []);
-            setTotalDataSantri(data.total_data || 0);
+            setKhadam(Array.isArray(data.data) ? data.data : []);
+            setTotalDataKhadam(data.total_data || 0);
             setTotalPages(data.total_pages || 1);
             setCurrentPage(data.current_page || 1);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
-            setSantri([]);
+            setKhadam([]);
         } finally {
-            setLoadingSantri(false);
+            setLoadingKhadam(false);
         }
     }, [currentPage, filters, limit, debouncedSearchTerm]);
 
@@ -96,18 +87,18 @@ const useFetchSantri = (filters) => {
     }, [limit]);
 
     return {
-        santri,
-        loadingSantri,
+        khadam,
+        loadingKhadam,
         searchTerm,
         setSearchTerm,
         error,
         limit,
         setLimit,
-        totalDataSantri,
+        totalDataKhadam,
         totalPages,
         currentPage,
         setCurrentPage
     };
 };
 
-export default useFetchSantri;
+export default useFetchKhadam;

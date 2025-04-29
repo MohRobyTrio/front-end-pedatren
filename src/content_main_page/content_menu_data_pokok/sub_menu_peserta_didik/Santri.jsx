@@ -133,9 +133,7 @@ const Santri = () => {
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
             { label: "NIUP", value: "niup" },
-            { label: "Angkatan", value: "angkatan" },
-            { label: "Jenis Kelamin", value: "jenis kelamin" },
-            { label: "Tempat Lahir", value: "tempat lahir" }
+            { label: "Jenis Kelamin", value: "jenis kelamin" }
         ],
         // Sudah
         urutSecara: [
