@@ -17,7 +17,7 @@ const useFetchPengurus = (filters) => {
             setLoading(true);
             setError(null);
 
-            let url = `${API_BASE_URL}data-pokok/list/pengurus?limit=${limit}`;
+            let url = `${API_BASE_URL}data-pokok/pengurus?limit=${limit}`;
             if (currentPage > 1) {
                 url += `&page=${currentPage}`;
             }
