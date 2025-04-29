@@ -12,7 +12,7 @@ const DataPelanggaran = () => {
         status_pelanggaran: ''
     });
     const [page, setPage] = useState(1);
-    
+
     const {
         data,
         loading,
@@ -28,7 +28,7 @@ const DataPelanggaran = () => {
         fetchData,
         filterOptions
     } = useFetchPelanggaran();
-    
+
     const [showFilters, setShowFilters] = useState(false);
 
     // Fetch data saat filter/page berubah
@@ -61,7 +61,7 @@ const DataPelanggaran = () => {
                         }}
                     />
                 )}
-                
+
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -124,23 +124,92 @@ const PelanggaranCard = ({ data }) => {
             {/* Info Santri */}
             <div className="flex-1 space-y-2 min-w-[200px]">
                 <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
-                <p className="text-sm text-gray-600">
-                    Domisili        :{data.wilayah} - {data.blok} {data.kamar}
-                </p>
-                <p className="text-sm text-gray-600">
-                    Alamat          :{data.kabupaten}, {data.provinsi}
-                </p>
-                <p className="text-sm text-gray-600">
-                    Lembaga         :{data.lembaga}
-                </p>
+                <div className="flex">
+                    <div className="w-24 text-black-700">Domisili</div>
+                    <div className="flex-1">
+                        <span className="text-black-600">: {data.wilayah} - {data.blok} {data.kamar}</span>
+                    </div>
+                </div>
+
+                <div className="flex">
+                    <div className="w-24 text-black-700">Pendidikan</div>
+                    <div className="flex-1">
+                        <span className="text-black-600">: {data.lembaga}</span>
+                    </div>
+                </div>
+
+                <div className="flex">
+                    <div className="w-24 text-black-700">Alamat</div>
+                    <div className="flex-1">
+                        <span className="text-black-600">: {data.kabupaten}, {data.provinsi}</span>
+                    </div>
+                </div>
+
                 <br />
-                <p className="text-sm text-gray-600">
-                    Pencatat        :{data.pencatat}</p>
+
+                <div className="flex">
+                    <div className="w-24 text-black-700">Pencatat</div>
+                    <div className="flex-1">
+                        <span className="text-black-600">: ({data.pencatat})</span>
+                    </div>
+                </div>
             </div>
 
             {/* Detail Pelanggaran */}
-            <div className="flex-1 space-y-2 min-w-[200px]">
-                <h2 className="font-semibold">Pelanggaran</h2>
+            <div className="mt-6 md:mt-0 md:pl-8 md:w-1/2">
+                <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
+
+                <div className="space-y-2">
+                    <div className="flex">
+                        <div className="w-40 text-black-700">Kategori</div>
+                        <div className="flex-1">
+                            <span className={`text-black-600 ${data.jenis_pelanggaran === 'Berat'
+                                    ? 'text-red-600'
+                                    : data.jenis_pelanggaran === 'Sedang'
+                                        ? 'text-orange-600'
+                                        : 'text-yellow-600'
+                                }`}>
+                                : {data.jenis_pelanggaran}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="w-40 text-black-700">Diproses Mahkamah</div>
+                        <div className="flex-1 flex items-center">
+                            <span className="text-black-600">: {data.diproses_mahkamah ? 'Ya ✅' : 'Tidak ❌'}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="w-40 text-black-700">Status</div>
+                        <div className="flex-1">
+                        <span className={`text-black-600 font-medium ${
+                        data.status_pelanggaran === 'Sudah diproses' 
+                            ? 'text-green-600' 
+                            : data.status_pelanggaran === 'Sedang diproses'
+                            ? 'text-yellow-600'
+                            : 'text-gray-600'
+                    }`}>
+                        : {data.status_pelanggaran}
+                    </span>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="w-40 text-black-700">Jenis</div>
+                        <div className="flex-1">
+                            <span className="text-black-600">: {data.keterangan}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-4 text-right text-gray-500 text-sm">
+                    {data.tgl_input}
+                </div>
+            </div>
+            {/* <div className="flex-1 space-y-2 min-w-[200px]">
+                <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
                 <div className="flex gap-2 items-center">
                     <p className="font-semibold">Kategori: </p>
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
@@ -176,12 +245,12 @@ const PelanggaranCard = ({ data }) => {
                 </div>
                 
                 
-            </div>
+            </div> */}
 
             {/* Pencatat */}
-            <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
+            {/* <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
                 <p className="text-xs text-gray-500">{data.tgl_input}</p>
-            </div>
+            </div> */}
         </div>
     );
 };
