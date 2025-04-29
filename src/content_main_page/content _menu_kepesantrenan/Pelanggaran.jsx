@@ -1,86 +1,189 @@
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useFetchPelanggaran from "../../hooks/hook_menu_kepesantrenan/pelanggaran";
+import SearchBar from "../../components/SearchBar";
+import Filters from "../../components/Filters";
+import { OrbitProgress } from "react-loading-indicators";
+import Pagination from "../../components/Pagination";
 
-const Pelanggaran = () => {
-    const [search, setSearch] = useState("");
+const DataPelanggaran = () => {
+    const [filters, setFilters] = useState({
+        provinsi: '',
+        jenis_pelanggaran: '',
+        status_pelanggaran: ''
+    });
+    const [page, setPage] = useState(1);
+    
+    const {
+        data,
+        loading,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        searchTerm,
+        setSearchTerm,
+        fetchData,
+        filterOptions
+    } = useFetchPelanggaran();
+    
+    const [showFilters, setShowFilters] = useState(false);
 
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Tengah", "Jawa Timur"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Semarang", "Surabaya"],
-        kecamatan: ["Semua Kecamatan", "Cimahi", "Ungaran", "Gubeng"],
-        wilayah: ["Pilih Wilayah", "wilayah A", "wilayah B"]
-    };
+    // Fetch data saat filter/page berubah
+    useEffect(() => {
+        fetchData(filters);
+    }, [filters, page, fetchData]);
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Pelanggaran</h1>
-                <div className="flex flex-wrap gap-2">
+        <div className="flex-1 p-6">
+            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <h1 className="text-2xl font-bold">Data Pelanggaran</h1>
+                <div className="space-x-2 flex flex-wrap">
+                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">
+                        Export Data
+                    </button>
                     <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">
                         Statistik
                     </button>
                 </div>
             </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                    {Object.entries(filterOptions).map(([key, options]) => (
-                        <select key={key} className="border p-2 rounded w-full sm:w-auto">
-                            {options.map((option) => (
-                                <option key={option} value={option}>{option}</option>
-                            ))}
-                        </select>
-                    ))}
-                </div>
-                <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
-                    <div className="flex items-center gap-2">
-                        <select className="border p-2 rounded">
-                            <option>25</option>
-                            <option>50</option>
-                            <option>100</option>
-                        </select>
-                        <span>Total data 0</span>
-                    </div>
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <input
-                            type="text"
-                            placeholder="Cari Pelanggaran ..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="border p-2 rounded flex-1"
-                        />
-                        <button className="p-2 bg-green-500 text-white rounded">
-                            <i className="fas fa-filter"></i>
-                        </button>
-                    </div>
-                </div>
-                <div className="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start gap-4 mb-4">
-                    <img src="/avatar1.png" alt="profile" className="w-16 h-16 rounded-full" />
-                    <div className="flex-1">
-                        <h2 className="font-bold">Sholehatu Mahdia</h2>
-                        <br />
-                        <div className="grid grid-cols-2 gap-2">
-                            <p>Domisili</p><p>: Wilayah Al-Hasyimiyah (03) - H.3</p>
-                            <p>Pendidikan</p><p>: S2 Manajemen Pendidikan Islam</p>
-                            <p>Alamat</p><p>: Kab. Situbondo, Jawa Timur</p>
-                            <p>Pencatat</p><p>: (AutoSystem)</p>
+                {showFilters && (
+                    <Filters
+                        filters={filters}
+                        filterOptions={filterOptions}
+                        onChange={(newFilters) => {
+                            setFilters(newFilters);
+                            setPage(1);
+                        }}
+                    />
+                )}
+                
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    totalFiltered={data.length}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    showViewButtons={false}
+                />
+
+                <div>
+                    {error && (
+                        <div className="bg-red-50 text-red-600 p-3 rounded mb-4">
+                            Error: {error}
                         </div>
-                    </div>
-                    <div className="flex-1">
-                        <p className="font-bold">Pelanggaran</p>
-                        <br />
-                        <div className="grid grid-cols-2 gap-2">
-                            <p>Kategori</p><p>: Ringan</p>
-                            <p>Diproses Mahkamah</p><p>: <span className="text-red-500">Tidak ❌</span></p>
-                            <p>Status</p><p className="text-red-500">: Belum diproses</p>
-                            <p>Jenis</p><p>: Telat kembali ke pondok pada perizinan...</p>
-                        </div>
-                        <p className="text-gray-500 text-sm mt-2 text-right">26 Nov 2024 00:02:00</p>
+                    )}
+
+                    <div className="space-y-4">
+                        {loading ? (
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                            </div>
+                        ) : data.length > 0 ? (
+                            <div className="">
+                                {data.map(pelanggaran => (
+                                    <PelanggaranCard key={pelanggaran.id} data={pelanggaran} />
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-center py-8 text-gray-500">Tidak ada data pelanggaran</p>
+                        )}
                     </div>
                 </div>
+
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onChange={setCurrentPage}
+                    className="mt-6"
+                />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Pelanggaran;
+// Komponen Card untuk Pelanggaran
+const PelanggaranCard = ({ data }) => {
+    return (
+        <div key={data.id} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4">
+            {/* Foto Santri */}
+            <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
+                {data.foto_profil ? (
+                    <img src={data.foto_profil} alt={data.nama_santri} className="w-full h-full object-cover" />
+                ) : (
+                    <i className="fas fa-user text-gray-400 text-4xl"></i>
+                )}
+            </div>
+
+            {/* Info Santri */}
+            <div className="flex-1 space-y-2 min-w-[200px]">
+                <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
+                <p className="text-sm text-gray-600">
+                    Domisili        :{data.wilayah} - {data.blok} {data.kamar}
+                </p>
+                <p className="text-sm text-gray-600">
+                    Alamat          :{data.kabupaten}, {data.provinsi}
+                </p>
+                <p className="text-sm text-gray-600">
+                    Lembaga         :{data.lembaga}
+                </p>
+                <br />
+                <p className="text-sm text-gray-600">
+                    Pencatat        :{data.pencatat}</p>
+            </div>
+
+            {/* Detail Pelanggaran */}
+            <div className="flex-1 space-y-2 min-w-[200px]">
+                <h2 className="font-semibold">Pelanggaran</h2>
+                <div className="flex gap-2 items-center">
+                    <p className="font-semibold">Kategori: </p>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        data.jenis_pelanggaran === 'Berat' 
+                            ? 'bg-red-100 text-red-800' 
+                            : data.jenis_pelanggaran === 'Sedang'
+                            ? 'bg-orange-100 text-orange-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                        {data.jenis_pelanggaran}
+                    </span>
+                </div>
+
+                <div className="flex gap-2 items-center">
+                    <p className="font-semibold">Putusan:</p>
+                    <p className="text-sm">{data.jenis_putusan}</p>
+                </div>
+                
+                <div className="flex gap-2 items-center">
+                    <p className="font-semibold">Status:</p>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        data.status_pelanggaran === 'Selesai' 
+                            ? 'bg-green-100 text-green-800' 
+                            : data.status_pelanggaran === 'Sedang diproses'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                    }`}>
+                        {data.status_pelanggaran}
+                    </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                    <p className="text-sm">Keteragan    :{data.keterangan}</p>
+                </div>
+                
+                
+            </div>
+
+            {/* Pencatat */}
+            <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
+                <p className="text-xs text-gray-500">{data.tgl_input}</p>
+            </div>
+        </div>
+    );
+};
+
+export default DataPelanggaran;
