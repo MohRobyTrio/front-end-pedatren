@@ -192,38 +192,57 @@ const Pengajar = () => {
                         )}
                     </div>
                 ) : (
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-2 w-16">No</th>
-                                <th className="border p-2">NIUP</th>
-                                <th className="border p-2">Nama</th>
-                                <th className="border p-2">Lembaga</th>
+                    <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm text-left">
+                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                            <tr>
+                                <th className="px-3 py-2 border-b">#</th>
+                                <th className="px-3 py-2 border-b">NIUP</th>
+                                <th className="px-3 py-2 border-b">Nama</th>
+                                <th className="px-3 py-2 border-b">Umur</th>
+                                <th className="px-3 py-2 border-b">Pangkalan Lembaga</th>
+                                <th className="px-3 py-2 border-b">Materi Ajar</th>
+                                <th className="px-3 py-2 border-b">Total Materi Ajar</th>
+                                <th className="px-3 py-2 border-b">Masa Kerja</th>
+                                <th className="px-3 py-2 border-b">Golonngan</th>
+                                <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                <th className="px-3 py-2 border-b">Tgl Update Bio</th>
+                                <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="text-gray-800">
                             {loadingPengajar ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-4">
+                                    <td colSpan="11" className="text-center p-4">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </td>
                                 </tr>
                             ) : pengajar.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-4">Tidak ada data</td>
+                                    <td colSpan="11" className="text-center p-4">Tidak ada data</td>
                                 </tr>
                             ) : (
                                 pengajar.map((item, index) => (
                                     <tr key={item.id_pengajar || index} className="text-center">
-                                        <td className="border p-2 w-16">{index + 1}</td>
-                                        <td className="border p-2">{item.niup}</td>
-                                        <td className="border p-2">{item.nama}</td>
-                                        <td className="border p-2">{item.lembaga}</td>
+                                        <td className="px-3 py-2 border-b">{index + 1}</td>
+                                        <td className="px-3 py-2 border-b">{item.niup }</td>
+                                        <td className="px-3 py-2 border-b">{item.nama}</td>
+                                        <td className="px-3 py-2 border-b">{item.umur}</td>
+                                        <td className="px-3 py-2 border-b">{item.lembaga}</td>
+                                        <td className="px-3 py-2 border-b">{item.daftar_materi}</td>
+                                        <td className="px-3 py-2 border-b">{item.total_materi}</td>
+                                        <td className="px-3 py-2 border-b">{item.masa_kerja}</td>
+                                        <td className="px-3 py-2 border-b">{item.golongan}</td>
+                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_update}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_input}</td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </table>
+                    </div>
                 )}
 
                 {totalPages > 1 && (

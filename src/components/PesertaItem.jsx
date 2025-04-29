@@ -19,7 +19,7 @@ const PesertaItem = ({ student }) => {
                 <div>
                     <h2 className="font-semibold">{student.nama}</h2>
                     <p className="text-gray-600">NIUP: {student.niup}</p>
-                    <p className="text-gray-600">{student.lembaga}</p>
+                    <p className="text-gray-600">{student.pendidikan_terakhir} - {student.lembaga}</p>
                 </div>
             </div>
 

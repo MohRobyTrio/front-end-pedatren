@@ -4,6 +4,7 @@ import PengurusItem from "../../components/PengurusItem";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import Pagination from "../../components/Pagination";
+import blankProfile from "../../assets/blank_profile.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Pengurus = () => {
@@ -141,56 +142,58 @@ const Pengurus = () => {
                             ) : pengurus.length === 0 ? (
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
-                                pengurus.map((item, index) => <PengurusItem key={index} pengurus={item} />)
+                                pengurus.map((item, index) => <PengurusItem key={index} item={item} />)
                             )}
                         </div>
                     ) : (
-                        <table className="w-full border-collapse border border-gray-300">
-                            <thead>
-                                <tr className="bg-gray-100">
-                                    <th className="border p-2">No.</th>
-                                    <th className="border p-2">NIUP</th>
-                                    <th className="border p-2">Nama</th>
-                                    <th className="border p-2">Jabatan</th>
-                                    <th className="border p-2">Umur</th>
-                                    <th className="border p-2">Satuan Kerja</th>
-                                    <th className="border p-2">Jenis</th>
-                                    <th className="border p-2">Golongan</th>
-                                    <th className="border p-2">Pendidikan Terakhir</th>
-                                    <th className="border p-2">Tgl Input Pengurus</th>
-                                    <th className="border p-2">Tgl Update Pengurus</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="5" className="text-center p-4">
-                                            <i className="fas fa-spinner fa-spin text-2xl text-gray-500"></i>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                    <tr className="bg-gray-100">
+                                        <th className="px-3 py-2 border-b">No.</th>
+                                        <th className="px-3 py-2 border-b">NIUP</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">Jabatan</th>
+                                        <th className="px-3 py-2 border-b">Umur</th>
+                                        <th className="px-3 py-2 border-b">Satuan Kerja</th>
+                                        <th className="px-3 py-2 border-b">Jenis</th>
+                                        <th className="px-3 py-2 border-b">Golongan</th>
+                                        <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input Pengurus</th>
+                                        <th className="px-3 py-2 border-b">Tgl Update Pengurus</th>
                                     </tr>
-                                ) : pengurus.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="5" className="text-center p-4">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    pengurus.map((item, index) => (
-                                        <tr key={item.id_pengurus || index} className="text-center">
-                                            <td className="border p-2">{index + 1}</td>
-                                            <td className="border p-2">{item.niup}</td>
-                                            <td className="border p-2">{item.nama}</td>
-                                            <td className="border p-2">{item.jabatan}</td>
-                                            <td className="border p-2">{item.umur}</td>
-                                            <td className="border p-2">{item.satuan_kerja}</td>
-                                            <td className="border p-2">{item.jenis}</td>
-                                            <td className="border p-2">{item.golongan}</td>
-                                            <td className="border p-2">{item.pendidikan_terakhir}</td>
-                                            <td className="border p-2">{item.tgl_input}</td>
-                                            <td className="border p-2">{item.tgl_update}</td>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center p-4">
+                                                <i className="fas fa-spinner fa-spin text-2xl text-gray-500"></i>
+                                            </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : pengurus.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center p-4">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        pengurus.map((item, index) => (
+                                            <tr key={item.id_pengurus || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jabatan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.satuan_kerja || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jenisJabatan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     )
                 )}
                 {totalPages > 1 && (

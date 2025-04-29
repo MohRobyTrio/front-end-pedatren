@@ -3,10 +3,22 @@ import { OrbitProgress } from "react-loading-indicators";
 import Filters from '../../components/Filters';
 import SearchBar from '../../components/SearchBar';
 import { useEffect, useState } from 'react';
+import blankProfile from "../../assets/blank_profile.png";
 import useFetchOrangTua from '../../hooks/hooks_menu_data_pokok/Orangtua';
+import Pagination from "../../components/Pagination";
 
 const OrangTua = () => {
-    const { orangtua, loading } = useFetchOrangTua();
+    const { orangtua,
+        loadingOrangtua,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalDataOrangtua,
+        totalPages,
+        currentPage,
+        setCurrentPage, } = useFetchOrangTua();
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -17,18 +29,10 @@ const OrangTua = () => {
         }
     }, []);
 
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
-        jenisKelamin: ["Pilih Jenis Kelamin", "Laki-laki", "Perempuan"],
-        hidup: ["Pilih Wafat/Hidup", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
-        smartcard: ["Smartcard", "Aktif", "Tidak Aktif", "Alumni"],
-        phoneNumber: ["Semua Phone Number", "Tersedia", "Tidak Tersedia"],
-        kabupaten: ["Pilih Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
-        ortuDari: ["Semua Orang Tua Dari"],
-        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
-        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
-        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
 
     return (
@@ -47,19 +51,20 @@ const OrangTua = () => {
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                {/* <Filters showFilters={showFilters} filterOptions={filterOptions} /> */}
+
                 <SearchBar
-                    searchTerm={""}
-                    setSearchTerm={""}
-                    totalData={0}
-                    totalFiltered={0}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalDataOrangtua}
+                    totalFiltered={orangtua.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
 
                 />
                 {viewMode === "list" ? (
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 listorangtua">
-                        {loading ? (
+                        {loadingOrangtua ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
@@ -70,15 +75,15 @@ const OrangTua = () => {
                                 <div key={item.id_orangtua} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
                                     <img
                                         alt={item.nama}
-                                        className="w-16 h-16 rounded-full object-cover"
-                                        src={item.image_url}
+                                        className="w-20 h-24 object-cover"
+                                        src={item.image_url || blankProfile}
                                         width={50}
                                         height={50}
                                     />
                                     <div>
                                         <h2 className="font-semibold">{item.nama}</h2>
-                                        <p className="text-gray-600">NIK: {item.nik}</p>
-                                        <p className="text-gray-600">{item.telepon}</p>
+                                        <p className="text-gray-600">NIK: {item.nik_or_passport}</p>
+                                        <p className="text-gray-600">Phone : {item.telepon_1 || item.telepon_2}</p>
                                     </div>
                                 </div>
                             ))
@@ -86,22 +91,22 @@ const OrangTua = () => {
                     </div>
 
                 ) : (
-                    <div className="w-full border-collapse border border-gray-300">
-                        <table className="min-w-[900px] w-full border border-gray-200 text-sm">
-                            <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm text-left">
+                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
-                                    <th className="border border-gray-200 px-4 py-2 text-left w-12">#</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">NIK</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Nama</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Telepon 1</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Telepon 2</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Kota Asal</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Update Bio</th>
-                                    <th className="border border-gray-200 px-4 py-2 text-left">Tgl Input Bio</th>
+                                    <th className="px-3 py-2 border-b">#</th>
+                                    <th className="px-3 py-2 border-b">NIK</th>
+                                    <th className="px-3 py-2 border-b">Nama</th>
+                                    <th className="px-3 py-2 border-b">Telepon 1</th>
+                                    <th className="px-3 py-2 border-b">Telepon 2</th>
+                                    <th className="px-3 py-2 border-b">Kota Asal</th>
+                                    <th className="px-3 py-2 border-b">Tgl Update Bio</th>
+                                    <th className="px-3 py-2 border-b">Tgl Input Bio</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {loading ? (
+                            <tbody className="text-gray-800">
+                                {loadingOrangtua ? (
                                     <tr>
                                         <td colSpan="9" className="text-center py-6">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
@@ -113,21 +118,25 @@ const OrangTua = () => {
                                     </tr>
                                 ) : (
                                     orangtua.map((item, index) => (
-                                        <tr key={item.id_orangtua} className="hover:bg-gray-50">
-                                            <td className="border px-4 py-2">{index + 1}</td>
-                                            <td className="border px-4 py-2">{item.nik}</td>
-                                            <td className="border px-4 py-2">{item.nama}</td>
-                                            <td className="border px-4 py-2">{item.telepon1}</td>
-                                            <td className="border px-4 py-2">{item.telepon2}</td>
-                                            <td className="border px-4 py-2">{item.kota_asal}</td>
-                                            <td className="border px-4 py-2">{item.updated_at}</td>
-                                            <td className="border px-4 py-2">{item.input_at}</td>
+                                        <tr key={item.id_orangtua} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{item.nik_or_passport}</td>
+                                            <td className="px-3 py-2 border-b">{item.nama}</td>
+                                            <td className="px-3 py-2 border-b">{item.telepon_1}</td>
+                                            <td className="px-3 py-2 border-b">{item.telepon_2}</td>
+                                            <td className="px-3 py-2 border-b">{item.kota_asal}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_update}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_input}</td>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
                         </table>
                     </div>
+                )}
+
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
             </div>
         </div>
