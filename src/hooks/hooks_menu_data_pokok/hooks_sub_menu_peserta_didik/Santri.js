@@ -44,7 +44,6 @@ const useFetchSantri = (filters) => {
         if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
         if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
-        if (filters?.angkatanPelajar) url += `&angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`;
         if (filters?.angkatanSantri) url += `&angkatan_santri=${encodeURIComponent(filters.angkatanSantri)}`;
         if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
         if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
