@@ -36,6 +36,13 @@ const DataPelanggaran = () => {
         fetchData(filters);
     }, [filters, page, fetchData]);
 
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+
     return (
         <div className="flex-1 p-6">
             <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
@@ -100,7 +107,7 @@ const DataPelanggaran = () => {
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onChange={setCurrentPage}
+                    handlePageChange={handlePageChange}
                     className="mt-6"
                 />
             </div>
