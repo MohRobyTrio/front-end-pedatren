@@ -10,8 +10,22 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownWilayah from '../../hooks/hook_dropdown/DropdownWilayah';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import DropdownAngkatan from '../../hooks/hook_dropdown/DropdownAngkatan';
+import Modal from '../../components/Modal';
 
 const AnakPegawai = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wargaPesantren: "",
@@ -211,7 +225,7 @@ const AnakPegawai = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 anakPegawai.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -265,7 +279,7 @@ const AnakPegawai = () => {
                                         </tr>
                                     ) : (
                                         anakPegawai.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center hover:cursor-pointer">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center hover:cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
@@ -278,7 +292,7 @@ const AnakPegawai = () => {
                                                 <td className="px-3 py-2 border-b">{item.blok || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kamar || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.orang_tua || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_ortu || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                             </tr>
@@ -290,6 +304,14 @@ const AnakPegawai = () => {
 
                     )
                 )}
+
+                {isModalOpen && (
+                    <Modal
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
+
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import blankProfile from "../assets/blank_profile.png";
-import ModalPeserta from "./Modal";
+import Modal from "./Modal";
 
 const PesertaItem = ({ student }) => {
     const [openModal, setOpenModal] = useState(false);
@@ -27,7 +27,7 @@ const PesertaItem = ({ student }) => {
                 </div>
             </div>
 
-            {openModal && <ModalPeserta student={student} onClose={() => setOpenModal(false)} />}
+            {openModal && <Modal item={student} onClose={() => setOpenModal(false)} />}
         </>
     );
 };

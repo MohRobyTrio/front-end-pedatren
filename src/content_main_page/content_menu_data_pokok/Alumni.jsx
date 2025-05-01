@@ -9,8 +9,22 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import TesModal from "../../components/TesModal";
 
 const Alumni = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wafathidup: "",
@@ -151,7 +165,7 @@ const Alumni = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 alumni.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -210,7 +224,7 @@ const Alumni = () => {
                                         </tr>
                                     ) : (
                                         alumni.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -234,6 +248,12 @@ const Alumni = () => {
                     )
                 )}
 
+                {isModalOpen && (
+                    <TesModal
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
