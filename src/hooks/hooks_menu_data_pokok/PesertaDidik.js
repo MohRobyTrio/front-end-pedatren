@@ -11,12 +11,21 @@ const useFetchPeserta = (filters) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const lastRequest = useRef("");
+
+    // Debounce effect
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
         let url = `${API_BASE_URL}data-pokok/pesertadidik?limit=${limit}&page=${currentPage}`;
         
-        if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
+        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
         // Object.entries(filters || {}).forEach(([key, value]) => {
         //     if (value && value !== "Semua") {
         //         url += `&${key}=${encodeURIComponent(value)}`;

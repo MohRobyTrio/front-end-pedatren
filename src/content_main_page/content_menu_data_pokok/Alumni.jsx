@@ -155,7 +155,11 @@ const Alumni = () => {
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
-                                            src={item.foto_profil || blankProfile}
+                                            src={item.foto_profil}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = blankProfile;
+                                            }}
                                         />
                                         <div>
                                             <h2 className="font-semibold">{item.nama || "-"}</h2>

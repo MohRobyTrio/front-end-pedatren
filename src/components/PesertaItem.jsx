@@ -14,7 +14,11 @@ const PesertaItem = ({ student }) => {
                 <img
                     alt={student.nama || "-"}
                     className="w-20 h-24 object-cover"
-                    src={student.foto_profil || blankProfile}
+                    src={student.foto_profil}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = blankProfile;
+                    }}
                 />
                 <div>
                     <h2 className="font-semibold">{student.nama}</h2>
