@@ -36,7 +36,7 @@ npm run dev
 
 Setelah memasukkan perintah git pull ketik perintah ini untuk keluar dari commit merge di terminal vscode:
 ```sh
-:q!
+:q
 ```
 
 🚀 Selamat ngoding! 🎉
