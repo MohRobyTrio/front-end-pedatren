@@ -36,7 +36,7 @@ const Pelajar = () => {
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
-    const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
+    const { menuAngkatanPelajar } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -107,9 +107,7 @@ const Pelajar = () => {
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
 
-        angkatanPelajar: menuAngkatanPelajar,
-
-        angkatanSantri: menuAngkatanSantri
+        angkatanPelajar: menuAngkatanPelajar
     }
     const filter5 = {
         // Sudah
@@ -133,9 +131,7 @@ const Pelajar = () => {
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
             { label: "NIUP", value: "niup" },
-            { label: "Angkatan", value: "angkatan" },
-            { label: "Jenis Kelamin", value: "jenis kelamin" },
-            { label: "Tempat Lahir", value: "tempat lahir" }
+            { label: "Jenis Kelamin", value: "jenis_kelamin" }
         ],
         // Sudah
         urutSecara: [

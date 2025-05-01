@@ -133,9 +133,7 @@ const BersaudaraKandung = () => {
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
             { label: "NIUP", value: "niup" },
-            { label: "Angkatan", value: "angkatan" },
-            { label: "Jenis Kelamin", value: "jenis kelamin" },
-            { label: "Tempat Lahir", value: "tempat lahir" }
+            { label: "Jenis Kelamin", value: "jenis_kelamin" }
         ],
         // Sudah
         urutSecara: [
@@ -156,6 +154,13 @@ const BersaudaraKandung = () => {
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ],
+        statusSaudara: [
+            { label: "Status Saudara", value: "" },
+            { label: "Ibu Kandung Terisi", value: "ibu kandung terisi" },
+            { label: "Ibu Kandung Tidak Terisi", value: "ibu kandung tidak terisi" },
+            { label: "KK Sama Dengan Ibu Kandung", value: "kk sama dgn ibu kandung" },
+            { label: "KK Berbeda Dengan Ibu Kandung", value: "kk berbeda dgn ibu kandung" }
         ]
         // kewaliasuhan: [
         //     { label: "Kewaliasuhan", value: "" },
