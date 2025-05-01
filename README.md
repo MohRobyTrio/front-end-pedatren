@@ -32,7 +32,9 @@ Coba jalankan proyek:
 npm run dev
 ```
 
-klik ESC dan ketik perintah ini untuk keluar dari commit merge di terminal vscode:
+## Cara Merge Repository
+
+Setelah memasukkan perintah git pull ketik perintah ini untuk keluar dari commit merge di terminal vscode:
 ```sh
 :q!
 ```
