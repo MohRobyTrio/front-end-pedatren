@@ -11,12 +11,29 @@ const useFetchAfektif = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const lastRequest = useRef('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+
+  const SEARCHABLE_FIELDS = ['nama_santri', 'provinsi', 'kabupaten', 'lembaga'];
+
+  // Debounce searchTerm selama 400ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+    }, 400);
+
+    return () => {
+        clearTimeout(handler);
+    };
+}, [searchTerm]);
 
   const fetchData = useCallback(async (filters = {}) => {
-    let url = `${API_BASE_URL}dropdown/catatan-afektif?limit=${limit}&page=${currentPage}`;
+    let url = `${API_BASE_URL}data-pokok/catatan-afektif?limit=${limit}&page=${currentPage}`;
     
     // Handle search
-    if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
+    if (debouncedSearchTerm){
+      url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+      url += `&search_fields=${SEARCHABLE_FIELDS.join(',')}`;
+    }
     
     // Handle filters
     Object.entries(filters).forEach(([key, value]) => {
@@ -60,7 +77,7 @@ const useFetchAfektif = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, searchTerm]);
+  }, [currentPage, limit, debouncedSearchTerm]);
 
   // Auto fetch when dependencies change
   useEffect(() => {
