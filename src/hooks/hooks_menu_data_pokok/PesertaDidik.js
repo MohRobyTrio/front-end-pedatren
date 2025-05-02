@@ -31,7 +31,6 @@ const useFetchPeserta = (filters) => {
         //         url += `&${key}=${encodeURIComponent(value)}`;
         //     }
         // });
-        if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
         if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
         if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
@@ -85,7 +84,7 @@ const useFetchPeserta = (filters) => {
         } finally {
             setLoadingPesertaDidik(false);
         }
-    }, [currentPage, filters, limit, searchTerm]);
+    }, [currentPage, filters, limit, debouncedSearchTerm]);
 
     useEffect(() => {
         fetchData();

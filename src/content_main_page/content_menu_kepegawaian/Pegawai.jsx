@@ -1,14 +1,61 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { OrbitProgress } from "react-loading-indicators";
-import defaultProfile from '/src/assets/blank_profile.png';
 import SearchBar from '../../components/SearchBar';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Filters from '../../components/Filters';
 import useFetchPegawai from '../../hooks/hooks_menu_kepegawaian/Pegawai';
-
+import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
+import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
+import blankProfile from "../../assets/blank_profile.png";
+import Pagination from '../../components/Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Pegawai = () => {
-    const { pegawai, loading, searchTerm, setSearchTerm, totalData, totalFiltered } = useFetchPegawai();
+    
+    const [filters, setFilters] = useState({
+        phoneNumber: "",
+        wafathidup: "",
+        status: "",
+        jenisKelamin: "",
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        angkatanPelajar: "",
+        angkatanSantri: "",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: ""
+    })
+
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
+    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
+    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
+    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
+
+    const updatedFilters = useMemo(() => ({
+        ...filters,
+        negara: negaraTerpilih,
+        provinsi: provinsiTerpilih,
+        kabupaten: kabupatenTerpilih,
+        kecamatan: kecamatanTerpilih,
+        lembaga: lembagaTerpilih,
+        jurusan: jurusanTerpilih,
+        kelas: kelasTerpilih,
+        rombel: rombelTerpilih
+    }), [filters, jurusanTerpilih, kabupatenTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih]);
+
+    const { pegawai, loadingPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPegawai, totalPages, currentPage, setCurrentPage } = useFetchPegawai(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -19,195 +66,192 @@ const Pegawai = () => {
         }
     }, []);
 
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura", "Brunei", "Thailand"],
-        lembaga: ["Semua Lembaga", "Madrasah", "Pesantren", "Universitas", "Sekolah"],
-        status: ["Semua Status", "Aktif", "Tidak Aktif", "Alumni"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Timur", "Jawa Tengah", "DKI Jakarta"],
-        kecamatan: ["Semua Kecamatan", "Kecamatan A", "Kecamatan B", "Kecamatan C"],
-        phoneNumber: ["Phone Number", "Tersedia", "Tidak Tersedia"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Surabaya", "Semarang", "Medan"],
-        urutBerdasarkan: ["Urut Berdasarkan", "Nama", "Tanggal Masuk", "Nomor Induk"],
-        urutSecara: ["Urut Secara", "Ascending", "Descending"]
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
+
+    const filter3 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        entitas: [
+            { label: "Semua Entitas", value: "" },
+            { label: "Pengurus", value: "pengurus" },
+            { label: "Karyawan", value: "karyawan" },
+            { label: "Pengajar", value: "pengajar" },
+            { label: "Pengajar-Pengurus", value: "pengajar pengurus" },
+            { label: "Pengajar-Karyawan", value: "pengajar karyawan" },
+            { label: "Pengurus-Karyawan", value: "pengurus karyawan" },
+            { label: "Pengajar-Pengurus-Karyawan", value: "pengajar pengurus karyawan" },
+        ],
+    }
+
+    const filter5 = {
+        // Sudah
+        wargaPesantren: [
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" }
+        ],
+        // Sudah
+        pemberkasan: [
+            { label: "Pemberkasan", value: "" },
+            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+            { label: "Tidak Ada KK", value: "tidak ada kk" },
+            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+        ],
+        umur: [
+            { label: "Semua Umur", value: "" },
+            { label: "< 20 Tahun", value: "0-20" },
+            { label: "20-29 Tahun", value: "20-29" },
+            { label: "30-39 Tahun", value: "30-39" },
+            { label: "40-49 Tahun", value: "40-49" },
+            { label: "50-59 Tahun", value: "50-49" },
+            { label: "60-65 Tahun", value: "60-65" },
+            { label: "> 65 Tahun", value: "65-200" }
+        ]
+    }
+
+    const filter4 = {
+        smartcard: [
+            { label: "Smartcard", value: "" },
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        ],
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ]
+    };
+
+    const renderStatus = (value) => {
+        if (value === true) return <FontAwesomeIcon icon={faCheck} className="text-green-600" />;
+        if (value === false) return <FontAwesomeIcon icon={faTimes} className="text-red-600" />;
+        return "-";
+      };
+      
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Pegawai</h1>
-                <div className="flex items-center">
-                    <div className="flex items-center space-x-2">
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
-                            Export
-                        </button>
-                        <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">
-                            Statistik
-                        </button>
-                    </div>
-                </div>
+                <h1 className="text-2xl font-bold">Khadam</h1>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <Filters showFilters={showFilters} filterOptions={filterOptions} />
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
+                    <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
+                    <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                </div>
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
-                    totalData={totalData}
-                    totalFiltered={totalFiltered}
+                    totalData={totalDataPegawai}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
-
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
                 />
-                {viewMode === "list" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
-                        {loading ? (
-                            <div className="col-span-3 flex justify-center items-center">
-                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                            </div>
-                        ) : pegawai.length === 0 ? (
-                            <p className="text-center col-span-3">Tidak ada data</p>
-                        ) : (
-                            pegawai.map((item) => (
-                                <div key={item.id_pengajar} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
-                                    <img
-                                        alt={item.nama || "-"}
-                                        className="w-20 h-24 object-cover"
-                                        src={item.image_url || defaultProfile}
-                                        width={50}
-                                        height={50}
-                                    />
-                                    <div>
-                                        <h2 className="font-semibold">{item.nama}</h2>
-                                        <p className="text-gray-600">{item.jabatan}</p>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+
+                {error ? (
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Muat Ulang
+                        </button>
                     </div>
                 ) : (
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-2 w-16">No</th>
-                                <th className="border p-2">Nama</th>
-                                <th className="border p-2">Jabatan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="4" className="text-center p-4">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </td>
-                                </tr>
+                    viewMode === "list" ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                            {loadingPegawai ? (
+                                <div className="col-span-3 flex justify-center items-center">
+                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                </div>
                             ) : pegawai.length === 0 ? (
-                                <tr>
-                                    <td colSpan="4" className="text-center p-4">Tidak ada data</td>
-                                </tr>
+                                <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 pegawai.map((item, index) => (
-                                    <tr key={item.id_pegawai} className="text-center">
-                                        <td className="border p-2 w-16">{index + 1}</td>
-                                        <td className="border p-2">{item.nama}</td>
-                                        <td className="border p-2">{item.jabatan}</td>
-                                    </tr>
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                        <img
+                                            alt={item.nama || "-"}
+                                            className="w-20 h-24 object-cover"
+                                            src={item.foto_profil}
+                                            onError={(e) => {
+                                                e.target.onerror = null; 
+                                                e.target.src = blankProfile;
+                                            }}
+                                        />
+                                        <div>
+                                            <h2 className="font-semibold">{item.nama || "-"}</h2>
+                                            <p className="text-gray-600">{item.status || "-"}</p>
+                                        </div>
+                                    </div>
                                 ))
                             )}
-                        </tbody>
-                    </table>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                    <tr>
+                                        <th className="px-3 py-2 border-b">No</th>
+                                        <th className="px-3 py-2 border-b">NIUP</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">Umur</th>
+                                        <th className="px-3 py-2 border-b">Pengurus</th>
+                                        <th className="px-3 py-2 border-b">Karyawan</th>
+                                        <th className="px-3 py-2 border-b">Pengajar</th>
+                                        <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingPegawai ? (
+                                        <tr>
+                                            <td colSpan="8" className="text-center py-6">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                            </td>
+                                        </tr>
+                                    ) : pegawai.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="8" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        pegawai.map((item, index) => (
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(item.pengurus)}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(item.karyawan)}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(item.pengajar)}</td>
+                                                <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
-
+                    )
                 )}
-                <nav aria-label="Page navigation example" className="flex justify-end  mt-6">
-                    <ul className="flex items-center -space-x-px h-10 text-sm">
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                <span className="sr-only">Previous</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 1 1 5l4 4"
-                                    />
-                                </svg>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                1
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                2
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                aria-current="page"
-                                className="z-10 flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700"
-                            >
-                                3
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                4
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                5
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                <span className="sr-only">Next</span>
-                                <svg
-                                    className="w-3 h-3 rtl:rotate-180"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 6 10"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="m1 9 4-4-4-4"
-                                    />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
+
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
 
             </div>
         </div>
