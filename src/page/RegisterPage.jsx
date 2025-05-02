@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRegister from "../hooks/Register";
+import logo from "../assets/logo.png";
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
@@ -42,15 +43,16 @@ const RegisterPage = () => {
     );
 
     return (
-        <section className="relative min-h-screen bg-gray-50 flex items-center justify-center">
-            <div className="absolute top-10 flex flex-row items-center">
+        <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 overflow-y-auto">
+              {/* Logo dan teks Pedatren di luar box form */}
+              <div className="flex flex-row items-center mb-6 gap-x-4">
                 <img
-                    className="w-20 h-20"
-                    src="https://play-lh.googleusercontent.com/AfPIZgh2gk3qe92PeBz9TLcQ6HzXWbScrgWGa7tr-pXS0tXm_g1duxHNBsDvlh-Q_Q=w480-h960-rw"
-                    alt="logo"
+                  className="w-20 h-20"
+                  src={logo}
+                  alt="logo"
                 />
                 <span className="mt-2 text-4xl font-bold text-gray-900">Pedatren</span>
-            </div>
+              </div>
 
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 sm:p-8 m-4">
                 <h1 className="text-xl font-bold text-center text-gray-900 md:text-2xl mb-6">

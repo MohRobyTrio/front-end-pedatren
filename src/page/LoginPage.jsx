@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useLogin from "../hooks/Login";
+import logo from "../assets/logo.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -30,11 +31,12 @@ const LoginPage = () => {
   }
 
   return (
-    <section className="relative min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="absolute top-10 flex flex-col items-center">
+    <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 overflow-y-auto">
+      {/* Logo dan teks Pedatren di luar box form */}
+      <div className="flex flex-col items-center mb-6">
         <img
           className="w-20 h-20"
-          src="https://play-lh.googleusercontent.com/AfPIZgh2gk3qe92PeBz9TLcQ6HzXWbScrgWGa7tr-pXS0tXm_g1duxHNBsDvlh-Q_Q=w480-h960-rw"
+          src={logo}
           alt="logo"
         />
         <span className="mt-2 text-4xl font-bold text-gray-900">Pedatren</span>
