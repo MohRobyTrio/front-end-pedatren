@@ -121,13 +121,13 @@ const Alumni = () => {
     };
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Alumni</h1>
+                <h1 className="text-2xl font-bold">Data Alumni</h1>
                 <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
-            </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />

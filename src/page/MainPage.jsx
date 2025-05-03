@@ -1,14 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet } from "react-router-dom";
-// import { Navigate, Outlet } from "react-router-dom";
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'flowbite';
-// import Formulir from '../content_main_page/Formulir';
-// import NotFound from './NotFound';
 import { subPesertaDidik } from '../data/menuData';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
-
 
 const MainPage = () => {
     const [dropdownDataPokok, setDropdownDataPokok] = useState(() => sessionStorage.getItem("dropdownDataPokok") === "true");
@@ -32,72 +27,67 @@ const MainPage = () => {
     const toggleDropdown = (setter) => setter((prev) => !prev);
 
     const [isOpen, setIsOpen] = useState(false);
-
-    const toggleDropdownProfil = () => setIsOpen(prev => !prev);
-
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const sidebarRef = useRef(null);
+    const profilRef = useRef(null);
+
+    const toggleDropdownProfil = () => setIsOpen(prev => !prev);
     const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
 
+    // Tutup jika klik di luar sidebar atau dropdown profil
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                setIsSidebarOpen(false);
+            }
+            if (profilRef.current && !profilRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <>
-            {/* <Router> */}
             <div className="flex h-screen overflow-hidden">
 
                 <Navbar
                     toggleDropdownProfil={toggleDropdownProfil}
                     toggleSidebar={toggleSidebar}
                     isOpen={isOpen}
+                    profilRef={profilRef} // Tambahkan ref ke Navbar
                 />
-                <Sidebar
-                    submenuPesertaDidik={subPesertaDidik}
-                    setSubmenuPesertaDidik={setSubmenuPesertaDidik}
-                    dropdownDataPokok={dropdownDataPokok}
-                    setDropdownDataPokok={setDropdownDataPokok}
-                    dropdownDataKewaliasuhan={dropdownDataKewaliasuhan}
-                    setDropdownKewaliasuhan={setDropdownKewaliasuhan}
-                    dropdownDataKepegawaian={dropdownDataKepegawaian}
-                    setDropdownKepegawaian={setDropdownKepegawaian}
-                    dropdownDataKepesantrenan={dropdownDataKepesantrenan}
-                    setDropdownKepesantrenan={setDropdownKepesantrenan}
-                    dropdownDataMahrom={dropdownDataMahrom}
-                    setDropdownMahrom={setDropdownMahrom}
-                    dropdownDataRWS={dropdownDataRWS}
-                    setDropdownRWS={setDropdownRWS}
-                    isSidebarOpen={isSidebarOpen}
-                    toggleDropdown={toggleDropdown}
-                />
+                <div ref={sidebarRef}>
+                    <Sidebar
+                        submenuPesertaDidik={subPesertaDidik}
+                        setSubmenuPesertaDidik={setSubmenuPesertaDidik}
+                        dropdownDataPokok={dropdownDataPokok}
+                        setDropdownDataPokok={setDropdownDataPokok}
+                        dropdownDataKewaliasuhan={dropdownDataKewaliasuhan}
+                        setDropdownKewaliasuhan={setDropdownKewaliasuhan}
+                        dropdownDataKepegawaian={dropdownDataKepegawaian}
+                        setDropdownKepegawaian={setDropdownKepegawaian}
+                        dropdownDataKepesantrenan={dropdownDataKepesantrenan}
+                        setDropdownKepesantrenan={setDropdownKepesantrenan}
+                        dropdownDataMahrom={dropdownDataMahrom}
+                        setDropdownMahrom={setDropdownMahrom}
+                        dropdownDataRWS={dropdownDataRWS}
+                        setDropdownRWS={setDropdownRWS}
+                        isSidebarOpen={isSidebarOpen}
+                        toggleDropdown={toggleDropdown}
+                    />
+                </div>
 
-                <div className="pr-6 sm:ml-64 overflow-y-auto w-full">
+                <div className="pr-6 sm:ml-64 overflow-y-auto overflow-x-hidden w-full max-w-full">
                     <div className="pt-8 mt-8">
                         <Outlet />
-                        {/* <Routes>
-                            <Route path="/formulir" element={<Formulir />}>
-                                <Route path="/formulir" element={<Navigate to="/formulir/biodata" replace />} />
-                                {tabsFormulir.map((tab) => (
-                                    <Route key={tab.id} path={tab.link} element={tab.content} />
-                                ))}
-                            </Route>
-                            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                            {[
-                                ...menuItems,
-                                ...menuDataPokokItems,
-                                ...menuKewaliasuhanItems,
-                                ...menuKepesantrenanItems,
-                                ...menuKepegawaianItems,
-                                ...menuMahromItems,
-                                ...menuRWSItems,
-                                ...subPesertaDidik,
-                            ].map((tab) => (
-                                <Route key={tab.id} path={tab.link} element={tab.content} />
-                            ))}
-
-                            <Route path="*" element={<NotFound />} />
-                        </Routes> */}
                     </div>
                 </div>
-            {/* </Router> */}
             </div>
         </>
     );

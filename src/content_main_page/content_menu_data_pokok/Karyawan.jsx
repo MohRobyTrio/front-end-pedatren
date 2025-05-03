@@ -102,7 +102,7 @@ const Karyawan = () => {
             { label: "20-29 Tahun", value: "20-29" },
             { label: "30-39 Tahun", value: "30-39" },
             { label: "40-49 Tahun", value: "40-49" },
-            { label: "50-59 Tahun", value: "50-49" },
+            { label: "50-59 Tahun", value: "50-59" },
             { label: "60-65 Tahun", value: "60-65" },
             { label: "> 65 Tahun", value: "65-200" }
         ]
@@ -166,7 +166,7 @@ const Karyawan = () => {
                     </div>
                 ) : (
                     viewMode === "list" ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                             {loadingKaryawan ? (
                                 <div className="col-span-3 flex justify-center items-center">
                                     <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />

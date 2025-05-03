@@ -62,6 +62,8 @@ const TesModal = ({ item, onClose }) => {
             setError(null);
             try {
                 const res = await axios.get(`http://localhost:8000/api/data-pokok/alumni/${item.id}`);
+                console.log(item.id);
+                
                 setData(res.data.data);
             } catch (err) {
                 console.error(err);

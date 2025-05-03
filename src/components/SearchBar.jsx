@@ -30,7 +30,7 @@ const SearchBar = ({
         <div className="flex flex-col md:flex-row-reverse justify-between md:items-center items-left mb-4 w-95 md:w-auto space-y-2">
             <div className="flex items-center space-x-2">
                 <input
-                    className="border border-gray-300 rounded p-2"
+                    className="border border-gray-300 rounded p-2 w-40"
                     placeholder="Cari Peserta Didik..."
                     type="text"
                     value={searchTerm}
