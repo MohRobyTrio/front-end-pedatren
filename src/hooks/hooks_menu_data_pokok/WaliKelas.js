@@ -1,89 +1,95 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+
 import { API_BASE_URL } from "../config";
 
-const useFetchWalikelas = (filters) => {
-    const [walikelas, setWalikelas] = useState([]);
-    const [loading, setLoading] = useState(true);
+const useFetchWaliKelas = (filters) => {
+    const [waliKelas, setWaliKelas] = useState([]);
+    const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
-    const [totalDataWalikelas, setTotalDataWalikelas] = useState(0);
+    const [totalDataWaliKelas, setTotalDataWaliKelas] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const lastRequest = useRef("");
+
+    // Debounce searchTerm selama 500ms
     useEffect(() => {
-        console.log("Filters updated:", filters);
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
 
-            let url = `${API_BASE_URL}data-pokok/list/walikelas?limit=${limit}`;
-            if (currentPage > 1) {
-                url += `&page=${currentPage}`;
-            }
-            if (searchTerm) {
-                url += `&search=${encodeURIComponent(searchTerm)}`;
-            }
+    const fetchData = useCallback(async () => {
+        let url = `${API_BASE_URL}data-pokok/walikelas?limit=${limit}&page=${currentPage}`;
+
+        if (debouncedSearchTerm) {
+            url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+        }
+
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") {
+            url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+        }
+
+        if (filters?.jenisKelamin) {
+            url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        }
+
+        if (lastRequest.current === url) {
+            console.log("Skip Fetch: URL sama dengan request sebelumnya");
+            return;
+        }
+
+        lastRequest.current = url;
+        console.log("Fetching data from:", url);
+
+        setLoadingWaliKelas(true);
+        setError(null);
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`${response.statusText}: ${response.status}`);
             
-            // Pastikan filter yang dikirim memiliki value
-            // if (filters?.GenderRombel && filters.GenderRombel !== '') {
-            //     url += `&GenderRombel=${encodeURIComponent(filters.GenderRombel)}`;
-            // }
-            // if (filters?.lembaga && filters.lembaga !== '') {
-            //     url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
-            // }
-            
-            console.log("Fetching data from:", url);
+            const data = await response.json();
+            console.log("Data dari API:", data);
 
-            try {
-                const response = await fetch(url);
-                console.log("Response status:", response.status);
+            setWaliKelas(Array.isArray(data.data) ? data.data : []);
+            setTotalDataWaliKelas(data.total_data || 0);
+            setTotalPages(data.total_pages || 1);
+            setCurrentPage(data.current_page || 1);
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setError(err.message);
+            setWaliKelas([]);
+        } finally {
+            setLoadingWaliKelas(false);
+        }
+    }, [currentPage, filters, limit, debouncedSearchTerm]);
 
-                if (!response.ok) {
-                    throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                console.log("Data dari API:", data);
-
-                // Pemeriksaan tambahan untuk struktur data
-                const listData = data.data || data || [];
-                
-                setWalikelas(Array.isArray(listData) ? listData : []);
-                setTotalDataWalikelas(data.total_data || listData.length || 0);
-                setTotalPages(data.total_pages || 1);
-                setCurrentPage(data.current_page || 1);
-            } catch (err) {
-                console.error("Fetch error:", err);
-                setError(err.message);
-                setWalikelas([]);
-                setTotalDataWalikelas(0);
-                setTotalPages(1);
-            } finally {
-                setLoading(false);
-            }
-        };
-
+    useEffect(() => {
         fetchData();
-    }, [currentPage, filters, limit, searchTerm]);
+    }, [fetchData]);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [limit, filters]);
+    }, [limit]);
 
     return {
-        walikelas,
-        loading,
+        waliKelas,
+        loadingWaliKelas,
+        error,
         searchTerm,
         setSearchTerm,
-        error,
         limit,
         setLimit,
-        totalDataWalikelas,
+        totalDataWaliKelas,
         totalPages,
         currentPage,
         setCurrentPage,
     };
 };
 
-export default useFetchWalikelas;
+export default useFetchWaliKelas;
