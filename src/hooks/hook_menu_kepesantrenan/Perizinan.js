@@ -11,16 +11,29 @@ const useFetchPerizinan = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const lastRequest = useRef('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+
 
   // Field yang akan dijadikan sebagai searchable
   const SEARCHABLE_FIELDS = ['nama_santri'];
+
+  // Debounce searchTerm selama 400ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+    }, 400);
+
+    return () => {
+        clearTimeout(handler);
+    };
+}, [searchTerm]);
 
   const fetchData = useCallback(async (filters = {}) => {
     let url = `${API_BASE_URL}data-pokok/perizinan?limit=${limit}&page=${currentPage}`;
     
     // Handle search
-    if (searchTerm) {
-      url += `&search=${encodeURIComponent(searchTerm)}`;
+    if (debouncedSearchTerm) {
+      url += `&nama_santri=${encodeURIComponent(debouncedSearchTerm)}`;
       url += `&search_fields=${SEARCHABLE_FIELDS.join(',')}`;
     }
     
@@ -79,7 +92,7 @@ const useFetchPerizinan = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, searchTerm]);
+  }, [currentPage, limit, debouncedSearchTerm]);
 
   // Helper function untuk menghitung durasi
   const calculateDuration = (start, end) => {
