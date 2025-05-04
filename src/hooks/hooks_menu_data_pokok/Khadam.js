@@ -18,7 +18,7 @@ const useFetchKhadam = (filters) => {
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 500);
+        }, 400);
 
         return () => {
             clearTimeout(handler);

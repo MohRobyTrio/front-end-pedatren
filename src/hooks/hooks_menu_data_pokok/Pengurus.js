@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+// src/hooks/useFetchPengurus.js
+import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
 
 const useFetchPengurus = (filters) => {
     const [pengurus, setPengurus] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingPengurus, setLoadingPengurus] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalDataPengurus, setTotalDataPengurus] = useState(0);
@@ -11,65 +12,78 @@ const useFetchPengurus = (filters) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const lastRequest = useRef("");
+
     useEffect(() => {
-        console.log("Filters updated:", filters);
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 400);
 
-            let url = `${API_BASE_URL}data-pokok/pengurus?limit=${limit}`;
-            if (currentPage > 1) {
-                url += `&page=${currentPage}`;
-            }
-            if (searchTerm) {
-                url += `&search=${encodeURIComponent(searchTerm)}`;
-            }
-            if (filters?.jabatan) {
-                url += `&jabatan=${encodeURIComponent(filters.jabatan)}`;
-            }
-            if (filters?.lembaga) {
-                url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
-            }
-            console.log("Fetching data from:", url);
-
-            try {
-                const response = await fetch(url);
-                console.log("Response status:", response.status);
-
-                if (!response.ok) {
-                    setTotalDataPengurus(0);
-                    setTotalPages(1);
-                    throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
-                }
-
-                const text = await response.text();
-                const data = JSON.parse(text);
-                console.log("Data dari API:", data);
-
-                setPengurus(Array.isArray(data.data) ? data.data : []);
-                setTotalDataPengurus(data.total_data || 0);
-                setTotalPages(data.total_pages || 1);
-                // setCurrentPage(data.current_page || 1);
-            } catch (err) {
-                console.error("Fetch error:", err);
-                setError(err.message);
-                setPengurus([]);
-            } finally {
-                setLoading(false);
-            }
+        return () => {
+            clearTimeout(handler);
         };
+    }, [searchTerm]);
 
+    const fetchData = useCallback(async () => {
+        let url = `${API_BASE_URL}data-pokok/pengurus?limit=${limit}`;
+        if (currentPage > 1) url += `&page=${currentPage}`;
+        if (debouncedSearchTerm) url += `&search=${encodeURIComponent(debouncedSearchTerm)}`;
+
+        if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
+        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
+        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
+        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
+        if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
+        if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
+        if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
+        if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
+        if (filters?.jenisJabatan) url += `&jabatan=${encodeURIComponent(filters.jenisJabatan)}`;
+
+        if (lastRequest.current === url) {
+            console.log("Skip Fetch: URL sama dengan request sebelumnya");
+            return;
+        }
+
+        lastRequest.current = url;
+        console.log("Fetching data from:", url);
+
+        setLoadingPengurus(true);
+        setError(null);
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                setTotalDataPengurus(0);
+                setTotalPages(1);
+                throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log("Data Pengurus dari API:", data);
+
+            setPengurus(Array.isArray(data.data) ? data.data : []);
+            setTotalDataPengurus(data.total_data || 0);
+            setTotalPages(data.total_pages || 1);
+            // setCurrentPage(data.current_page || 1);
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setError(err.message);
+            setPengurus([]);
+        } finally {
+            setLoadingPengurus(false);
+        }
+    }, [currentPage, filters, limit, debouncedSearchTerm]);
+
+    useEffect(() => {
         fetchData();
-    }, [currentPage, filters, limit, searchTerm]);
-
-    // Untuk setting ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    }, [fetchData]);
 
     return {
         pengurus,
-        loading,
+        loadingPengurus,
         searchTerm,
         setSearchTerm,
         error,

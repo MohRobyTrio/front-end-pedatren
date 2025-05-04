@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import useFetchPengurus from "../../hooks/hooks_menu_data_pokok/Pengurus";
-import PengurusItem from "../../components/PengurusItem";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import Pagination from "../../components/Pagination";
 import blankProfile from "../../assets/blank_profile.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import { OrbitProgress } from "react-loading-indicators";
 
 const Pengurus = () => {
     const [filters, setFilters] = useState({
@@ -16,17 +16,8 @@ const Pengurus = () => {
         jenisKelamin: "",
         smartcard: "",
         pemberkasan: "",
-        urutBerdasarkan: "",
-        urutSecara: "",
-        negara: "",       // Tambahkan default value
-        provinsi: "",
-        kabupaten: "",
-        kecamatan: "",
-        wilayah: "",
-        blok: "",
-        kamar: "",
-        angkatanPelajar: "",
-        angkatanSantri: ""
+        jenisJabatan: "",
+        umur: ""
     })
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
@@ -70,17 +61,22 @@ const Pengurus = () => {
         // Sudah
         jenisKelamin: [
             { label: "Pilih Jenis Kelamin", value: "" },
-            { label: "Laki-laki", value: "laki-laki" },
-            { label: "Perempuan", value: "perempuan" }
+            { label: "Laki-laki", value: "l" },
+            { label: "Perempuan", value: "p" }
         ],
         // Sudah
-        status: [
-            { label: "Semua Status", value: "" },
-            { label: "Santri", value: "santri" },
-            { label: "Santri Non Pelajar", value: "santri non pelajar" },
-            { label: "Pelajar", value: "pelajar" },
-            { label: "Pelajar Non Santri", value: "pelajar non santri" },
-            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+        satuanKerja: [
+            { label: "Pilih Satuan Kerja", value: "" },
+        ],
+        jenisJabatan: [
+            { label: "Pilih Jenis Jabatan", value: "" },
+            { label: "Kultural", value: "kultural" },
+            { label: "Tetap", value: "tetap" },
+            { label: "Kontrak", value: "kontrak" },
+            { label: "Pengkaderan", value: "pengkaderan" },
+        ],
+        golonganJabatan: [
+            { label: "Pilih Jenis Jabatan", value: "" },
         ]
     }
     const filter5 = {
@@ -153,29 +149,51 @@ const Pengurus = () => {
                     toggleView={setViewMode}
                 />
                 {error ? (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <strong className="font-bold">Error!</strong>
-                        <span className="block sm:inline"> {error}</span>
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Muat Ulang
+                        </button>
                     </div>
                 ) : (
                     viewMode === "list" ? (
                         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                             {loadingPengurus ? (
                                 <div className="col-span-3 flex justify-center items-center">
-                                    <i className="fas fa-spinner fa-spin text-2xl text-gray-500"></i>
+                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                 </div>
                             ) : pengurus.length === 0 ? (
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
-                                pengurus.map((item, index) => <PengurusItem key={index} item={item} />)
+                                pengurus.map((item, index) => (
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                        <img
+                                            alt={item.nama || "-"}
+                                            className="w-20 h-24 object-cover"
+                                            src={item.foto_profil}
+                                            onError={(e) => {
+                                                e.target.onerror = null; 
+                                                e.target.src = blankProfile;
+                                            }}
+                                        />
+                                        <div>
+                                            <h2 className="font-semibold">{item.nama || "-"}</h2>
+                                            <p className="text-gray-600">{item.nik || "-"}</p>
+                                            <p className="text-gray-600">{item.jabatan || "-"}</p>
+                                        </div>
+                                    </div>
+                                ))
                             )}
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                    <tr className="bg-gray-100">
-                                        <th className="px-3 py-2 border-b">No.</th>
+                                    <tr>
+                                        <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Jabatan</th>
@@ -184,43 +202,42 @@ const Pengurus = () => {
                                         <th className="px-3 py-2 border-b">Jenis</th>
                                         <th className="px-3 py-2 border-b">Golongan</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Pengurus</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Pengurus</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
                                     {loadingPengurus ? (
                                         <tr>
-                                            <td colSpan="5" className="text-center p-4">
-                                                <i className="fas fa-spinner fa-spin text-2xl text-gray-500"></i>
+                                            <td colSpan="9" className="text-center py-6">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
                                     ) : pengurus.length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" className="text-center p-4">Tidak ada data</td>
+                                            <td colSpan="9" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
                                         pengurus.map((item, index) => (
-                                            <tr key={item.id_pengurus || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.umur || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.satuan_kerja || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.jenisJabatan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jenis_jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                             </tr>
                                         ))
                                     )}
                                 </tbody>
                             </table>
                         </div>
+
                     )
                 )}
+
+
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
