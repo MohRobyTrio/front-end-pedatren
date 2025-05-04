@@ -72,8 +72,8 @@ const WaliKelas = () => {
     const filter3 = {
         jenisKelamin: [
             { label: "Pilih Jenis Kelamin", value: "" },
-            { label: "Laki-laki", value: "laki-laki" },
-            { label: "Perempuan", value: "perempuan" }
+            { label: "Laki-laki", value: "l" },
+            { label: "Perempuan", value: "p" }
         ],
         genderRombel: [
             { label: "Pilih Gender Rombel", value: "" },
