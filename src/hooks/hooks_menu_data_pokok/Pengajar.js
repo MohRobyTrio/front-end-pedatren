@@ -14,8 +14,10 @@ const useFetchPengajar = (filters) => {
     const lastRequest = useRef("");  // Untuk menyimpan request terakhir
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}&page=${currentPage}`;
-        
+        let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}`;
+        if (currentPage > 1) {
+            url += `&page=${currentPage}`;
+        }
         if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
         if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
@@ -46,7 +48,7 @@ const useFetchPengajar = (filters) => {
             setPengajar(Array.isArray(data.data) ? data.data : []);
             setTotalDataPengajar(data.total_data || 0);
             setTotalPages(data.total_pages || 1);
-            setCurrentPage(data.current_page || 1);
+            // setCurrentPage(data.current_page || 1);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
@@ -60,9 +62,10 @@ const useFetchPengajar = (filters) => {
         fetchData();
     }, [fetchData]);  // Hanya berjalan saat `fetchData` berubah
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
+    // Untuk setting ke halaman 1 saat limit berubah
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [limit]);
 
     return {
         pengajar,

@@ -31,7 +31,7 @@ const SearchBar = ({
             <div className="flex items-center space-x-2">
                 <input
                     className="border border-gray-300 rounded p-2 w-40"
-                    placeholder="Cari Peserta Didik..."
+                    placeholder="Cari Nama ..."
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

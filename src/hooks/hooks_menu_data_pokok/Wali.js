@@ -18,7 +18,7 @@ const useFetchWali = (filters) => {
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 500);
+        }, 400);
 
         return () => {
             clearTimeout(handler);
@@ -26,14 +26,22 @@ const useFetchWali = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/wali?limit=${limit}&page=${currentPage}`;
-
-        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+        let url = `${API_BASE_URL}data-pokok/wali?limit=${limit}`;
+        if (currentPage > 1) {
+            url += `&page=${currentPage}`;
+        }
+        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;        
 
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
         if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
         if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
         if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        if (filters?.jenisKelaminPesertaDidik) url += `&jenis_kelamin_anak=${encodeURIComponent(filters.jenisKelaminPesertaDidik)}`;
+        if (filters?.wafatHidup) url += `&wafat=${encodeURIComponent(filters.wafatHidup)}`;
+        if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
+        if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
+
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
@@ -55,7 +63,7 @@ const useFetchWali = (filters) => {
             setWali(Array.isArray(data.data) ? data.data : []);
             setTotalDataWali(data.total_data || 0);
             setTotalPages(data.total_pages || 1);
-            setCurrentPage(data.current_page || 1);
+            // setCurrentPage(data.current_page || 1);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
@@ -69,9 +77,9 @@ const useFetchWali = (filters) => {
         fetchData();
     }, [fetchData]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [limit]);
 
     return {
         wali,

@@ -62,7 +62,7 @@ const useFetchPegawai = (filters) => {
             setPegawai(Array.isArray(data.data) ? data.data : []);
             setTotalDataPegawai(data.total_data || 0);
             setTotalPages(data.total_pages || 1);
-            setCurrentPage(data.current_page || 1);
+            // setCurrentPage(data.current_page || 1);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
@@ -76,9 +76,10 @@ const useFetchPegawai = (filters) => {
         fetchData();
     }, [fetchData]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
+    // Untuk setting ke halaman 1 saat limit berubah
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [limit]);
 
     return {
         pegawai,

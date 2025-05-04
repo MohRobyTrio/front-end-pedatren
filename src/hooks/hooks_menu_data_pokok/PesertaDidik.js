@@ -23,8 +23,10 @@ const useFetchPeserta = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pesertadidik?limit=${limit}&page=${currentPage}`;
-        
+        let url = `${API_BASE_URL}data-pokok/pesertadidik?limit=${limit}`;
+        if (currentPage > 1) {
+            url += `&page=${currentPage}`;
+        }
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
         // Object.entries(filters || {}).forEach(([key, value]) => {
         //     if (value && value !== "Semua") {
@@ -76,7 +78,7 @@ const useFetchPeserta = (filters) => {
             setPesertaDidik(Array.isArray(data.data) ? data.data : []);
             setTotalDataPesertaDidik(data.total_data || 0);
             setTotalPages(data.total_pages || 1);
-            setCurrentPage(data.current_page || 1);
+            // setCurrentPage(data.current_page || 1);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
@@ -90,9 +92,10 @@ const useFetchPeserta = (filters) => {
         fetchData();
     }, [fetchData]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
+    // Untuk setting ke halaman 1 saat limit berubah
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [limit]);
 
     return {
         pesertaDidik ,
