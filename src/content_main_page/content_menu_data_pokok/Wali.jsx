@@ -16,22 +16,19 @@ const Wali = () => {
         wafathidup: "",
         status: "",
         jenisKelamin: "",
-        negara: "",
-        provinsi: "",
-        kabupaten: "",
-        kecamatan: "",
         lembaga: "",
         jurusan: "",
         kelas: "",
-        rombel: ""
+        rombel: "",
+        wafatHidup: ""
     });
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const negaraTerpilih = filterNegara.negara.find(n => n.value === selectedNegara.negara)?.label || "";
-    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value === selectedNegara.provinsi)?.label || "";
-    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value === selectedNegara.kabupaten)?.label || "";
-    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value === selectedNegara.kecamatan)?.label || "";
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,
@@ -94,20 +91,20 @@ const Wali = () => {
     };
 
     const filter4 = {
-        wafathidup: [
-            { label: "Pilih Wafat/Hidup", value: "" },
-            { label: "Masih Hidup", value: "hidup" },
-            { label: "Sudah Wafat", value: "wafat" }
+        wafatHidup: [
+            { label: "Pilih Wafat / Hidup", value: "" },
+            { label: "Sudah Wafat", value: "sudah wafat" },
+            { label: "Masih Hidup", value: "masih hidup" }
         ],
         smartcard: [
             { label: "Smartcard", value: "" },
-            { label: "Aktif", value: "aktif" },
-            { label: "Tidak Aktif", value: "tidak aktif" }
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
         phoneNumber: [
             { label: "Phone Number", value: "" },
-            { label: "Tersedia", value: "tersedia" },
-            { label: "Tidak Tersedia", value: "tidak tersedia" }
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     };
 
@@ -165,8 +162,8 @@ const Wali = () => {
                                     />
                                     <div>
                                         <h2 className="font-semibold">{item.nama || "-"}</h2>
-                                        <p className="text-gray-600">{item.nik_or_passport || "-"}</p>
-                                        <p className="text-gray-600">{item.telepon_1 || item.telepon_2}</p>
+                                        <p className="text-gray-600">NIK : {item.nik_or_passport || "-"}</p>
+                                        <p className="text-gray-600">Phone : {item.telepon_1 || item.telepon_2 || "-"}</p>
                                     </div>
                                 </div>
                             ))
