@@ -184,7 +184,7 @@ const Khadam = () => {
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <th className="px-3 py-2 border-b">No</th>
+                                        <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIK</th>
                                         <th className="px-3 py-2 border-b">Nama</th>

@@ -224,7 +224,7 @@ const Pengajar = () => {
                                 </tr>
                             ) : (
                                 pengajar.map((item, index) => (
-                                    <tr key={item.id_pengajar || index} className="text-center">
+                                    <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
                                         <td className="px-3 py-2 border-b">{item.niup }</td>
                                         <td className="px-3 py-2 border-b">{item.nama}</td>

@@ -160,17 +160,17 @@ const OrangTua = () => {
                             <tbody className="text-gray-800">
                                 {loadingOrangtua ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6">
+                                        <td colSpan="8" className="text-center py-6">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" />
                                         </td>
                                     </tr>
                                 ) : orangtua.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6">Tidak ada data</td>
+                                        <td colSpan="8" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
                                     orangtua.map((item, index) => (
-                                        <tr key={item.id_orangtua || index} className="hover:bg-gray-50 whitespace-nowrap text-center">
+                                        <tr key={item.id_orangtua || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
