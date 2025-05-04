@@ -10,6 +10,11 @@ import useFetchPelajar from "../hooks/hooks_menu_data_pokok/hooks_sub_menu_peser
 import useFetchKhadam from "../hooks/hooks_menu_data_pokok/Khadam";
 import useFetchAlumni from "../hooks/hooks_menu_data_pokok/Alumni";
 import useFetchOrangtua from "../hooks/hooks_menu_data_pokok/Orangtua";
+import useFetchWaliAsuh from "../hooks/hooks_menu_kewaliasuhan/WaliAsuh";
+import useFetchPengurus from "../hooks/hooks_menu_data_pokok/Pengurus";
+import useFetchKaryawan from "../hooks/hooks_menu_data_pokok/Kayawan";
+import useFetchPegawai from "../hooks/hooks_menu_kepegawaian/Pegawai";
+import useFetchWali from "../hooks/hooks_menu_data_pokok/Wali";
 
 const Dashboard = () => {
     const { loadingPesertaDidik, totalDataPesertaDidik } = useFetchPeserta();
@@ -19,6 +24,11 @@ const Dashboard = () => {
     const { loadingKhadam, totalDataKhadam } = useFetchKhadam();
     const { loadingAlumni, totalDataAlumni } = useFetchAlumni();
     const { loadingOrangtua, totalDataOrangtua } = useFetchOrangtua();
+    const { loadingWaliAsuh, totalDataWaliAsuh } = useFetchWaliAsuh();
+    const { loadingPengurus, totalDataPengurus } = useFetchPengurus();
+    const { loadingKaryawan, totalDataKaryawan } = useFetchKaryawan();
+    const { loadingPegawai, totalDataPegawai } = useFetchPegawai();
+    const { loadingWali, totalDataWali } = useFetchWali();
 
     const Load = () => {
         return (
@@ -32,15 +42,15 @@ const Dashboard = () => {
         { label: "Total Peserta Didik", value: loadingPesertaDidik ? <Load /> : totalDataPesertaDidik, color: "bg-green-500", icon: "📝", link: "/peserta-didik" },
         { label: "Total Santri", value: loadingSantri ? <Load /> : totalDataSantri, color: "bg-yellow-500", icon: "👥", link: "/peserta-didik/santri" },
         { label: "Total Pelajar", value: loadingPelajar ? <Load /> : totalDataPelajar, color: "bg-red-500", icon: "📚", link: "/peserta-didik/pelajar" },
-        { label: "Total Wali Asuh", value: 0, color: "bg-blue-500", icon: "📖", link: "/wali-asuh" },
+        { label: "Total Wali Asuh", value: loadingWaliAsuh ? <Load /> : totalDataWaliAsuh, color: "bg-blue-500", icon: "📖", link: "/wali-asuh" },
         { label: "Total Pengajar", value: loadingPengajar ? <Load /> : totalDataPengajar, color: "bg-gray-500", icon: "👨‍🏫", link: "/pengajar" },
-        { label: "Total Pengurus", value: 0, color: "bg-pink-500", icon: "✍️", link: "/pengurus" },
-        { label: "Total Karyawan", value: 0, color: "bg-green-700", icon: "👨🏻‍💻", link: "/peserta-didik" },
-        { label: "Total Pegawai", value: 0, color: "bg-yellow-700", icon: "👨‍💼", link: "/karyawan" },
+        { label: "Total Pengurus", value: loadingPengurus? <Load /> : totalDataPengurus, color: "bg-pink-500", icon: "✍️", link: "/pengurus" },
+        { label: "Total Karyawan", value: loadingKaryawan? <Load /> : totalDataKaryawan, color: "bg-green-700", icon: "👨🏻‍💻", link: "/peserta-didik" },
+        { label: "Total Pegawai", value: loadingPegawai? <Load /> : totalDataPegawai, color: "bg-yellow-700", icon: "👨‍💼", link: "/karyawan" },
         { label: "Total Khadam", value: loadingKhadam ? <Load /> : totalDataKhadam, color: "bg-red-700", icon: "👳", link: "/khadam" },
         { label: "Total Alumni", value: loadingAlumni ? <Load /> : totalDataAlumni, color: "bg-blue-700", icon: "🎓", link: "/alumni" },
         { label: "Total Orang Tua", value: loadingOrangtua ? <Load /> : totalDataOrangtua, color: "bg-purple-500", icon: "👨‍👨‍👦", link: "/orang-tua" },
-        { label: "Total Wali", value: 0, color: "bg-indigo-500", icon: "🔢", link: "/wali" },
+        { label: "Total Wali", value: loadingWali? <Load /> : totalDataWali, color: "bg-indigo-500", icon: "🔢", link: "/wali" },
         { label: "Dalam Masa Izin", value: 0, color: "bg-orange-500", icon: "⏳", link: "/perizinan" },
         { label: "Telat Belum Kembali", value: 0, color: "bg-red-400", icon: "🚨", link: "/pelanggaran" },
     ];
