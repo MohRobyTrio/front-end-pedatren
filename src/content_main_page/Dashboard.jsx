@@ -86,37 +86,37 @@ const Dashboard = () => {
                                 </div>
                             ))}
                         </div>
-                        <br />
 
                         {/* Tabel Ulang Tahun */}
                         <h2 className="text-2xl font-semibold mt-6">Ulang Tahun Hari Ini</h2>
                         {/* <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md"> */}
-                            <table className="w-full border-collapse border border-gray-300 mt-2">
-                                <thead>
-                                    <tr className="bg-gray-200">
-                                        <th className="border p-2">#</th>
-                                        <th className="border p-2">NIK</th>
-                                        <th className="border p-2">Nama</th>
-                                        <th className="border p-2">Jenis Kelamin</th>
-                                        <th className="border p-2">Tanggal Lahir</th>
-                                        <th className="border p-2">Alamat</th>
+                        <div className="overflow-x-auto mt-6">
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap"> 
+                                    <tr>
+                                        <th className="px-3 py-2 border-b">#</th>
+                                        <th className="px-3 py-2 border-b">NIK</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">Jenis Kelamin</th>
+                                        <th className="px-3 py-2 border-b">Tanggal Lahir</th>
+                                        <th className="px-3 py-2 border-b">Alamat</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="text-gray-800">
                                     {birthdays.length > 0 ? (
                                         birthdays.map((person, index) => (
-                                            <tr key={index} className="text-center">
-                                                <td className="border p-2">{index + 1}</td>
-                                                <td className="border p-2">{person.nik}</td>
-                                                <td className="border p-2">{person.name}</td>
-                                                <td className="border p-2">{person.gender}</td>
-                                                <td className="border p-2">{person.birthday}</td>
-                                                <td className="border p-2">{person.location}</td>
+                                            <tr key={index} className="hover:bg-gray-50 whitespace-nowrap text-center">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{person.nik}</td>
+                                                <td className="px-3 py-2 border-b">{person.name}</td>
+                                                <td className="px-3 py-2 border-b">{person.gender}</td>
+                                                <td className="px-3 py-2 border-b">{person.birthday}</td>
+                                                <td className="px-3 py-2 border-b">{person.location}</td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="border p-2 text-center">Tidak ada yang ulang tahun hari ini</td>
+                                            <td colSpan="6" className="p-2 text-center">Tidak ada yang ulang tahun hari ini</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -125,7 +125,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-        // </div>
+         </div>
     )
 }
 

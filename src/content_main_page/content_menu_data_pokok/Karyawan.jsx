@@ -225,17 +225,17 @@ const Karyawan = () => {
                                 <tbody className="text-gray-800">
                                     {loadingKaryawan ? (
                                         <tr>
-                                            <td colSpan="9" className="text-center py-6">
+                                            <td colSpan="11" className="text-center py-6">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
                                     ) : karyawan.length === 0 ? (
                                         <tr>
-                                            <td colSpan="9" className="text-center py-6">Tidak ada data</td>
+                                            <td colSpan="11" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
                                         karyawan.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
