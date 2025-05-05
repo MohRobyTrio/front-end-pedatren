@@ -1,126 +1,225 @@
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTh,
-  faFilter,
-  faSearch
-} from "@fortawesome/free-solid-svg-icons";
-
-const filters = [
-  "Negara", "Wilayah", "Lembaga", "Jenis Kelamin", "Status", "Provinsi",
-  "Blok", "Jurusan", "Kelas", "Angkatan", "Kabupaten", "Kamar",
-  "Jenis Wali", "Rombel"
-];
-
-const sampleData = [
-  {
-    name: "Sayyidah Aulia Ul Haqqu",
-    nis: "2020211072",
-    angkatan: "2020 - Kab. Bondowoso",
-    image: "https://via.placeholder.com/100x120?text=Foto",
-  },
-  {
-    name: "Nadwatul Ulya",
-    nis: "2120813412",
-    angkatan: "2021 - Kab. Probolinggo",
-    image: "https://via.placeholder.com/100x120?text=Foto",
-  },
-  // ...data lainnya
-];
+import { useEffect, useMemo, useState } from "react";
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import useFetchWaliAsuh from "../../hooks/hooks_menu_kewaliasuhan/WaliAsuh";
+import Filters from "../../components/Filters";
+import SearchBar from "../../components/SearchBar";
+import { OrbitProgress } from "react-loading-indicators";
+import blankProfile from "../../assets/blank_profile.png";
+import Pagination from "../../components/Pagination";
 
 const WaliAsuh = () => {
-  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({
+    phoneNumber: "",
+    smartcard: "",
+    jenisKelamin: "",
+    negara: "",
+    provinsi: "",
+    kabupaten: "",
+    kecamatan: "",
+    angkatan: "",
+    lembaga: "",
+    jurusan: "",
+    kelas: "",
+    rombel: "",
+    wilayah: "",
+    blok: "",
+    kamar: "",
+    jenisWali: ""
+  });
+
+  const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+  const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+  const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+
+  const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+  const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+  const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+  const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+  const wilayahTerpilih = filterWilayah.wilayah.find(w => w.value == selectedWilayah.wilayah)?.label || "";
+  const blokTerpilih = filterWilayah.blok.find(b => b.value == selectedWilayah.blok)?.label || "";
+  const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
+
+  const lembagaTerpilih = filterLembaga.lembaga.find(l => l.value == selectedLembaga.lembaga)?.label || "";
+  const jurusanTerpilih = filterLembaga.jurusan.find(j => j.value == selectedLembaga.jurusan)?.label || "";
+  const kelasTerpilih = filterLembaga.kelas.find(k => k.value == selectedLembaga.kelas)?.label || "";
+  const rombelTerpilih = filterLembaga.rombel.find(r => r.value == selectedLembaga.rombel)?.label || "";
+
+  const updatedFilters = useMemo(() => ({
+    ...filters,
+    negara: negaraTerpilih,
+    provinsi: provinsiTerpilih,
+    kabupaten: kabupatenTerpilih,
+    kecamatan: kecamatanTerpilih,
+    wilayah: wilayahTerpilih,
+    blok: blokTerpilih,
+    kamar: kamarTerpilih,
+    lembaga: lembagaTerpilih,
+    jurusan: jurusanTerpilih,
+    kelas: kelasTerpilih,
+    rombel: rombelTerpilih
+  }), [filters, negaraTerpilih, provinsiTerpilih, kabupatenTerpilih, kecamatanTerpilih, wilayahTerpilih, blokTerpilih, kamarTerpilih, lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih]);
+
+  const { waliAsuh, loadingWaliAsuh, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliAsuh, totalPages, currentPage, setCurrentPage } = useFetchWaliAsuh(updatedFilters);
+
+  const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState("list");
+
+  useEffect(() => {
+    const savedViewMode = sessionStorage.getItem("viewMode");
+    if (savedViewMode) {
+      setViewMode(savedViewMode);
+    }
+  }, []);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const filterJenisKelamin = {
+    jenisKelamin: [
+      { label: "Pilih Jenis Kelamin", value: "" },
+      { label: "Laki-laki", value: "laki-laki" },
+      { label: "Perempuan", value: "perempuan" }
+    ]
+  };
+
+  const filterSmartcardPhone = {
+    smartcard: [
+      { label: "Smartcard", value: "" },
+      { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+      { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    ],
+    phoneNumber: [
+      { label: "Phone Number", value: "" },
+      { label: "Memiliki Phone Number", value: "memiliki phone number" },
+      { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    ]
+  };
 
   return (
-    <div className="flex-1 px-4 py-6 md:px-6">
-      {/* Header */}
-      <div className="mb-6">
+    <div className="flex-1 pl-6 pt-6 pb-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Data Wali Asuh</h1>
-        <nav className="text-sm text-gray-500 mt-1">Kewaliasuhan / Wali Asuh</nav>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white p-4 md:p-6 rounded-lg shadow mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {filters.map((f) => (
-            <select
-              key={f}
-              className="border border-gray-300 text-sm rounded-md px-2 py-1"
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+          <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
+          <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
+          <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
+          <Filters showFilters={showFilters} filterOptions={filterJenisKelamin} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+          <Filters showFilters={showFilters} filterOptions={filterSmartcardPhone} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+        </div>
+
+        <SearchBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          totalData={totalDataWaliAsuh}
+          toggleFilters={() => setShowFilters(!showFilters)}
+          toggleView={setViewMode}
+          limit={limit}
+          toggleLimit={(e) => setLimit(Number(e.target.value))}
+        />
+
+        {error ? (
+          <div className="col-span-3 text-center py-10">
+            <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
-              <option value="">{`Semua ${f}`}</option>
-            </select>
-          ))}
-
-          <input
-            type="text"
-            placeholder="Smartcard"
-            className="border border-gray-300 text-sm rounded-md px-2 py-1"
-          />
-          <input
-            type="text"
-            placeholder="Phone Number"
-            className="border border-gray-300 text-sm rounded-md px-2 py-1"
-          />
-        </div>
-
-        <div className="flex justify-between items-center mt-4 flex-wrap gap-2">
-          <div className="flex items-center space-x-2">
-            <select className="border border-gray-300 text-sm rounded-md px-2 py-1">
-              <option>25</option>
-              <option>50</option>
-              <option>100</option>
-            </select>
-            <span className="text-sm text-gray-600">Total data: 552</span>
+              Muat Ulang
+            </button>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="absolute left-2 top-2.5 text-gray-400"
-              />
-              <input
-                type="text"
-                className="pl-8 pr-2 py-1 text-sm border rounded-md"
-                placeholder="Cari Wali Asuh ..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+        ) : (
+          viewMode === "list" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+              {loadingWaliAsuh ? (
+                <div className="col-span-3 flex justify-center items-center">
+                  <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                </div>
+              ) : waliAsuh.length === 0 ? (
+                <p className="text-center col-span-3">Tidak ada data</p>
+              ) : (
+                waliAsuh.map((item, index) => (
+                  <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                    <img
+                      alt={item.nama || "-"}
+                      className="w-20 h-24 object-cover"
+                      src={item.foto_profil}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = blankProfile;
+                      }}
+                    />
+                    <div>
+                      <h2 className="font-semibold">{item.nama || "-"}</h2>
+                      <p className="text-gray-600">NIS : {item.nis || "-"}</p>
+                      <p className="text-gray-600">Angkatan : {item.angkatan || "-"} - {item.kota_asal || "-"}</p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <button className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-2 py-1 rounded-md text-sm">
-              <FontAwesomeIcon icon={faTh} />
-            </button>
-            <button className="bg-green-100 hover:bg-green-200 text-green-600 px-2 py-1 rounded-md text-sm">
-              <FontAwesomeIcon icon={faFilter} />
-            </button>
-          </div>
-        </div>
-              {/* Kartu Data */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {sampleData
-          .filter(d =>
-            d.name.toLowerCase().includes(search.toLowerCase())
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-left">
+                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                  <tr>
+                    <th className="px-3 py-2 border-b">#</th>
+                    <th className="px-3 py-2 border-b">No. Induk Santri</th>
+                    <th className="px-3 py-2 border-b">Nama</th>
+                    <th className="px-3 py-2 border-b">Kamar</th>
+                    <th className="px-3 py-2 border-b">Blok</th>
+                    <th className="px-3 py-2 border-b">Wilayah</th>
+                    <th className="px-3 py-2 border-b">Kota Asal</th>
+                    <th className="px-3 py-2 border-b">Angkatan</th>
+                    <th className="px-3 py-2 border-b">Tgl Update WA</th>
+                    <th className="px-3 py-2 border-b">Tgl Input WA</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-800 text-center">
+                  {loadingWaliAsuh ? (
+                    <tr>
+                      <td colSpan="10" className="py-6">
+                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                      </td>
+                    </tr>
+                  ) : waliAsuh.length === 0 ? (
+                    <tr>
+                      <td colSpan="10" className="py-6">Tidak ada data</td>
+                    </tr>
+                  ) : (
+                    waliAsuh.map((item, index) => (
+                      <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                        <td className="px-3 py-2 border-b">{index + 1}</td>
+                        <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.kamar || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.blok || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.angkatan || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                        <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )
-          .map((d, i) => (
-            <div
-              key={i}
-              className="bg-white border rounded-xl shadow-md overflow-hidden"
-            >
-              <img
-                src={d.image}
-                alt={d.name}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-3 text-sm">
-                <h2 className="font-semibold">{d.name}</h2>
-                <p>NIS: {d.nis}</p>
-                <p>Angkatan: {d.angkatan}</p>
-              </div>
-            </div>
-          ))}
-      </div>
-      </div>
+        )}
 
-
+        {totalPages > 1 && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+        )}
+      </div>
     </div>
   );
 };

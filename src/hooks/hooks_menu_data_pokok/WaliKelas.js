@@ -1,89 +1,97 @@
-import { useState, useEffect } from "react";
+// src/hooks/useFetchWaliKelas.js
+import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
 
-const useFetchWalikelas = (filters) => {
-    const [walikelas, setWalikelas] = useState([]);
-    const [loading, setLoading] = useState(true);
+const useFetchWaliKelas = (filters) => {
+    const [waliKelas, setWaliKelas] = useState([]);
+    const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
-    const [totalDataWalikelas, setTotalDataWalikelas] = useState(0);
+    const [totalDataWaliKelas, setTotalDataWaliKelas] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const lastRequest = useRef("");
+
     useEffect(() => {
-        console.log("Filters updated:", filters);
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
 
-            let url = `${API_BASE_URL}data-pokok/list/walikelas?limit=${limit}`;
-            if (currentPage > 1) {
-                url += `&page=${currentPage}`;
-            }
-            if (searchTerm) {
-                url += `&search=${encodeURIComponent(searchTerm)}`;
-            }
-            
-            // Pastikan filter yang dikirim memiliki value
-            // if (filters?.GenderRombel && filters.GenderRombel !== '') {
-            //     url += `&GenderRombel=${encodeURIComponent(filters.GenderRombel)}`;
-            // }
-            // if (filters?.lembaga && filters.lembaga !== '') {
-            //     url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
-            // }
-            
-            console.log("Fetching data from:", url);
+    const fetchData = useCallback(async () => {
+        let url = `${API_BASE_URL}data-pokok/walikelas?limit=${limit}`;
+        if (currentPage > 1) url += `&page=${currentPage}`;
+        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
-            try {
-                const response = await fetch(url);
-                console.log("Response status:", response.status);
+        if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
+        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
+        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
+        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+        if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
+        if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
+        if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        if (filters?.genderRombel) url += `&gender_rombel=${encodeURIComponent(filters.genderRombel)}`;
+        if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
 
-                if (!response.ok) {
-                    throw new Error(`Gagal mengambil data: ${response.status} ${response.statusText}`);
-                }
+        if (lastRequest.current === url) {
+            console.log("Skip Fetch: URL sama dengan request sebelumnya");
+            return;
+        }
 
-                const data = await response.json();
-                console.log("Data dari API:", data);
+        lastRequest.current = url;
+        console.log("Fetching data from:", url);
 
-                // Pemeriksaan tambahan untuk struktur data
-                const listData = data.data || data || [];
-                
-                setWalikelas(Array.isArray(listData) ? listData : []);
-                setTotalDataWalikelas(data.total_data || listData.length || 0);
-                setTotalPages(data.total_pages || 1);
-                setCurrentPage(data.current_page || 1);
-            } catch (err) {
-                console.error("Fetch error:", err);
-                setError(err.message);
-                setWalikelas([]);
-                setTotalDataWalikelas(0);
-                setTotalPages(1);
-            } finally {
-                setLoading(false);
-            }
-        };
+        setLoadingWaliKelas(true);
+        setError(null);
 
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`${response.statusText}: ${response.status}`);
+
+            const data = await response.json();
+            console.log("Data Wali Kelas dari API:", data);
+
+            setWaliKelas(Array.isArray(data.data) ? data.data : []);
+            setTotalDataWaliKelas(data.total_data || 0);
+            setTotalPages(data.total_pages || 1);
+            // setCurrentPage(data.current_page || 1); // di-nonaktifkan agar tidak override
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setError(err.message);
+            setWaliKelas([]);
+        } finally {
+            setLoadingWaliKelas(false);
+        }
+    }, [currentPage, filters, limit, debouncedSearchTerm]);
+
+    useEffect(() => {
         fetchData();
-    }, [currentPage, filters, limit, searchTerm]);
+    }, [fetchData]);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit, filters]);
+    // Reset ke halaman 1 saat limit berubah
+    // useEffect(() => {
+    //     setCurrentPage(1);
+    // }, [limit]);
 
     return {
-        walikelas,
-        loading,
+        waliKelas,
+        loadingWaliKelas,
+        error,
         searchTerm,
         setSearchTerm,
-        error,
         limit,
         setLimit,
-        totalDataWalikelas,
+        totalDataWaliKelas,
         totalPages,
         currentPage,
         setCurrentPage,
     };
 };
 
-export default useFetchWalikelas;
+export default useFetchWaliKelas;
