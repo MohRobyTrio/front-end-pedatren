@@ -147,7 +147,7 @@ const OrangTua = () => {
                                     <div>
                                         <h2 className="font-semibold">{item.nama || "-"}</h2>
                                         <p className="text-gray-600">{item.nik_or_passport || "-"}</p>
-                                        <p className="text-gray-600">{item.telepon_1 || item.telepon_2}</p>
+                                        <p className="text-gray-600">{item.telepon_1 || item.telepon_2 || "-"}</p>
                                     </div>
                                 </div>
                             ))

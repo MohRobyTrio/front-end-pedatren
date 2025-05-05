@@ -33,13 +33,16 @@ const Karyawan = () => {
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
+    const lembagaTerpilih = filterLembaga.lembaga.find(l => l.value == filters.lembaga)?.label || "";
+
     const updatedFilters = useMemo(() => ({
         ...filters,
         negara: negaraTerpilih,
         provinsi: provinsiTerpilih,
         kabupaten: kabupatenTerpilih,
         kecamatan: kecamatanTerpilih,
-    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
+        lembaga: lembagaTerpilih,
+    }), [filters, kabupatenTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
     const { karyawan, loadingKaryawan, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKaryawan, totalPages, currentPage, setCurrentPage } = useFetchKaryawan(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);

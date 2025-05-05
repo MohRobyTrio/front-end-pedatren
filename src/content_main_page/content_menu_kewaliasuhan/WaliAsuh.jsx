@@ -160,7 +160,21 @@ const WaliAsuh = () => {
                     <div>
                       <h2 className="font-semibold">{item.nama || "-"}</h2>
                       <p className="text-gray-600">NIS : {item.nis || "-"}</p>
-                      <p className="text-gray-600">Angkatan : {item.angkatan || "-"} - {item.kota_asal || "-"}</p>
+                      <p className="text-gray-600">
+                        Angkatan:{" "}
+                        {item.angkatan && item.angkatan !== "-" && item.kota_asal && item.kota_asal !== "-" ? (
+                          <>
+                            {item.angkatan} - {item.kota_asal}
+                          </>
+                        ) : item.angkatan && item.angkatan !== "-" ? (
+                          item.angkatan
+                        ) : item.kota_asal && item.kota_asal !== "-" ? (
+                          item.kota_asal
+                        ) : (
+                          "-"
+                        )}
+                      </p>
+
                     </div>
                   </div>
                 ))
