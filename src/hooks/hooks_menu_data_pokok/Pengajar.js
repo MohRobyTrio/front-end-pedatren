@@ -23,6 +23,8 @@ const useFetchPengajar = (filters) => {
         if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
         if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
         if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.kategori && filters.kategori !== "Pilih Kategori Golongan") url += `&kategori=${encodeURIComponent(filters.kategori)}`;
+        if (filters?.golongan && filters.golongan !== "Pilih Golongan") url += `&golongan=${encodeURIComponent(filters.golongan)}`;
 
         // Jika URL sama dengan request terakhir, jangan lakukan fetch ulang
         if (lastRequest.current === url) {

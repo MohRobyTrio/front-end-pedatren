@@ -18,6 +18,10 @@ const Pengajar = () => {
         kabupaten: "",
         kecamatan: ""
     })
+    const [selectedFilters, setSelectedFilters] = useState({
+        kategori: "",
+        golongan: "",
+    });
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     // const { filterGolongan, selectedGolongan, handleFilterChangeGolongan } = DropdownGolongan();
     const { kategoriGolongan, filteredGolongan, setSelectedKategori } = DropdownGolongan();
@@ -27,14 +31,18 @@ const Pengajar = () => {
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+    const kategoriTerpilih = kategoriGolongan.find(k => k.value == selectedFilters.kategori)?.label || "";
+    const golonganTerpilih = filteredGolongan.find(g => g.value == selectedFilters.golongan)?.label || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,
         negara: negaraTerpilih,
         provinsi: provinsiTerpilih,
         kabupaten: kabupatenTerpilih,
-        kecamatan: kecamatanTerpilih
-    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
+        kecamatan: kecamatanTerpilih,
+        kategori: kategoriTerpilih,
+        golongan: golonganTerpilih
+    }), [filters, golonganTerpilih, kabupatenTerpilih, kategoriTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
 
     const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
@@ -47,9 +55,26 @@ const Pengajar = () => {
         }
     }, []);
 
-    // const totalPages = pengajar.total_pages;
-    
-    // console.log(totalPages)  ;
+    const handleFilterChange = (changed) => {
+        const key = Object.keys(changed)[0];
+        const value = Object.values(changed)[0];
+
+        setSelectedFilters((prev) => {
+            const updated = { ...prev, ...changed };
+
+            if (key === "kategori") {
+                setSelectedKategori(value); 
+                updated["golongan"] = "";  
+            }
+
+            return updated;
+        });
+
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [key]: value, 
+        }));
+    };
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -164,7 +189,8 @@ const Pengajar = () => {
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     {/* <Filters showFilters={showFilters} filterOptions={filterGolongan} onChange={handleFilterChangeGolongan} selectedFilters={selectedGolongan} /> */}
-                    <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} /> */}
+                    <Filters showFilters={showFilters} filterOptions={filter2} onChange={handleFilterChange} selectedFilters={selectedFilters} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
@@ -226,17 +252,17 @@ const Pengajar = () => {
                                 pengajar.map((item, index) => (
                                     <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.niup }</td>
-                                        <td className="px-3 py-2 border-b">{item.nama}</td>
-                                        <td className="px-3 py-2 border-b">{item.umur}</td>
-                                        <td className="px-3 py-2 border-b">{item.lembaga}</td>
-                                        <td className="px-3 py-2 border-b">{item.daftar_materi}</td>
-                                        <td className="px-3 py-2 border-b">{item.total_materi}</td>
-                                        <td className="px-3 py-2 border-b">{item.masa_kerja}</td>
-                                        <td className="px-3 py-2 border-b">{item.golongan}</td>
-                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_update}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_input}</td>
+                                        <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.daftar_materi || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.total_materi || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.masa_kerja || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                     </tr>
                                 ))
                             )}

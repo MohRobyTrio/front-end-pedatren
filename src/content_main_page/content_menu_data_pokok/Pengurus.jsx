@@ -7,6 +7,8 @@ import blankProfile from "../../assets/blank_profile.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import { OrbitProgress } from "react-loading-indicators";
+import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan";
+import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
 
 const Pengurus = () => {
     const [filters, setFilters] = useState({
@@ -17,10 +19,14 @@ const Pengurus = () => {
         smartcard: "",
         pemberkasan: "",
         jenisJabatan: "",
-        umur: ""
+        umur: "",
+        satuanKerja: "",
+        golonganJabatan: ""
     })
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+    const { menuGolonganJabatan } = useDropdownGolonganJabatan();
+    const { menuSatuanKerja } = useDropdownSatuanKerja();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -65,9 +71,7 @@ const Pengurus = () => {
             { label: "Perempuan", value: "p" }
         ],
         // Sudah
-        satuanKerja: [
-            { label: "Pilih Satuan Kerja", value: "" },
-        ],
+        satuanKerja: menuSatuanKerja,
         jenisJabatan: [
             { label: "Pilih Jenis Jabatan", value: "" },
             { label: "Kultural", value: "kultural" },
@@ -75,9 +79,7 @@ const Pengurus = () => {
             { label: "Kontrak", value: "kontrak" },
             { label: "Pengkaderan", value: "pengkaderan" },
         ],
-        golonganJabatan: [
-            { label: "Pilih Jenis Jabatan", value: "" },
-        ]
+        golonganJabatan: menuGolonganJabatan
     }
     const filter5 = {
         // Sudah
@@ -222,7 +224,7 @@ const Pengurus = () => {
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.jabatan || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.umur || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.satuan_kerja || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.jenis_jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>

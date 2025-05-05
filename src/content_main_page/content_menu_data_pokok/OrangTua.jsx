@@ -171,13 +171,13 @@ const OrangTua = () => {
                             <tbody className="text-gray-800">
                                 {loadingOrangtua ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6">
+                                        <td colSpan="8" className="text-center py-6">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" />
                                         </td>
                                     </tr>
                                 ) : orangtua.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6">Tidak ada data</td>
+                                        <td colSpan="8" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
                                     orangtua.map((item, index) => (

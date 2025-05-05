@@ -28,12 +28,14 @@ const useFetchPengurus = (filters) => {
     const fetchData = useCallback(async () => {
         let url = `${API_BASE_URL}data-pokok/pengurus?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
-        if (debouncedSearchTerm) url += `&search=${encodeURIComponent(debouncedSearchTerm)}`;
+        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
         if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
         if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
         if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.satuanKerja && filters.satuanKerja !== "Pilih Satuan Kerja") url += `&satuan_kerja=${encodeURIComponent(filters.satuanKerja)}`;
+        if (filters?.golonganJabatan && filters.golonganJabatan !== "Pilih Golongan Jabatan") url += `&golongan=${encodeURIComponent(filters.golonganJabatan)}`;
         if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
         if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;

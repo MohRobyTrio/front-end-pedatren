@@ -43,6 +43,8 @@ const useFetchKaryawan = (filters) => {
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
         if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
+        if (filters?.jenisJabatan) url += `&jabatan=${encodeURIComponent(filters.jenisJabatan)}`;
+        if (filters?.golonganJabatan && filters.golonganJabatan !== "Pilih Golongan Jabatan") url += `&golongan=${encodeURIComponent(filters.golonganJabatan)}`;
 
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
