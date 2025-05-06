@@ -105,6 +105,10 @@ const WaliAsuh = () => {
     <div className="flex-1 pl-6 pt-6 pb-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Data Wali Asuh</h1>
+        <div className="flex items-center space-x-2">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+          <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
+        </div>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -160,7 +164,21 @@ const WaliAsuh = () => {
                     <div>
                       <h2 className="font-semibold">{item.nama || "-"}</h2>
                       <p className="text-gray-600">NIS : {item.nis || "-"}</p>
-                      <p className="text-gray-600">Angkatan : {item.angkatan || "-"} - {item.kota_asal || "-"}</p>
+                      <p className="text-gray-600">
+                        Angkatan:{" "}
+                        {item.angkatan && item.angkatan !== "-" && item.kota_asal && item.kota_asal !== "-" ? (
+                          <>
+                            {item.angkatan} - {item.kota_asal}
+                          </>
+                        ) : item.angkatan && item.angkatan !== "-" ? (
+                          item.angkatan
+                        ) : item.kota_asal && item.kota_asal !== "-" ? (
+                          item.kota_asal
+                        ) : (
+                          "-"
+                        )}
+                      </p>
+
                     </div>
                   </div>
                 ))

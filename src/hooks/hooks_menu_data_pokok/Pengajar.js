@@ -11,20 +11,43 @@ const useFetchPengajar = (filters) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     
-    const lastRequest = useRef("");  // Untuk menyimpan request terakhir
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const lastRequest = useRef("");
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 400);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
         let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
         }
-        if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
+        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
         if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
         if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
         if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+        if (filters?.kategori && filters.kategori !== "Pilih Kategori Golongan") url += `&golongan_jabatan=${encodeURIComponent(filters.kategori)}`;
+        if (filters?.golongan && filters.golongan !== "Pilih Golongan") url += `&golongan=${encodeURIComponent(filters.golongan)}`;
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        if (filters?.jenisJabatan) url += `&jabatan=${encodeURIComponent(filters.jenisJabatan)}`;
+        if (filters?.masaKerja) url += `&masa_kerja=${encodeURIComponent(filters.masaKerja)}`;
+        if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
+        if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
+        if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
+        if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
+        if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
+        if (filters?.totalMateriAjar) url += `&materi_ajar=${encodeURIComponent(filters.totalMateriAjar)}`;
 
-        // Jika URL sama dengan request terakhir, jangan lakukan fetch ulang
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
@@ -56,7 +79,7 @@ const useFetchPengajar = (filters) => {
         } finally {
             setLoadingPengajar(false);
         }
-    }, [currentPage, filters, limit, searchTerm]);
+    }, [currentPage, filters, limit, debouncedSearchTerm]);
 
     useEffect(() => {
         fetchData();

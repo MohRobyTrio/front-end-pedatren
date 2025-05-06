@@ -210,7 +210,7 @@ const PesertaDidik = () => {
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <th className="px-3 py-2 border-b w-16">No.</th>
+                                        <th className="px-3 py-2 border-b w-16">#</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIK / No. Passport</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
@@ -237,7 +237,7 @@ const PesertaDidik = () => {
                                             <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap">
                                                 <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>

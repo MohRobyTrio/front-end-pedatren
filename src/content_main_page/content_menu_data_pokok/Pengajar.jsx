@@ -16,8 +16,25 @@ const Pengajar = () => {
         negara: "", 
         provinsi: "",
         kabupaten: "",
-        kecamatan: ""
+        kecamatan: "",
+        kategori: "",
+        golongan: "",
+        lembaga: "",
+        jenisJabatan: "",
+        masaKerja: "",
+        honeNumber: "",
+        wargaPesantren: "",
+        smartcard: "",
+        pemberkasan: "",
+        umur: "",
+        totalMateriAjar: ""
     })
+
+    const [selectedFilters, setSelectedFilters] = useState({
+        kategori: "",
+        golongan: "",
+    });
+
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     // const { filterGolongan, selectedGolongan, handleFilterChangeGolongan } = DropdownGolongan();
     const { kategoriGolongan, filteredGolongan, setSelectedKategori } = DropdownGolongan();
@@ -28,13 +45,25 @@ const Pengajar = () => {
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
+    const kategoriTerpilih = selectedFilters.kategori
+        ? kategoriGolongan.find(kt => kt.value == selectedFilters.kategori)?.label
+        : undefined;
+    const golonganTerpilih = selectedFilters.golongan
+        ? filteredGolongan.find(g => g.value == selectedFilters.golongan)?.label
+        : undefined;
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(l => l.value == filters.lembaga)?.label || "";
+
     const updatedFilters = useMemo(() => ({
         ...filters,
         negara: negaraTerpilih,
         provinsi: provinsiTerpilih,
         kabupaten: kabupatenTerpilih,
-        kecamatan: kecamatanTerpilih
-    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
+        kecamatan: kecamatanTerpilih,
+        kategori: kategoriTerpilih,
+        golongan: golonganTerpilih,
+        lembaga: lembagaTerpilih
+    }), [filters, golonganTerpilih, kabupatenTerpilih, kategoriTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
     const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
@@ -47,9 +76,26 @@ const Pengajar = () => {
         }
     }, []);
 
-    // const totalPages = pengajar.total_pages;
-    
-    // console.log(totalPages)  ;
+    const handleFilterChange = (changed) => {
+        const key = Object.keys(changed)[0];
+        const value = Object.values(changed)[0];
+
+        setSelectedFilters((prev) => {
+            const updated = { ...prev, ...changed };
+
+            if (key === "kategori") {
+                setSelectedKategori(value); 
+                updated["golongan"] = "";  
+            }
+
+            return updated;
+        });
+
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [key]: value, 
+        }));
+    };
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -80,7 +126,7 @@ const Pengajar = () => {
             { label: "Perempuan", value: "perempuan" }
         ],
         // Sudah
-        jabatan: [
+        jenisJabatan: [
             { label: "Pilih Jenis jabatan", value: "" },
             { label: "Kultural", value: "kultural" },
             { label: "Tetap", value: "tetap" },
@@ -89,7 +135,7 @@ const Pengajar = () => {
         ],
         masaKerja: [
             { label: "Pilih Masa Kerja", value: "" },
-            { label: "< 1 Tahun", value: "<1" },
+            { label: "< 1 Tahun", value: "1" },
             { label: "1-5 Tahun", value: "1-5" },
             { label: "6-10 Tahun", value: "6-10" },
             { label: "11-15 Tahun", value: "11-15" },
@@ -97,7 +143,7 @@ const Pengajar = () => {
             { label: "21-25 Tahun", value: "21-25" },
             { label: "26-30 Tahun", value: "26-30" },
             { label: "31-40 Tahun", value: "31-40" },
-            { label: "> 40 Tahun", value: ">40" }
+            { label: "> 40 Tahun", value: "40-200" }
         ]
     }
 
@@ -120,13 +166,13 @@ const Pengajar = () => {
         ],
         umur: [
             { label: "Semua Umur", value: "" },
-            { label: "< 20 Tahun", value: "<20" },
+            { label: "< 20 Tahun", value: "0-20" },
             { label: "20-29 Tahun", value: "20-29" },
             { label: "30-39 Tahun", value: "30-39" },
             { label: "40-49 Tahun", value: "40-49" },
-            { label: "50-59 Tahun", value: "50-59" },
+            { label: "50-59 Tahun", value: "50-49" },
             { label: "60-65 Tahun", value: "60-65" },
-            { label: "> 65 Tahun", value: ">65" }
+            { label: "> 65 Tahun", value: "65-200" }
         ]
     }
 
@@ -164,7 +210,8 @@ const Pengajar = () => {
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     {/* <Filters showFilters={showFilters} filterOptions={filterGolongan} onChange={handleFilterChangeGolongan} selectedFilters={selectedGolongan} /> */}
-                    <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} /> */}
+                    <Filters showFilters={showFilters} filterOptions={filter2} onChange={handleFilterChange} selectedFilters={selectedFilters} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
@@ -226,17 +273,17 @@ const Pengajar = () => {
                                 pengajar.map((item, index) => (
                                     <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.niup }</td>
-                                        <td className="px-3 py-2 border-b">{item.nama}</td>
-                                        <td className="px-3 py-2 border-b">{item.umur}</td>
-                                        <td className="px-3 py-2 border-b">{item.lembaga}</td>
-                                        <td className="px-3 py-2 border-b">{item.daftar_materi}</td>
-                                        <td className="px-3 py-2 border-b">{item.total_materi}</td>
-                                        <td className="px-3 py-2 border-b">{item.masa_kerja}</td>
-                                        <td className="px-3 py-2 border-b">{item.golongan}</td>
-                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_update}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_input}</td>
+                                        <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.daftar_materi || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.total_materi === 0 ? 0 : item.total_materi || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.masa_kerja || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                        <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                     </tr>
                                 ))
                             )}

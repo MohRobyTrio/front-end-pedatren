@@ -8,33 +8,32 @@ import Filters from '../../components/Filters';
 import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
-
+import useDropdownGolonganJabatan from '../../hooks/hook_dropdown/DropdownGolonganJabatan';
 
 const Karyawan = () => {
     const [filters, setFilters] = useState({
         phoneNumber: "",
-        wafathidup: "",
         status: "",
         jenisKelamin: "",
-        negara: "",
-        provinsi: "",
-        kabupaten: "",
-        kecamatan: "",
-        angkatanPelajar: "",
-        angkatanSantri: "",
         lembaga: "",
-        jurusan: "",
-        kelas: "",
-        rombel: ""
+        pemberkasan: "",
+        satuanKerja: "",
+        golonganJabatan: "",
+        wargaPesantren: "",
+        umur: "",
+        smartcard: ""
     })
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterLembaga } = DropdownLembaga();
+    const { menuGolonganJabatan } = useDropdownGolonganJabatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(l => l.value == filters.lembaga)?.label || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,
@@ -42,7 +41,8 @@ const Karyawan = () => {
         provinsi: provinsiTerpilih,
         kabupaten: kabupatenTerpilih,
         kecamatan: kecamatanTerpilih,
-    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
+        lembaga: lembagaTerpilih,
+    }), [filters, kabupatenTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
     const { karyawan, loadingKaryawan, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKaryawan, totalPages, currentPage, setCurrentPage } = useFetchKaryawan(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
@@ -73,10 +73,12 @@ const Karyawan = () => {
         ],
         jenisJabatan: [
             { label: "Pilih Jenis Jabatan", value: "" },
+            { label: "Kultural", value: "kultural" },
+            { label: "Tetap", value: "tetap" },
+            { label: "Kontrak", value: "kontrak" },
+            { label: "Pengkaderan", value: "pengkaderan" },
         ],
-        golonganJabatan: [
-            { label: "Pilih Golongan Jabatan", value: "" },
-        ],
+        golonganJabatan: menuGolonganJabatan,
     }
 
     const filter5 = {
@@ -190,9 +192,9 @@ const Karyawan = () => {
                                             <p className="text-gray-600">{item.nik}</p>
                                             <p className="text-gray-600">
                                                 {
-                                                    item.KeteranganJabatan && item.KeteranganJabatan !== '-'
+                                                    item.Keterangan_jabatan && item.Keterangan_jabatan !== '-'
                                                         ? item.lembaga && item.lembaga !== '-'
-                                                            ? `${item.KeteranganJabatan} - ${item.lembaga}`
+                                                            ? `${item.Keterangan_jabatan} - ${item.lembaga}`
                                                             : item.KeteranganJabatan
                                                         : item.lembaga && item.lembaga !== '-'
                                                             ? item.lembaga
@@ -239,10 +241,10 @@ const Karyawan = () => {
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.umur || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.KeteranganJabatan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.Keterangan_jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.jenisJabatan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jenis_jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikanTerakhir || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
