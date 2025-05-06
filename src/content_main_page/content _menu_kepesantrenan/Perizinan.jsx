@@ -197,7 +197,14 @@ const PerizinanCard = ({ data }) => {
               <div className="flex">
                 <div className="w-24 text-gray-700">Status</div>
                 <div className="flex-1">
-                  <span className="text-blue-500 font-medium">: {data.status_izin}</span>
+                  <span className={`font-medium ${data.status === 'telat(sudah kembali)'
+                    ? 'text-red-600'
+                    : data.status === 'telat(belum kembali)'
+                      ? 'text-red-600'
+                      : 'text-blue-600'
+                    }`}>
+                    : {data.status}
+                  </span>
                 </div>
               </div>
             </div>
@@ -239,8 +246,15 @@ const PerizinanCard = ({ data }) => {
 
             <div className="mt-6">
               <div className="text-gray-700 font-medium">Keterangan:</div>
-              <div className="mt-2 text-gray-600">
+              <div className="mt-1 text-gray-600">
                 {data.keterangan}
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="text-gray-700 font-medium">{(data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") ? 'Sudah berada di Pondok :' : ''}</div>
+              <div className="mt-1 font-medium text-blue-800">
+                {data.tanggal_kembali}
               </div>
             </div>
 
@@ -269,29 +283,62 @@ const PerizinanCard = ({ data }) => {
           <div className="flex flex-wrap items-center">
             <div className="flex items-center mr-6 mb-2">
               <div className="w-6 h-6 rounded-full flex items-center justify-center bg-blue-500 text-white mr-2">
-                <span className="text-white">✓</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
               </div>
               <span className="text-gray-700">Sedang proses izin</span>
             </div>
 
             <div className="flex items-center mr-6 mb-2">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center bg-blue-500 text-white mr-2">
-                <span className="text-white">✓</span>
+            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
+            ${(data.status !== "sedang proses izin" || data.status !== "perizinan ditolak" || data.status !== "dibatalkan" )
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                    : 'border-gray-400 text-gray-400'}`}>
+                {(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </div>
-              <span className="text-gray-700">Perizinan diterima</span>
+              <span className="text-gray-700">{data.status === "dibatalkan" ? "Perizinan dibatalkan" : data.status === "perizinan ditolak" ? "Perizinan ditolak" : " Perizinan diterima"}</span>
             </div>
 
             <div className="flex items-center mr-6 mb-2">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center bg-blue-500 text-white mr-2">
-                <span className="text-white">✓</span>
+            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
+            ${(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)")
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                    : 'border-gray-400 text-gray-400'}`}>
+                {(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </div>
               <span className="text-gray-700">Sudah berada di luar pondok</span>
             </div>
 
             <div className="flex items-center mb-2">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-200 text-gray-400 mr-2">
-              </div>
-              <span className="text-gray-400">Kembali tepat waktu</span>
+              <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
+            ${data.status === "kembali tepat waktu"
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                  : data.status === "telat(belum kembali)"
+                    ? 'border-red-500 bg-red-500 text-white'
+                      : data.status === "telat(sudah kembali)"
+                      ? 'border-red-500 bg-red-500 text-white'
+                       : 'border-gray-400 text-gray-400'}`}>
+                {data.status === "telat(belum kembali)"
+                  ? <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  : data.status === "kembali tepat waktu" && <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                }{
+                  data.status === "telat(sudah kembali)" && <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                }
+              </div> 
+              <span className="text-gray-700">{data.status === "telat(belum kembali)" ? " Telat" : data.status === "telat(sudah kembali)" ? " Telat" : " Kembali tepat waktu"}</span>
             </div>
           </div>
 

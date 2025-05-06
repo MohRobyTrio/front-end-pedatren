@@ -1,16 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useFetchPelanggaran from "../../hooks/hook_menu_kepesantrenan/pelanggaran";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 
 const DataPelanggaran = () => {
     const [filters, setFilters] = useState({
-        provinsi: '',
-        jenis_pelanggaran: '',
-        status_pelanggaran: ''
+        provinsi: " ",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+        jenis_pelanggaran: " ",
+        status_pelanggaran: " "
     });
+
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
+    const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
+    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
+    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
+    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
+    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
+    
+    const updatedFilters = useMemo(() => ({
+            ...filters,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih
+        }), [blokTerpilih, filters, jurusanTerpilih, kamarTerpilih, kelasTerpilih, lembagaTerpilih, rombelTerpilih, wilayahTerpilih]);
+    
+
     const [page, setPage] = useState(1);
 
     const {
@@ -27,7 +58,7 @@ const DataPelanggaran = () => {
         setSearchTerm,
         fetchData,
         filterOptions
-    } = useFetchPelanggaran();
+    } = useFetchPelanggaran(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
 
@@ -41,6 +72,32 @@ const DataPelanggaran = () => {
             setCurrentPage(page);
         }
     };
+
+    const filter3 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        status_pelanggaran: [
+            { label: "Pilih Status Pelanggaran", value: "" },
+            { label: "Sudah diproses", value: "Sudah diproses" },
+            { label: "Sedang diproses", value: "Sedang diproses" },
+            { label: "Belum diproses", value: "Belum diproses" }
+        ],
+        jenis_putusan: [
+            { label: "Pilih Jenis Putusan", value: "" },
+            { label: "Belum ada putusan", value: "Belum ada putusan" },
+            { label: "Disanksi", value: "Disanksi" },
+            { label: "Dibebaskan", value: "Dibebaskan" }
+        ],
+        jenis_pelanggaran: [
+            { label: "Pilih Jenis Pelanggaran", value: "" },
+            { label: "Ringan", value: "Ringan" },
+            { label: "Sedang", value: "Sedang" },
+            { label: "Berat", value: "Berat" }
+        ]
+    }
 
 
     return (
@@ -58,7 +115,7 @@ const DataPelanggaran = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                {showFilters && (
+                {/* {showFilters && (
                     <Filters
                         filters={filters}
                         filterOptions={filterOptions}
@@ -67,7 +124,12 @@ const DataPelanggaran = () => {
                             setPage(1);
                         }}
                     />
-                )}
+                )} */}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
+                    <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
+                    <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                </div>
 
                 <SearchBar
                     searchTerm={searchTerm}

@@ -15,7 +15,7 @@ const useFetchPerizinan = () => {
 
 
   // Field yang akan dijadikan sebagai searchable
-  const SEARCHABLE_FIELDS = ['nama_santri'];
+  const SEARCHABLE_FIELDS = ['nama_santri', 'provinsi', 'kabupaten', 'lembaga'];
 
   // Debounce searchTerm selama 400ms
   useEffect(() => {
@@ -33,7 +33,7 @@ const useFetchPerizinan = () => {
     
     // Handle search
     if (debouncedSearchTerm) {
-      url += `&nama_santri=${encodeURIComponent(debouncedSearchTerm)}`;
+      url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
       url += `&search_fields=${SEARCHABLE_FIELDS.join(',')}`;
     }
     

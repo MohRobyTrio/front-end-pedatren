@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { API_BASE_URL } from '../config';
 
-const useFetchPelanggaran = () => {
+const useFetchPelanggaran = (filters) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,9 +13,6 @@ const useFetchPelanggaran = () => {
   const lastRequest = useRef('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   
-
-  // Field yang akan dijadikan sebagai searchable
-  const SEARCHABLE_FIELDS = ['nama_santri', 'provinsi', 'kabupaten', 'lembaga'];
 
   // Debounce searchTerm selama 400ms
   useEffect(() => {
@@ -34,15 +31,31 @@ const useFetchPelanggaran = () => {
     // Handle search
     if (debouncedSearchTerm) {
       url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
-      url += `&search_fields=${SEARCHABLE_FIELDS.join(',')}`;
     }
+
+    if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
+    if (filters?.blok && filters.blok !== "Semua Blok") url += `&blok=${encodeURIComponent(filters.blok)}`;
+    if (filters?.kamar && filters.kamar !== "Semua Kamar") url += `&kamar=${encodeURIComponent(filters.kamar)}`;
+    if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+    if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
+    if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
+    if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+    if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+    if (filters?.status_pelanggaran && filters.status_pelanggaran !== " ") {
+      url += `&status_pelanggaran=${encodeURIComponent(filters.status_pelanggaran)}`;
+    }
+    if (filters?.jenis_putusan) url += `&jenis_putusan=${encodeURIComponent(filters.jenis_putusan)}`;
+    if (filters?.jenis_pelanggaran && filters.jenis_pelanggaran !== " ") {
+      url += `&jenis_pelanggaran=${encodeURIComponent(filters.jenis_pelanggaran)}`;
+    }
+
     
     // Handle filters
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value !== 'Semua') {
-        url += `&${key}=${encodeURIComponent(value)}`;
-      }
-    });
+    // Object.entries(filters).forEach(([key, value]) => {
+    //   if (value && value !== 'Semua') {
+    //     url += `&${key}=${encodeURIComponent(value)}`;
+    //   }
+    // });
 
     // Skip duplicate requests
     if (lastRequest.current === url) {
@@ -50,6 +63,7 @@ const useFetchPelanggaran = () => {
       return;
     }
     lastRequest.current = url;
+    console.log("Fetching data from:", url);
 
     try {
       setLoading(true);
@@ -85,7 +99,7 @@ const useFetchPelanggaran = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, debouncedSearchTerm]);
+  }, [currentPage, filters, limit, debouncedSearchTerm]);
 
   // Auto fetch when dependencies change
   useEffect(() => {
@@ -93,9 +107,9 @@ const useFetchPelanggaran = () => {
   }, [fetchData]);
 
   // Reset to page 1 when limit or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [limit, searchTerm]);
+  // useEffect(() => {
+  //   setCurrentPage(1);
+  // }, [limit, searchTerm]);
 
   // Filter options
   const filterOptions = useMemo(() => {
