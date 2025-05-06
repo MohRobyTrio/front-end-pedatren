@@ -246,8 +246,15 @@ const PerizinanCard = ({ data }) => {
 
             <div className="mt-6">
               <div className="text-gray-700 font-medium">Keterangan:</div>
-              <div className="mt-2 text-gray-600">
+              <div className="mt-1 text-gray-600">
                 {data.keterangan}
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="text-gray-700 font-medium">{(data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") ? 'Sudah berada di Pondok :' : ''}</div>
+              <div className="mt-1 font-medium text-blue-800">
+                {data.tanggal_kembali}
               </div>
             </div>
 
