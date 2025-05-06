@@ -9,24 +9,18 @@ import useFetchGroupKewaliasuhan from "../../hooks/hooks_menu_kewaliasuhan/Group
 const GroupKewaliasuhan = () => {
     const [filters, setFilters] = useState({
         wilayah: "",
-        blok: "",
-        kamar: "",
         jenisKelamin: "",
         jenisGroup: ""
     });
 
-    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterWilayah } = DropdownWilayah();
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value === selectedWilayah.wilayah)?.label || "";
-    const blokTerpilih = filterWilayah.blok.find(p => p.value === selectedWilayah.blok)?.label || "";
-    const kamarTerpilih = filterWilayah.kamar.find(k => k.value === selectedWilayah.kamar)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.label || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,
-        wilayah: wilayahTerpilih,
-        blok: blokTerpilih,
-        kamar: kamarTerpilih
-    }), [filters, wilayahTerpilih, blokTerpilih, kamarTerpilih]);
+        wilayah: wilayahTerpilih
+    }), [filters, wilayahTerpilih]);    
 
     const {
         groupKewaliasuhan,
@@ -50,16 +44,22 @@ const GroupKewaliasuhan = () => {
         }
     };
 
-    const filterOptions = {
+    const cmbJenisKelamin = {
         jenisKelamin: [
             { label: "Pilih Jenis Kelamin", value: "" },
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" }
-        ],
+        ]
+    };
+
+    const cmbJenisGroup = {
         jenisGroup: [
             { label: "Semua Jenis Group", value: "" },
-            { label: "Group A", value: "A" },
-            { label: "Group B", value: "B" }
+            { label: "Tidak Ada Wali dan Anak", value: "tidak_ada_wali_dan_anak" },
+            { label: "Tidak Ada Wali", value: "tidak_ada_wali" },
+            { label: "Tidak Ada Anak", value: "tidak_ada_anak" },
+            { label: "Wali Ada Tapi Tidak Ada Anak", value: "wali_ada_tapi_tidak_ada_anak" },
+            { label: "Anak Ada Tapi Tidak Ada Wali", value: "anak_ada_tapi_tidak_ada_wali" }
         ]
     };
 
@@ -74,8 +74,9 @@ const GroupKewaliasuhan = () => {
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
-                    <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
-                    <Filters showFilters={showFilters} filterOptions={filterOptions} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={{ wilayah: filterWilayah.wilayah }} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={cmbJenisKelamin} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={cmbJenisGroup} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                 </div>
 
                 <SearchBar
@@ -85,6 +86,7 @@ const GroupKewaliasuhan = () => {
                     toggleFilters={() => setShowFilters(!showFilters)}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    showViewButtons={false}
                 />
 
                 {error ? (

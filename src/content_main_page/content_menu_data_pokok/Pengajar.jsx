@@ -6,14 +6,14 @@ import Filters from '../../components/Filters';
 import useFetchPengajar from '../../hooks/hooks_menu_data_pokok/Pengajar';
 import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
-import PesertaItem from '../../components/PesertaItem';
+import blankProfile from "../../assets/blank_profile.png";
 import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 
 
 const Pengajar = () => {
     const [filters, setFilters] = useState({
-        negara: "", 
+        negara: "",
         provinsi: "",
         kabupaten: "",
         kecamatan: "",
@@ -65,7 +65,7 @@ const Pengajar = () => {
         lembaga: lembagaTerpilih
     }), [filters, golonganTerpilih, kabupatenTerpilih, kategoriTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
-    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
+    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, error, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("list");
 
@@ -84,8 +84,8 @@ const Pengajar = () => {
             const updated = { ...prev, ...changed };
 
             if (key === "kategori") {
-                setSelectedKategori(value); 
-                updated["golongan"] = "";  
+                setSelectedKategori(value);
+                updated["golongan"] = "";
             }
 
             return updated;
@@ -93,7 +93,7 @@ const Pengajar = () => {
 
         setFilters((prevFilters) => ({
             ...prevFilters,
-            [key]: value, 
+            [key]: value,
         }));
     };
 
@@ -108,14 +108,14 @@ const Pengajar = () => {
         kategori: kategoriGolongan,
         golongan: filteredGolongan,
         totalMateriAjar: [
-            { label: "Pilih Total Materi Ajar", value: ""},
-            { label: "Kosong", value: "0"},
-            { label: "1 Materi", value: "1"},
-            { label: "Lebih dari 1 Materi", value: ">1"},
-            { label: "2 Materi", value: "2"},
-            { label: "Lebih dari 2 Materi", value: ">2"},
-            { label: "3 Materi", value: "3"},
-            { label: "Lebih dari 3 Materi", value: ">3"},
+            { label: "Pilih Total Materi Ajar", value: "" },
+            { label: "Kosong", value: "0" },
+            { label: "1 Materi", value: "1" },
+            { label: "Lebih dari 1 Materi", value: ">1" },
+            { label: "2 Materi", value: "2" },
+            { label: "Lebih dari 2 Materi", value: ">2" },
+            { label: "3 Materi", value: "3" },
+            { label: "Lebih dari 3 Materi", value: ">3" },
         ]
     }
     const filter3 = {
@@ -226,70 +226,99 @@ const Pengajar = () => {
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                 />
-                {viewMode === "list" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                        {loadingPengajar ? (
-                            <div className="col-span-3 flex justify-center items-center">
-                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                            </div>
-                        ) : pengajar.length === 0 ? (
-                            <p className="text-center col-span-3">Tidak ada data</p>
-                        ) : (
-                            pengajar.map((student, index) => <PesertaItem key={index} student={student} />)
-                        )}
+                {error ? (
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Muat Ulang
+                        </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm text-left">
-                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                            <tr>
-                                <th className="px-3 py-2 border-b">#</th>
-                                <th className="px-3 py-2 border-b">NIUP</th>
-                                <th className="px-3 py-2 border-b">Nama</th>
-                                <th className="px-3 py-2 border-b">Umur</th>
-                                <th className="px-3 py-2 border-b">Pangkalan Lembaga</th>
-                                <th className="px-3 py-2 border-b">Materi Ajar</th>
-                                <th className="px-3 py-2 border-b">Total Materi Ajar</th>
-                                <th className="px-3 py-2 border-b">Masa Kerja</th>
-                                <th className="px-3 py-2 border-b">Golonngan</th>
-                                <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
-                                <th className="px-3 py-2 border-b">Tgl Update Bio</th>
-                                <th className="px-3 py-2 border-b">Tgl Input Bio</th>
-
-                            </tr>
-                        </thead>
-                        <tbody className="text-gray-800">
+                    viewMode === "list" ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                             {loadingPengajar ? (
-                                <tr>
-                                    <td colSpan="11" className="text-center p-4">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </td>
-                                </tr>
+                                <div className="col-span-3 flex justify-center items-center">
+                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                </div>
                             ) : pengajar.length === 0 ? (
-                                <tr>
-                                    <td colSpan="11" className="text-center p-4">Tidak ada data</td>
-                                </tr>
+                                <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 pengajar.map((item, index) => (
-                                    <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
-                                        <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.daftar_materi || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.total_materi === 0 ? 0 : item.total_materi || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.masa_kerja || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                        <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
-                                    </tr>
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                        <img
+                                            alt={item.nama || "-"}
+                                            className="w-20 h-24 object-cover"
+                                            src={item.foto_profil}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = blankProfile;
+                                            }}
+                                        />
+                                        <div>
+                                            <h2 className="font-semibold">{item.nama || "-"}</h2>
+                                            <p className="text-gray-600">{item.niup || "-"}</p>
+                                            <p className="text-gray-600">{item.lembaga || "-"}</p>
+                                        </div>
+                                    </div>
                                 ))
-                            )}
-                        </tbody>
-                    </table>
-                    </div>
+                                )}
+                            </div>
+                        ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                    <tr>
+                                        <th className="px-3 py-2 border-b">#</th>
+                                        <th className="px-3 py-2 border-b">NIUP</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">Umur</th>
+                                        <th className="px-3 py-2 border-b">Pangkalan Lembaga</th>
+                                        <th className="px-3 py-2 border-b">Materi Ajar</th>
+                                        <th className="px-3 py-2 border-b">Total Materi Ajar</th>
+                                        <th className="px-3 py-2 border-b">Masa Kerja</th>
+                                        <th className="px-3 py-2 border-b">Golonngan</th>
+                                        <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Tgl Update Bio</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingPengajar ? (
+                                        <tr>
+                                            <td colSpan="11" className="text-center p-4">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                            </td>
+                                        </tr>
+                                    ) : pengajar.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="11" className="text-center p-4">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        pengajar.map((item, index) => (
+                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.daftar_materi || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.total_materi === 0 ? 0 : item.total_materi || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.masa_kerja || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )
                 )}
 
                 {totalPages > 1 && (

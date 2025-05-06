@@ -8,6 +8,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 
 const AnakAsuh = () => {
     const [filters, setFilters] = useState({
@@ -30,20 +31,28 @@ const AnakAsuh = () => {
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { menuAngkatanSantri } = DropdownAngkatan();
 
-    const negaraTerpilih = filterNegara.negara.find(n => n.value === selectedNegara.negara)?.label || "";
-    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value === selectedNegara.provinsi)?.label || "";
-    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value === selectedNegara.kabupaten)?.label || "";
-    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value === selectedNegara.kecamatan)?.label || "";
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value === selectedWilayah.wilayah)?.label || "";
-    const blokTerpilih = filterWilayah.blok.find(p => p.value === selectedWilayah.blok)?.label || "";
-    const kamarTerpilih = filterWilayah.kamar.find(k => k.value === selectedWilayah.kamar)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
+    const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
+    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
 
-    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value === selectedLembaga.lembaga)?.label || "";
-    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value === selectedLembaga.jurusan)?.label || "";
-    const kelasTerpilih = filterLembaga.kelas.find(n => n.value === selectedLembaga.kelas)?.label || "";
-    const rombelTerpilih = filterLembaga.rombel.find(n => n.value === selectedLembaga.rombel)?.label || "";
+    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
+    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
+    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
+    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
+
+    const customMenuAngkatanSantri = [
+        menuAngkatanSantri.length > 0
+          ? { ...menuAngkatanSantri[0], label: "Semua Angkatan" }
+          : { value: "", label: "Semua Angkatan" },
+        ...menuAngkatanSantri.slice(1)
+      ];
 
     const updatedFilters = useMemo(() => ({
         ...filters,
@@ -77,13 +86,59 @@ const AnakAsuh = () => {
         }
     };
 
-    const filter3 = {
+    const filterJenisKelamin = {
+        // Sudah
         jenisKelamin: [
-            { label: "Pilih Jenis Kelamin", value: "" },
-            { label: "Laki-laki", value: "laki-laki" },
-            { label: "Perempuan", value: "perempuan" }
+          { label: "Pilih Jenis Kelamin", value: "" },
+          { label: "Laki-laki", value: "laki-laki" },
+          { label: "Perempuan", value: "perempuan" }
+        ],
+        // Sudah
+        status: [
+          { label: "Semua Status", value: "" },
+          { label: "Santri", value: "santri" },
+          { label: "Santri Non Pelajar", value: "santri non pelajar" },
+          { label: "Pelajar", value: "pelajar" },
+          { label: "Pelajar Non Santri", value: "pelajar non santri" },
+          { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+        ],
+        angkatan: customMenuAngkatanSantri
+      }
+    
+      const filter5 = {
+        // Sudah
+        wargaPesantren: [
+          { label: "Warga Pesantren", value: "" },
+          { label: "Memiliki NIUP", value: "memiliki niup" },
+          { label: "Tanpa NIUP", value: "tanpa niup" }
+        ],
+        // Sudah
+        urutBerdasarkan: [
+          { label: "Urut Berdasarkan", value: "" },
+          { label: "Nama", value: "nama" },
+          { label: "NIUP", value: "niup" },
+          { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        ],
+        // Sudah
+        urutSecara: [
+          { label: "Urut Secara", value: "" },
+          { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+          { label: "Z-A / 9-0 (Descending)", value: "desc" }
         ]
-    };
+      }
+    
+      const filterSmartcardPhone = {
+        smartcard: [
+          { label: "Smartcard", value: "" },
+          { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+          { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        ],
+        phoneNumber: [
+          { label: "Phone Number", value: "" },
+          { label: "Memiliki Phone Number", value: "memiliki phone number" },
+          { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        ]
+      };
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -99,7 +154,9 @@ const AnakAsuh = () => {
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
-                    <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filterJenisKelamin} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    <Filters showFilters={showFilters} filterOptions={filterSmartcardPhone} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                 </div>
 
                 <SearchBar

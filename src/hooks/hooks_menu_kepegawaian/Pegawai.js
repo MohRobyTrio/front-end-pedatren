@@ -23,8 +23,8 @@ const useFetchPegawai = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pegawais?limit=${limit}&page=${currentPage}`;
-
+        let url = `${API_BASE_URL}data-pokok/pegawais?limit=${limit}`;
+        if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
         if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;

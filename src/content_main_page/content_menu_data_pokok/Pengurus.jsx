@@ -104,7 +104,7 @@ const Pengurus = () => {
             { label: "20-29 Tahun", value: "20-29" },
             { label: "30-39 Tahun", value: "30-39" },
             { label: "40-49 Tahun", value: "40-49" },
-            { label: "50-59 Tahun", value: "50-49" },
+            { label: "50-59 Tahun", value: "50-59" },
             { label: "60-65 Tahun", value: "60-65" },
             { label: "> 65 Tahun", value: "65-200" }
         ]

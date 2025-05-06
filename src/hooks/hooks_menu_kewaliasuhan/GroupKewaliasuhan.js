@@ -18,7 +18,7 @@ const useFetchGroupKewaliasuhan = (filters) => {
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 500);
+        }, 400);
 
         return () => {
             clearTimeout(handler);
@@ -35,6 +35,9 @@ const useFetchGroupKewaliasuhan = (filters) => {
         if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") {
             url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
         }
+        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+        if (filters?.jenisGroup) url += `&grup_wali_asuh=${encodeURIComponent(filters.jenisGroup)}`;
+
 
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
