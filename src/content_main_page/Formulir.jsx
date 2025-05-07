@@ -38,19 +38,34 @@ const Formulir = () => {
         <h1 className="text-2xl font-bold">Formulir</h1>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex flex-wrap items-center mb-4">
-          {tabs.map((tab, index) => (
-            <span key={tab.id}>
-              <Link to={tab.link}
-                className={`cursor-pointer ${location.pathname === tab.link ? "text-blue-500 font-bold" : "text-gray-500"
-                  }`}
-              >
-                {tab.label}
-              </Link>
-              {index < tabs.length - 1 && <i className="fas fa-chevron-right mx-2 text-gray-400"></i>}
-            </span>
-          ))}
-        </div>
+
+        {/* Untuk tampilan tab atas */}
+        <div className="flex flex-wrap gap-y-2 mb-4">
+  {tabs.map((tab, index) => {
+    const isActive = location.pathname === tab.link;
+    const isFirst = index === 0;
+    return (
+      <Link
+        key={tab.id}
+        to={tab.link}
+        className={`relative px-6 py-2 text-sm whitespace-nowrap font-medium transition-colors duration-200
+          ${isActive ? "bg-gray-400 text-white" : "bg-gray-200 text-gray-700"}
+          outline outline-2 outline-gray-600 outline-offset-[-2px]
+        `}
+        style={{
+          clipPath: isFirst
+            ? "polygon(0 0, 100% 0, 100% 100%, 0% 100%)"
+            : "polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%)",
+          marginLeft: isFirst ? "0" : "-20px",
+        }}
+      >
+        {tab.label}
+      </Link>
+    );
+  })}
+</div>
+
+
 
         <div className="p-4">
           <Outlet />
