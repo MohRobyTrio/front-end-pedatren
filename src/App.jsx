@@ -50,21 +50,6 @@ const RedirectToDashboard = () => {
   return null;
 };
 
-// const RedirectToBiodata = () => {
-//   const navigate = useNavigate();
-//   const hasRedirectedtoBiodata = useRef(false);
-
-//   useEffect(() => {
-//     if (!hasRedirectedtoBiodata.current) {
-//       console.log("redirect to biodata");
-//       navigate('biodata', { replace: true }); // relative path
-//       hasRedirectedtoBiodata.current = true;
-//     }
-//   }, [navigate]);
-
-//   return null;
-// };
-
 const RedirectToBiodata = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,16 +101,16 @@ function App() {
                 <Route key={tab.id} path={tab.link} element={tab.content} />
               ))}
             </Route> */}
-            
+
             {/* <Route path="/formulir" element={<Navigate to="biodata" replace />} />
 <Route path="/formulir/*" element={<Formulir />} /> */}
 
-<Route path="formulir" element={<Formulir />}>
-  <Route index element={<RedirectToBiodata />} />
-  {tabsFormulir.map((tab) => (
-    <Route key={tab.id} path={tab.link} element={tab.content} />
-  ))}
-</Route>
+            <Route path="formulir" element={<Formulir />}>
+              <Route index element={<RedirectToBiodata />} />
+              {tabsFormulir.map((tab) => (
+                <Route key={tab.id} path={tab.link} element={tab.content} />
+              ))}
+            </Route>
 
             {/* Semua menu */}
             {[

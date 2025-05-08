@@ -26,10 +26,10 @@ const useFetchGroupKewaliasuhan = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/kewaliasuhan/grup?limit=${limit}&page=${currentPage}`;
-
+        let url = `${API_BASE_URL}data-pokok/kewaliasuhan/grup?limit=${limit}`;
+        if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) {
-            url += `&search=${encodeURIComponent(debouncedSearchTerm)}`;
+            url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
         }
 
         if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") {
