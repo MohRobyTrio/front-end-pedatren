@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import { Outlet } from "react-router-dom";
+import { useState, useEffect, useRef, Suspense, useMemo } from 'react';
+// import { Outlet } from "react-router-dom";
 import 'flowbite';
 import { subPesertaDidik } from '../data/menuData';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import { KeepAlive, useKeepAliveRef } from 'keepalive-for-react';
+import { useLocation, useOutlet } from 'react-router-dom';
 
 const MainPage = () => {
     const [dropdownDataPokok, setDropdownDataPokok] = useState(() => sessionStorage.getItem("dropdownDataPokok") === "true");
@@ -52,6 +54,14 @@ const MainPage = () => {
         };
     }, []);
 
+    const outlet = useOutlet();
+    const location = useLocation();
+    const aliveRef = useKeepAliveRef();
+
+    const currentCacheKey = useMemo(() => location.pathname, [location.pathname]);
+
+    // console.log(location.pathname)
+
     return (
         <>
             <div className="flex h-screen overflow-hidden">
@@ -85,7 +95,17 @@ const MainPage = () => {
 
                 <div className="pr-6 sm:ml-64 overflow-y-auto overflow-x-hidden w-full max-w-full">
                     <div className="pt-8 mt-8">
-                        <Outlet />
+                        {/* <Outlet /> */}
+                        <KeepAlive
+                            transition
+                            aliveRef={aliveRef}
+                            activeCacheKey={currentCacheKey}
+                            max={20} // Simpan hingga 20 halaman
+                        >
+                            <Suspense fallback={<div>Loading...</div>}>
+                                {outlet}
+                            </Suspense>
+                        </KeepAlive>
                     </div>
                 </div>
             </div>
