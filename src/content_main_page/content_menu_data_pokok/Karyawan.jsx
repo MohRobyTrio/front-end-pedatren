@@ -188,7 +188,7 @@ const Karyawan = () => {
                                             }}
                                         />
                                         <div>
-                                            <p className="font-semibold">{item.nama}</p>
+                                            <p className="font-semibold text-xl">{item.nama}</p>
                                             <p className="text-gray-600">{item.nik}</p>
                                             <p className="text-gray-600">
                                                 {

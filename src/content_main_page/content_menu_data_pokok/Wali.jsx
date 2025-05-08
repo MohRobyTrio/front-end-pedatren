@@ -161,7 +161,7 @@ const Wali = () => {
                                         }}
                                     />
                                     <div>
-                                        <h2 className="font-semibold">{item.nama || "-"}</h2>
+                                        <h2 className="font-semibold text-xl">{item.nama || "-"}</h2>
                                         <p className="text-gray-600">NIK : {item.nik_or_passport || "-"}</p>
                                         <p className="text-gray-600">Phone : {item.telepon_1 || item.telepon_2 || "-"}</p>
                                     </div>
