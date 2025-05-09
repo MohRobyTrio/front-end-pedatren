@@ -5,6 +5,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import blankProfile from "../assets/blank_profile.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { OrbitProgress } from "react-loading-indicators";
 
 // Subkomponen
 const Biodata = ({ biodata }) => (
@@ -50,21 +51,57 @@ const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 const Progress = () => <h1 className="text-xl font-bold">Progress Report</h1>;
 const DomisiliSantri = () => <h1 className="text-xl font-bold">Domisili Santri</h1>;
 
-const TesModal = ({ item, onClose }) => {
+const TesModal = ({title, menu, item, onClose }) => {
     const [activeTab, setActiveTab] = useState("biodata");
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    console.log(menu);
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             setError(null);
+            // console.log("modal");
+            
             try {
-                const res = await axios.get(`http://localhost:8000/api/data-pokok/alumni/${item.id}`);
+                if (menu == 6) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/orangtua/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 7) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/wali/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 8) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/pengajar/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 9) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/pengurus/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 10) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/karyawan/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 11) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/walikelas/${item.id}`);
+                    setData(res.data.data);
+                }
+                if (menu == 12) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/khadam/${item.id_khadam}`);
+                    setData(res.data.data);
+                    console.log(item.id_khadam);
+                }
+                if (menu == 13) {
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/alumni/${item.id}`);
+                    setData(res.data.data);
+                }
                 console.log(item.id);
+                console.log(menu);
                 
-                setData(res.data.data);
             } catch (err) {
                 console.error(err);
                 setError("Gagal memuat data.");
@@ -73,10 +110,10 @@ const TesModal = ({ item, onClose }) => {
             }
         };
 
-        if (item?.id) {
+        if (item?.id || item?.id_khadam) {
             fetchData();
         }
-    }, [item?.id]);
+    }, [item.id, item.id_khadam, menu]);
 
     const tabs = [
         data?.Biodata && {
@@ -181,7 +218,7 @@ const TesModal = ({ item, onClose }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full h-full relative max-h-[90vh] flex flex-col">
                             {/* Tombol Close */}
                             <button
                                 onClick={onClose}
@@ -192,12 +229,16 @@ const TesModal = ({ item, onClose }) => {
 
                             {/* Header */}
                             <div className="pb-4">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Alumni</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail {title}</Dialog.Title>
                             </div>
 
                             {/* Body */}
                             <div className="flex-1 overflow-y-auto p-2">
-                                {loading && <p>Memuat data...</p>}
+                                {loading && (
+                                    <div className="flex justify-center items-center h-full">
+                                    <OrbitProgress variant="disc" color="#2a6999" size="small" />
+                                    </div>
+                                )}
                                 {error && <p className="text-red-500">{error}</p>}
                                 {data && (
                                     <>
@@ -231,7 +272,7 @@ const TesModal = ({ item, onClose }) => {
                             {/* Footer */}
                             <div className="mt-4 pt-4 text-right space-x-2">
                                 <Link to="/formulir">
-                                    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
+                                    <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
                                         Buka di Formulir
                                     </button>
                                 </Link>

@@ -250,6 +250,8 @@ const Alumni = () => {
 
                 {isModalOpen && (
                     <TesModal
+                        title="Alumni"
+                        menu={13}
                         item={selectedItem}
                         onClose={closeModal}
                     />

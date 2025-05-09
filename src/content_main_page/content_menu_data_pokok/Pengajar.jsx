@@ -9,9 +9,23 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import blankProfile from "../../assets/blank_profile.png";
 import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
+import TesModal from '../../components/TesModal';
 
 
 const Pengajar = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };
+
     const [filters, setFilters] = useState({
         negara: "",
         provinsi: "",
@@ -247,7 +261,7 @@ const Pengajar = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 pengajar.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -299,7 +313,7 @@ const Pengajar = () => {
                                         </tr>
                                     ) : (
                                         pengajar.map((item, index) => (
-                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -319,6 +333,15 @@ const Pengajar = () => {
                             </table>
                         </div>
                     )
+                )}
+
+                {isModalOpen && (
+                    <TesModal
+                        title="Pengajar"
+                        menu={8}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
                 )}
 
                 {totalPages > 1 && (

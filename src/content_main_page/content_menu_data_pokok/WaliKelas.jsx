@@ -8,8 +8,22 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
+import TesModal from "../../components/TesModal";
 
 const WaliKelas = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };
+    
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wafathidup: "",
@@ -133,7 +147,7 @@ const WaliKelas = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 waliKelas.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -183,7 +197,7 @@ const WaliKelas = () => {
                                         </tr>
                                     ) : (
                                         waliKelas.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_Passport|| "-"}</td>
@@ -205,6 +219,14 @@ const WaliKelas = () => {
                     )
                 )}
 
+                {isModalOpen && (
+                    <TesModal
+                        title="Wali Kelas"
+                        menu={11}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

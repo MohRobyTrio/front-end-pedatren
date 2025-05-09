@@ -9,8 +9,22 @@ import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import useDropdownGolonganJabatan from '../../hooks/hook_dropdown/DropdownGolonganJabatan';
+import TesModal from '../../components/TesModal';
 
 const Karyawan = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         status: "",
@@ -177,7 +191,7 @@ const Karyawan = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 karyawan.map((item) => (
-                                    <div key={item.id} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                                    <div key={item.id} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -237,7 +251,7 @@ const Karyawan = () => {
                                         </tr>
                                     ) : (
                                         karyawan.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -257,6 +271,16 @@ const Karyawan = () => {
                         </div>
                     )
                 )}
+                
+                {isModalOpen && (
+                    <TesModal
+                        title="Karyawan"
+                        menu={10}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
+
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
