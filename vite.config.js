@@ -21,4 +21,22 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['react-icons', 'fontawesome']
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // opsional: biar warning gak muncul
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react'
+            if (id.includes('react-router-dom')) return 'router'
+            if (id.includes('zustand')) return 'zustand'
+            if (id.includes('axios')) return 'axios'
+            if (id.includes('@fortawesome')) return 'fontawesome'
+            if (id.includes('react-icons')) return 'icons'
+            return 'vendor'
+          }
+        }
+      }
+    }
+  },
 })
