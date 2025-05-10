@@ -1,7 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems, menuKewaliasuhanItems, menuMahromItems, menuRWSItems, subPesertaDidik } from "../data/menuData";
+import { menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems, menuKewaliasuhanItems, menuMahromItems, 
+    // menuRWSItems, 
+    subPesertaDidik } from "../data/menuData";
 
-const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPokok, setDropdownDataPokok, dropdownDataKewaliasuhan, setDropdownKewaliasuhan, dropdownDataKepegawaian, setDropdownKepegawaian, dropdownDataKepesantrenan, setDropdownKepesantrenan, dropdownDataMahrom, setDropdownMahrom, dropdownDataRWS, setDropdownRWS, isSidebarOpen, toggleDropdown }) => {
+const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPokok, setDropdownDataPokok, dropdownDataKewaliasuhan, setDropdownKewaliasuhan, dropdownDataKepegawaian, setDropdownKepegawaian, dropdownDataKepesantrenan, setDropdownKepesantrenan, dropdownDataMahrom, setDropdownMahrom, 
+    // dropdownDataRWS, setDropdownRWS, 
+    isSidebarOpen, toggleDropdown }) => {
 
     const NavigationMenu = () => {
         const location = useLocation();
@@ -170,14 +174,14 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
                             </ul>
                         )}
                     </div>
-                    <div className="mt-6 px-4">
+                    {/* <div className="mt-6 px-4">
                         <MenuHeader name="RAPAT WALI SANTRI" isOpen={dropdownDataRWS} onClick={() => toggleDropdown(setDropdownRWS)} />
                         {dropdownDataRWS && (
                             <ul className="mt-2">
                                 <DropdownMenu items={menuRWSItems} />
                             </ul>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </aside>

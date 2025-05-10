@@ -69,7 +69,7 @@ const PesertaDidik = () => {
 
     const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("table");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

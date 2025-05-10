@@ -2,8 +2,8 @@ import CatatanAfektif from "../content_main_page/content _menu_kepesantrenan/Cat
 import CatatanKognitif from "../content_main_page/content _menu_kepesantrenan/CatatanKognitif";
 import Pelanggaran from "../content_main_page/content _menu_kepesantrenan/Pelanggaran";
 import Perizinan from "../content_main_page/content _menu_kepesantrenan/Perizinan";
-import PresensiPesantren from "../content_main_page/content _menu_kepesantrenan/PresensiPesantren";
-import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
+// import PresensiPesantren from "../content_main_page/content _menu_kepesantrenan/PresensiPesantren";
+// import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
 import Alumni from "../content_main_page/content_menu_data_pokok/Alumni";
 import Karyawan from "../content_main_page/content_menu_data_pokok/Karyawan";
 import Khadam from "../content_main_page/content_menu_data_pokok/Khadam";
@@ -19,7 +19,7 @@ import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import AnakPegawai from "../content_main_page/content_menu_kepegawaian/AnakPegawai";
 import Pegawai from "../content_main_page/content_menu_kepegawaian/Pegawai";
-import PresensiPegawai from "../content_main_page/content_menu_kepegawaian/PresensiPegawai";
+// import PresensiPegawai from "../content_main_page/content_menu_kepegawaian/PresensiPegawai";
 import AnakAsuh from "../content_main_page/content_menu_kewaliasuhan/AnakAsuh";
 import GroupKewaliasuhan from "../content_main_page/content_menu_kewaliasuhan/GroupKewaliasuhan";
 import WaliAsuh from "../content_main_page/content_menu_kewaliasuhan/WaliAsuh";
@@ -69,16 +69,16 @@ export const menuKewaliasuhanItems = [
 export const menuKepesantrenanItems = [
     { id: "perizinan", icon: "fa-id-card", text: "Perizinan", link: "/perizinan", content: <Perizinan /> },
     { id: "pelanggaran", icon: "fa-exclamation-triangle", text: "Pelanggaran", link: "/pelanggaran", content: <Pelanggaran /> },
-    { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pesantren", content: <PresensiPesantren /> },
+    // { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pesantren", content: <PresensiPesantren /> },
     { id: "catatanafektif", icon: "fa-hand-holding-heart", text: "Catatan Afektif", link: "/catatan-afektif", content: <CatatanAfektif /> },
     { id: "catatankognitif", icon: "fa-brain", text: "Catatan Kognitif", link: "/catatan-kognitif", content: <CatatanKognitif /> },
-    { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
+    // { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
 ];
 
 export const menuKepegawaianItems = [
     { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <Pegawai /> },
     { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai /> },
-    { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pegawai", content: <PresensiPegawai /> },
+    // { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pegawai", content: <PresensiPegawai /> },
 ];
 
 export const menuMahromItems = [

@@ -7,7 +7,9 @@ import NotFound from './content_main_page/NotFound';
 import Formulir from './content_main_page/Formulir';
 import {
   menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
-  menuKewaliasuhanItems, menuMahromItems, menuRWSItems, subPesertaDidik, tabsFormulir
+  menuKewaliasuhanItems, menuMahromItems, 
+  // menuRWSItems, 
+  subPesertaDidik, tabsFormulir
 } from './data/menuData';
 import { useEffect, useRef } from 'react';
 
@@ -120,7 +122,7 @@ function App() {
               ...menuKepesantrenanItems,
               ...menuKepegawaianItems,
               ...menuMahromItems,
-              ...menuRWSItems,
+              // ...menuRWSItems,
               ...subPesertaDidik,
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />

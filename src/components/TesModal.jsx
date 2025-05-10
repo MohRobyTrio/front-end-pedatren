@@ -67,11 +67,11 @@ const TesModal = ({title, menu, item, onClose }) => {
             
             try {
                 if (menu == 6) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/orangtua/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/orangtua/${item.biodata_id}`);
                     setData(res.data.data);
                 }
                 if (menu == 7) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/wali/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/wali/${item.biodata_id}`);
                     setData(res.data.data);
                 }
                 if (menu == 8) {
@@ -79,24 +79,26 @@ const TesModal = ({title, menu, item, onClose }) => {
                     setData(res.data.data);
                 }
                 if (menu == 9) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/pengurus/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/pengurus/${item.biodata_id}`);
                     setData(res.data.data);
                 }
                 if (menu == 10) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/karyawan/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/karyawan/${item.biodata_id}`);
                     setData(res.data.data);
                 }
                 if (menu == 11) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/walikelas/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/walikelas/${item.biodata_id}`);
                     setData(res.data.data);
                 }
                 if (menu == 12) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/khadam/${item.id_khadam}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/khadam/${item.biodata_id}`);
                     setData(res.data.data);
                     console.log(item.id_khadam);
                 }
                 if (menu == 13) {
-                    const res = await axios.get(`http://localhost:8000/api/data-pokok/alumni/${item.id}`);
+                    const res = await axios.get(`http://localhost:8000/api/data-pokok/alumni/${item.biodata_id}`);
+                    console.log(item.biodata_id);
+                    
                     setData(res.data.data);
                 }
                 console.log(item.id);
@@ -110,10 +112,10 @@ const TesModal = ({title, menu, item, onClose }) => {
             }
         };
 
-        if (item?.id || item?.id_khadam) {
+        if (item?.biodata_id || item?.id_khadam || item?.id) {
             fetchData();
         }
-    }, [item.id, item.id_khadam, menu]);
+    }, [item.biodata_id, item.id, item.id_khadam, menu]);
 
     const tabs = [
         data?.Biodata && {

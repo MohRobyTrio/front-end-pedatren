@@ -14,7 +14,7 @@ const MainPage = () => {
     const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(() => sessionStorage.getItem("dropdownDataKepesantrenan") === "true");
     const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(() => sessionStorage.getItem("dropdownDataKepegawaian") === "true");
     const [dropdownDataMahrom, setDropdownMahrom] = useState(() => sessionStorage.getItem("dropdownDataMahrom") === "true");
-    const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
+    // const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
 
     useEffect(() => {
         sessionStorage.setItem("dropdownDataPokok", dropdownDataPokok);
@@ -23,8 +23,8 @@ const MainPage = () => {
         sessionStorage.setItem("dropdownDataKepesantrenan", dropdownDataKepesantrenan);
         sessionStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
         sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
-        sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
-    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataRWS]);
+        // sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
+    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom]);
 
     const toggleDropdown = (setter) => setter((prev) => !prev);
 
@@ -86,8 +86,8 @@ const MainPage = () => {
                         setDropdownKepesantrenan={setDropdownKepesantrenan}
                         dropdownDataMahrom={dropdownDataMahrom}
                         setDropdownMahrom={setDropdownMahrom}
-                        dropdownDataRWS={dropdownDataRWS}
-                        setDropdownRWS={setDropdownRWS}
+                        // dropdownDataRWS={dropdownDataRWS}
+                        // setDropdownRWS={setDropdownRWS}
                         isSidebarOpen={isSidebarOpen}
                         toggleDropdown={toggleDropdown}
                     />
