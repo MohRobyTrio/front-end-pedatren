@@ -43,7 +43,7 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
 
     
         return (
-            <li className="mb-2">
+            <li className="mb-2 ml-2">
                 <Link
                     to={link}
                     className={`flex items-center cursor-pointer ${
@@ -93,7 +93,7 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
         const location = useLocation();
     
         return (
-            <ul className="ml-4 mt-2">
+            <ul className="ml-6 mt-2">
                 {subPesertaDidik.map((subItem) => {
                     const isActive = location.pathname === subItem.link;
                     

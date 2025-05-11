@@ -10,6 +10,8 @@ import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import TesModal from "../../components/TesModal";
+import { API_BASE_URL } from "../../hooks/config";
+import { downloadFile } from "../../utils/downloadFile";
 
 const Alumni = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -70,7 +72,7 @@ const Alumni = () => {
 
     const { alumni, loadingAlumni, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAlumni, totalPages, currentPage, setCurrentPage } = useFetchAlumni(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
             const savedViewMode = sessionStorage.getItem("viewMode");
@@ -124,7 +126,8 @@ const Alumni = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Alumni</h1>
-                <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
+                <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
 
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10">

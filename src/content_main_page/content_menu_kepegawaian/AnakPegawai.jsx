@@ -84,7 +84,7 @@ const AnakPegawai = () => {
     // const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const { anakPegawai, loadingAnakPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAnakPegawai, totalPages, currentPage, setCurrentPage } = useFetchAnakPegawai(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

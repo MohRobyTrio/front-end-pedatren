@@ -11,7 +11,7 @@ const SearchBar = ({
     toggleLimit,
     showViewButtons = true // Prop baru dengan default true
 }) => {
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("table");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

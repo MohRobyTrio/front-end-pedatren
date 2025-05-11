@@ -60,7 +60,7 @@ const Karyawan = () => {
 
     const { karyawan, loadingKaryawan, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKaryawan, totalPages, currentPage, setCurrentPage } = useFetchKaryawan(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

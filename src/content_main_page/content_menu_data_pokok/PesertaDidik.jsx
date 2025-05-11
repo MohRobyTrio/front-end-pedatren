@@ -10,8 +10,24 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
+import { API_BASE_URL } from "../../hooks/config";
+import { downloadFile } from "../../utils/downloadFile";
+import TesModal from "../../components/TesModal";
 
 const PesertaDidik = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+        const [isModalOpen, setIsModalOpen] = useState(false);
+        
+        const openModal = (item) => {
+            setSelectedItem(item);
+            setIsModalOpen(true);
+        };
+        
+        const closeModal = () => {
+            setSelectedItem(null);
+            setIsModalOpen(false);
+        };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wargaPesantren: "",
@@ -162,8 +178,8 @@ const PesertaDidik = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Peserta Didik</h1>
                 <div className="flex items-center space-x-2">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                    <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
+                    <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                    {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
@@ -234,7 +250,7 @@ const PesertaDidik = () => {
                                         </tr>
                                     ) : (
                                         pesertaDidik.map((item, index) => (
-                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
@@ -252,6 +268,15 @@ const PesertaDidik = () => {
                         </div>
 
                     )
+                )}
+
+                {isModalOpen && (
+                    <TesModal
+                        title="Peserta Didik"
+                        menu={1}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
                 )}
 
                 {totalPages > 1 && (

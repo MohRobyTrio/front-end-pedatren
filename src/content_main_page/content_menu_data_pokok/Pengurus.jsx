@@ -58,7 +58,7 @@ const Pengurus = () => {
 
     const { pengurus, loadingPengurus, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPengurus, totalPages, currentPage, setCurrentPage } = useFetchPengurus(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

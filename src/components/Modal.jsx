@@ -2,7 +2,7 @@ import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import blankProfile from "../assets/blank_profile.png";
+// import blankProfile from "../assets/blank_profile.png";
 import { Link } from "react-router-dom";
 
 const Modal = ({ item, onClose }) => {
@@ -49,7 +49,7 @@ const Modal = ({ item, onClose }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full h-full relative max-h-[90vh] flex flex-col">
 
                             {/* Tombol Close (Tetap di Atas) */}
                             <button
@@ -66,7 +66,7 @@ const Modal = ({ item, onClose }) => {
 
                             {/* Konten yang Bisa Di-scroll */}
                             <div className="flex-1 overflow-y-auto p-2">
-                                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-4">
+                                {/* <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-4">
                                     <img src={item.foto_profil || blankProfile} alt="Foto Profil" className="w-40 h-48 object-cover rounded" />
                                     <div>
                                         <p><strong>Nama:</strong> {item.nama}</p>
@@ -75,20 +75,27 @@ const Modal = ({ item, onClose }) => {
                                         <p><strong>Lembaga:</strong> {item.lembaga}</p>
                                         <p><strong>Kota Asal:</strong> {item.kota_asal}</p>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 {/* Tab Navigasi */}
-                                <div className="mt-6 border-b pb-2 flex space-x-4 overflow-x-auto">
+                                <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200">
                                     {tabs.map((tab) => (
-                                        <button
-                                            key={tab.id}
-                                            className={`px-4 py-2 text-sm font-medium ${activeTab === tab.id ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500"}`}
-                                            onClick={() => setActiveTab(tab.id)}
-                                        >
-                                            {tab.label}
-                                        </button>
+                                        <li key={tab.id}>
+                                            <button
+                                                onClick={() => setActiveTab(tab.id)}
+                                                className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
+                                                        ? "text-blue-600 border-blue-600 bg-gray-200"
+                                                        : "border-transparent hover:text-gray-600 hover:bg-gray-50"
+                                                    }`}
+                                            >
+                                                {tab.label}
+                                            </button>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
+
+
+
 
                                 {/* Konten Tab */}
                                 <div className="p-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>

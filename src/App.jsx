@@ -52,33 +52,45 @@ const RedirectToDashboard = () => {
   return null;
 };
 
+// const RedirectToBiodata = () => {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   useEffect(() => {
+//     const redirected = sessionStorage.getItem('formulirRedirected');
+
+//     if (!redirected && location.pathname === '/formulir') {
+//       console.log("redirect to biodata");
+//       sessionStorage.setItem('formulirRedirected', 'true');
+//       navigate('biodata', { replace: true }); // relative path
+//     }
+//   }, [navigate, location]);
+
+//   useEffect(() => {
+//     return () => {
+//       // Hanya reset kalau benar-benar keluar dari formulir
+//       if (!location.pathname.startsWith('/formulir')) {
+//         sessionStorage.removeItem('formulirRedirected');
+//       }
+//     };
+//   }, [location]);
+
+//   return null;
+// };
+
 const RedirectToBiodata = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const redirected = sessionStorage.getItem('formulirRedirected');
-
-    if (!redirected && location.pathname === '/formulir') {
-      console.log("redirect to biodata");
-      sessionStorage.setItem('formulirRedirected', 'true');
-      navigate('biodata', { replace: true }); // relative path
+    if (location.pathname === '/formulir') {
+      console.log("redirect to /formulir/biodata");
+      navigate('/formulir/biodata', { replace: true });
     }
-  }, [navigate, location]);
-
-  useEffect(() => {
-    return () => {
-      // Hanya reset kalau benar-benar keluar dari formulir
-      if (!location.pathname.startsWith('/formulir')) {
-        sessionStorage.removeItem('formulirRedirected');
-      }
-    };
-  }, [location]);
+  }, [location, navigate]);
 
   return null;
 };
-
-
 
 function App() {
   return (

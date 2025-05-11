@@ -11,8 +11,22 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 // import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import useFetchPelajar from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Pelajar";
+import TesModal from "../../../components/TesModal";
 
 const Pelajar = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wargaPesantren: "",
@@ -71,7 +85,7 @@ const Pelajar = () => {
     // const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
     const { pelajar, loadingPelajar, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPelajar, totalPages, currentPage, setCurrentPage } = useFetchPelajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");
@@ -239,7 +253,7 @@ const Pelajar = () => {
                                         </tr>
                                     ) : (
                                         pelajar.map((item, index) => (
-                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap">
+                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.no_induk || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -259,6 +273,15 @@ const Pelajar = () => {
                         </div>
 
                     )
+                )}
+
+                {isModalOpen && (
+                    <TesModal
+                        title="Pelajar"
+                        menu={4}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
                 )}
 
                 {totalPages > 1 && (

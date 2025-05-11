@@ -9,6 +9,8 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import TesModal from "../../components/TesModal";
+import { API_BASE_URL } from "../../hooks/config";
+import { downloadFile } from "../../utils/downloadFile";
 
 const Khadam = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -76,7 +78,7 @@ const Khadam = () => {
 
     const { khadam, loadingKhadam, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKhadam, totalPages, currentPage, setCurrentPage } = useFetchKhadam(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");
@@ -134,6 +136,7 @@ const Khadam = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Khadam</h1>
+                <button onClick={() => downloadFile(`${API_BASE_URL}export/khadam`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>

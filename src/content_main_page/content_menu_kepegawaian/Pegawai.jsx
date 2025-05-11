@@ -10,9 +10,22 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from '../../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import TesModal from '../../components/TesModal';
 
 const Pegawai = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wafathidup: "",
@@ -57,7 +70,7 @@ const Pegawai = () => {
 
     const { pegawai, loadingPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPegawai, totalPages, currentPage, setCurrentPage } = useFetchPegawai(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");
@@ -136,7 +149,7 @@ const Pegawai = () => {
         if (value === true) return <FontAwesomeIcon icon={faCheck} className="text-green-600" />;
         if (value === false) return <FontAwesomeIcon icon={faTimes} className="text-red-600" />;
         return "-";
-      };
+    };
       
 
     return (
@@ -183,7 +196,7 @@ const Pegawai = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 pegawai.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -229,7 +242,7 @@ const Pegawai = () => {
                                         </tr>
                                     ) : (
                                         pegawai.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center">
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -248,6 +261,14 @@ const Pegawai = () => {
                     )
                 )}
 
+                {isModalOpen && (
+                    <TesModal
+                        title="Pegawai"
+                        menu={21}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

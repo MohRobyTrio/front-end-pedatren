@@ -67,7 +67,7 @@ const Wali = () => {
     } = useFetchWali(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");
