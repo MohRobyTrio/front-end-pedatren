@@ -9,9 +9,9 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
-import TesModal from "../../components/TesModal";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
+import ModalDetail from "../../components/ModalDetail";
 
 const Alumni = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -252,7 +252,7 @@ const Alumni = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Alumni"
                         menu={13}
                         item={selectedItem}

@@ -10,7 +10,7 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from '../../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import TesModal from '../../components/TesModal';
+import ModalDetail from '../../components/ModalDetail';
 
 const Pegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -262,7 +262,7 @@ const Pegawai = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Pegawai"
                         menu={21}
                         item={selectedItem}

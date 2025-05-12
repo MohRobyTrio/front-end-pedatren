@@ -12,7 +12,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
-import TesModal from "../../components/TesModal";
+import ModalDetail from "../../components/ModalDetail";
 
 const PesertaDidik = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -271,7 +271,7 @@ const PesertaDidik = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Peserta Didik"
                         menu={1}
                         item={selectedItem}

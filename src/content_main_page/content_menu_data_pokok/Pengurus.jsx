@@ -9,7 +9,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import { OrbitProgress } from "react-loading-indicators";
 import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
-import TesModal from "../../components/TesModal";
+import ModalDetail from "../../components/ModalDetail";
 
 const Pengurus = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -254,7 +254,7 @@ const Pengurus = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Pengurus"
                         menu={9}
                         item={selectedItem}

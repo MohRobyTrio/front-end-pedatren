@@ -8,9 +8,9 @@ import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
-import TesModal from "../../components/TesModal";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
+import ModalDetail from "../../components/ModalDetail";
 
 const Khadam = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -242,7 +242,7 @@ const Khadam = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Khadam"
                         menu={12}
                         item={selectedItem}

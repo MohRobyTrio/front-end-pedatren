@@ -4,12 +4,10 @@ import Filters from '../../components/Filters';
 import SearchBar from '../../components/SearchBar';
 import Pagination from '../../components/Pagination';
 import blankProfile from "../../assets/blank_profile.png";
-
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
-
 import { useEffect, useMemo, useState } from 'react';
-import TesModal from '../../components/TesModal';
+import ModalDetail from '../../components/ModalDetail';
 
 const Wali = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -227,7 +225,7 @@ const Wali = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Wali"
                         menu={7}
                         item={selectedItem}

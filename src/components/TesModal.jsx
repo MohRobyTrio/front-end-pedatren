@@ -229,7 +229,7 @@ const TesModal = ({title, menu, item, onClose }) => {
             label: "Biodata",
             content: <Biodata biodata={data.Biodata} />
         },
-        data?.Keluarga && {
+        data?.Keluarga?.length > 0 && {
             id: "keluarga",
             label: "Keluarga",
             content: <Keluarga keluarga={data.Keluarga} />
@@ -239,7 +239,7 @@ const TesModal = ({title, menu, item, onClose }) => {
             label: "Santri",
             content: <Santri />
         },
-        data?.Domisili && {
+        data?.Domisili?.length > 0 && {
             id: "domisili",
             label: "Domisili",
             content: <Domisili domisili={data.Domisili}/>
@@ -249,7 +249,7 @@ const TesModal = ({title, menu, item, onClose }) => {
             label: "Wali Asuh",
             content: <WaliAsuh />
         },
-        data?.Pendidikan && {
+        data?.Pendidikan?.length > 0 && {
             id: "pendidikan",
             label: "Pendidikan",
             content: <Pendidikan pendidikan={data.Pendidikan}/>

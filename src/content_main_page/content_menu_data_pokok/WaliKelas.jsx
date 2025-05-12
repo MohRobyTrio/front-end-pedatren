@@ -8,7 +8,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
-import TesModal from "../../components/TesModal";
+import ModalDetail from "../../components/ModalDetail";
 
 const WaliKelas = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -220,7 +220,7 @@ const WaliKelas = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Wali Kelas"
                         menu={11}
                         item={selectedItem}

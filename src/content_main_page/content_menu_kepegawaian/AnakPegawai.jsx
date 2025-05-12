@@ -10,7 +10,7 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownWilayah from '../../hooks/hook_dropdown/DropdownWilayah';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import DropdownAngkatan from '../../hooks/hook_dropdown/DropdownAngkatan';
-import Modal from '../../components/Modal';
+import ModalDetail from '../../components/ModalDetail';
 
 const AnakPegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -306,7 +306,9 @@ const AnakPegawai = () => {
                 )}
 
                 {isModalOpen && (
-                    <Modal
+                    <ModalDetail
+                        title="Anak Pegawai"
+                        menu={22}
                         item={selectedItem}
                         onClose={closeModal}
                     />

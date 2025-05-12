@@ -11,7 +11,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 // import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import useFetchSantri from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
-import TesModal from "../../../components/TesModal";
+import ModalDetail from "../../../components/ModalDetail";
 
 const Santri = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -276,7 +276,7 @@ const Santri = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Santri"
                         menu={2}
                         item={selectedItem}

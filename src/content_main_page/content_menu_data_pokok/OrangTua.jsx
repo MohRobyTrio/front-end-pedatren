@@ -6,7 +6,7 @@ import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import useFetchOrangTua from "../../hooks/hooks_menu_data_pokok/Orangtua";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
-import TesModal from "../../components/TesModal";
+import ModalDetail from "../../components/ModalDetail";
 
 const OrangTua = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -214,7 +214,7 @@ const OrangTua = () => {
                     ))}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Orang Tua"
                         menu={6}
                         item={selectedItem}

@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import useDropdownGolonganJabatan from '../../hooks/hook_dropdown/DropdownGolonganJabatan';
-import TesModal from '../../components/TesModal';
+import ModalDetail from '../../components/ModalDetail';
 
 const Karyawan = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -273,7 +273,7 @@ const Karyawan = () => {
                 )}
                 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Karyawan"
                         menu={10}
                         item={selectedItem}

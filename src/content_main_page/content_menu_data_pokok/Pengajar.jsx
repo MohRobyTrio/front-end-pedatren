@@ -9,7 +9,7 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import blankProfile from "../../assets/blank_profile.png";
 import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
-import TesModal from '../../components/TesModal';
+import ModalDetail from '../../components/ModalDetail';
 
 
 const Pengajar = () => {
@@ -336,7 +336,7 @@ const Pengajar = () => {
                 )}
 
                 {isModalOpen && (
-                    <TesModal
+                    <ModalDetail
                         title="Pengajar"
                         menu={8}
                         item={selectedItem}

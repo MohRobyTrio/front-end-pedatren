@@ -40,11 +40,11 @@ import TabWaliAsuh from "../content_main_page/content_tab_formulir/TabWaliAsuh";
 import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPres";
 import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
-import ScanQRCode from "../content_main_page/ScanQRCode";
+// import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard /> },
-    { id: "scanqrcode", icon: "fas fa-qrcode", text: "Scan QRCode", link: "/scanqrcode", content: <ScanQRCode /> },
+    // { id: "scanqrcode", icon: "fas fa-qrcode", text: "Scan QRCode", link: "/scanqrcode", content: <ScanQRCode /> },
     { id: "formulir", icon: "fas fa-file-alt", text: "Formulir", link: "/formulir", content: <Formulir /> },
 ];
 
