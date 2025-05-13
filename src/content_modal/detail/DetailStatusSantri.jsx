@@ -8,8 +8,8 @@ const DetailStatusSantri = ({ statusSantri }) => {
             id: "kewaliasuhan",
             label: "Kewaliasuhan",
             content: (
-                statusSantri?.Kewaliasuhan.map((item) => (
-                    <div key={item.id} className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                statusSantri?.Kewaliasuhan.map((item, index) => (
+                    <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
                         <div className="flex-1">
                             <p className="font-bold text-gray-400 border-b w-full pb-2">Group Kewaliasuhan: {item.group || "-"}</p>
                             <p className="text-gray-600 pt-2"><strong>Sebagai: </strong>{item.sebagai || "-"}</p>
@@ -23,8 +23,8 @@ const DetailStatusSantri = ({ statusSantri }) => {
             id: "info_perizinan",
             label: "Info Perizinan",
             content: (
-                statusSantri?.Info_Perizinan.map((item) => (
-                    <div key={item.id} className="bg-white p-6 rounded-lg shadow-md cursor-pointer">
+                statusSantri?.Info_Perizinan.map((item, index) => (
+                    <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md cursor-pointer">
                         <div className="flex flex-col md:flex-row justify-between md:items-start space-y-2 md:space-y-0">
                             <div>
                                 <p className="text-gray-600">{item.tanggal || "-"}</p>

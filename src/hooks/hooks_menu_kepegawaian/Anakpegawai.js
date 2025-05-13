@@ -23,8 +23,8 @@ const useFetchAnakPegawai = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/anakpegawai?limit=${limit}&page=${currentPage}`;
-        
+        let url = `${API_BASE_URL}data-pokok/anakpegawai?limit=${limit}`;
+        if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
         // if (filters?.wilayah) url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
         // if (filters?.kotaAsal) url += `&kota_asal=${encodeURIComponent(filters.kotaAsal)}`;
@@ -101,7 +101,7 @@ const useFetchAnakPegawai = (filters) => {
         totalDataAnakPegawai,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
     };
 };
 

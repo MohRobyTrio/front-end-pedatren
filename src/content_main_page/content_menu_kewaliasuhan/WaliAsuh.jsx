@@ -95,7 +95,7 @@ const WaliAsuh = () => {
   const { waliAsuh, loadingWaliAsuh, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliAsuh, totalPages, currentPage, setCurrentPage } = useFetchWaliAsuh(updatedFilters);
 
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState("list");
+  const [viewMode, setViewMode] = useState("");
 
   useEffect(() => {
     const savedViewMode = sessionStorage.getItem("viewMode");

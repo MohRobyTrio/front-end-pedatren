@@ -71,7 +71,7 @@ const AnakAsuh = () => {
 
     const { anakAsuh, loadingAnakAsuh, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAnakAsuh, totalPages, currentPage, setCurrentPage } = useFetchAnakAsuh(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("list");
+    const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode");

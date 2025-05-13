@@ -13,7 +13,7 @@ const Formulir = () => {
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md">
         {/* Tabs */}
-        <div className="flex flex-wrap gap-y-2 mb-4">
+        {/* <div className="flex flex-wrap gap-y-2 mb-4">
           {tabsFormulir.map((tab, index) => {
             const isActive = location.pathname === tab.link;
             const isFirst = index === 0;
@@ -35,19 +35,54 @@ const Formulir = () => {
               </Link>
             );
           })}
-        </div>
+        </div> */}
+
+        {/* <div className="flex flex-wrap items-center mb-4">
+          {tabsFormulir.map((tab, index) => (
+            <span key={tab.id}>
+              <Link to={tab.link}
+                className={`cursor-pointer ${location.pathname === tab.link ? "text-blue-500 font-bold" : "text-gray-500"
+                  }`}
+              >
+                {tab.label}
+              </Link>
+              {index < tabsFormulir.length - 1 && <i className="fas fa-chevron-right mx-2 text-gray-400"></i>}
+            </span>
+          ))}
+        </div> */}
+
+        <nav aria-label="Breadcrumb">
+          <ol className="flex flex-wrap rounded border border-gray-300 bg-white text-sm text-gray-700">
+            {tabsFormulir.map((tab, index) => {
+              const isActive = location.pathname === tab.link;
+              const bgColor = isActive ? "bg-gray-500 text-white font-semibold" : "bg-white";
+              const chevronColor = isActive ? "bg-gray-500" : "bg-white";
+
+              return (
+                <li className="flex" key={tab.id}>
+                  <Link
+                    to={tab.link}
+                    className={`block h-10 pr-4 pl-6 leading-10 transition-colors ${bgColor}`}
+                  >
+                    {tab.label}
+                  </Link>
+                  {index < tabsFormulir.length && (
+                    <div className="relative flex items-center">
+                      <span
+                        className={`absolute inset-y-0 -start-px h-10 w-4 ${chevronColor} [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180`}
+                      ></span>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
 
         {/* Keep-alive tab content */}
         <div className="p-4 relative">
-          <Outlet/>
-          {/* {tabsFormulir.map(tab => (
-            <div
-              key={tab.id}
-              style={{ display: location.pathname.endsWith(tab.id) ? "block" : "none" }}
-            >
-              {tab.component}
-            </div>
-          ))} */}
+          <Outlet />
         </div>
       </div>
     </div>
