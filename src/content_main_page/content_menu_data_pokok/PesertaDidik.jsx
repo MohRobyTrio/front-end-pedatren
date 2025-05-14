@@ -13,6 +13,9 @@ import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/ModalDetail";
+import { FaFileExport, FaPlus } from "react-icons/fa";
+// import ModalForm from "../../components/ModalFormPesertaDidik";
+import MultiStepModal from "../../components/ModalFormPesertaDidik";
 
 const PesertaDidik = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -173,13 +176,15 @@ const PesertaDidik = () => {
         ]
     };
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Peserta Didik</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                    {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button>
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
@@ -278,6 +283,11 @@ const PesertaDidik = () => {
                         onClose={closeModal}
                     />
                 )}
+
+{showFormModal && (
+                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
+
+)}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
