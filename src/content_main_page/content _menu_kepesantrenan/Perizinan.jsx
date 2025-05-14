@@ -124,7 +124,7 @@ const PerizinanCard = ({ data }) => {
 
   return (
     <div key={data.id} className="max-w-6xl mx-auto">
-      <div className="bg-white rounded border border-gray-200 p-6 shadow-sm">
+      <div className="bg-gray-100 rounded border border-gray-200 p-6 shadow-sm mb-4">
         <div className="flex flex-col md:flex-row">
           {/* Left Section - Student Photo */}
           <div className="md:w-1/5 mb-4 md:mb-0">
