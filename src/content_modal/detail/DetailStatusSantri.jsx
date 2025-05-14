@@ -1,8 +1,6 @@
 import { useState } from "react";
 
 const DetailStatusSantri = ({ statusSantri }) => {
-    const [activeTab, setActiveTab] = useState("kewaliasuhan");
-
     const tabs = [
         statusSantri?.Kewaliasuhan?.length > 0 && {
             id: "kewaliasuhan",
@@ -18,13 +16,13 @@ const DetailStatusSantri = ({ statusSantri }) => {
                         </div>
                     </div>
                 )))
-        },
-        statusSantri?.Info_Perizinan?.length > 0 && {
-            id: "info_perizinan",
-            label: "Info Perizinan",
-            content: (
-                statusSantri?.Info_Perizinan.map((item, index) => (
-                    <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md cursor-pointer">
+            },
+            statusSantri?.Info_Perizinan?.length > 0 && {
+                id: "info_perizinan",
+                label: "Info Perizinan",
+                content: (
+                    statusSantri?.Info_Perizinan.map((item, index) => (
+                        <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md cursor-pointer">
                         <div className="flex flex-col md:flex-row justify-between md:items-start space-y-2 md:space-y-0">
                             <div>
                                 <p className="text-gray-600">{item.tanggal || "-"}</p>
@@ -40,6 +38,8 @@ const DetailStatusSantri = ({ statusSantri }) => {
             )
         }
     ].filter(Boolean);
+
+    const [activeTab, setActiveTab] = useState(tabs[0]?.id || null);
 
     return (
         <div>

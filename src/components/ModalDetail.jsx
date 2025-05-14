@@ -13,6 +13,7 @@ import DetailPendidikan from "../content_modal/detail/DetailPendidikan";
 import DetailStatusSantri from "../content_modal/detail/DetailStatusSantri";
 import DetailDomisili from "../content_modal/detail/DetailDomisili";
 import DetailKunjunganMahrom from "../content_modal/detail/DetailKunjunganMahrom";
+import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress";
 
 // Placeholder untuk tab lainnya
 // const Santri = () => <h1 className="text-xl font-bold">Informasi Santri</h1>;
@@ -23,7 +24,6 @@ const Pengurus = () => <h1 className="text-xl font-bold">Pengurus</h1>;
 const Khadam = () => <h1 className="text-xl font-bold">Khadam</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
-const Progress = () => <h1 className="text-xl font-bold">Progress Report</h1>;
 
 const ModalDetail = ({ title, menu, item, onClose }) => {
     const [activeTab, setActiveTab] = useState("biodata");
@@ -153,10 +153,25 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Warga Pesantren",
             content: <WarPes />
         },
-        (data?.Catatan_Progress?.Afektif?.length > 0 || data?.Catatan_Progress?.Kognitif?.length > 0) && {
+        // (
+        //     (
+        //         data?.Catatan_Progress?.Afektif &&
+        //         typeof data.Catatan_Progress.Afektif === 'object' &&
+        //         !Array.isArray(data.Catatan_Progress.Afektif) &&
+        //         Object.keys(data.Catatan_Progress.Afektif).length > 0
+        //     ) ||
+        //     (
+        //         data?.Catatan_Progress?.Kognitif &&
+        //         typeof data.Catatan_Progress.Kognitif === 'object' &&
+        //         !Array.isArray(data.Catatan_Progress.Kognitif) &&
+        //         Object.keys(data.Catatan_Progress.Kognitif).length > 0
+        //     )
+        // ) &&
+        data?.Catatan_Progress && ((Object.keys(data.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data.Catatan_Progress?.Kognitif).length > 0)) &&
+        {
             id: "progress",
             label: "Catatan Progress",
-            content: <Progress />
+            content: <DetailCatatanProgress catatanProgress={data.Catatan_Progress} />
         },
         data?.Kunjungan_Mahrom?.length > 0 && {
             id: "Kunjungan Mahrom",
