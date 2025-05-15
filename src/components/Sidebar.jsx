@@ -1,31 +1,51 @@
 import { Link, useLocation } from "react-router-dom";
-import { menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems, menuKewaliasuhanItems, menuMahromItems, 
-    // menuRWSItems, 
-    subPesertaDidik } from "../data/menuData";
+import {
+    menuDataPokokItems,
+    menuItems,
+    menuKepegawaianItems,
+    menuKepesantrenanItems,
+    menuKewaliasuhanItems,
+    menuMahromItems,
+    subPesertaDidik
+} from "../data/menuData";
 
-const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPokok, setDropdownDataPokok, dropdownDataKewaliasuhan, setDropdownKewaliasuhan, dropdownDataKepegawaian, setDropdownKepegawaian, dropdownDataKepesantrenan, setDropdownKepesantrenan, dropdownDataMahrom, setDropdownMahrom, 
-    // dropdownDataRWS, setDropdownRWS, 
-    isSidebarOpen, toggleDropdown }) => {
+const Sidebar = ({
+    submenuPesertaDidik,
+    setSubmenuPesertaDidik,
+    dropdownDataPokok,
+    setDropdownDataPokok,
+    dropdownDataKewaliasuhan,
+    setDropdownKewaliasuhan,
+    dropdownDataKepegawaian,
+    setDropdownKepegawaian,
+    dropdownDataKepesantrenan,
+    setDropdownKepesantrenan,
+    dropdownDataMahrom,
+    setDropdownMahrom,
+    isSidebarOpen,
+    toggleDropdown
+}) => {
 
     const NavigationMenu = () => {
         const location = useLocation();
-    
+
         return (
             <nav className="mt-4 px-4">
                 <ul>
                     {menuItems.map((item) => {
-                        // const isActive = location.pathname.startsWith(item.link);
                         const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
-    
+
                         return (
-                            <li key={item.id} className="mb-2">
+                            <li key={item.id} className="mb-1">
                                 <Link
                                     to={item.link}
-                                    className={`flex items-center cursor-pointer ${
-                                        isActive ? "text-blue-700 font-bold" : "text-gray-700"
+                                    className={`flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+                                        isActive
+                                            ? "bg-blue-100 text-blue-700 font-semibold"
+                                            : "text-gray-700 hover:bg-gray-100"
                                     }`}
                                 >
-                                    <i className={`${item.icon} mr-2`}></i>
+                                    <i className={`${item.icon} mr-3`}></i>
                                     {item.text}
                                 </Link>
                             </li>
@@ -38,20 +58,20 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
 
     const MenuItem = ({ icon, text, link, onClick }) => {
         const location = useLocation();
-        // const isActive = location.pathname.startsWith(link);
         const isActive = location.pathname === link || location.pathname.startsWith(link + "/");
 
-    
         return (
-            <li className="mb-2 ml-2">
+            <li className="mb-1 ml-2">
                 <Link
                     to={link}
-                    className={`flex items-center cursor-pointer ${
-                        isActive ? "text-blue-700 font-bold" : "text-gray-700"
+                    className={`flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+                        isActive
+                            ? "bg-blue-100 text-blue-700 font-semibold"
+                            : "text-gray-700 hover:bg-gray-100"
                     }`}
                     onClick={onClick}
                 >
-                    <i className={`fas ${icon} mr-4`}></i>
+                    <i className={`fas ${icon} mr-3`}></i>
                     {text}
                 </Link>
             </li>
@@ -60,13 +80,12 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
 
     const DropdownMenu = ({ items }) => {
         const location = useLocation();
-    
+
         return (
-            <ul className="mt-2">
+            <ul className="mt-2 ml-2">
                 {items.map((item) => {
-                    // const isActive = location.pathname.startsWith(item.link);
                     const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
-    
+
                     return (
                         <div key={item.id}>
                             <MenuItem
@@ -80,7 +99,7 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
                                     }
                                 }}
                             />
-    
+
                             {item.id === "pesertadidik" && submenuPesertaDidik && <SubMenuDropdownPesertaDidik />}
                         </div>
                     );
@@ -91,21 +110,23 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
 
     const SubMenuDropdownPesertaDidik = () => {
         const location = useLocation();
-    
+
         return (
             <ul className="ml-6 mt-2">
                 {subPesertaDidik.map((subItem) => {
                     const isActive = location.pathname === subItem.link;
-                    
+
                     return (
-                        <li key={subItem.id} className="mb-2">
-                            <Link 
-                                to={subItem.link} 
-                                className={`flex items-center cursor-pointer ${
-                                    isActive ? "text-cyan-500 font-bold" : "text-gray-700"
+                        <li key={subItem.id} className="mb-1">
+                            <Link
+                                to={subItem.link}
+                                className={`flex items-center px-4 py-1.5 rounded-md text-sm transition-colors duration-200 ${
+                                    isActive
+                                        ? "text-cyan-600 font-semibold bg-cyan-50"
+                                        : "text-gray-600 hover:bg-gray-100"
                                 }`}
                             >
-                                <i className="fas fa-chevron-right mr-2"></i>
+                                <i className="fas fa-chevron-right mr-2 text-xs"></i>
                                 {subItem.text}
                             </Link>
                         </li>
@@ -114,11 +135,10 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
             </ul>
         );
     };
-    
-    
+
     const MenuHeader = ({ name, isOpen, onClick }) => (
         <h2
-            className="text-gray-600 text-sm flex items-center justify-between cursor-pointer"
+            className="text-gray-600 text-xs font-semibold uppercase tracking-wider flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
             onClick={onClick}
         >
             {name}
@@ -127,65 +147,70 @@ const Sidebar = ({ submenuPesertaDidik, setSubmenuPesertaDidik, dropdownDataPoko
     );
 
     return (
-        <aside id="logo-sidebar"
-            className={`fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
-            aria-label="Sidebar">
-            <div className="w-64 bg-white h-full shadow-md flex flex-col">
+        <aside
+            id="logo-sidebar"
+            className={`fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform duration-300 ${
+                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 shadow-lg`}
+            aria-label="Sidebar"
+        >
+            <div className="w-64 bg-white h-full flex flex-col">
                 <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
                     <NavigationMenu />
                     <div className="mt-6 px-4">
                         <MenuHeader
-                            name="DATA POKOK"
+                            name="Data Pokok"
                             isOpen={dropdownDataPokok}
                             onClick={() => toggleDropdown(setDropdownDataPokok)}
                         />
-                        {dropdownDataPokok && (
-                            <DropdownMenu items={menuDataPokokItems} />
-                        )}
+                        {dropdownDataPokok && <DropdownMenu items={menuDataPokokItems} />}
                     </div>
                     <div className="mt-6 px-4">
-                        <MenuHeader name="KEWALIASUHAN" isOpen={dropdownDataKewaliasuhan} onClick={() => toggleDropdown(setDropdownKewaliasuhan)} />
-                        {dropdownDataKewaliasuhan && (
-                            <DropdownMenu items={menuKewaliasuhanItems} />
-                        )}
+                        <MenuHeader
+                            name="Kewaliasuhan"
+                            isOpen={dropdownDataKewaliasuhan}
+                            onClick={() => toggleDropdown(setDropdownKewaliasuhan)}
+                        />
+                        {dropdownDataKewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
                     </div>
                     <div className="mt-6 px-4">
-                        <MenuHeader name="KEPESANTRENAN" isOpen={dropdownDataKepesantrenan} onClick={() => toggleDropdown(setDropdownKepesantrenan)} />
-                        {dropdownDataKepesantrenan && (
-                            <ul className="mt-2">
-                                <DropdownMenu items={menuKepesantrenanItems} />
-                            </ul>
-                        )}
+                        <MenuHeader
+                            name="Kepesantrenan"
+                            isOpen={dropdownDataKepesantrenan}
+                            onClick={() => toggleDropdown(setDropdownKepesantrenan)}
+                        />
+                        {dropdownDataKepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
                     </div>
                     <div className="mt-6 px-4">
-                        <MenuHeader name="KEPEGAWAIAN" isOpen={dropdownDataKepegawaian} onClick={() => toggleDropdown(setDropdownKepegawaian)} />
-                        {dropdownDataKepegawaian && (
-                            <ul className="mt-2">
-                                <DropdownMenu items={menuKepegawaianItems} />
-                            </ul>
-                        )}
+                        <MenuHeader
+                            name="Kepegawaian"
+                            isOpen={dropdownDataKepegawaian}
+                            onClick={() => toggleDropdown(setDropdownKepegawaian)}
+                        />
+                        {dropdownDataKepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
                     </div>
                     <div className="mt-6 px-4">
-                        <MenuHeader name="MAHROM" isOpen={dropdownDataMahrom} onClick={() => toggleDropdown(setDropdownMahrom)} />
-                        {dropdownDataMahrom && (
-                            <ul className="mt-2">
-                                <DropdownMenu items={menuMahromItems} />
-                            </ul>
-                        )}
+                        <MenuHeader
+                            name="Mahrom"
+                            isOpen={dropdownDataMahrom}
+                            onClick={() => toggleDropdown(setDropdownMahrom)}
+                        />
+                        {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
                     </div>
-                    {/* <div className="mt-6 px-4">
+                    {/* Uncomment if needed
+                    <div className="mt-6 px-4">
                         <MenuHeader name="RAPAT WALI SANTRI" isOpen={dropdownDataRWS} onClick={() => toggleDropdown(setDropdownRWS)} />
                         {dropdownDataRWS && (
                             <ul className="mt-2">
                                 <DropdownMenu items={menuRWSItems} />
                             </ul>
                         )}
-                    </div> */}
+                    </div> 
+                    */}
                 </div>
             </div>
         </aside>
-    )
+    );
 };
 
 export default Sidebar;
