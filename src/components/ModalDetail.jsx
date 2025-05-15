@@ -252,7 +252,16 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                             {/* Footer */}
                             <div className="mt-4 pt-4 text-right space-x-2">
-                                <Link to="/formulir">
+                                
+                                {/* set id session */}
+                                {/* <Link to="/formulir" onClick={() => sessionStorage.setItem("biodata_id", item.biodata_id)}>
+                                    <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
+                                        Buka di Formulir
+                                    </button>
+                                </Link> */}
+
+                                {/* set id route */}
+                                <Link to={`/formulir/${item.biodata_id}/biodata`}>
                                     <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
                                         Buka di Formulir
                                     </button>

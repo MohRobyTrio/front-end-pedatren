@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { 
+    // useLocation,
+     useParams } from "react-router-dom";
 
 const TabBiodata = () => {
     // const [jenisKelamin, setJenisKelamin] = useState("");
@@ -31,10 +34,30 @@ const TabBiodata = () => {
         setUmur(tahunSekarang - tahun);
     };
 
+    // get id dari session
+    // const location = useLocation();
+    // const [biodataId, setBiodataId] = useState(null);
+
+    // // Jalankan setiap kali route location berubah
+    // useEffect(() => {
+    //     const id = sessionStorage.getItem("biodata_id");
+    //     setBiodataId(id);
+    //     console.log("id biodata");
+
+    // }, [location]);
+
+    const { biodata_id } = useParams();
+
+    useEffect(() => {
+        console.log("Ambil data untuk ID:", biodata_id);
+        // fetch(`/api/biodata/${biodata_id}`)
+    }, [biodata_id]);
+
+
     return (
         <div className="relative p-2 bg-white ">
             {/* Judul Formulir */}
-            <h1 className="text-xl font-bold mb-4">Formulir</h1>
+            <h1 className="text-xl font-bold mb-4">Formulir {biodata_id}</h1>
 
             {/* Foto - dibuat responsif */}
             <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">

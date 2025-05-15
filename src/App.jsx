@@ -1,5 +1,7 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate, 
+  // useLocation, 
+  useParams } from 'react-router-dom';
 import MainPage from './page/MainPage';
 import RegisterPage from './page/RegisterPage';
 import LoginPage from './page/LoginPage';
@@ -57,37 +59,24 @@ const RedirectToDashboard = () => {
 //   const location = useLocation();
 
 //   useEffect(() => {
-//     const redirected = sessionStorage.getItem('formulirRedirected');
-
-//     if (!redirected && location.pathname === '/formulir') {
-//       console.log("redirect to biodata");
-//       sessionStorage.setItem('formulirRedirected', 'true');
-//       navigate('biodata', { replace: true }); // relative path
+//     if (location.pathname === '/formulir') {
+//       console.log("redirect to /formulir/biodata");
+//       navigate('/formulir/biodata', { replace: true });
 //     }
-//   }, [navigate, location]);
-
-//   useEffect(() => {
-//     return () => {
-//       // Hanya reset kalau benar-benar keluar dari formulir
-//       if (!location.pathname.startsWith('/formulir')) {
-//         sessionStorage.removeItem('formulirRedirected');
-//       }
-//     };
-//   }, [location]);
+//   }, [location, navigate]);
 
 //   return null;
 // };
 
 const RedirectToBiodata = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { biodata_id } = useParams();
 
   useEffect(() => {
-    if (location.pathname === '/formulir') {
-      console.log("redirect to /formulir/biodata");
-      navigate('/formulir/biodata', { replace: true });
+    if (biodata_id) {
+      navigate(`/formulir/${biodata_id}/biodata`, { replace: true });
     }
-  }, [location, navigate]);
+  }, [biodata_id, navigate]);
 
   return null;
 };
@@ -108,18 +97,14 @@ function App() {
             {/* Default redirect ke dashboard */}
             <Route index element={<RedirectToDashboard />} />
 
-            {/* Formulir & children */}
             {/* <Route path="formulir" element={<Formulir />}>
-              <Route index element={<Navigate to="biodata" replace />} />
+              <Route index element={<RedirectToBiodata />} />
               {tabsFormulir.map((tab) => (
                 <Route key={tab.id} path={tab.link} element={tab.content} />
               ))}
             </Route> */}
 
-            {/* <Route path="/formulir" element={<Navigate to="biodata" replace />} />
-<Route path="/formulir/*" element={<Formulir />} /> */}
-
-            <Route path="formulir" element={<Formulir />}>
+            <Route path="formulir/:biodata_id" element={<Formulir />}>
               <Route index element={<RedirectToBiodata />} />
               {tabsFormulir.map((tab) => (
                 <Route key={tab.id} path={tab.link} element={tab.content} />

@@ -89,20 +89,36 @@ export const menuRWSItems = [
     { id: "kehadiranRWS", icon: "fa-list", text: "Kehadiran RWS", link: "/kehadiran-rws", content: <KehadiranRWS /> },
 ];
 
+// export const tabsFormulir = [
+//     { id: "biodata", label: "Biodata", link: "/formulir/biodata", content: <TabBiodata /> },
+//     { id: "keluarga", label: "Keluarga", link: "/formulir/keluarga", content: <TabKeluarga /> },
+//     { id: "santri", label: "Santri", link: "/formulir/santri", content: <TabSantri /> },
+//     { id: "domisili", label: "Domisili Santri", link: "/formulir/domisili-santri", content: <TabDomisiliSantri /> },
+//     { id: "waliasuh", label: "Wali Asuh", link: "/formulir/wali-asuh", content: <TabWaliAsuh /> },
+//     { id: "pendidikan", label: "Pendidikan", link: "/formulir/pendidikan", content: <TabPendidikan /> },
+//     { id: "pengajar", label: "Pengajar", link: "/formulir/pengajar", content: <TabPengajar /> },
+//     { id: "karyawan", label: "Karyawan", link: "/formulir/karyawan", content: <TabKaryawan /> },
+//     { id: "pengurus", label: "Pengurus", link: "/formulir/pengurus", content: <TabPengurus /> },
+//     { id: "khadam", label: "Khadam", link: "/formulir/khadam", content: <TabKhadam /> },
+//     { id: "berkas", label: "Berkas", link: "/formulir/berkas", content: <TabBerkas /> },
+//     { id: "warpes", label: "Warga Pesantren", link: "/formulir/warga-pesantren", content: <TabWarPes /> },
+//     { id: "progress", label: "Progress Report", link: "/formulir/progress-report", content: <TabProgress /> },
+// ];
+
 export const tabsFormulir = [
-    { id: "biodata", label: "Biodata", link: "/formulir/biodata", content: <TabBiodata /> },
-    { id: "keluarga", label: "Keluarga", link: "/formulir/keluarga", content: <TabKeluarga /> },
-    { id: "santri", label: "Santri", link: "/formulir/santri", content: <TabSantri /> },
-    { id: "domisili", label: "Domisili Santri", link: "/formulir/domisili-santri", content: <TabDomisiliSantri /> },
-    { id: "waliasuh", label: "Wali Asuh", link: "/formulir/wali-asuh", content: <TabWaliAsuh /> },
-    { id: "pendidikan", label: "Pendidikan", link: "/formulir/pendidikan", content: <TabPendidikan /> },
-    { id: "pengajar", label: "Pengajar", link: "/formulir/pengajar", content: <TabPengajar /> },
-    { id: "karyawan", label: "Karyawan", link: "/formulir/karyawan", content: <TabKaryawan /> },
-    { id: "pengurus", label: "Pengurus", link: "/formulir/pengurus", content: <TabPengurus /> },
-    { id: "khadam", label: "Khadam", link: "/formulir/khadam", content: <TabKhadam /> },
-    { id: "berkas", label: "Berkas", link: "/formulir/berkas", content: <TabBerkas /> },
-    { id: "warpes", label: "Warga Pesantren", link: "/formulir/warga-pesantren", content: <TabWarPes /> },
-    { id: "progress", label: "Progress Report", link: "/formulir/progress-report", content: <TabProgress /> },
+  { id: "biodata", label: "Biodata", link: "biodata", content: <TabBiodata /> },
+  { id: "keluarga", label: "Keluarga", link: "keluarga", content: <TabKeluarga /> },
+  { id: "santri", label: "Santri", link: "santri", content: <TabSantri /> },
+  { id: "domisili", label: "Domisili Santri", link: "domisili-santri", content: <TabDomisiliSantri /> },
+  { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh", content: <TabWaliAsuh /> },
+  { id: "pendidikan", label: "Pendidikan", link: "pendidikan", content: <TabPendidikan /> },
+  { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
+  { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
+  { id: "pengurus", label: "Pengurus", link: "pengurus", content: <TabPengurus /> },
+  { id: "khadam", label: "Khadam", link: "khadam", content: <TabKhadam /> },
+  { id: "berkas", label: "Berkas", link: "berkas", content: <TabBerkas /> },
+  { id: "warpes", label: "Warga Pesantren", link: "warga-pesantren", content: <TabWarPes /> },
+  { id: "progress", label: "Progress Report", link: "progress-report", content: <TabProgress /> },
 ];
 
 export const subPesertaDidik = [
