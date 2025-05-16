@@ -14,6 +14,7 @@ import DetailStatusSantri from "../content_modal/detail/DetailStatusSantri";
 import DetailDomisili from "../content_modal/detail/DetailDomisili";
 import DetailKunjunganMahrom from "../content_modal/detail/DetailKunjunganMahrom";
 import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress";
+import DetailKhadam from "../content_modal/detail/DetailKhadam";
 
 // Placeholder untuk tab lainnya
 // const Santri = () => <h1 className="text-xl font-bold">Informasi Santri</h1>;
@@ -177,6 +178,11 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             id: "Kunjungan Mahrom",
             label: "Kunjungan Mahrom",
             content: <DetailKunjunganMahrom kunjunganMahrom={data.Kunjungan_Mahrom} />
+        },
+        data?.Khadam?.length > 0 && {
+            id: "khadam",
+            label: "Khadam",
+            content: <DetailKhadam kunjunganMahrom={data.Khadam} />
         },
     ].filter(Boolean); // Hapus tab yang tidak punya data    
 
