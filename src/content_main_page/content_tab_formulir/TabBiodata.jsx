@@ -57,7 +57,7 @@ const TabBiodata = () => {
     return (
         <div className="relative p-2 bg-white ">
             {/* Judul Formulir */}
-            <h1 className="text-xl font-bold mb-4">Formulir {biodata_id}</h1>
+            {/* <h1 className="text-xl font-bold mb-4">Formulir {biodata_id}</h1> */}
 
             {/* Foto - dibuat responsif */}
             <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">

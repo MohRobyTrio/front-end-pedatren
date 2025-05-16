@@ -18,8 +18,11 @@ const DetailKunjunganMahrom = ({ kunjunganMahrom }) => (
                         kunjunganMahrom.map((item, index) => (
                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center text-left">
                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                <td className="px-3 py-2 border-b capitalize">{item.nama || "-"}</td>
-                                <td className="px-3 py-2 border-b capitalize">{item.tanggal || "-"}</td>
+                                 <td className="px-3 py-2 border-b capitalize">
+                                    <span className="font-semibold">{item.nama_pengunjung || "-"}</span>
+                                    {item.status ? <span className="text-gray-500"> ({item.status})</span> : ""}
+                                </td>
+                                <td className="px-3 py-2 border-b capitalize">{item.tanggal_kunjungan || "-"}</td>
                             </tr>
                         ))
                     )
