@@ -25,7 +25,7 @@ const useFetchPengajar = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/pengajar?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
         }

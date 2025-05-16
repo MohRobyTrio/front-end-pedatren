@@ -11,8 +11,10 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/ModalDetail";
+import { FaFileExport } from "react-icons/fa";
 
 const Khadam = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -136,7 +138,24 @@ const Khadam = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Khadam</h1>
-                <button onClick={() => downloadFile(`${API_BASE_URL}export/khadam`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/khadam`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}
+                <button
+                        onClick={() => downloadFile(`${API_BASE_URL}export/khadam`, setExportLoading)}
+                        disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                    >
+                        {exportLoading ? (
+                            <>
+                                <i className="fas fa-spinner fa-spin text-white"></i>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FaFileExport />
+                                <span>Export</span>
+                            </>
+                        )}
+                    </button>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>

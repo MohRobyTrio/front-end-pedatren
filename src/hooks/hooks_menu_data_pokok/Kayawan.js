@@ -26,7 +26,7 @@ const useFetchKaryawan = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/karyawans?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/karyawan?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
         }

@@ -10,9 +10,13 @@ import blankProfile from "../../assets/blank_profile.png";
 import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import ModalDetail from '../../components/ModalDetail';
+import { downloadFile } from '../../utils/downloadFile';
+import { FaFileExport } from 'react-icons/fa';
+import { API_BASE_URL } from '../../hooks/config';
 
 
 const Pengajar = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -211,11 +215,22 @@ const Pengajar = () => {
                 <h1 className="text-2xl font-bold">Data Pengajar</h1>
                 <div className="flex items-center">
                     <div className="flex items-center space-x-2">
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
-                            Export
-                        </button>
-                        <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">
-                            Statistik
+                        <button
+                            onClick={() => downloadFile(`${API_BASE_URL}export/pengajar`, setExportLoading)}
+                            disabled={exportLoading}
+                            className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                        >
+                            {exportLoading ? (
+                                <>
+                                    <i className="fas fa-spinner fa-spin text-white"></i>
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <FaFileExport />
+                                    <span>Export</span>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>

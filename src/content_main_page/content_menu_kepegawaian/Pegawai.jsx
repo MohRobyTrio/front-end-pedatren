@@ -11,8 +11,12 @@ import Pagination from '../../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ModalDetail from '../../components/ModalDetail';
+import { downloadFile } from '../../utils/downloadFile';
+import { API_BASE_URL } from '../../hooks/config';
+import { FaFileExport } from 'react-icons/fa';
 
 const Pegawai = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -156,6 +160,25 @@ const Pegawai = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Pegawai</h1>
+                <div className="flex items-center space-x-2">
+                    <button
+                        onClick={() => downloadFile(`${API_BASE_URL}export/pegawai`, setExportLoading)}
+                        disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                    >
+                        {exportLoading ? (
+                            <>
+                                <i className="fas fa-spinner fa-spin text-white"></i>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FaFileExport />
+                                <span>Export</span>
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
