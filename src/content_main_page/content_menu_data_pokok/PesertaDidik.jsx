@@ -256,7 +256,7 @@ const PesertaDidik = () => {
                                     ) : (
                                         pesertaDidik.map((item, index) => (
                                             <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -284,10 +284,10 @@ const PesertaDidik = () => {
                     />
                 )}
 
-{showFormModal && (
-                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
+                {showFormModal && (
+                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
 
-)}
+                )}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

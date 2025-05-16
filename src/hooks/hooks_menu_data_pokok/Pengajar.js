@@ -86,9 +86,9 @@ const useFetchPengajar = (filters) => {
     }, [fetchData]);  // Hanya berjalan saat `fetchData` berubah
 
     // Untuk setting ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         pengajar,

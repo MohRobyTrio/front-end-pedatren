@@ -219,7 +219,7 @@ const Pegawai = () => {
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <th className="px-3 py-2 border-b">No</th>
+                                        <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Umur</th>
@@ -243,7 +243,7 @@ const Pegawai = () => {
                                     ) : (
                                         pegawai.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>

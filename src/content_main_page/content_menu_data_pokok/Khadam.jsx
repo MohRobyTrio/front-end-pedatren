@@ -224,7 +224,7 @@ const Khadam = () => {
                                     ) : (
                                         khadam.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>

@@ -75,9 +75,9 @@ const useFetchWaliKelas = (filters) => {
     }, [fetchData]);
 
     // Reset ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         waliKelas,

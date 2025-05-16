@@ -82,6 +82,10 @@ const useFetchPengurus = (filters) => {
         fetchData();
     }, [fetchData]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
+
     return {
         pengurus,
         loadingPengurus,

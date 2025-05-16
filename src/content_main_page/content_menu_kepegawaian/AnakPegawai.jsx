@@ -249,7 +249,7 @@ const AnakPegawai = () => {
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <th className="px-3 py-2 border-b">No</th>
+                                        <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIS</th>
                                         <th className="px-3 py-2 border-b">NIK / No. Passport</th>
@@ -280,7 +280,7 @@ const AnakPegawai = () => {
                                     ) : (
                                         anakPegawai.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center hover:cursor-pointer" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>

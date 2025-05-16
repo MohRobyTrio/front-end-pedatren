@@ -23,7 +23,7 @@ const useFetchPegawai = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pegawais?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/pegawai?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
@@ -77,9 +77,9 @@ const useFetchPegawai = (filters) => {
     }, [fetchData]);
 
     // Untuk setting ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         pegawai,
