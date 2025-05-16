@@ -81,6 +81,10 @@ const useFetchAnakAsuh = (filters) => {
         fetchData();
     }, [fetchData]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
+
     return {
         anakAsuh,
         loadingAnakAsuh,

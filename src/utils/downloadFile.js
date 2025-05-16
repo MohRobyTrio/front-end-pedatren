@@ -1,5 +1,6 @@
-export async function downloadFile(url) {
+export async function downloadFile(url, setLoading) {
   try {
+    setLoading(true);
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -10,7 +11,7 @@ export async function downloadFile(url) {
     const objectUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = objectUrl;
-    a.download = ''; // gunakan nama file dari response header
+    a.download = '';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -18,5 +19,7 @@ export async function downloadFile(url) {
   } catch (error) {
     console.error('Terjadi kesalahan saat download:', error);
     alert('Download gagal. Silakan coba lagi.');
+  } finally {
+    setLoading(false);
   }
 }

@@ -12,8 +12,10 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/ModalDetail";
+import { FaFileExport } from "react-icons/fa";
 
 const Alumni = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -126,8 +128,25 @@ const Alumni = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Alumni</h1>
-                <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}
                 {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                <button
+                    onClick={() => downloadFile(`${API_BASE_URL}export/alumni`, setExportLoading)}
+                    disabled={exportLoading}
+                    className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                >
+                    {exportLoading ? (
+                        <>
+                            <i className="fas fa-spinner fa-spin text-white"></i>
+                            <span>Loading...</span>
+                        </>
+                    ) : (
+                        <>
+                            <FaFileExport />
+                            <span>Export</span>
+                        </>
+                    )}
+                </button>
 
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10">
@@ -228,7 +247,7 @@ const Alumni = () => {
                                     ) : (
                                         alumni.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">

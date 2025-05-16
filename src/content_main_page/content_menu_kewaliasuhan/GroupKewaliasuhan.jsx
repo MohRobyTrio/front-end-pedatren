@@ -120,7 +120,7 @@ const GroupKewaliasuhan = () => {
                                     groupKewaliasuhan.map((item, index) => (
                                         // <tr key={item.id || index} className="hover:bg-gray-50 text-left"> //Ini yang awal
                                         <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-left">
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.group || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nis_wali_asuh || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_wali_asuh || "-"}</td>

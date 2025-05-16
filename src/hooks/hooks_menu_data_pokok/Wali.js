@@ -77,9 +77,9 @@ const useFetchWali = (filters) => {
         fetchData();
     }, [fetchData]);
 
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         wali,

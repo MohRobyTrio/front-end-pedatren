@@ -26,7 +26,7 @@ const useFetchKaryawan = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/karyawans?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/karyawan?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
         }
@@ -84,9 +84,9 @@ const useFetchKaryawan = (filters) => {
     }, [fetchData]);
 
     // Untuk setting ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         karyawan,

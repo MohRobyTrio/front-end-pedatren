@@ -25,7 +25,7 @@ const useFetchPengajar = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pengajars?limit=${limit}`;
+        let url = `${API_BASE_URL}data-pokok/pengajar?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
         }
@@ -86,9 +86,9 @@ const useFetchPengajar = (filters) => {
     }, [fetchData]);  // Hanya berjalan saat `fetchData` berubah
 
     // Untuk setting ke halaman 1 saat limit berubah
-    // useEffect(() => {
-    //     setCurrentPage(1);
-    // }, [limit]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [limit]);
 
     return {
         pengajar,

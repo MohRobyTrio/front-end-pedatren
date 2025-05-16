@@ -18,18 +18,19 @@ import { FaFileExport, FaPlus } from "react-icons/fa";
 import MultiStepModal from "../../components/ModalFormPesertaDidik";
 
 const PesertaDidik = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-        const [isModalOpen, setIsModalOpen] = useState(false);
-        
-        const openModal = (item) => {
-            setSelectedItem(item);
-            setIsModalOpen(true);
-        };
-        
-        const closeModal = () => {
-            setSelectedItem(null);
-            setIsModalOpen(false);
-        };    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -184,7 +185,25 @@ const PesertaDidik = () => {
                 <h1 className="text-2xl font-bold">Data Peserta Didik</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
-                    <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button>
+                    {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button> */}
+                    <button
+                        onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`, setExportLoading)}
+                        disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                    >
+                        {exportLoading ? (
+                            <>
+                                <i className="fas fa-spinner fa-spin text-white"></i>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FaFileExport />
+                                <span>Export</span>
+                            </>
+                        )}
+                    </button>
+
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
@@ -256,7 +275,7 @@ const PesertaDidik = () => {
                                     ) : (
                                         pesertaDidik.map((item, index) => (
                                             <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -284,10 +303,10 @@ const PesertaDidik = () => {
                     />
                 )}
 
-{showFormModal && (
-                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
+                {showFormModal && (
+                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
 
-)}
+                )}
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

@@ -10,8 +10,12 @@ import { OrbitProgress } from "react-loading-indicators";
 import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
 import ModalDetail from "../../components/ModalDetail";
+import { downloadFile } from "../../utils/downloadFile";
+import { API_BASE_URL } from "../../hooks/config";
+import { FaFileExport } from "react-icons/fa";
 
 const Pengurus = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -143,8 +147,25 @@ const Pengurus = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pengurus</h1>
                 <div className="flex items-center space-x-2">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                    <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
+                    {/* <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
+                    <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                    <button
+                        onClick={() => downloadFile(`${API_BASE_URL}export/pengurus`, setExportLoading)}
+                        disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                    >
+                        {exportLoading ? (
+                            <>
+                                <i className="fas fa-spinner fa-spin text-white"></i>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FaFileExport />
+                                <span>Export</span>
+                            </>
+                        )}
+                    </button>
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
@@ -234,7 +255,7 @@ const Pengurus = () => {
                                     ) : (
                                         pengurus.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.jabatan || "-"}</td>

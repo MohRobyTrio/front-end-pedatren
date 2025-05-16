@@ -84,9 +84,9 @@ const useFetchOrangtua = (filters) => {
   }, [fetchData]);
 
   // Untuk setting ke halaman 1 saat limit berubah
-  // useEffect(() => {
-  //   setCurrentPage(1);
-  // }, [limit]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [limit]);
 
   return {
     orangtua,

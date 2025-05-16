@@ -9,8 +9,12 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import ModalDetail from "../../components/ModalDetail";
+import { downloadFile } from "../../utils/downloadFile";
+import { API_BASE_URL } from "../../hooks/config";
+import { FaFileExport } from "react-icons/fa";
 
 const WaliKelas = () => {
+    const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -108,6 +112,25 @@ const WaliKelas = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Wali Kelas</h1>
+                <div className="flex items-center space-x-2">
+                    <button
+                        onClick={() => downloadFile(`${API_BASE_URL}export/walikelas`, setExportLoading)}
+                        disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                    >
+                        {exportLoading ? (
+                            <>
+                                <i className="fas fa-spinner fa-spin text-white"></i>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FaFileExport />
+                                <span>Export</span>
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -198,7 +221,7 @@ const WaliKelas = () => {
                                     ) : (
                                         waliKelas.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_Passport|| "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
