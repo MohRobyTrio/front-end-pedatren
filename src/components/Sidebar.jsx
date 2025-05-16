@@ -25,53 +25,23 @@ const Sidebar = ({
     isSidebarOpen,
     toggleDropdown
 }) => {
-
-    const NavigationMenu = () => {
-        const location = useLocation();
-
-        return (
-            <nav className="mt-4 px-4">
-                <ul>
-                    {menuItems.map((item) => {
-                        const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
-
-                        return (
-                            <li key={item.id} className="mb-1">
-                                <Link
-                                    to={item.link}
-                                    className={`flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
-                                        isActive
-                                            ? "bg-blue-100 text-blue-700 font-semibold"
-                                            : "text-gray-700 hover:bg-gray-100"
-                                    }`}
-                                >
-                                    <i className={`${item.icon} mr-3`}></i>
-                                    {item.text}
-                                </Link>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </nav>
-        );
-    };
+    const location = useLocation();
 
     const MenuItem = ({ icon, text, link, onClick }) => {
-        const location = useLocation();
         const isActive = location.pathname === link || location.pathname.startsWith(link + "/");
 
         return (
             <li className="mb-1 ml-2">
                 <Link
                     to={link}
-                    className={`flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+                    className={`flex items-center px-2.5 py-1.5 rounded-md text-sm transition-colors duration-200 ${
                         isActive
                             ? "bg-blue-100 text-blue-700 font-semibold"
-                            : "text-gray-700 hover:bg-gray-100"
+                            : "text-gray-700 font-medium hover:bg-gray-100"
                     }`}
                     onClick={onClick}
                 >
-                    <i className={`fas ${icon} mr-3`}></i>
+                    <i className={`fas ${icon} mr-2 text-sm`}></i>
                     {text}
                 </Link>
             </li>
@@ -79,8 +49,6 @@ const Sidebar = ({
     };
 
     const DropdownMenu = ({ items }) => {
-        const location = useLocation();
-
         return (
             <ul className="mt-2 ml-2">
                 {items.map((item) => {
@@ -99,7 +67,6 @@ const Sidebar = ({
                                     }
                                 }}
                             />
-
                             {item.id === "pesertadidik" && submenuPesertaDidik && <SubMenuDropdownPesertaDidik />}
                         </div>
                     );
@@ -108,37 +75,36 @@ const Sidebar = ({
         );
     };
 
-    const SubMenuDropdownPesertaDidik = () => {
-        const location = useLocation();
+  const SubMenuDropdownPesertaDidik = () => {
+    return (
+        <ul className="ml-6 mt-2">
+            {subPesertaDidik.map((subItem) => {
+                const isActive = location.pathname === subItem.link;
 
-        return (
-            <ul className="ml-6 mt-2">
-                {subPesertaDidik.map((subItem) => {
-                    const isActive = location.pathname === subItem.link;
+                return (
+                    <li key={subItem.id} className="mb-1">
+                        <Link
+                            to={subItem.link}
+                            className={`flex items-center px-3 py-1.5 rounded-md text-xs transition-colors duration-200 ${
+                                isActive
+                                    ? "text-cyan-600 font-semibold bg-cyan-50"
+                                    : "text-red-400 font-medium hover:bg-red-50"
+                            }`}
+                        >
+                            <i className="fas fa-chevron-right mr-2 text-xs text-gray-400"></i>
+                            {subItem.text}
+                        </Link>
+                    </li>
+                );
+            })}
+        </ul>
+    );
+};
 
-                    return (
-                        <li key={subItem.id} className="mb-1">
-                            <Link
-                                to={subItem.link}
-                                className={`flex items-center px-4 py-1.5 rounded-md text-sm transition-colors duration-200 ${
-                                    isActive
-                                        ? "text-cyan-600 font-semibold bg-cyan-50"
-                                        : "text-gray-600 hover:bg-gray-100"
-                                }`}
-                            >
-                                <i className="fas fa-chevron-right mr-2 text-xs"></i>
-                                {subItem.text}
-                            </Link>
-                        </li>
-                    );
-                })}
-            </ul>
-        );
-    };
 
     const MenuHeader = ({ name, isOpen, onClick }) => (
         <h2
-            className="text-gray-600 text-xs font-semibold uppercase tracking-wider flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+            className="text-gray-600 text-xs font-semibold uppercase tracking-wider flex items-center justify-between px-2.5 py-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
             onClick={onClick}
         >
             {name}
@@ -149,15 +115,39 @@ const Sidebar = ({
     return (
         <aside
             id="logo-sidebar"
-            className={`fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform duration-300 ${
+            className={`fixed top-0 left-0 z-40 w-56 h-screen pt-16 transition-transform duration-300 ${
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 shadow-lg`}
             aria-label="Sidebar"
         >
-            <div className="w-64 bg-white h-full flex flex-col">
+            <div className="w-56 bg-white h-full flex flex-col text-sm">
                 <div className="flex-1 overflow-y-auto no-scrollbar pb-10">
-                    <NavigationMenu />
-                    <div className="mt-6 px-4">
+                    <nav className="mt-4 px-3">
+                        <ul>
+                            {menuItems.map((item) => {
+                                const isActive =
+                                    location.pathname === item.link || location.pathname.startsWith(item.link + "/");
+
+                                return (
+                                    <li key={item.id} className="mb-1">
+                                        <Link
+                                            to={item.link}
+                                            className={`flex items-center px-2.5 py-1.5 rounded-md transition-colors duration-200 ${
+                                                isActive
+                                                    ? "bg-blue-100 text-blue-700 font-semibold"
+                                                    : "text-gray-700 font-medium hover:bg-gray-100"
+                                            }`}
+                                        >
+                                            <i className={`${item.icon} mr-2 text-sm`}></i>
+                                            {item.text}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </nav>
+
+                    <div className="mt-4 px-3">
                         <MenuHeader
                             name="Data Pokok"
                             isOpen={dropdownDataPokok}
@@ -165,7 +155,8 @@ const Sidebar = ({
                         />
                         {dropdownDataPokok && <DropdownMenu items={menuDataPokokItems} />}
                     </div>
-                    <div className="mt-6 px-4">
+
+                    <div className="mt-4 px-3">
                         <MenuHeader
                             name="Kewaliasuhan"
                             isOpen={dropdownDataKewaliasuhan}
@@ -173,7 +164,8 @@ const Sidebar = ({
                         />
                         {dropdownDataKewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
                     </div>
-                    <div className="mt-6 px-4">
+
+                    <div className="mt-4 px-3">
                         <MenuHeader
                             name="Kepesantrenan"
                             isOpen={dropdownDataKepesantrenan}
@@ -181,7 +173,8 @@ const Sidebar = ({
                         />
                         {dropdownDataKepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
                     </div>
-                    <div className="mt-6 px-4">
+
+                    <div className="mt-4 px-3">
                         <MenuHeader
                             name="Kepegawaian"
                             isOpen={dropdownDataKepegawaian}
@@ -189,7 +182,8 @@ const Sidebar = ({
                         />
                         {dropdownDataKepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
                     </div>
-                    <div className="mt-6 px-4">
+
+                    <div className="mt-4 px-3">
                         <MenuHeader
                             name="Mahrom"
                             isOpen={dropdownDataMahrom}
@@ -197,16 +191,6 @@ const Sidebar = ({
                         />
                         {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
                     </div>
-                    {/* Uncomment if needed
-                    <div className="mt-6 px-4">
-                        <MenuHeader name="RAPAT WALI SANTRI" isOpen={dropdownDataRWS} onClick={() => toggleDropdown(setDropdownRWS)} />
-                        {dropdownDataRWS && (
-                            <ul className="mt-2">
-                                <DropdownMenu items={menuRWSItems} />
-                            </ul>
-                        )}
-                    </div> 
-                    */}
                 </div>
             </div>
         </aside>
