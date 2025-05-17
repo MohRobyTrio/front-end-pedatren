@@ -214,7 +214,7 @@ const SantriNonDomisili = () => {
                             ) : santriNonDomisili.length === 0 ? (
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
-                                santriNonDomisili.map((student, index) => <PesertaItem key={index} student={student} />)
+                                santriNonDomisili.map((item, index) => <PesertaItem key={index} data={item} title="Santri-Non-Domisili" menu={3} />)
                             )}
                         </div>
                     ) : (

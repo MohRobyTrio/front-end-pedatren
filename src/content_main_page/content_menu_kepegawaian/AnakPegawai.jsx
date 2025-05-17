@@ -175,14 +175,14 @@ const AnakPegawai = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Anak Pegawai</h1>
                 <div className="flex items-center">
-                    <div className="flex items-center space-x-2">
+                    {/* <div className="flex items-center space-x-2">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
                             Export
                         </button>
                         <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">
                             Statistik
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">

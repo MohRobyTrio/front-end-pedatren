@@ -4,15 +4,51 @@ import { Fragment, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave } from 'react-icons/fa';
-
-const steps = ['Biodata', 'Orang Tua', 'Berkas'];
+import FormBiodata from '../content_modal/input/FormBiodata';
+import FormKeluarga from '../content_modal/input/FormKeluarga';
+import FormDomisiliPendidikan from '../content_modal/input/FormDomisiliPendidikan';
+import FormBerkas from '../content_modal/input/FormBerkas';
 
 export default function MultiStepModal({ isOpen, onClose }) {
-    const [currentStep, setCurrentStep] = useState(0);
-    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
+    const [activeTab, setActiveTab] = useState(0);
+    const [unlockedTabs, setUnlockedTabs] = useState([0]);
+    const { register, handleSubmit, trigger, 
+        // watch, setValue, 
+        formState: { errors } } = useForm();
 
-    const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
-    const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+    const nextStep = async () => {
+        const valid = await trigger(getFieldsForTab(activeTab));
+        if (!valid) return;
+
+        const nextTab = activeTab + 1;
+        if (!unlockedTabs.includes(nextTab)) {
+            setUnlockedTabs([...unlockedTabs, nextTab]);
+        }
+        setActiveTab(nextTab);
+    };
+
+    const prevStep = () => {
+        const prevTab = activeTab - 1;
+        if (prevTab >= 0) {
+            setActiveTab(prevTab);
+        }
+    };
+
+    const getFieldsForTab = (tabId) => {
+        switch (tabId) {
+            case 0:
+                return ['nama', 'nik', 'negara_id']; // tambahkan field yang required
+            case 1:
+                return ['no_kk', 'nama_ayah'];
+            case 2:
+                return ['jalan', 'kode_pos', 'jenjang_pendidikan_terakhir', 'nama_pendidikan_terakhir'];
+            case 3:
+                return ['berkas[0].jenis_berkas_id', 'berkas[0].file_path'];
+            default:
+                return [];
+        }
+    };
+
 
     const onSubmit = async (data) => {
         try {
@@ -74,102 +110,45 @@ export default function MultiStepModal({ isOpen, onClose }) {
             }
 
             // Kirim data ke API
-            const response = await fetch('/api/peserta/store', {
-                method: 'POST',
-                body: formData,
-            });
+            // const response = await fetch('/api/peserta/store', {
+            //     method: 'POST',
+            //     body: formData,
+            // });
 
-            if (!response.ok) {
-                throw new Error('Gagal menyimpan data');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Gagal menyimpan data');
+            // }
 
-            const result = await response.json();
-            console.log('Data berhasil disimpan:', result);
-            onClose();
+            // const result = await response.json();
+            // console.log('Data berhasil disimpan:', result);
+            // onClose();
         } catch (error) {
             console.error('Terjadi kesalahan:', error);
         }
     };
 
-    // const isStepValid = () => {
-    //     const stepFields = [
-    //         ['nama', 'nik', 'negara_id'], // Step 0
-    //         ['no_kk', 'nama_ayah'],       // Step 1
-    //         ['berkas[0].jenis_berkas_id', 'berkas[0].file_path'] // Step 2
-    //     ];
-
-    //     return stepFields[currentStep].every((field) => {
-    //         const value = watch(field);
-    //         if (Array.isArray(value)) {
-    //             return value.length > 0;
-    //         }
-    //         return value !== undefined && value !== '';
-    //     });
-    // };
-
-    const renderStep = () => {
-        switch (currentStep) {
-            case 0:
-                return (
-                    <>
-                        <div>
-                            <label>Nama</label>
-                            <input {...register('nama', { required: true })} />
-                            {errors.nama && <span>Nama wajib diisi</span>}
-                        </div>
-                        <div>
-                            <label>NIK</label>
-                            <input {...register('nik', { required: true })} />
-                            {errors.nik && <span>NIK wajib diisi</span>}
-                        </div>
-                        <div>
-                            <label>Negara ID</label>
-                            <input {...register('negara_id', { required: true })} />
-                            {errors.negara_id && <span>Negara ID wajib diisi</span>}
-                        </div>
-                        {/* Tambahkan field lain sesuai kebutuhan */}
-                    </>
-                );
-            case 1:
-                return (
-                    <>
-                        <div>
-                            <label>No KK</label>
-                            <input {...register('no_kk', { required: true })} />
-                            {errors.no_kk && <span>No KK wajib diisi</span>}
-                        </div>
-                        <div>
-                            <label>Nama Ayah</label>
-                            <input {...register('nama_ayah', { required: true })} />
-                            {errors.nama_ayah && <span>Nama Ayah wajib diisi</span>}
-                        </div>
-                        <div>
-                            <label>NIK Ayah</label>
-                            <input {...register('nik_ayah')} />
-                        </div>
-                        {/* Tambahkan field lain sesuai kebutuhan */}
-                    </>
-                );
-            case 2:
-                return (
-                    <>
-                        <div>
-                            <label>Jenis Berkas ID</label>
-                            <input {...register('berkas[0].jenis_berkas_id', { required: true })} />
-                            {errors.berkas?.[0]?.jenis_berkas_id && <span>Jenis Berkas ID wajib diisi</span>}
-                        </div>
-                        <div>
-                            <label>File</label>
-                            <input type="file" {...register('berkas[0].file_path', { required: true })} />
-                            {errors.berkas?.[0]?.file_path && <span>File wajib diunggah</span>}
-                        </div>
-                        {/* Tambahkan field lain sesuai kebutuhan */}
-                    </>
-                );
-            default:
-                return null;
+    const tabs = [
+        {
+            id: 0,
+            label: "Biodata",
+            content: <FormBiodata register={register} errors={errors} />
+        },
+        {
+            id: 1,
+            label: "Keluarga",
+            content: <FormKeluarga register={register} errors={errors} />
+        },
+        {
+            id: 2,
+            label: "Domisili & Pendidikan",
+            content: <FormDomisiliPendidikan register={register} errors={errors} />
+        },
+        {
+            id: 3,
+            label: "Berkas",
+            content: <FormBerkas register={register} errors={errors} />
         }
-    };
+    ]
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -210,44 +189,61 @@ export default function MultiStepModal({ isOpen, onClose }) {
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Peserta Didik</Dialog.Title>
                             </div>
                             <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-2">
-                                {renderStep()}
+                                {/* {renderStep()} */}
+                                <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
+                                    {tabs.map((tab) => (
+                                        <li key={tab.id}>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (unlockedTabs.includes(tab.id)) setActiveTab(tab.id);
+                                                }}
+                                                className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
+                                                    ? 'text-blue-600 border-blue-600 bg-gray-200'
+                                                    : unlockedTabs.includes(tab.id)
+                                                        ? 'border-transparent hover:text-gray-600 hover:bg-gray-50'
+                                                        : 'border-transparent text-gray-300 cursor-not-allowed'
+                                                    }`}
+                                                disabled={!unlockedTabs.includes(tab.id)}
+                                            >
+                                                {tab.label}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
                             </form>
 
-                            <div className="mt-4 pt-4 text-right space-x-2">
-                                {currentStep > 0 && (
+                            <div className="mt-4 pt-4 flex justify-between">
+                                {activeTab > 0 && (
                                     <button
-                                        type="button"
                                         onClick={prevStep}
-                                        className="inline-flex items-center gap-2 rounded-md border border-transparent bg-gray-300 px-4 py-2 text-sm font-medium text-black hover:bg-gray-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                                        className="inline-flex items-center gap-2 rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400"
                                     >
                                         <FaArrowLeft />
                                         Sebelumnya
                                     </button>
                                 )}
-                                {currentStep < steps.length - 1 ? (
-                                    <button
-                                        type="button"
-                                        onClick={nextStep}
-                                        className="inline-flex items-center gap-2 rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                    // disabled={!isStepValid()}
-                                    // className={`inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${isStepValid()
-                                    //         ? 'bg-blue-500 hover:bg-blue-600 focus-visible:ring-blue-500'
-                                    //         : 'bg-blue-300 cursor-not-allowed'
-                                    //     }`}
-                                    >
-                                        Selanjutnya
-                                        <FaArrowRight />
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="submit"
-                                        
-                                        className="inline-flex items-center gap-2 rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                                    >
-                                        <FaSave />
-                                        Simpan
-                                    </button>
-                                )}
+                                <div className="ml-auto">
+                                    {activeTab < tabs.length - 1 ? (
+                                        <button
+                                            onClick={nextStep}
+                                            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                                        >
+                                            Selanjutnya
+                                            <FaArrowRight />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                                        >
+                                            <FaSave />
+                                            Simpan
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </Dialog.Panel>
                     </Transition.Child>

@@ -17,12 +17,10 @@ import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress
 import DetailKhadam from "../content_modal/detail/DetailKhadam";
 
 // Placeholder untuk tab lainnya
-// const Santri = () => <h1 className="text-xl font-bold">Informasi Santri</h1>;
 const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
 const Pengajar = () => <h1 className="text-xl font-bold">Pengajar</h1>;
 const Karyawan = () => <h1 className="text-xl font-bold">Karyawan</h1>;
 const Pengurus = () => <h1 className="text-xl font-bold">Pengurus</h1>;
-const Khadam = () => <h1 className="text-xl font-bold">Khadam</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
@@ -42,31 +40,33 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             try {
                 let endpoint = '';
 
-                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}`;
+                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}a`;
                 else if (menu === 2) endpoint = `santri/${item.biodata_id}`;
                 else if (menu === 3) endpoint = `santri-nondomisili/${item.biodata_id}`;
                 else if (menu === 4) endpoint = `pelajar/${item.biodata_id}`;
                 else if (menu === 5) endpoint = `pesertadidik-bersaudara/${item.biodata_id}`;
                 else if (menu === 6) endpoint = `orangtua/${item.biodata_id}`;
                 else if (menu === 7) endpoint = `wali/${item.biodata_id}`;
-                else if (menu === 8) endpoint = `pengajar/${item.id}`;
-                else if (menu === 9) endpoint = `pengurus/${item.id}`;
+                else if (menu === 8) endpoint = `pengajar/${item.biodata_id}`;
+                else if (menu === 9) endpoint = `pengurus/${item.biodata_id}`;
                 else if (menu === 10) endpoint = `karyawan/${item.biodata_id}`;
-                else if (menu === 11) endpoint = `walikelas/${item.biodata_id}`;
+                else if (menu === 11) endpoint = `walikelas/${item.id}`;
                 else if (menu === 12) endpoint = `khadam/${item.biodata_id}`;
                 else if (menu === 13) endpoint = `alumni/${item.biodata_id}`;
 
-                else if (menu === 21) endpoint = `pegawai/${item.id}`;
+                else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
 
                 const res = await fetch(`${API_BASE_URL}data-pokok/${endpoint}`);
-                if (!res.ok) throw new Error('Gagal mengambil data');
+                const json = await res.json();
+                if (!res.ok || json.status === false) {
+                    throw new Error(json.message || 'Gagal mengambil data');
+                }
 
                 console.log(endpoint);
 
 
-                const json = await res.json();
                 setData(json.data);
 
                 if (menu === 12) console.log(item.id_khadam);
@@ -77,18 +77,20 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 console.log(menu);
             } catch (err) {
                 console.error(err);
-                setError("Gagal memuat data.");
+                setError(err.message || `Gagal memuat data.`);
             } finally {
                 setLoading(false);
             }
         };
-        
+
         if (item?.biodata_id || item?.id_khadam || item?.id) {
             fetchData();
         }
     }, [item.biodata_id, item.id, item.id_khadam, menu]);
 
-    const tabs = [
+    const isOnlyError = data && Object.keys(data).length === 1 && data.error;
+
+    const tabs = !isOnlyError ? [
         data?.Biodata && {
             id: "biodata",
             label: "Biodata",
@@ -104,11 +106,6 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Status Santri",
             content: <DetailStatusSantri statusSantri={data.Status_Santri} />
         },
-        // data?.Santri && {
-        //     id: "santri",
-        //     label: "Santri",
-        //     content: <Santri />
-        // },
         data?.Domisili?.length > 0 && {
             id: "domisili",
             label: "Domisili",
@@ -139,11 +136,6 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Pengurus",
             content: <Pengurus />
         },
-        data?.Khadam?.length > 0 && {
-            id: "khadam",
-            label: "Khadam",
-            content: <Khadam />
-        },
         data?.Berkas && {
             id: "berkas",
             label: "Berkas",
@@ -154,20 +146,6 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Warga Pesantren",
             content: <WarPes />
         },
-        // (
-        //     (
-        //         data?.Catatan_Progress?.Afektif &&
-        //         typeof data.Catatan_Progress.Afektif === 'object' &&
-        //         !Array.isArray(data.Catatan_Progress.Afektif) &&
-        //         Object.keys(data.Catatan_Progress.Afektif).length > 0
-        //     ) ||
-        //     (
-        //         data?.Catatan_Progress?.Kognitif &&
-        //         typeof data.Catatan_Progress.Kognitif === 'object' &&
-        //         !Array.isArray(data.Catatan_Progress.Kognitif) &&
-        //         Object.keys(data.Catatan_Progress.Kognitif).length > 0
-        //     )
-        // ) &&
         data?.Catatan_Progress && ((Object.keys(data.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data.Catatan_Progress?.Kognitif).length > 0)) &&
         {
             id: "progress",
@@ -182,9 +160,14 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
         data?.Khadam?.length > 0 && {
             id: "khadam",
             label: "Khadam",
-            content: <DetailKhadam kunjunganMahrom={data.Khadam} />
+            content: <DetailKhadam khadam={data.Khadam} />
         },
-    ].filter(Boolean); // Hapus tab yang tidak punya data    
+        data?.error && {
+            id: "error",
+            label: "Error",
+            content: <div>{data?.error}</div>
+        },
+    ].filter(Boolean) : []; // Hapus tab yang tidak punya data    
 
     return (
         <Transition appear show={true} as={Fragment}>
@@ -232,33 +215,47 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" />
                                     </div>
                                 )}
-                                {error && <p className="text-red-500">{error}</p>}
+                                {error &&
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="text-center text-red-500 font-semibold">
+                                            {error}
+                                        </div>
+                                    </div>
+                                }
                                 {data && (
-                                    <>
-                                        <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
-                                            {tabs.map((tab) => (
-                                                <li key={tab.id}>
-                                                    <button
-                                                        onClick={() => setActiveTab(tab.id)}
-                                                        className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
-                                                            ? "text-blue-600 border-blue-600 bg-gray-200"
-                                                            : "border-transparent hover:text-gray-600 hover:bg-gray-50"
-                                                            }`}
-                                                    >
-                                                        {tab.label}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    isOnlyError ? (
+                                        <div className="flex items-center justify-center h-full">
+                                            <div className="text-center text-red-500 font-semibold">
+                                                {data.error}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
+                                                {tabs.map((tab) => (
+                                                    <li key={tab.id}>
+                                                        <button
+                                                            onClick={() => setActiveTab(tab.id)}
+                                                            className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
+                                                                ? "text-blue-600 border-blue-600 bg-gray-200"
+                                                                : "border-transparent hover:text-gray-600 hover:bg-gray-50"
+                                                                }`}
+                                                        >
+                                                            {tab.label}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
 
-                                        <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-                                    </>
+                                            <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+                                        </>
+                                    )
                                 )}
                             </div>
 
                             {/* Footer */}
                             <div className="mt-4 pt-4 text-right space-x-2">
-                                
+
                                 {/* set id session */}
                                 {/* <Link to="/formulir" onClick={() => sessionStorage.setItem("biodata_id", item.biodata_id)}>
                                     <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">

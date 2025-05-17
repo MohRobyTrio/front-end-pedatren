@@ -178,10 +178,10 @@ const Santri = () => {
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Santri</h1>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                     <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
                     <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
-                </div>
+                </div> */}
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -219,7 +219,7 @@ const Santri = () => {
                             ) : santri.length === 0 ? (
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
-                                santri.map((student, index) => <PesertaItem key={index} student={student} />)
+                                santri.map((item, index) => <PesertaItem key={index} data={item} title="Santri" menu={2} />)
                             )}
                         </div>
                     ) : (

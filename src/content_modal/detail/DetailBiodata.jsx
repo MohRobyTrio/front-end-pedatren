@@ -37,7 +37,7 @@ const DetailBiodata = ({ biodata }) => (
         <img
             src={biodata?.foto_profil}
             alt="Foto Profil"
-            className="w-40 h-48 object-cover rounded mt-4 sm:mt-0 sm:ml-8"
+            className="w-46 h-54 object-cover rounded mt-4 sm:mt-0 sm:ml-8 border border-gray-500 p-1"
             onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = blankProfile;

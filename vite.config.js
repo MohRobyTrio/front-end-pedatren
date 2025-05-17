@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173, // Atur port sesuai kebutuhan
-    allowedHosts: ['5732-36-73-199-90.ngrok-free.app'],
+    allowedHosts: ['8353-36-73-207-44.ngrok-free.app'],
   },
   optimizeDeps: {
     exclude: ['react-icons', 'fontawesome']

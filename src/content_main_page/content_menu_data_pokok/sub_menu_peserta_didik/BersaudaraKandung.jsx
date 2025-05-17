@@ -228,7 +228,7 @@ const BersaudaraKandung = () => {
                             ) : pesertaDidikBersaudara.length === 0 ? (
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
-                                pesertaDidikBersaudara.map((student, index) => <PesertaItem key={index} student={student} />)
+                                pesertaDidikBersaudara.map((item, index) => <PesertaItem key={index} data={item} title="Bersaudara Kandung" menu={5} />)
                             )}
                         </div>
                     ) : (

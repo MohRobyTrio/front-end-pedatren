@@ -1,10 +1,10 @@
 import { useState } from "react";
 import blankProfile from "../assets/blank_profile.png";
-import Modal from "./Modal";
+import ModalDetail from "./ModalDetail";
 
-const PesertaItem = ({ student }) => {
+const PesertaItem = ({ data, title, menu }) => {
     const [openModal, setOpenModal] = useState(false);
-    
+
     return (
         <>
             <div
@@ -12,27 +12,27 @@ const PesertaItem = ({ student }) => {
                 onClick={() => setOpenModal(true)}
             >
                 <img
-                    alt={student.nama || "-"}
+                    alt={data.nama || "-"}
                     className="w-20 h-24 object-cover"
-                    src={student.foto_profil}
+                    src={data.foto_profil}
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = blankProfile;
                     }}
                 />
                 <div>
-                    <h2 className="font-semibold text-xl">{student.nama}</h2>
-                    <p className="text-gray-600">NIUP: {student.niup}</p>
+                    <h2 className="font-semibold text-xl">{data.nama}</h2>
+                    <p className="text-gray-600">NIUP: {data.niup}</p>
                     <p className="text-gray-600">
                         {" "}
-                        {student.pendidikan_terakhir && student.pendidikan_terakhir !== "-" && student.lembaga && student.lembaga !== "-" ? (
+                        {data.pendidikan_terakhir && data.pendidikan_terakhir !== "-" && data.lembaga && data.lembaga !== "-" ? (
                             <>
-                                {student.pendidikan_terakhir} - {student.lembaga}
+                                {data.pendidikan_terakhir} - {data.lembaga}
                             </>
-                        ) : student.pendidikan_terakhir && student.pendidikan_terakhir !== "-" ? (
-                            student.pendidikan_terakhir
-                        ) : student.lembaga && student.lembaga !== "-" ? (
-                            student.lembaga
+                        ) : data.pendidikan_terakhir && data.pendidikan_terakhir !== "-" ? (
+                            data.pendidikan_terakhir
+                        ) : data.lembaga && data.lembaga !== "-" ? (
+                            data.lembaga
                         ) : (
                             "-"
                         )}
@@ -40,7 +40,15 @@ const PesertaItem = ({ student }) => {
                 </div>
             </div>
 
-            {openModal && <Modal item={student} onClose={() => setOpenModal(false)} />}
+            {/* {openModal && <Modal item={data} onClose={() => setOpenModal(false)} />} */}
+            {openModal &&
+                <ModalDetail
+                    title={title}
+                    menu={menu}
+                    item={data}
+                    onClose={() => setOpenModal(false)}
+
+                />}
         </>
     );
 };
