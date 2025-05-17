@@ -1,63 +1,388 @@
 import { useEffect, useState } from "react";
-import { 
-    // useLocation,
-     useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
+import { API_BASE_URL } from "../../hooks/config";
+
+
+// Skema validasi form
+const schema = yup.object({
+    kewarganegaraan: yup.string().optional(),
+    no_passport: yup.string().optional(),
+    nomor_kk: yup.string().optional(),
+    nik: yup.string().nullable()
+        .test(
+            'len',
+            'NIK harus 16 digit',
+            (val) => !val || val.length === 16
+        ),
+    nama: yup.string().required('Nama wajib diisi'),
+    jenis_kelamin: yup.string().required('Jenis Kelamin harus dipilih').oneOf(['p', 'l'], 'Pilihan jenis kelamin tidak valid'),
+    tempat_lahir: yup.string().required('Tempat Lahir wajib diisi'),
+    tanggal_lahir: yup.object({
+        tahun: yup.string().required('Tahun lahir wajib diisi'),
+        bulan: yup.string().required('Bulan lahir wajib diisi'),
+        tanggal: yup.string().required('Tanggal lahir wajib diisi')
+    }),
+    anak_keberapa: yup.number().optional(),
+    dari_saudara: yup.number().optional(),
+    tinggal_bersama: yup.string().optional(),
+    jenjang_pendidikan: yup.string().optional(),
+    nama_pendidikan: yup.string().optional(),
+    telepon1: yup.string().required('Nomor Telepon 1 wajib diisi'),
+    telepon2: yup.string().optional(),
+    email: yup.string().email('Format email tidak valid'),
+    pekerjaan: yup.string().optional(),
+    penghasilan: yup.string().optional(),
+    negara: yup.string().required('Negara wajib diisi'),
+    provinsi: yup.string().optional(),
+    kabupaten: yup.string().optional(),
+    kecamatan: yup.string().optional(),
+    jalan: yup.string().optional(),
+    kode_pos: yup.string().optional(),
+    wafat: yup.string().required('Status wafat harus dipilih'),
+});
 
 const TabBiodata = () => {
-    // const [jenisKelamin, setJenisKelamin] = useState("");
-    const [jenjangPendidikanTerakhir, setJenjangPendidikanTerakhir] = useState("");
-    const [pekerjaan, setpekerjaan] = useState("");
-    const [penghasilan, setpenghasilan] = useState("");
-    const [negara, setnegara] = useState("");
-    const [provinsi, setprovinsi] = useState("");
-    const [kabupaten, setkabupaten] = useState("");
-    const [kecamatan, setkecamatan] = useState("");
+    const { biodata_id } = useParams();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const [photo, setPhoto] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const [umur, setUmur] = useState(null);
+    const [bulanOptions] = useState([
+        { value: '01', label: 'Januari' },
+        { value: '02', label: 'Februari' },
+        { value: '03', label: 'Maret' },
+        { value: '04', label: 'April' },
+        { value: '05', label: 'Mei' },
+        { value: '06', label: 'Juni' },
+        { value: '07', label: 'Juli' },
+        { value: '08', label: 'Agustus' },
+        { value: '09', label: 'September' },
+        { value: '10', label: 'Oktober' },
+        { value: '11', label: 'November' },
+        { value: '12', label: 'Desember' },
+    ]);
 
-    const [tanggalLahir, setTanggalLahir] = useState({
-        tahun: "2001",
-        bulan: "Desember",
-        hari: "30",
+    // Add debugging to clearly see what's happening
+    useEffect(() => {
+        console.log("Current biodata_id from URL:", biodata_id);
+        // Cek apakah ID valid (tidak undefined, tidak null, dan bukan string kosong)
+        const isValidId = biodata_id && biodata_id.trim() !== "";
+        console.log("Is valid ID:", isValidId);
+    }, [biodata_id]);
+
+    // Gunakan komponen DropdownNegara
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+
+    const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            kewarganegaraan: 'WNI',
+            wafat: 'Tidak',
+            jenis_kelamin: '',
+            tanggal_lahir: {
+                tahun: '',
+                bulan: '',
+                tanggal: ''
+            }
+        }
     });
 
-    const [umur, setUmur] = useState(22);
+    const kewarganegaraan = watch('kewarganegaraan');
 
-    const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-    const daftarBulan = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-    const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
-
-    // Menghitung umur saat tanggal lahir berubah
-    const hitungUmur = (tahun) => {
-        const tahunSekarang = new Date().getFullYear();
-        setUmur(tahunSekarang - tahun);
+    // Handle perubahan dropdown wilayah
+    const handleWilayahChange = (e, level) => {
+        const { value } = e.target;
+        setValue(level, value);
+        handleFilterChangeNegara({ [level]: value });
     };
 
-    // get id dari session
-    // const location = useLocation();
-    // const [biodataId, setBiodataId] = useState(null);
+    // Load data peserta jika dalam mode update
+    const loadPesertaData = async (id) => {
+        // Validasi ID
+        if (!id || id.trim() === "") {
+            console.warn("ID tidak valid");
+            setIsUpdateMode(false);
+            return;
+        }
 
-    // // Jalankan setiap kali route location berubah
+        setIsLoading(true);
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}formulir/${id}/biodata/show`);
+            const responseData = response.data;
+
+            console.log("Response dari API:", responseData); // Debugging
+
+            // Validasi response
+            if (!responseData || !responseData.data) {
+                console.warn("Data tidak ditemukan dalam response");
+                setIsUpdateMode(false);
+                return;
+            }
+
+            const biodata = responseData.data;
+
+            // Mapping data ke form
+            const formData = {
+                // Field utama
+                nama: biodata.nama || '',
+                no_passport: biodata.no_passport || '',
+                nik: biodata.nik || '',
+                jenis_kelamin: biodata.jenis_kelamin === 'l' ? 'l' : 'p',
+
+                // Tanggal lahir
+                tanggal_lahir: {
+                    tahun: '',
+                    bulan: '',
+                    tanggal: ''
+                },
+
+                // Field lainnya
+                tempat_lahir: biodata.tempat_lahir || '',
+                anak_keberapa: biodata.anak_keberapa || '',
+                dari_saudara: biodata.dari_saudara || '',
+                telepon1: biodata.no_telepon || '',
+                telepon2: biodata.no_telepon_2 || '',
+                email: biodata.email || '',
+                jenjang_pendidikan: biodata.jenjang_pendidikan_terakhir || '',
+                nama_pendidikan: biodata.nama_pendidikan_terakhir || '',
+                jalan: biodata.jalan || '',
+                kode_pos: biodata.kode_pos || '',
+                wafat: biodata.wafat === 0 ? '0' : '1'
+            };
+
+            // Parse tanggal lahir jika ada
+            if (biodata.tanggal_lahir) {
+                const [tahun, bulan, tanggal] = biodata.tanggal_lahir.split('-');
+                formData.tanggal_lahir = { tahun, bulan, tanggal };
+            }
+
+            // Set nilai form
+            Object.entries(formData).forEach(([key, value]) => {
+                if (key === 'tanggal_lahir') {
+                    setValue('tanggal_lahir.tahun', value.tahun);
+                    setValue('tanggal_lahir.bulan', value.bulan);
+                    setValue('tanggal_lahir.tanggal', value.tanggal);
+                } else {
+                    setValue(key, value);
+                }
+            });
+
+            // Set dropdown wilayah
+            if (biodata.negara_id) {
+                handleFilterChangeNegara({ negara: biodata.negara_id.toString() });
+            }
+            if (biodata.provinsi_id) {
+                handleFilterChangeNegara({ provinsi: biodata.provinsi_id.toString() });
+            }
+            if (biodata.kabupaten_id) {
+                handleFilterChangeNegara({ kabupaten: biodata.kabupaten_id.toString() });
+            }
+            if (biodata.kecamatan_id) {
+                handleFilterChangeNegara({ kecamatan: biodata.kecamatan_id.toString() });
+            }
+
+            // Set photo preview jika ada
+            if (biodata.photo) {
+                setPhotoPreview(`${API_BASE_URL}storage/${biodata.photo}`);
+            }
+
+            setIsUpdateMode(true);
+
+        } catch (error) {
+            console.error('Error loading data:', error);
+            setIsUpdateMode(false);
+            alert('Gagal memuat data peserta');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Jika ada ID, berarti mode update
     // useEffect(() => {
-    //     const id = sessionStorage.getItem("biodata_id");
-    //     setBiodataId(id);
-    //     console.log("id biodata");
+    //     if (biodata_id) {
+    //         loadPesertaData(biodata_id);
+    //     }
+    // }, [biodata_id]);
 
-    // }, [location]);
-
-    const { biodata_id } = useParams();
-
+    // Trigger update mode when biodata_id is present in URL
     useEffect(() => {
-        console.log("Ambil data untuk ID:", biodata_id);
-        // fetch(`/api/biodata/${biodata_id}`)
+        // Validasi ID harus ada dan bukan string kosong
+        if (biodata_id && biodata_id.trim() !== "") {
+            console.log("Entering update mode with ID:", biodata_id);
+            loadPesertaData(biodata_id);
+        } else {
+            console.log("No valid biodata_id found, staying in create mode");
+            setIsUpdateMode(false);
+        }
     }, [biodata_id]);
+
+    // Handle perubahan photo
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPhoto(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Submit form
+    const onSubmit = async (data) => {
+        setIsLoading(true);
+
+        try {
+            // Format tanggal lahir
+            const tanggalLahir = `${data.tanggal_lahir.tahun}-${data.tanggal_lahir.bulan}-${data.tanggal_lahir.tanggal}`;
+
+            // Buat form data untuk upload file
+            const formData = new FormData();
+
+            // Append manual satu per satu jika perlu transform
+            formData.append('tanggal_lahir', tanggalLahir);
+            formData.append('nama', data.nama);
+            // formData.append('jenis_kelamin', data.jenis_kelamin); // sekarang 'l' atau 'p'
+            formData.append('no_telepon', data.telepon1);
+            if (data.telepon2) formData.append('no_telepon_2', data.telepon2);
+            formData.append('negara_id', data.negara);
+            formData.append('provinsi_id', data.provinsi);
+            formData.append('kabupaten_id', data.kabupaten);
+            formData.append('kecamatan_id', data.kecamatan);
+            formData.append('jenjang_pendidikan_terakhir', data.jenjang_pendidikan);
+            formData.append('nama_pendidikan_terakhir', data.nama_pendidikan);
+            // formData.append('wafat', data.wafat === 'Ya' ? '1' : '0');
+
+            [
+                'tempat_lahir', 'no_passport', 'nomor_kk', 'nik',
+                'anak_keberapa', 'dari_saudara', 'tinggal_bersama',
+                'email', 'jenis_kelamin','wafat',
+                'pekerjaan','jalan', 'kode_pos'
+            ].forEach(field => {
+                if (data[field]) formData.append(field, data[field]);
+            }); 
+
+            // Tambahkan semua field form ke formData
+            Object.keys(data).forEach(key => {
+                if (key !== 'tanggal_lahir') {
+                    formData.append(key, data[key]);
+                }
+            });
+
+            formData.append('tanggal_lahir', tanggalLahir);
+
+            // cek wafat
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ':', pair[1]);
+            }
+
+
+            if (photo) {
+                formData.append('photo', photo);
+            }
+
+            let response;
+
+             if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
+                // Double check - pastikan hanya update dengan ID valid
+                console.log(`Updating record with ID: ${biodata_id}`);
+                // Update data
+                response = await axios.post(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            } else {
+                console.log("Creating new record");
+                // Create new data
+                response = await axios.post(`${API_BASE_URL}formulir/biodata?_method=POST`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            }
+
+            alert(isUpdateMode ? 'Data berhasil diupdate!' : 'Data berhasil disimpan!');
+
+            if (!isUpdateMode) {
+                // Reset form jika mode tambah data
+                reset();
+                setPhoto(null);
+                setPhotoPreview(null);
+            }
+
+        } catch (error) {
+            console.error('Error saving data:', error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                // Tampilkan error dari validasi backend
+                const backendErrors = error.response.data.errors;
+                Object.keys(backendErrors).forEach(key => {
+                    alert(`${key}: ${backendErrors[key][0]}`);
+                });
+            } else {
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    if (isLoading && isUpdateMode) {
+        return <div className="text-center p-5">Loading data...</div>;
+    }
+
+    // const [tanggalLahir, setTanggalLahir] = useState({
+    //     tahun: "2001",
+    //     bulan: "Desember",
+    //     hari: "30",
+    // });
+
+    // const [umur, setUmur] = useState(22);
+
+    // const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
+    // const daftarBulan = [
+    //     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    //     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    // ];
+    // const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
+
+    //Menghitung umur saat tanggal lahir berubah
+    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
+    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
+    const hitungUmur = (tahun, bulan) => {
+        if (!tahun) return;
+
+        const today = new Date();
+        const tahunSekarang = today.getFullYear();
+        const bulanSekarang = today.getMonth() + 1; // getMonth() returns 0-11
+
+        // Hitung umur berdasarkan tahun
+        let age = tahunSekarang - tahun;
+
+        // Sesuaikan umur jika bulan lahir belum terlewati di tahun ini
+        if (bulan && parseInt(bulan) > bulanSekarang) {
+            age--;
+        }
+
+        setUmur(age);
+    };
+
+    // useEffect(() => {
+    //     console.log("Ambil data untuk ID:", biodata_id);
+    //     // fetch(`/api/biodata/${biodata_id}`)
+    // }, [biodata_id]);
 
 
     return (
         <div className="relative p-2 bg-white ">
             {/* Judul Formulir */}
-            {/* <h1 className="text-xl font-bold mb-4">Formulir {biodata_id}</h1> */}
+            <h1 className="text-xl font-bold mb-4">{isUpdateMode
+                        ? `Formulir Update: ID ${biodata_id}`
+                        : 'Formulir Baru'}</h1>
 
             {/* Foto - dibuat responsif */}
             <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
@@ -68,22 +393,30 @@ const TabBiodata = () => {
                 />
             </div>
 
-            <form action="" method="POST" className="md:col-span-2 space-y-4 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2 space-y-4 w-full">
+                {/* Debug Info - untuk development, bisa dihapus di production */}
+                <div className="mb-4 p-2 bg-gray-100 text-xs">
+                    <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
+                    <p>ID: {biodata_id || 'tidak ada'}</p>
+                </div>
+                <div className="mb-4 p-2 bg-gray-100 text-xs">
+                    <pre>{JSON.stringify(watch(), null, 2)}</pre>
+                </div>
                 {/* Kewarganegaraan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="kewarganegaraan" className="lg:w-1/4 text-black">
                         Kewarganegaraan *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" />
+                        <input type="radio" name="kewarganegaraan" value="wni" {...register('kewarganegaraan')} className="w-4 h-4" />
                         <span>WNI</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" />
+                        <input type="radio" name="kewarganegaraan" value="wna" {...register('kewarganegaraan')} className="w-4 h-4" />
                         <span>WNA</span>
                     </label>
                 </div>
-                {/* No Passport */}
+                {/* Nomor Passport */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="passport" className="lg:w-1/4 text-black">
                         No Passport *
@@ -91,47 +424,49 @@ const TabBiodata = () => {
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="passport"
-                                name="passport"
-                                type="number"
+                                id="no_passport"
+                                name="no_passport"
+                                type="text"
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('no_passport')}
                             />
+                            
                         </div>
                     </div>
                 </div>
 
                 {/* Nomor KK */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="nokk" className="lg:w-1/4 text-black">
-                        Nomor KK *
+                    <label htmlFor="nomor_kk" className="lg:w-1/4 text-black">
+                        Nomor KK
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="nokk"
-                                name="nokk"
-                                type="number"
+                                id="nomor_kk"
+                                type="text"
                                 placeholder="Masukkan No KK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nomor_kk')}
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* NIK */}
-                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4 ">
-                    <label htmlFor="nonik" className="lg:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    <label htmlFor="nik" className="lg:w-1/4 text-black">
                         NIK *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                        <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="nonik"
-                                name="nonik"
-                                type="number"
+                                id="nik"
+                                type="text"
                                 placeholder="Masukkan NIK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nik')}
                             />
                         </div>
                     </div>
@@ -139,52 +474,72 @@ const TabBiodata = () => {
 
 
                 {/* Nama Lengkap */}
-                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
+                <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4 mb-4">
+                    <label htmlFor="nama" className="lg:w-1/4 text-black">
                         Nama Lengkap *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                        <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="namaLengkap"
-                                name="namaLengkap"
+                                id="nama"
                                 type="text"
                                 placeholder="Masukkan Nama Lengkap"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nama')}
                             />
+                            {errors.nama && (
+                                <p className="text-red-500 text-sm mt-1">{errors.nama.message}</p>
+                            )}
                         </div>
                     </div>
                 </div>
+                
 
                 {/* Jenis Kelamin */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="jenisKelamin" className="lg:w-1/4 text-black">
+                    <label className="lg:w-1/4 text-black">
                         Jenis Kelamin *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Perempuan" className="w-4 h-4" />
+                        <input
+                            type="radio"
+                            value="p"
+                            {...register('jenis_kelamin')}
+                            className="w-4 h-4"
+                        />
                         <span>Perempuan</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Laki-Laki" className="w-4 h-4" />
+                        <input
+                            type="radio"
+                            value="l"
+                            {...register('jenis_kelamin')}
+                            className="w-4 h-4"
+                        />
                         <span>Laki-Laki</span>
                     </label>
+                    {errors.jenis_kelamin && (
+                        <p className="text-red-500 text-sm">{errors.jenis_kelamin.message}</p>
+                    )}
                 </div>
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="tempatLahir" className="lg:w-1/4 text-black">
+                    <label htmlFor="tempat_lahir" className="lg:w-1/4 text-black">
                         Tempat Lahir *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                        <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="tempatLahir"
-                                name="tempatLahir"
+                                id="tempat_lahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('tempat_lahir')}
                             />
+                            {errors.tempat_lahir && (
+                                <p className="text-red-500 text-sm mt-1">{errors.tempat_lahir.message}</p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -197,58 +552,65 @@ const TabBiodata = () => {
                     <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
                         <div className="flex space-x-1 mr-2">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                {/* Tahun */}
                                 <select
+                                    {...register('tanggal_lahir.tahun')}
                                     className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.tahun}
-                                    onChange={(e) => {
-                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                                        hitungUmur(e.target.value);
-                                    }}
+                                    onChange={(e) => hitungUmur(parseInt(e.target.value), document.querySelector('[name="tanggal_lahir.bulan"]').value)}
                                 >
-                                    {daftarTahun.map((tahun) => (
-                                        <option key={tahun} value={tahun}>{tahun}</option>
+                                    <option value="">Tahun</option>
+                                    {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                                        <option key={year} value={year}>{year}</option>
                                     ))}
                                 </select>
                             </div>
                             <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                {/* Bulan */}
                                 <select
+                                    {...register('tanggal_lahir.bulan')}
                                     className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.bulan}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
-                                    {daftarBulan.map((bulan) => (
-                                        <option key={bulan} value={bulan}>{bulan}</option>
+                                    onChange={(e) => hitungUmur(parseInt(document.querySelector('[name="tanggal_lahir.tahun"]').value), e.target.value)}
+                                >
+                                    <option value="">Bulan</option>
+                                    {bulanOptions.map(bulan => (
+                                        <option key={bulan.value} value={bulan.value}>{bulan.label}</option>
                                     ))}
                                 </select>
                             </div>
                             <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 focus-within:border-gray-500">
+                                {/* Tanggal */}
                                 <select
+                                    {...register('tanggal_lahir.tanggal')}
                                     className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.hari}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
-                                    {daftarHari.map((hari) => (
-                                        <option key={hari} value={hari}>{hari}</option>
+                                >
+                                    <option value="">Tanggal</option>
+                                    {Array.from({ length: 31 }, (_, i) => i + 1).map(tanggal => (
+                                        <option key={tanggal} value={tanggal < 10 ? `0${tanggal}` : tanggal}>
+                                            {tanggal < 10 ? `0${tanggal}` : tanggal}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
                         </div>
                         {/* Label umur */}
                         <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            umur {umur} tahun
+                            {umur !== null ? `Umur ${umur} tahun` : 'p'}
                         </span>
                     </div>
                 </div>
 
                 {/* Anak Ke */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="anakKe" className="lg:w-1/4 text-black">
+                    <label className="lg:w-1/4 text-black">
                         Anak Ke *
                     </label>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 items-center">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 type="number"
                                 min="1"
-                                className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                className="w-20 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('anak_keberapa')}
                             />
                         </div>
                         <span>Dari</span>
@@ -256,7 +618,8 @@ const TabBiodata = () => {
                             <input
                                 type="number"
                                 min="1"
-                                className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                className="w-20 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('dari_saudara')}
                             />
                         </div>
                     </div>
@@ -265,17 +628,17 @@ const TabBiodata = () => {
 
                 {/* Tinggal Bersama */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="tinggalbersama" className="lg:w-1/4 text-black">
+                    <label htmlFor="tinggal_bersama" className="lg:w-1/4 text-black">
                         Tinggal Bersama
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="tinggalbersama"
-                                name="tinggalbersama"
+                                id="tinggal_bersama"
                                 type="text"
                                 placeholder="Masukkan Tinggal Bersama"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('tinggal_bersama')}
                             />
                         </div>
                     </div>
@@ -283,29 +646,28 @@ const TabBiodata = () => {
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhir" className="lg:w-1/4 text-black">
+                    <label htmlFor="jenjang_pendidikan" className="lg:w-1/4 text-black">
                         Jenjang Pendidikan Terakhir
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhir"
-                                name="jenjangPendidikanTerakhir"
+                                id="jenjang_pendidikan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenjangPendidikanTerakhir}
-                                onChange={(e) => setJenjangPendidikanTerakhir(e.target.value)}
+                                // value={jenjangPendidikanTerakhir}
+                                {...register('jenjang_pendidikan')}
                             >
-                                <option value="" disabled>
+                                <option value="" >
                                     Pilih
                                 </option>
-                                <option value="TK">TK</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="paud">PAUD</option>
+                                <option value="sd/mi">SD/MI</option>
+                                <option value="smp/mts">SMP/MTs</option>
+                                <option value="sma/smk/ma">SMA Sederajat</option>
+                                <option value="d3">D3</option>
+                                <option value="s1">S1</option>
+                                <option value="s2">S2</option>
+                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
@@ -313,17 +675,17 @@ const TabBiodata = () => {
 
                 {/* Pendidikan Terakhir */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="PendidikanTerakhir" className="lg:w-1/4 text-black">
+                    <label htmlFor="nama_pendidikan" className="lg:w-1/4 text-black">
                         Nama Pendidikan Terakhir
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="namapendidikanterakhir"
-                                name="namapendidikanterakhir"
+                                id="nama_pendidikan"
                                 type="text"
                                 placeholder="Masukkan Nama Pendidikan Terakhir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nama_pendidikan')}
                             />
                         </div>
                     </div>
@@ -341,35 +703,38 @@ const TabBiodata = () => {
 
                 {/* Nomor Telepon 1 */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="noTelpon1" className="md:w-1/4 text-black">
-                        Nomor Telepon 1
+                    <label htmlFor="telepon1" className="lg:w-1/4 text-black">
+                        Nomor Telepon 1 *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                        <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="noTelpon"
-                                name="noTelpon"
-                                type="number"
+                                id="telepon1"
+                                type="text"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('telepon1')}
                             />
+                            {errors.telepon1 && (
+                                <p className="text-red-500 text-sm mt-1">{errors.telepon1.message}</p>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Nomor Telepon 2 */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="noTelpon2" className="lg:w-1/4 text-black">
+                    <label htmlFor="telepon2" className="lg:w-1/4 text-black">
                         Nomor Telepon 2
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="noTelpon"
-                                name="noTelpon"
-                                type="number"
+                                id="telepon2"
+                                type="text"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('telepon2')}
                             />
                         </div>
                     </div>
@@ -384,30 +749,32 @@ const TabBiodata = () => {
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="email"
-                                name="email"
                                 type="email"
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('email')}
                             />
+                            {errors.email && (
+                                <p className="text-red-500 text-sm">{errors.email.message}</p>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Pekerjaan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="Pekerjaan" className="lg:w-1/4 text-black">
+                    <label htmlFor="pekerjaan" className="lg:w-1/4 text-black">
                         Pekerjaan
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="Pekerjaan"
-                                name="pekerjaan"
+                                id="pekerjaan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={pekerjaan}
-                                onChange={(e) => setpekerjaan(e.target.value)}
+                                // value={pekerjaan}
+                                {...register('pekerjaan')}
                             >
-                                <option value="" disabled>
+                                <option value="" >
                                     Pilih Pekerjaan
                                 </option>
                                 <option>Petani</option>
@@ -422,19 +789,18 @@ const TabBiodata = () => {
 
                 {/* Penghasilan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="Penghasilan" className="lg:w-1/4 text-black">
+                    <label htmlFor="penghasilan" className="lg:w-1/4 text-black">
                         Penghasilan
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
                                 id="penghasilan"
-                                name="penghasilan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={penghasilan}
-                                onChange={(e) => setpenghasilan(e.target.value)}
+                                // value={penghasilan}
+                                {...register('penghasilan')}
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih Penghasilan
                                 </option>
                                 <option>&lt; 1 Juta</option>
@@ -450,24 +816,23 @@ const TabBiodata = () => {
 
                 {/* Negara */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="Negara" className="lg:w-1/4 text-black">
+                    <label htmlFor="negara" className="lg:w-1/4 text-black">
                         Negara *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="negara"
-                                name="negara"
+                                {...register('negara')}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={negara}
-                                onChange={(e) => setnegara(e.target.value)}
+                                onChange={(e) => handleWilayahChange(e, 'negara')}
+                                value={selectedNegara.negara}
                             >
-                                <option value="" disabled>
-                                    Pilih Negara
-                                </option>
-                                <option>Indonesia</option>
-                                <option>Lainnya</option>
+                                <option value="">Pilih Negara</option>
+                                {filterNegara.negara.map(item => (
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                ))}
                             </select>
+                            {errors.negara && <p className="text-red-500 text-sm">{errors.negara.message}</p>}
                         </div>
                     </div>
                 </div>
@@ -480,19 +845,16 @@ const TabBiodata = () => {
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="provinsi"
-                                name="provinsi"
+                                {...register('provinsi')}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={provinsi}
-                                onChange={(e) => setprovinsi(e.target.value)}
+                                onChange={(e) => handleWilayahChange(e, 'provinsi')}
+                                value={selectedNegara.provinsi}
+                                disabled={!selectedNegara.negara}
                             >
-                                <option value="" disabled>
-                                    Pilih Provinsi
-                                </option>
-                                <option>Jawa Timur</option>
-                                <option>Jawa Tengah</option>
-                                <option>Jawa Barat</option>
-                                <option>Lainnya</option>
+                                <option value="">Pilih Provinsi</option>
+                                {filterNegara.provinsi.map(item => (
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -506,19 +868,16 @@ const TabBiodata = () => {
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="kabupaten"
-                                name="kabupaten"
+                                {...register('kabupaten')}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={kabupaten}
-                                onChange={(e) => setkabupaten(e.target.value)}
+                                onChange={(e) => handleWilayahChange(e, 'kabupaten')}
+                                value={selectedNegara.kabupaten}
+                                disabled={!selectedNegara.provinsi}
                             >
-                                <option value="" disabled>
-                                    Pilih Kabupaten
-                                </option>
-                                <option>Probolinggo</option>
-                                <option>Pasuruan</option>
-                                <option>Jember</option>
-                                <option>Lainnya</option>
+                                <option value="">Pilih Kabupaten</option>
+                                {filterNegara.kabupaten.map(item => (
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -533,19 +892,16 @@ const TabBiodata = () => {
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <select
-                                id="kecamatan"
-                                name="kecamatan"
+                                {...register('kecamatan')}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={kecamatan}
-                                onChange={(e) => setkecamatan(e.target.value)}
+                                onChange={(e) => handleWilayahChange(e, 'kecamatan')}
+                                value={selectedNegara.kecamatan}
+                                disabled={!selectedNegara.kabupaten}
                             >
-                                <option value="" disabled>
-                                    Pilih Kecamatan
-                                </option>
-                                <option>Paiton</option>
-                                <option>Besuk</option>
-                                <option>Kraksaan</option>
-                                <option>Lainnya</option>
+                                <option value="">Pilih Kecamatan</option>
+                                {filterNegara.kecamatan.map(item => (
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -554,17 +910,17 @@ const TabBiodata = () => {
 
                 {/* Jalan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
+                    <label htmlFor="jalan" className="lg:w-1/4 text-black">
                         Jalan *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
                                 id="jalan"
-                                name="jalan"
                                 type="text"
                                 placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('jalan')}
                             />
                         </div>
                     </div>
@@ -572,17 +928,17 @@ const TabBiodata = () => {
 
                 {/* Kode Pos */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="namaLengkap" className="lg:w-1/4 text-black">
+                    <label htmlFor="kode_pos" className="lg:w-1/4 text-black">
                         Kode Pos *
                     </label>
                     <div className="lg:w-3/4 max-w-md">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                             <input
-                                id="kodepos"
-                                name="kodepos"
+                                id="kode_pos"
                                 type="text"
                                 placeholder="Masukkan Kode Pos"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('kode_pos')}
                             />
                         </div>
                     </div>
@@ -590,17 +946,30 @@ const TabBiodata = () => {
 
                 {/* Masi Hidup/Tidak */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                    <label htmlFor="Wafat" className="lg:w-1/4 text-black">
+                    <label className="lg:w-1/4 text-black">
                         Wafat *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Tidak" className="w-4 h-4" />
+                        <input
+                            type="radio"
+                            value="0"
+                            {...register('wafat')}
+                            className="w-4 h-4"
+                        />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Ya" className="w-4 h-4" />
+                        <input
+                            type="radio"
+                            value="1"
+                            {...register('wafat')}
+                            className="w-4 h-4"
+                        />
                         <span>Ya</span>
                     </label>
+                    {errors.wafat && (
+                        <p className="text-red-500 text-sm">{errors.wafat.message}</p>
+                    )}
                 </div>
 
 
@@ -610,8 +979,9 @@ const TabBiodata = () => {
                     <button
                         type="submit"
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        disabled={isLoading}
                     >
-                        Simpan
+                        {isLoading ? 'Menyimpan...' : 'Simpan'}
                     </button>
                 </div>
             </form>
