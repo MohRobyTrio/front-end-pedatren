@@ -14,9 +14,9 @@ const TabSantri = () => {
                             <h5 className="text-lg font-bold">2020712450</h5>
                             <p className="text-gray-600 text-sm">Sejak 25 Agu 2020 Sampai Sekarang</p>
                         </div>
-                        <button type="button" className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none">
+                        {/* <button type="button" className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none">
                             Cetak Ikrar
-                        </button>
+                        </button> */}
                     </div>
                     <br />
                     <div>
