@@ -16,17 +16,17 @@ import {
 import { useEffect, useRef } from 'react';
 
 // Helper untuk cek apakah user login
-// const isLoggedIn = () => {
-//   return (
-//     !!localStorage.getItem("token") ||
-//     !!sessionStorage.getItem("token")
-//   );
-// };
+const isLoggedIn = () => {
+  return (
+    !!localStorage.getItem("token") ||
+    !!sessionStorage.getItem("token")
+  );
+};
 
 //Helper untuk matikan login
-const isLoggedIn = () => {
-  return true
-};
+// const isLoggedIn = () => {
+//   return true
+// };
 
 
 // Private route hanya untuk user yang sudah login

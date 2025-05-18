@@ -1,30 +1,4 @@
-import { useState } from "react";
-
 const FormKeluarga = ({ register, errors }) => {
-    const [jenjangPendidikanTerakhir, setJenjangPendidikanTerakhir] = useState("");
-    const [pekerjaan, setpekerjaan] = useState("");
-    const [penghasilan, setpenghasilan] = useState("");
-    const [umur, setUmur] = useState(0);
-
-    const [tanggalLahir, setTanggalLahir] = useState({
-        tahun: "yyyy",
-        bulan: "MMM",
-        hari: "dd",
-    });
-
-    const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-    const daftarBulan = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-    const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
-
-    // Menghitung umur saat tanggal lahir berubah
-    const hitungUmur = (tahun) => {
-        const tahunSekarang = new Date().getFullYear();
-        setUmur(tahunSekarang - tahun);
-    };
-
     return (
         <>
             <div className="space-y-2">
@@ -32,18 +6,19 @@ const FormKeluarga = ({ register, errors }) => {
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="nikAyah" className="md:w-1/4 text-black">
+                    <label htmlFor="nik_ayah" className="md:w-1/4 text-black">
                         NIK Ayah *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="nikAyah"
-                                name="nikAyah"
-                                type="text"
+                                id="nik_ayah"
+                                name="nik_ayah"
+                                type="number"
                                 placeholder="Masukkan NIK Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('no_kk', { required: true })}
+                                 {...register('nik_ayah', { required: true })}
+                                 required
                             />
                             {errors.no_kk && <span>KK wajib diisi</span>}
                         </div>
@@ -52,17 +27,19 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaAyah" className="md:w-1/4 text-black">
+                    <label htmlFor="nama_ayah" className="md:w-1/4 text-black">
                         Nama Ayah *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="namaAyah"
-                                name="namaAyah"
+                                id="nama_ayah"
+                                name="nama_ayah"
                                 type="text"
                                 placeholder="Masukkan Nama Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nama_ayah', { required: true })}
+                                 required
                             />
                         </div>
                     </div>
@@ -70,17 +47,19 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tempatLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tempat_lahir_ayah" className="md:w-1/4 text-black">
                         Tempat Lahir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="tempatLahir"
-                                name="tempatLahir"
+                                id="tempat_lahir_ayah"
+                                name="tempat_lahir_ayah"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('tempat_lahir_ayah', { required: true })}
+                                 required
                             />
                         </div>
                     </div>
@@ -88,65 +67,37 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tanggal Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tanggal_lahir_ayah" className="md:w-1/4 text-black">
                         Tanggal Lahir *
                     </label>
-                    <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
-                        <div className="flex space-x-1 mr-2">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.tahun}
-                                    onChange={(e) => {
-                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                                        hitungUmur(e.target.value);
-                                    }}
-                                >
-                                    {daftarTahun.map((tahun) => (
-                                        <option key={tahun} value={tahun}>{tahun}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.bulan}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
-                                    {daftarBulan.map((bulan) => (
-                                        <option key={bulan} value={bulan}>{bulan}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.hari}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
-                                    {daftarHari.map((hari) => (
-                                        <option key={hari} value={hari}>{hari}</option>
-                                    ))}
-                                </select>
-                            </div>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_lahir_ayah"
+                                name="tanggal_lahir_ayah"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tanggal_lahir_ayah", { required: true })}
+                                required
+                            />
                         </div>
-                        {/* Label umur */}
-                        <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            umur {umur} tahun
-                        </span>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelponAyah" className="md:w-1/4 text-black">
-                        Nomor Telepon Ayah
+                    <label htmlFor="no_telepon_ayah" className="md:w-1/4 text-black">
+                        Nomor Telepon Ayah *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="noTelponAyah"
-                                name="noTelponAyah"
+                                id="no_telepon_ayah"
+                                name="no_telepon_ayah"
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("no_telepon_ayah", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -154,96 +105,85 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhirAyah" className="md:w-1/4 text-black">
-                        Jenjang Pendidikan Terakhir
+                    <label htmlFor="pendidikan_terakhir_ayah" className="md:w-1/4 text-black">
+                        Jenjang Pendidikan Terakhir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhirAyah"
-                                name="jenjangPendidikanTerakhirAyah"
+                                id="pendidikan_terakhir_ayah"
+                                name="pendidikan_terakhir_ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenjangPendidikanTerakhir}
-                                onChange={(e) => setJenjangPendidikanTerakhir(e.target.value)}
+                                {...register("pendidikan_terakhir_ayah", { required: true })}
+                                required
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih
                                 </option>
-                                <option value="TK">TK</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="paud">Paud</option>
+                                <option value="sd/mi">SD/MI</option>
+                                <option value="smp/mts">SMP/MTS</option>
+                                <option value="sma/smk/ma">SMA/SMK/MA</option>
+                                <option value="d3">D3</option>
+                                <option value="d4">D4</option>
+                                <option value="s1">S1</option>
+                                <option value="s2">S2</option>
+                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Pekerjaan" className="md:w-1/4 text-black">
-                        Pekerjaan
+                    <label htmlFor="pekerjaan_ayah" className="md:w-1/4 text-black">
+                        Pekerjaan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="Pekerjaan"
-                                name="pekerjaan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={pekerjaan}
-                                onChange={(e) => setpekerjaan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Pekerjaan
-                                </option>
-                                <option>Petani</option>
-                                <option>Pegawai Negeri</option>
-                                <option>Karyawan Swasta</option>
-                                <option>Wiraswasta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="pekerjaan_ayah"
+                                name="pekerjaan_ayah"
+                                type="text"
+                                placeholder="Masukkan Pekerjaan Ayah"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("pekerjaan_ayah", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Penghasilan" className="md:w-1/4 text-black">
-                        Penghasilan
+                    <label htmlFor="penghasilan_ayah" className="md:w-1/4 text-black">
+                        Penghasilan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="penghasilan"
-                                name="penghasilan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={penghasilan}
-                                onChange={(e) => setpenghasilan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Penghasilan
-                                </option>
-                                <option>&lt; 1 Juta</option>
-                                <option>1 - 3 Juta</option>
-                                <option>3 - 5 Juta</option>
-                                <option>&gt; 5 Juta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="penghasilan_ayah"
+                                name="penghasilan_ayah"
+                                type="number"
+                                placeholder="1.000.000"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("penghasilan_ayah", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Wafat" className="md:w-1/4 text-black">
+                    <label htmlFor="wafat_ayah" className="md:w-1/4 text-black">
                         Wafat *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Tidak" className="w-4 h-4" />
+                        <input type="radio" name="wafat_ayah" value="0" className="w-4 h-4" {...register("wafat_ayah", { required: true })}
+                                required />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Ya" className="w-4 h-4" />
+                        <input type="radio" name="wafat_ayah" value="1" className="w-4 h-4" {...register("wafat_ayah", { required: true })}
+                                required />
                         <span>Ya</span>
                     </label>
                 </div>
@@ -253,17 +193,19 @@ const FormKeluarga = ({ register, errors }) => {
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="nikIbu" className="md:w-1/4 text-black">
+                    <label htmlFor="nik_ibu" className="md:w-1/4 text-black">
                         NIK Ibu *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="nikIbu"
-                                name="nikIbu"
-                                type="text"
+                                id="nik_ibu"
+                                name="nik_ibu"
+                                type="number"
                                 placeholder="Masukkan NIK Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("nik_ibu", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -271,17 +213,19 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaIbu" className="md:w-1/4 text-black">
+                    <label htmlFor="nama_ibu" className="md:w-1/4 text-black">
                         Nama Ibu *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="namaIbu"
-                                name="namaIbu"
+                                id="nama_ibu"
+                                name="nama_ibu"
                                 type="text"
                                 placeholder="Masukkan Nama Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("nama_ibu", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -289,17 +233,19 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tempatLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tempat_lahir_ibu" className="md:w-1/4 text-black">
                         Tempat Lahir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="tempatLahir"
-                                name="tempatLahir"
+                                id="tempat_lahir_ibu"
+                                name="tempat_lahir_ibu"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tempat_lahir_ibu", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -307,65 +253,37 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tanggal Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tanggal_lahir_ibu" className="md:w-1/4 text-black">
                         Tanggal Lahir *
                     </label>
-                    <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
-                        <div className="flex space-x-1 mr-2">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.tahun}
-                                    onChange={(e) => {
-                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                                        hitungUmur(e.target.value);
-                                    }}
-                                >
-                                    {daftarTahun.map((tahun) => (
-                                        <option key={tahun} value={tahun}>{tahun}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.bulan}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
-                                    {daftarBulan.map((bulan) => (
-                                        <option key={bulan} value={bulan}>{bulan}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.hari}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
-                                    {daftarHari.map((hari) => (
-                                        <option key={hari} value={hari}>{hari}</option>
-                                    ))}
-                                </select>
-                            </div>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_lahir_ibu"
+                                name="tanggal_lahir_ibu"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tanggal_lahir_ibu", { required: true })}
+                                required
+                            />
                         </div>
-                        {/* Label umur */}
-                        <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            umur {umur} tahun
-                        </span>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelponIbu" className="md:w-1/4 text-black">
-                        Nomor Telepon Ibu
+                    <label htmlFor="no_telepon_ibu" className="md:w-1/4 text-black">
+                        Nomor Telepon Ibu *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="noTelponIbu"
-                                name="noTelponIbu"
+                                id="no_telepon_ibu"
+                                name="no_telepon_ibu"
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("no_telepon_ibu", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -373,96 +291,85 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhirIbu" className="md:w-1/4 text-black">
+                    <label htmlFor="pendidikan_terakhir_ibu" className="md:w-1/4 text-black">
                         Jenjang Pendidikan Terakhir
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhirIbu"
-                                name="jenjangPendidikanTerakhirIbu"
+                                id="pendidikan_terakhir_ibu"
+                                name="pendidikan_terakhir_ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenjangPendidikanTerakhir}
-                                onChange={(e) => setJenjangPendidikanTerakhir(e.target.value)}
+                                {...register("pendidikan_terakhir_ibu", { required: true })}
+                                required
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih
                                 </option>
-                                <option value="TK">TK</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="paud">Paud</option>
+                                <option value="sd/mi">SD/MI</option>
+                                <option value="smp/mts">SMP/MTS</option>
+                                <option value="sma/smk/ma">SMA/SMK/MA</option>
+                                <option value="d3">D3</option>
+                                <option value="d4">D4</option>
+                                <option value="s1">S1</option>
+                                <option value="s2">S2</option>
+                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Pekerjaan" className="md:w-1/4 text-black">
-                        Pekerjaan
+                    <label htmlFor="pekerjaan_ibu" className="md:w-1/4 text-black">
+                        Pekerjaan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="Pekerjaan"
-                                name="pekerjaan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={pekerjaan}
-                                onChange={(e) => setpekerjaan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Pekerjaan
-                                </option>
-                                <option>Petani</option>
-                                <option>Pegawai Negeri</option>
-                                <option>Karyawan Swasta</option>
-                                <option>Wiraswasta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="pekerjaan_ibu"
+                                name="pekerjaan_ibu"
+                                type="text"
+                                placeholder="Masukkan Pekerjaan Ibu"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("pekerjaan_ibu", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Penghasilan" className="md:w-1/4 text-black">
-                        Penghasilan
+                    <label htmlFor="penghasilan_ibu" className="md:w-1/4 text-black">
+                        Penghasilan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="penghasilan"
-                                name="penghasilan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={penghasilan}
-                                onChange={(e) => setpenghasilan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Penghasilan
-                                </option>
-                                <option>&lt; 1 Juta</option>
-                                <option>1 - 3 Juta</option>
-                                <option>3 - 5 Juta</option>
-                                <option>&gt; 5 Juta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="penghasilan_ibu"
+                                name="penghasilan_ibu"
+                                type="number"
+                                placeholder="1.000.000"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("penghasilan_ibu", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Wafat" className="md:w-1/4 text-black">
+                    <label htmlFor="wafat_ibu" className="md:w-1/4 text-black">
                         Wafat *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Tidak" className="w-4 h-4" />
+                        <input type="radio" name="wafat_ibu" value="0" className="w-4 h-4" {...register("wafat_ibu", { required: true })}
+                                required />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="Wafat" value="Ya" className="w-4 h-4" />
+                        <input type="radio" name="wafat_ibu" value="1" className="w-4 h-4" {...register("wafat_ibu", { required: true })}
+                                required />
                         <span>Ya</span>
                     </label>
                 </div>
@@ -473,17 +380,19 @@ const FormKeluarga = ({ register, errors }) => {
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="nikWali" className="md:w-1/4 text-black">
+                    <label htmlFor="nik_wali" className="md:w-1/4 text-black">
                         NIK Wali *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="nikWali"
-                                name="nikWali"
-                                type="text"
+                                id="nik_wali"
+                                name="nik_wali"
+                                type="number"
                                 placeholder="Masukkan NIK Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("nik_wali", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -491,34 +400,38 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaIbu" className="md:w-1/4 text-black">
+                    <label htmlFor="nama_wali" className="md:w-1/4 text-black">
                         Nama Wali *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="namaWali"
-                                name="namaWali"
+                                id="nama_wali"
+                                name="nama_wali"
                                 type="text"
                                 placeholder="Masukkan Nama Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("nama_wali", { required: true })}
+                                required
                             />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhirIbu" className="md:w-1/4 text-black">
-                        Hubungan
+                    <label htmlFor="hubungan" className="md:w-1/4 text-black">
+                        Hubungan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhirIbu"
-                                name="jenjangPendidikanTerakhirIbu"
+                                id="hubungan"
+                                name="hubungan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                {...register("hubungan", { required: true })}
+                                required
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih
                                 </option>
                                 <option value="ayah kandung">Ayah Kandung</option>
@@ -538,17 +451,19 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tempatLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tempat_lahir_wali" className="md:w-1/4 text-black">
                         Tempat Lahir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="tempatLahir"
-                                name="tempatLahir"
+                                id="tempat_lahir_wali"
+                                name="tempat_lahir_wali"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tempat_lahir_wali", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -556,65 +471,37 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Tanggal Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tanggal_lahir_wali" className="md:w-1/4 text-black">
                         Tanggal Lahir *
                     </label>
-                    <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
-                        <div className="flex space-x-1 mr-2">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.tahun}
-                                    onChange={(e) => {
-                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                                        hitungUmur(e.target.value);
-                                    }}
-                                >
-                                    {daftarTahun.map((tahun) => (
-                                        <option key={tahun} value={tahun}>{tahun}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.bulan}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
-                                    {daftarBulan.map((bulan) => (
-                                        <option key={bulan} value={bulan}>{bulan}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.hari}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
-                                    {daftarHari.map((hari) => (
-                                        <option key={hari} value={hari}>{hari}</option>
-                                    ))}
-                                </select>
-                            </div>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_lahir_wali"
+                                name="tanggal_lahir_wali"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tanggal_lahir_wali", { required: true })}
+                                required
+                            />
                         </div>
-                        {/* Label umur */}
-                        <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            umur {umur} tahun
-                        </span>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelponWali" className="md:w-1/4 text-black">
-                        Nomor Telepon Wali
+                    <label htmlFor="no_telepon_wali" className="md:w-1/4 text-black">
+                        Nomor Telepon Wali *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="noTelponWali"
-                                name="noTelponWali"
+                                id="no_telepon_wali"
+                                name="no_telepon_wali"
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("no_telepon_wali", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -622,82 +509,69 @@ const FormKeluarga = ({ register, errors }) => {
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhirIbu" className="md:w-1/4 text-black">
-                        Jenjang Pendidikan Terakhir
+                    <label htmlFor="pendidikan_terakhir_wali" className="md:w-1/4 text-black">
+                        Jenjang Pendidikan Terakhir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhirIbu"
-                                name="jenjangPendidikanTerakhirIbu"
+                                id="pendidikan_terakhir_wali"
+                                name="pendidikan_terakhir_wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenjangPendidikanTerakhir}
-                                onChange={(e) => setJenjangPendidikanTerakhir(e.target.value)}
+                                {...register("pendidikan_terakhir_wali", { required: true })}
+                                required
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih
                                 </option>
-                                <option value="TK">TK</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="paud">Paud</option>
+                                <option value="sd/mi">SD/MI</option>
+                                <option value="smp/mts">SMP/MTS</option>
+                                <option value="sma/smk/ma">SMA/SMK/MA</option>
+                                <option value="d3">D3</option>
+                                <option value="d4">D4</option>
+                                <option value="s1">S1</option>
+                                <option value="s2">S2</option>
+                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Pekerjaan" className="md:w-1/4 text-black">
-                        Pekerjaan
+                    <label htmlFor="pekerjaan_wali" className="md:w-1/4 text-black">
+                        Pekerjaan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="Pekerjaan"
-                                name="pekerjaan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={pekerjaan}
-                                onChange={(e) => setpekerjaan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Pekerjaan
-                                </option>
-                                <option>Petani</option>
-                                <option>Pegawai Negeri</option>
-                                <option>Karyawan Swasta</option>
-                                <option>Wiraswasta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="pekerjaan_wali"
+                                name="pekerjaan_wali"
+                                type="text"
+                                placeholder="Masukkan Pekerjaan Wali"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("pekerjaan_wali", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Penghasilan" className="md:w-1/4 text-black">
-                        Penghasilan
+                    <label htmlFor="penghasilan_wali" className="md:w-1/4 text-black">
+                        Penghasilan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="penghasilan"
-                                name="penghasilan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={penghasilan}
-                                onChange={(e) => setpenghasilan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Penghasilan
-                                </option>
-                                <option>&lt; 1 Juta</option>
-                                <option>1 - 3 Juta</option>
-                                <option>3 - 5 Juta</option>
-                                <option>&gt; 5 Juta</option>
-                                <option>Lainnya</option>
-                            </select>
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="penghasilan_wali"
+                                name="penghasilan_wali"
+                                type="number"
+                                placeholder="1.000.000"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("penghasilan_wali", { required: true })}
+                                required
+                            />
                         </div>
                     </div>
                 </div>

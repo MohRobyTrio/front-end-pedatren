@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { useForm } from 'react-hook-form';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave } from 'react-icons/fa';
@@ -8,15 +8,27 @@ import FormBiodata from '../content_modal/input/FormBiodata';
 import FormKeluarga from '../content_modal/input/FormKeluarga';
 import FormDomisiliPendidikan from '../content_modal/input/FormDomisiliPendidikan';
 import FormBerkas from '../content_modal/input/FormBerkas';
+import Swal from 'sweetalert2';
 
 export default function MultiStepModal({ isOpen, onClose }) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
-    const { register, handleSubmit, trigger, 
-        // watch, setValue, 
+    const { register, handleSubmit, trigger,
+        watch, setValue, control,
         formState: { errors } } = useForm();
 
+    console.log(errors);
+
+    const watchedValues = watch(); // ini untuk memantau semua input
+
+    useEffect(() => {
+        console.log("Data inputan berubah:", watchedValues);
+    }, [watchedValues]);
+
     const nextStep = async () => {
+        const form = document.querySelector("form");
+        if (form && !form.reportValidity()) return;
+
         const valid = await trigger(getFieldsForTab(activeTab));
         if (!valid) return;
 
@@ -37,21 +49,62 @@ export default function MultiStepModal({ isOpen, onClose }) {
     const getFieldsForTab = (tabId) => {
         switch (tabId) {
             case 0:
-                return ['nama', 'nik', 'negara_id']; // tambahkan field yang required
+                // return ['no_passport', 'no_kk', 'nik', 'nama', 'nik', 'negara_id', 'tanggal_lahir']; // tambahkan field yang required
+                return []; // tambahkan field yang required
             case 1:
-                return ['no_kk', 'nama_ayah'];
+                // return ['no_kk', 'nama_ayah'];
+                return [];
             case 2:
-                return ['jalan', 'kode_pos', 'jenjang_pendidikan_terakhir', 'nama_pendidikan_terakhir'];
+                // return ['jalan', 'kode_pos', 'jenjang_pendidikan_terakhir', 'nama_pendidikan_terakhir', 'no_induk'];
+                return [];
             case 3:
-                return ['berkas[0].jenis_berkas_id', 'berkas[0].file_path'];
+                // return ['berkas[0].jenis_berkas_id', 'berkas[0].file_path'];
+                return [];
             default:
                 return [];
         }
     };
 
+    const jenisBerkasList = [
+        { id: 1, label: 'Kartu Keluarga (KK)', required: true },
+        { id: 2, label: 'KTP/KIA', required: false },
+        { id: 3, label: 'Akte Kelahiran', required: false },
+        { id: 4, label: 'Pas Foto', required: false },
+        { id: 5, label: 'Ijazah Terakhir', required: false },
+        { id: 6, label: 'Fotokopi Rapor Terakhir', required: false },
+        { id: 7, label: 'Surat Keterangan Sehat', required: false },
+        { id: 8, label: 'BPJS / Kartu Asuransi Kesehatan', required: false },
+        { id: 9, label: 'Surat Pernyataan Kesanggupan', required: false },
+        { id: 10, label: 'Surat Izin Orang Tua', required: false },
+        { id: 11, label: 'Surat Pernyataan Tidak Merokok', required: false },
+        { id: 12, label: 'Surat Keterangan Pindah Sekolah', required: false },
+        { id: 13, label: 'Surat Keterangan Lulus (SKL)', required: false },
+        { id: 14, label: 'Surat Rekomendasi dari Ulama/Guru', required: false },
+        { id: 15, label: 'Surat Pernyataan Bebas Narkoba', required: false },
+        { id: 16, label: 'Surat Domisili (jika dari luar kota)', required: false },
+        { id: 17, label: 'Surat Keterangan Anak Yatim/Piatu', required: false },
+        { id: 18, label: 'Fotokopi Kartu Santri', required: false },
+    ];
 
-    const onSubmit = async (data) => {
+    const onValidSubmit = async (data) => {
         try {
+            console.log("s");
+
+            const missingRequired = jenisBerkasList
+                .filter(j => j.required)
+                .filter(j => {
+                    const fileField = data[`file_${j.id}`];
+                    return !fileField || fileField.length === 0;
+                });
+
+            if (missingRequired.length > 0) {
+                const missingLabels = missingRequired.map(j => `- ${j.label}`).join('\n');
+                alert(`Berkas wajib belum diunggah:\n\n${missingLabels}`);
+                return; // stop submit
+            }
+
+            alert("submit");
+            console.log("Data form:", data);
             const formData = new FormData();
 
             // Proses data sesuai dengan struktur API
@@ -101,6 +154,8 @@ export default function MultiStepModal({ isOpen, onClose }) {
             formData.append('pekerjaan_wali', data.pekerjaan_wali);
             formData.append('penghasilan_wali', data.penghasilan_wali);
 
+            formData.append('no_induk', data.no_induk);
+
             // Proses berkas
             if (data.berkas && data.berkas.length > 0) {
                 data.berkas.forEach((file, index) => {
@@ -127,11 +182,30 @@ export default function MultiStepModal({ isOpen, onClose }) {
         }
     };
 
+    const onInvalidSubmit = (errors) => {
+        const fileErrors = Object.keys(errors)
+            .filter(key => key.startsWith('file_'))
+            .map(key => {
+                const id = parseInt(key.split('_')[1], 10);
+                const berkas = jenisBerkasList.find(item => item.id === id);
+                return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
+            });
+
+        if (fileErrors.length > 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Berkas wajib diunggah',
+                html: `<pre style="text-align: left;">${fileErrors.join('<br>')}</pre>`,
+                confirmButtonText: 'Oke'
+            });
+        }
+    };
+
     const tabs = [
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} errors={errors} />
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} />
         },
         {
             id: 1,
@@ -141,12 +215,12 @@ export default function MultiStepModal({ isOpen, onClose }) {
         {
             id: 2,
             label: "Domisili & Pendidikan",
-            content: <FormDomisiliPendidikan register={register} errors={errors} />
+            content: <FormDomisiliPendidikan register={register} control={control} />
         },
         {
             id: 3,
             label: "Berkas",
-            content: <FormBerkas register={register} errors={errors} />
+            content: <FormBerkas errors={errors} control={control} setValue={setValue} jenisBerkasList={jenisBerkasList} />
         }
     ]
 
@@ -188,7 +262,7 @@ export default function MultiStepModal({ isOpen, onClose }) {
                             <div className="pb-4">
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Peserta Didik</Dialog.Title>
                             </div>
-                            <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-2">
+                            <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)} className="flex-1 overflow-y-auto p-2">
                                 {/* {renderStep()} */}
                                 <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
                                     {tabs.map((tab) => (
@@ -213,6 +287,19 @@ export default function MultiStepModal({ isOpen, onClose }) {
                                 </ul>
 
                                 <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+                                
+                                {/* <div className="pt-4">
+                                    {tabs.map((tab) => (
+                                        <div
+                                            key={tab.id}
+                                            style={{ display: activeTab === tab.id ? "block" : "none" }}
+                                            aria-hidden={activeTab !== tab.id}
+                                        >
+                                            {tab.content}
+                                        </div>
+                                    ))}
+                                </div> */}
+                            
                             </form>
 
                             <div className="mt-4 pt-4 flex justify-between">
@@ -237,6 +324,7 @@ export default function MultiStepModal({ isOpen, onClose }) {
                                     ) : (
                                         <button
                                             type="submit"
+                                            onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
                                             className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
                                         >
                                             <FaSave />

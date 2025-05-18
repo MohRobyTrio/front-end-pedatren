@@ -33,6 +33,7 @@ const DropdownNegara = () => {
     const handleFilterChangeNegara = (newFilter) => {
         setSelectedNegara(prevFilters => {
             const updatedFilters = { ...prevFilters, ...newFilter };
+        console.log("Negara changed:", updatedFilters);
 
             // Jika negara berubah, reset semua dropdown di bawahnya
             if (newFilter.negara) {

@@ -1,35 +1,94 @@
-import { useState } from "react";
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import { Controller } from "react-hook-form";
 
-const FormBiodata = ({ register, errors }) => {
-    const [jenjangPendidikanTerakhir, setJenjangPendidikanTerakhir] = useState("");
-    const [negara, setnegara] = useState("");
-    const [provinsi, setprovinsi] = useState("");
-    const [kabupaten, setkabupaten] = useState("");
-    const [kecamatan, setkecamatan] = useState("");
-    const [umur, setUmur] = useState(0);
-    const [kewarganegaraan, setKewarganegaraan] = useState('');
+const FormBiodata = ({ register, watch, setValue, control }) => {
 
-    const [tanggalLahir, setTanggalLahir] = useState({
-        tahun: "yyyy",
-        bulan: "MMM",
-        hari: "dd",
-    });
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-    const daftarBulan = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ];
-    const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
+    const kewarganegaraan = watch("kewarganegaraan");
 
-    // Menghitung umur saat tanggal lahir berubah
-    const hitungUmur = (tahun) => {
-        const tahunSekarang = new Date().getFullYear();
-        setUmur(tahunSekarang - tahun);
+    const handleKewarganegaraanChange = (e) => {
+        const value = e.target.value;
+        setValue('kewarganegaraan', value);
+
+        if (value === 'wna') {
+            setValue('no_kk', '');
+            setValue('nik', '');
+        } else if (value === 'wni') {
+            setValue('no_passport', '');
+        }
     };
 
-    const handleKewarganegaraanChange = (event) => {
-        setKewarganegaraan(event.target.value);
+    // const customMenuNegara = [
+    //     { value: "", label: selectedNegara.negara === "" ? "Pilih Negara" : "Semua Negara" },
+    //     ...filterNegara.negara.filter((_, idx) => idx !== 0) // hindari duplikasi
+    // ];
+
+    // const customMenuProvinsi = [
+    //     { value: "", label: selectedNegara.provinsi === "" ? "Pilih Provinsi" : "Semua Provinsi" },
+    //     ...filterNegara.provinsi
+    // ];
+
+    // const customMenuKabupaten = [
+    //     { value: "", label: selectedNegara.kabupaten === "" ? "Pilih Kabupaten" : "Semua Kabupaten" },
+    //     ...filterNegara.kabupaten
+    // ];
+
+    // const customMenuKecamatan = [
+    //     { value: "", label: selectedNegara.kecamatan === "" ? "Pilih Kecamatan" : "Semua Kecamatan" },
+    //     ...filterNegara.kecamatan
+    // ];
+
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+    const Filters = ({ filterOptions, control, onChange, selectedFilters }) => {
+        return (
+            <div className="space-y-2">
+                {Object.entries(filterOptions).map(([label, options], index) => (
+                    <div
+                        key={`${label}-${index}`}
+                        className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4"
+                    >
+                        <label htmlFor={label} className="md:w-1/4 text-black">
+                            {capitalize(label)} *
+                        </label>
+                        <div className="md:w-full md:max-w-md max-w-none">
+                            <div
+                                className={`flex items-center rounded-md shadow-md border border-gray-300 border-gray-500 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
+                                    }`}
+                            >
+                                <Controller
+                                    name={label}
+                                    control={control}
+                                    rules={{ required: true }}
+                                    defaultValue={selectedFilters[label] || ""}
+                                    render={({ field }) => (
+                                        <select
+                                            {...field}
+                                            id={label}
+                                            required
+                                            disabled={options.length <= 1}
+                                            className={`w-full py-1.5 pr-3 pl-1 text-base focus:outline-none sm:text-sm ${options.length <= 1 ? "text-gray-500" : ""
+                                                }`}
+                                            onChange={(e) => {
+                                                field.onChange(e);   // update react-hook-form state
+                                                onChange({ [label]: e.target.value }); // update dependent dropdowns
+                                            }}
+                                        >
+                                            {options.map((option, idx) => (
+                                                <option key={idx} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
     };
 
     return (
@@ -40,11 +99,11 @@ const FormBiodata = ({ register, errors }) => {
                         Kewarganegaraan *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} />
+                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" {...register("kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} required />
                         <span>WNI</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} />
+                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" {...register("kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} required />
                         <span>WNA</span>
                     </label>
                 </div>
@@ -54,17 +113,18 @@ const FormBiodata = ({ register, errors }) => {
                         No Passport *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className={`flex items-center rounded-md shadow-md pl-3 border border-gray-500 ${kewarganegaraan === 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
+                        <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-500 ${kewarganegaraan === 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                             <input
-                                id="passport"
-                                name="passport"
+                                id="no_passport"
+                                name="no_passport"
                                 type="number"
                                 disabled={kewarganegaraan !== 'wna'}
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('nama', { required: true })}
+                                {...register('no_passport', { required: kewarganegaraan === "wna" ? true : false })}
+                                required={kewarganegaraan === 'wna'}
                             />
-                            {errors.nama && <span>Nama wajib diisi</span>}
+                            {/* {errors.nama && <span>Nama wajib diisi</span>} */}
                         </div>
                     </div>
                 </div>
@@ -75,14 +135,16 @@ const FormBiodata = ({ register, errors }) => {
                         Nomor KK *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className={`flex items-center rounded-md shadow-md pl-3 border border-gray-500 ${kewarganegaraan === 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
+                        <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-500 ${kewarganegaraan === 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                             <input
-                                id="nokk"
-                                name="nokk"
+                                id="no_kk"
+                                name="no_kk"
                                 type="number"
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan No KK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('no_kk', { required: kewarganegaraan === "wni" ? true : false })}
+                                required={kewarganegaraan === 'wni'}
                             />
                         </div>
                     </div>
@@ -94,14 +156,16 @@ const FormBiodata = ({ register, errors }) => {
                         NIK *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className={`flex items-center rounded-md shadow-md pl-3 border border-gray-500 ${kewarganegaraan === 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
+                        <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-500 ${kewarganegaraan === 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                             <input
-                                id="nonik"
-                                name="nonik"
+                                id="nik"
+                                name="nik"
                                 type="number"
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan NIK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nik', { required: kewarganegaraan === "wni" ? true : false })}
+                                required={kewarganegaraan === 'wni'}
                             />
                         </div>
                     </div>
@@ -110,17 +174,19 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaLengkap" className="md:w-1/4 text-black">
+                    <label htmlFor="nama" className="md:w-1/4 text-black">
                         Nama Lengkap *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="namaLengkap"
-                                name="namaLengkap"
+                                id="nama"
+                                name="nama"
                                 type="text"
                                 placeholder="Masukkan Nama Lengkap"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register('nama', { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -132,11 +198,11 @@ const FormBiodata = ({ register, errors }) => {
                         Jenis Kelamin *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Perempuan" className="w-4 h-4" />
+                        <input type="radio" name="jenisKelamin" value="Perempuan" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
                         <span>Perempuan</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Laki-Laki" className="w-4 h-4" />
+                        <input type="radio" name="jenisKelamin" value="Laki-Laki" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
                         <span>Laki-Laki</span>
                     </label>
                 </div>
@@ -147,12 +213,14 @@ const FormBiodata = ({ register, errors }) => {
                         Tempat Lahir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
                                 id="tempatLahir"
                                 name="tempatLahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
+                                {...register('tempat_lahir', { required: true })} 
+                                required
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
                         </div>
@@ -161,72 +229,48 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Tanggal Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggalLahir" className="md:w-1/4 text-black">
+                    <label htmlFor="tanggal_lahir" className="md:w-1/4 text-black">
                         Tanggal Lahir *
                     </label>
-                    <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
-                        <div className="flex space-x-1 mr-2">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.tahun}
-                                    onChange={(e) => {
-                                        setTanggalLahir({ ...tanggalLahir, tahun: e.target.value });
-                                        hitungUmur(e.target.value);
-                                    }}
-                                >
-                                    {daftarTahun.map((tahun) => (
-                                        <option key={tahun} value={tahun}>{tahun}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.bulan}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, bulan: e.target.value })} >
-                                    {daftarBulan.map((bulan) => (
-                                        <option key={bulan} value={bulan}>{bulan}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-2 border border-gray-300 border-gray-500">
-                                <select
-                                    className="w-full py-1.5 pr-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    value={tanggalLahir.hari}
-                                    onChange={(e) => setTanggalLahir({ ...tanggalLahir, hari: e.target.value })} >
-                                    {daftarHari.map((hari) => (
-                                        <option key={hari} value={hari}>{hari}</option>
-                                    ))}
-                                </select>
-                            </div>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_lahir"
+                                name="tanggal_lahir"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tanggal_lahir", { required: true })}
+                                required
+                            />
                         </div>
-                        {/* Label umur */}
-                        <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            umur {umur} tahun
-                        </span>
                     </div>
                 </div>
 
                 {/* Anak Ke */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="anakKe" className="md:w-1/4 text-black">
+                    <label htmlFor="anak_keberapa" className="md:w-1/4 text-black">
                         Anak Ke *
                     </label>
                     <div className="flex space-x-4">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
+                                id="anak_keberapa"
+                                name="anak_keberapa"
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("anak_keberapa")}
                             />
                         </div>
                         <span>Dari</span>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
+                                id="dari_saudara"
+                                name="dari_saudara"
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("dari_saudara")}
                             />
                         </div>
                     </div>
@@ -235,17 +279,18 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Tinggal Bersama */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tinggalbersama" className="md:w-1/4 text-black">
+                    <label htmlFor="tinggal_bersama" className="md:w-1/4 text-black">
                         Tinggal Bersama
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="tinggalbersama"
-                                name="tinggalbersama"
+                                id="tinggal_bersama"
+                                name="tinggal_bersama"
                                 type="text"
                                 placeholder="Masukkan Tinggal Bersama"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("tinggal_bersama")}
                             />
                         </div>
                     </div>
@@ -253,47 +298,49 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="jenjangPendidikanTerakhir" className="md:w-1/4 text-black">
-                        Jenjang Pendidikan Terakhir
+                    <label htmlFor="jenjang_pendidikan_terakhir" className="md:w-1/4 text-black">
+                        Jenjang Pendidikan Terakhir *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <select
-                                id="jenjangPendidikanTerakhir"
-                                name="jenjangPendidikanTerakhir"
+                                id="jenjang_pendidikan_terakhir"
+                                name="jenjang_pendidikan_terakhir"
+                                {...register("jenjang_pendidikan_terakhir")}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={jenjangPendidikanTerakhir}
-                                onChange={(e) => setJenjangPendidikanTerakhir(e.target.value)}
                             >
-                                <option value="" disabled>
+                                <option value="">
                                     Pilih
                                 </option>
-                                <option value="TK">TK</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="paud">Paud</option>
+                                <option value="sd/mi">SD/MI</option>
+                                <option value="smp/mts">SMP/MTS</option>
+                                <option value="sma/smk/ma">SMA/SMK/MA</option>
+                                <option value="d3">D3</option>
+                                <option value="d4">D4</option>
+                                <option value="s1">S1</option>
+                                <option value="s2">S2</option>
+                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
+
                 {/* Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="PendidikanTerakhir" className="md:w-1/4 text-black">
+                    <label htmlFor="nama_pendidikan_terakhir" className="md:w-1/4 text-black">
                         Nama Pendidikan Terakhir
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="namapendidikanterakhir"
-                                name="namapendidikanterakhir"
+                                id="nama_pendidikan_terakhir"
+                                name="nama_pendidikan_terakhir"
                                 type="text"
                                 placeholder="Masukkan Nama Pendidikan Terakhir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("nama_pendidikan_terakhir")}
                             />
                         </div>
                     </div>
@@ -301,17 +348,19 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Nomor Telepon 1 */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelpon1" className="md:w-1/4 text-black">
+                    <label htmlFor="no_telepon" className="md:w-1/4 text-black">
                         Nomor Telepon 1
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="noTelpon"
-                                name="noTelpon"
+                                id="no_telepon"
+                                name="no_telepon"
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("no_telepon", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -319,17 +368,18 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Nomor Telepon 2 */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="noTelpon2" className="md:w-1/4 text-black">
+                    <label htmlFor="no_telepon_2" className="md:w-1/4 text-black">
                         Nomor Telepon 2
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
-                                id="noTelpon"
-                                name="noTelpon"
+                                id="no_telepon_2"
+                                name="no_telepon_2"
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("no_telepon_2")}
                             />
                         </div>
                     </div>
@@ -341,13 +391,15 @@ const FormBiodata = ({ register, errors }) => {
                         E-Mail
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("email", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -355,123 +407,25 @@ const FormBiodata = ({ register, errors }) => {
 
                 <hr className="border-t border-gray-300 my-4" />
 
-                {/* Negara */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Negara" className="md:w-1/4 text-black">
-                        Negara *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="negara"
-                                name="negara"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={negara}
-                                onChange={(e) => setnegara(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Negara
-                                </option>
-                                <option>Indonesia</option>
-                                <option>Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                <Filters filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} control={control} />
 
-                {/* Provinsi */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
-                        Provinsi *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="provinsi"
-                                name="provinsi"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={provinsi}
-                                onChange={(e) => setprovinsi(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Provinsi
-                                </option>
-                                <option>Jawa Timur</option>
-                                <option>Jawa Tengah</option>
-                                <option>Jawa Barat</option>
-                                <option>Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Kabupaten */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Kabupaten" className="md:w-1/4 text-black">
-                        Kabupaten *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="kabupaten"
-                                name="kabupaten"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={kabupaten}
-                                onChange={(e) => setkabupaten(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Kabupaten
-                                </option>
-                                <option>Probolinggo</option>
-                                <option>Pasuruan</option>
-                                <option>Jember</option>
-                                <option>Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-
-                {/* Kecamatan */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="Provinsi" className="md:w-1/4 text-black">
-                        Kecamatan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
-                            <select
-                                id="kecamatan"
-                                name="kecamatan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={kecamatan}
-                                onChange={(e) => setkecamatan(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Pilih Kecamatan
-                                </option>
-                                <option>Paiton</option>
-                                <option>Besuk</option>
-                                <option>Kraksaan</option>
-                                <option>Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
                 <hr className="border-t border-gray-300 my-4" />
 
                 {/* Jalan */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaLengkap" className="md:w-1/4 text-black">
+                    <label htmlFor="jalan" className="md:w-1/4 text-black">
                         Jalan *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
                                 id="jalan"
                                 name="jalan"
                                 type="text"
                                 placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("jalan", { required: true })}
+                                required
                             />
                         </div>
                     </div>
@@ -479,17 +433,19 @@ const FormBiodata = ({ register, errors }) => {
 
                 {/* Kode Pos */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="namaLengkap" className="md:w-1/4 text-black">
+                    <label htmlFor="kodepos" className="md:w-1/4 text-black">
                         Kode Pos *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
                                 id="kodepos"
                                 name="kodepos"
                                 type="text"
                                 placeholder="Masukkan Kode Pos"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("kode_pos", { required: true })}
+                                required
                             />
                         </div>
                     </div>

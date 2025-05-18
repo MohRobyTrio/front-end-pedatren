@@ -93,7 +93,7 @@ const MainPage = () => {
                     />
                 </div>
 
-                <div className="pr-6 sm:ml-64 overflow-y-auto overflow-x-hidden w-full max-w-full">
+                <div className="pr-6 sm:ml-56 overflow-y-auto overflow-x-hidden w-full max-w-full">
                     <div className="pt-8 mt-8">
                         {/* <Outlet /> */}
                         <KeepAlive
