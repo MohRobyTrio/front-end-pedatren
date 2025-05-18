@@ -1,5 +1,7 @@
 import { API_BASE_URL } from "../../hooks/config";
 
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
 /**
  * Ambil list domisili berdasarkan biodataId (index)
  * @param {string|number} biodataId 
@@ -44,7 +46,10 @@ export const createDomisili = async (biodataId, data) => {
   try {
     const res = await fetch(`${API_BASE_URL}${biodataId}/domisili`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+       },
       body: JSON.stringify({
         wilayah: data.wilayah,
         blok: data.blok,

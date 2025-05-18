@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
 import { useParams } from "react-router-dom";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import Swal from "sweetalert2";
 
 const TabDomisiliSantri = () => {
     const { biodata_id } = useParams();
@@ -130,27 +131,45 @@ const TabDomisiliSantri = () => {
     };
 
     const handleKeluarDomisili = async (id) => {
-        const tanggalKeluar = prompt("Masukkan tanggal keluar (YYYY-MM-DD):");
-        if (!tanggalKeluar) return;
-
-        try {
-            const res = await fetch(`${API_BASE_URL}formulir/${id}/domisili`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ waktu_akhir: tanggalKeluar }),
-            });
-
-            const json = await res.json();
-            if (json.success || json.status === "success") {
-                alert("Tanggal keluar berhasil diupdate.");
-                fetchDomisili();
-            } else {
-                alert("Gagal memperbarui tanggal keluar.");
+        Swal.fire({
+            title: 'Masukkan Tanggal Keluar',
+            html: `
+                <input type="date" id="tanggalKeluarInput" class="swal2-input" style="width: 80%;" />
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            preConfirm: () => {
+                const input = document.getElementById('tanggalKeluarInput').value;
+                if (!input) {
+                    Swal.showValidationMessage('Tanggal keluar wajib diisi');
+                }
+                return input;
             }
-        } catch (err) {
-            console.error("Gagal keluar domisili:", err);
-            alert("Terjadi kesalahan.");
-        }
+        }).then(async (result) => {
+            if (!result.isConfirmed) return;
+
+            const tanggalKeluar = result.value;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}formulir/${id}/domisili`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ waktu_akhir: tanggalKeluar }),
+                });
+
+                const json = await res.json();
+
+                if (json.success || json.status === "success") {
+                    Swal.fire('Berhasil', 'Tanggal keluar berhasil diupdate.', 'success');
+                    fetchDomisili();
+                } else {
+                    Swal.fire('Gagal', json.message || 'Gagal memperbarui tanggal keluar.', 'error');
+                }
+            } catch (err) {
+                Swal.fire('Error', `Terjadi kesalahan saat mengirim data ${err.message}.`, 'error');
+            }
+        });
     };
 
     const handlePindahDomisili = (id) => {
@@ -181,7 +200,7 @@ const TabDomisiliSantri = () => {
                                 onClick={() => fetchDomisiliDetail(item.id)}
                             >
                                 <p className="font-semibold text-gray-800">
-                                    {item.nama_wilayah} - ({item.nama_kamar})
+                                    {item.nama_wilayah || "-"} - ({item.nama_kamar})
                                 </p>
                                 <p className="text-sm text-gray-600">
                                     Sejak {new Date(item.tanggal_masuk).toLocaleDateString("id-ID", { dateStyle: "medium" })} Sampai{" "}
