@@ -1,6 +1,6 @@
 import { Controller } from "react-hook-form";
-import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
-import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
+import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 
 const FormDomisiliPendidikan = ({ register, control }) => {
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();

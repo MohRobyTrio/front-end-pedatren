@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../config";
 
-export function useMultiStepForm(onClose, jenisBerkasList) {
+export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const {

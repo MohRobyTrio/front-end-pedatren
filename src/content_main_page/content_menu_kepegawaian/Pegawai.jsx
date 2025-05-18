@@ -13,7 +13,8 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ModalDetail from '../../components/ModalDetail';
 import { downloadFile } from '../../utils/downloadFile';
 import { API_BASE_URL } from '../../hooks/config';
-import { FaFileExport } from 'react-icons/fa';
+import { FaFileExport, FaPlus } from 'react-icons/fa';
+import MultiStepFormPegawai from '../../components/ModalFormPegawai';
 
 const Pegawai = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -155,12 +156,14 @@ const Pegawai = () => {
         return "-";
     };
       
+    const [showFormModal, setShowFormModal] = useState(false);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Pegawai</h1>
                 <div className="flex items-center space-x-2">
+                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                     <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/pegawai`, setExportLoading)}
                         disabled={exportLoading}
@@ -291,6 +294,10 @@ const Pegawai = () => {
                         item={selectedItem}
                         onClose={closeModal}
                     />
+                )}
+
+                {showFormModal && (
+                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
                 )}
 
                 {totalPages > 1 && (

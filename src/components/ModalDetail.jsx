@@ -40,7 +40,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             try {
                 let endpoint = '';
 
-                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}a`;
+                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}`;
                 else if (menu === 2) endpoint = `santri/${item.biodata_id}`;
                 else if (menu === 3) endpoint = `santri-nondomisili/${item.biodata_id}`;
                 else if (menu === 4) endpoint = `pelajar/${item.biodata_id}`;
@@ -55,6 +55,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 else if (menu === 13) endpoint = `alumni/${item.biodata_id}`;
 
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
+                else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
 
@@ -116,32 +117,32 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Pendidikan",
             content: <DetailPendidikan pendidikan={data.Pendidikan} />
         },
-        data?.WaliAsuh && {
+        data?.WaliAsuh?.length > 0 && {
             id: "waliasuh",
             label: "Wali Asuh",
             content: <WaliAsuh />
         },
-        data?.Pengajar && {
+        data?.Pengajar?.length > 0 && {
             id: "pengajar",
             label: "Pengajar",
             content: <Pengajar />
         },
-        data?.Karyawan && {
+        data?.Karyawan?.length > 0 && {
             id: "karyawan",
             label: "Karyawan",
             content: <Karyawan />
         },
-        data?.Pengurus && {
+        data?.Pengurus?.length > 0 && {
             id: "pengurus",
             label: "Pengurus",
             content: <Pengurus />
         },
-        data?.Berkas && {
+        data?.Berkas?.length > 0 && {
             id: "berkas",
             label: "Berkas",
             content: <Berkas />
         },
-        data?.WargaPesantren && {
+        data?.WargaPesantren?.length > 0 && {
             id: "warpes",
             label: "Warga Pesantren",
             content: <WarPes />

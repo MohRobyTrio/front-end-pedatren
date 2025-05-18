@@ -3,11 +3,11 @@ import { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave } from 'react-icons/fa';
-import FormBiodata from '../content_modal/input/FormBiodata';
-import FormKeluarga from '../content_modal/input/FormKeluarga';
-import FormDomisiliPendidikan from '../content_modal/input/FormDomisiliPendidikan';
-import FormBerkas from '../content_modal/input/FormBerkas';
-import { useMultiStepForm } from '../hooks/hooks_modal/useMultiStepForm';
+import FormBiodata from '../content_modal/input/peserta_didik/FormBiodata';
+import FormKeluarga from '../content_modal/input/peserta_didik/FormKeluarga';
+import FormDomisiliPendidikan from '../content_modal/input/peserta_didik/FormDomisiliPendidikan';
+import FormBerkas from '../content_modal/input/peserta_didik/FormBerkas';
+import { useMultiStepFormPesertaDidik } from '../hooks/hooks_modal/useMultiStepFormPesertaDidik';
 
 const jenisBerkasList = [
         { id: 1, label: 'Kartu Keluarga (KK)', required: true },
@@ -45,7 +45,7 @@ export default function MultiStepModal({ isOpen, onClose }) {
     prevStep,
     onValidSubmit,
     onInvalidSubmit
-  } = useMultiStepForm(onClose, jenisBerkasList);
+  } = useMultiStepFormPesertaDidik(onClose, jenisBerkasList);
 
     // const onValidSubmit = async (data) => {
     //     try {
