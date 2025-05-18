@@ -117,7 +117,12 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                             <input
                                 id="no_passport"
                                 name="no_passport"
-                                type="number"
+                                type="text"
+                                maxLength={20}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
                                 disabled={kewarganegaraan !== 'wna'}
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
@@ -139,7 +144,13 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                             <input
                                 id="no_kk"
                                 name="no_kk"
-                                type="number"
+                                type="text"
+                                minLength={16}
+                                maxLength={16}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan No KK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
@@ -160,7 +171,13 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                             <input
                                 id="nik"
                                 name="nik"
-                                type="number"
+                                type="text"
+                                minLength={16}
+                                maxLength={16}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 16);
+                                }}
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan NIK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
@@ -198,11 +215,11 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                         Jenis Kelamin *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Perempuan" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="p" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
                         <span>Perempuan</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="Laki-Laki" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="l" className="w-4 h-4" {...register('jenis_kelamin', { required: true })} required />
                         <span>Laki-Laki</span>
                     </label>
                 </div>
@@ -356,7 +373,12 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                             <input
                                 id="no_telepon"
                                 name="no_telepon"
-                                type="number"
+                                type="tel"
+                                maxLength={20}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("no_telepon", { required: true })}
@@ -376,7 +398,12 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                             <input
                                 id="no_telepon_2"
                                 name="no_telepon_2"
-                                type="number"
+                                type="tel"
+                                maxLength={20}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("no_telepon_2")}
@@ -396,6 +423,7 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                                 id="email"
                                 name="email"
                                 type="email"
+                                maxLength={100}
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("email", { required: true })}
@@ -422,6 +450,7 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                                 id="jalan"
                                 name="jalan"
                                 type="text"
+                                maxLength={255}
                                 placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("jalan", { required: true })}
@@ -442,6 +471,12 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
                                 id="kodepos"
                                 name="kodepos"
                                 type="text"
+                                maxLength={10} // misalnya 5 digit kode pos
+                                pattern="\d*"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
+                                inputMode="numeric"
                                 placeholder="Masukkan Kode Pos"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("kode_pos", { required: true })}
