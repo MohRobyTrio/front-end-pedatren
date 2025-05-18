@@ -15,12 +15,13 @@ import DetailDomisili from "../content_modal/detail/DetailDomisili";
 import DetailKunjunganMahrom from "../content_modal/detail/DetailKunjunganMahrom";
 import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress";
 import DetailKhadam from "../content_modal/detail/DetailKhadam";
+import DetailPengurus from "../content_modal/detail/DetailPengurus";
+import DetailKaryawan from "../content_modal/detail/DetailKaryawan";
+import DetailWaliKelas from "../content_modal/detail/DetailWaliKelas";
 
 // Placeholder untuk tab lainnya
 const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
 const Pengajar = () => <h1 className="text-xl font-bold">Pengajar</h1>;
-const Karyawan = () => <h1 className="text-xl font-bold">Karyawan</h1>;
-const Pengurus = () => <h1 className="text-xl font-bold">Pengurus</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
@@ -122,20 +123,25 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Wali Asuh",
             content: <WaliAsuh />
         },
+        data?.Karyawan?.length > 0 && {
+            id: "karyawan",
+            label: "Karyawan",
+            content: <DetailKaryawan karyawan={data.Karyawan} />
+        },
         data?.Pengajar?.length > 0 && {
             id: "pengajar",
             label: "Pengajar",
             content: <Pengajar />
         },
-        data?.Karyawan?.length > 0 && {
-            id: "karyawan",
-            label: "Karyawan",
-            content: <Karyawan />
-        },
         data?.Pengurus?.length > 0 && {
             id: "pengurus",
             label: "Pengurus",
-            content: <Pengurus />
+            content: <DetailPengurus pengurus={data.Pengurus} />
+        },
+        data?.Wali_Kelas?.length > 0 && {
+            id: "wali_kelas",
+            label: "Wali Kelas",
+            content: <DetailWaliKelas waliKelas={data.Wali_Kelas} />
         },
         data?.Berkas?.length > 0 && {
             id: "berkas",
