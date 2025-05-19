@@ -82,7 +82,7 @@ const TabBiodata = () => {
     const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-            kewarganegaraan: 'WNI',
+            kewarganegaraan: 'wni',
             wafat: 'Tidak',
             jenis_kelamin: '',
             tanggal_lahir: {
@@ -154,7 +154,12 @@ const TabBiodata = () => {
                 nama_pendidikan: biodata.nama_pendidikan_terakhir || '',
                 jalan: biodata.jalan || '',
                 kode_pos: biodata.kode_pos || '',
-                wafat: biodata.wafat === 0 ? '0' : '1'
+                wafat: biodata.wafat === 0 ? '0' : '1',
+
+                negara: biodata.negara_id || '',
+                provinsi: biodata.provinsi_id || '',
+                kabupaten: biodata.kabupaten_id || '',
+                kecamatan: biodata.kecamatan_id || ''
             };
 
             // Parse tanggal lahir jika ada
@@ -594,7 +599,7 @@ const TabBiodata = () => {
                         </div>
                         {/* Label umur */}
                         <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                            {umur !== null ? `Umur ${umur} tahun` : 'p'}
+                            {umur !== null ? `Umur ${umur} tahun` : ''}
                         </span>
                     </div>
                 </div>
@@ -665,6 +670,7 @@ const TabBiodata = () => {
                                 <option value="smp/mts">SMP/MTs</option>
                                 <option value="sma/smk/ma">SMA Sederajat</option>
                                 <option value="d3">D3</option>
+                                <option value="d4">D4</option>
                                 <option value="s1">S1</option>
                                 <option value="s2">S2</option>
                                 <option value="s3">S3</option>
