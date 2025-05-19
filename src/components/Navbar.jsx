@@ -6,6 +6,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
     const navigate = useNavigate();
     const { logout, isLoggingOut, logoutError } = useLogout();
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
+    const role = localStorage.getItem("role") || sessionStorage.getItem("role");
 
     const handleLogout = async () => {
         try {
@@ -54,7 +55,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
                             >
                                 <div className="px-4 py-3">
                                     <p className="text-sm text-white">{userName}</p>
-                                    <p className="text-sm font-medium text-gray-300 truncate">( Supervisor )</p>
+                                    <p className="text-sm font-medium text-gray-300 truncate">({role})</p>
                                 </div>
                                 <ul className="py-1">
                                     <li>

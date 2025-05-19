@@ -18,10 +18,10 @@ import DetailKhadam from "../content_modal/detail/DetailKhadam";
 import DetailPengurus from "../content_modal/detail/DetailPengurus";
 import DetailKaryawan from "../content_modal/detail/DetailKaryawan";
 import DetailWaliKelas from "../content_modal/detail/DetailWaliKelas";
+import DetailPengajar from "../content_modal/detail/DetailPengajar";
 
 // Placeholder untuk tab lainnya
 const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
-const Pengajar = () => <h1 className="text-xl font-bold">Pengajar</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
@@ -128,10 +128,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Karyawan",
             content: <DetailKaryawan karyawan={data.Karyawan} />
         },
-        data?.Pengajar?.length > 0 && {
+        data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar).length > 0)) && {
             id: "pengajar",
             label: "Pengajar",
-            content: <Pengajar />
+            content: <DetailPengajar pengajar={data.Pengajar} />
         },
         data?.Pengurus?.length > 0 && {
             id: "pengurus",
