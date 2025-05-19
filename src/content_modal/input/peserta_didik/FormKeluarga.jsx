@@ -14,7 +14,13 @@ const FormKeluarga = ({ register, errors }) => {
                             <input
                                 id="nik_ayah"
                                 name="nik_ayah"
-                                type="number"
+                                type="text"
+                                minLength={16}
+                                maxLength={16}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 16);
+                                }}
                                 placeholder="Masukkan NIK Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                  {...register('nik_ayah', { required: true })}
@@ -128,7 +134,6 @@ const FormKeluarga = ({ register, errors }) => {
                                 <option value="d4">D4</option>
                                 <option value="s1">S1</option>
                                 <option value="s2">S2</option>
-                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
@@ -201,7 +206,13 @@ const FormKeluarga = ({ register, errors }) => {
                             <input
                                 id="nik_ibu"
                                 name="nik_ibu"
-                                type="number"
+                                type="text"
+                                minLength={16}
+                                maxLength={16}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 16);
+                                }}
                                 placeholder="Masukkan NIK Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("nik_ibu", { required: true })}
@@ -314,7 +325,6 @@ const FormKeluarga = ({ register, errors }) => {
                                 <option value="d4">D4</option>
                                 <option value="s1">S1</option>
                                 <option value="s2">S2</option>
-                                <option value="s3">S3</option>
                             </select>
                         </div>
                     </div>
@@ -388,7 +398,13 @@ const FormKeluarga = ({ register, errors }) => {
                             <input
                                 id="nik_wali"
                                 name="nik_wali"
-                                type="number"
+                                type="text"
+                                minLength={16}
+                                maxLength={16}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 16);
+                                }}
                                 placeholder="Masukkan NIK Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("nik_wali", { required: true })}

@@ -6,35 +6,41 @@ const DetailStatusSantri = ({ statusSantri }) => {
             id: "kewaliasuhan",
             label: "Kewaliasuhan",
             content: (
-                statusSantri?.Kewaliasuhan.map((item, index) => (
-                    <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
-                        <div className="flex-1">
-                            <p className="font-bold text-gray-400 border-b w-full pb-2">Group Kewaliasuhan: {item.group || "-"}</p>
-                            <p className="text-gray-600 pt-2"><strong>Sebagai: </strong>{item.sebagai || "-"}</p>
-                            <p className="text-gray-600"><strong>Nama Wali Asuh: </strong>{item["Nama Wali Asuh"] || "-"}</p>
+                <div className="space-y-2">
+                    {statusSantri?.Kewaliasuhan.map((item, index) => (
+                        <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
+                            <div className="flex-1">
+                                <p className="font-bold text-gray-400 border-b w-full pb-2">Group Kewaliasuhan: {item.group || "-"}</p>
+                                <p className="text-gray-600 pt-2"><strong>Sebagai: </strong>{item.sebagai || "-"}</p>
+                                <p className="text-gray-600"><strong>Nama Wali Asuh: </strong>{item["Nama Wali Asuh"] || "-"}</p>
 
+                            </div>
                         </div>
-                    </div>
-                )))
-            },
-            statusSantri?.Info_Perizinan?.length > 0 && {
-                id: "info_perizinan",
-                label: "Info Perizinan",
-                content: (
-                    statusSantri?.Info_Perizinan.map((item, index) => (
+                    ))}
+                </div>
+            )
+        },
+        statusSantri?.Info_Perizinan?.length > 0 && {
+            id: "info_perizinan",
+            label: "Info Perizinan",
+            content: (
+                <div className="space-y-2">
+                    {statusSantri?.Info_Perizinan.map((item, index) => (
                         <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md cursor-pointer">
-                        <div className="flex flex-col md:flex-row justify-between md:items-start space-y-2 md:space-y-0">
-                            <div>
-                                <p className="text-gray-600">{item.tanggal || "-"}</p>
-                                <p className="font-semibold">{item.keterangan || "-"}</p>
-                            </div>
-                            <div className="text-left md:text-right">
-                                <p className="text-gray-600">{item.lama_waktu || "-"}</p>
-                                <p className="text-gray-600 italic">{item.status || "-"}</p>
+                            <div className="flex flex-col md:flex-row justify-between md:items-start space-y-2 md:space-y-0">
+                                <div>
+                                    <p className="text-gray-600">{item.tanggal || "-"}</p>
+                                    <p className="font-semibold">{item.keterangan || "-"}</p>
+                                </div>
+                                <div className="text-left md:text-right">
+                                    <p className="text-gray-600">{item.lama_waktu || "-"}</p>
+                                    <p className="text-gray-600 italic">{item.status || "-"}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))
+
+                    ))}
+                </div>
             )
         }
     ].filter(Boolean);

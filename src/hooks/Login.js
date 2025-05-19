@@ -31,12 +31,16 @@ const login = useCallback(async ({ email, password, rememberMe }) => {
     console.log("Login berhasil:", data);
 
     if (data.token) {
+      const role = data.user.roles[0] || ""; 
+
       if (rememberMe) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("name", data.user.name); 
+        localStorage.setItem("name", data.user.name);
+        localStorage.setItem("role", role);
       } else {
-        sessionStorage.setItem("token", data.token); 
-        sessionStorage.setItem("name", data.user.name); 
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("name", data.user.name);
+        sessionStorage.setItem("role", role);
       }
     }
 

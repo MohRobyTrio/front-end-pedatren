@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FileDropInput from "../../components/FileDropInput";
+import FileDropInput from "../../../components/FileDropInput";
 
 const FormBerkas = ({ control, setValue, jenisBerkasList }) => {
     const [berkas, setBerkas] = useState([]);

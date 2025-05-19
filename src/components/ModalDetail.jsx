@@ -15,12 +15,13 @@ import DetailDomisili from "../content_modal/detail/DetailDomisili";
 import DetailKunjunganMahrom from "../content_modal/detail/DetailKunjunganMahrom";
 import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress";
 import DetailKhadam from "../content_modal/detail/DetailKhadam";
+import DetailPengurus from "../content_modal/detail/DetailPengurus";
+import DetailKaryawan from "../content_modal/detail/DetailKaryawan";
+import DetailWaliKelas from "../content_modal/detail/DetailWaliKelas";
+import DetailPengajar from "../content_modal/detail/DetailPengajar";
 
 // Placeholder untuk tab lainnya
 const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
-const Pengajar = () => <h1 className="text-xl font-bold">Pengajar</h1>;
-const Karyawan = () => <h1 className="text-xl font-bold">Karyawan</h1>;
-const Pengurus = () => <h1 className="text-xl font-bold">Pengurus</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
@@ -40,7 +41,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             try {
                 let endpoint = '';
 
-                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}a`;
+                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}`;
                 else if (menu === 2) endpoint = `santri/${item.biodata_id}`;
                 else if (menu === 3) endpoint = `santri-nondomisili/${item.biodata_id}`;
                 else if (menu === 4) endpoint = `pelajar/${item.biodata_id}`;
@@ -55,6 +56,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 else if (menu === 13) endpoint = `alumni/${item.biodata_id}`;
 
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
+                else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
 
@@ -116,32 +118,37 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Pendidikan",
             content: <DetailPendidikan pendidikan={data.Pendidikan} />
         },
-        data?.WaliAsuh && {
+        data?.WaliAsuh?.length > 0 && {
             id: "waliasuh",
             label: "Wali Asuh",
             content: <WaliAsuh />
         },
-        data?.Pengajar && {
-            id: "pengajar",
-            label: "Pengajar",
-            content: <Pengajar />
-        },
-        data?.Karyawan && {
+        data?.Karyawan?.length > 0 && {
             id: "karyawan",
             label: "Karyawan",
-            content: <Karyawan />
+            content: <DetailKaryawan karyawan={data.Karyawan} />
         },
-        data?.Pengurus && {
+        data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar).length > 0)) && {
+            id: "pengajar",
+            label: "Pengajar",
+            content: <DetailPengajar pengajar={data.Pengajar} />
+        },
+        data?.Pengurus?.length > 0 && {
             id: "pengurus",
             label: "Pengurus",
-            content: <Pengurus />
+            content: <DetailPengurus pengurus={data.Pengurus} />
         },
-        data?.Berkas && {
+        data?.Wali_Kelas?.length > 0 && {
+            id: "wali_kelas",
+            label: "Wali Kelas",
+            content: <DetailWaliKelas waliKelas={data.Wali_Kelas} />
+        },
+        data?.Berkas?.length > 0 && {
             id: "berkas",
             label: "Berkas",
             content: <Berkas />
         },
-        data?.WargaPesantren && {
+        data?.WargaPesantren?.length > 0 && {
             id: "warpes",
             label: "Warga Pesantren",
             content: <WarPes />
