@@ -3,6 +3,12 @@ import { API_BASE_URL } from "../../hooks/config";
 import { useParams } from "react-router-dom";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import Swal from "sweetalert2";
+import ModalPindahDomisili from "../../components/ModalFormPindahDomisili";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket, faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+
+
 
 const TabDomisiliSantri = () => {
     const { biodata_id } = useParams();
@@ -99,24 +105,24 @@ const TabDomisiliSantri = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Yakin ingin menghapus data ini?")) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}formulir/${id}/domisili`, {
-                method: "DELETE",
-            });
-            const json = await res.json();
-            if (json.success || json.status === "success") {
-                alert("Data berhasil dihapus!");
-                fetchDomisili();
-            } else {
-                alert("Gagal menghapus data.");
-            }
-        } catch (err) {
-            console.error("Gagal hapus data:", err);
-            alert("Terjadi kesalahan saat menghapus.");
-        }
-    };
+    // const handleDelete = async (id) => {
+    //     if (!window.confirm("Yakin ingin menghapus data ini?")) return;
+    //     try {
+    //         const res = await fetch(`${API_BASE_URL}formulir/${id}/domisili`, {
+    //             method: "DELETE",
+    //         });
+    //         const json = await res.json();
+    //         if (json.success || json.status === "success") {
+    //             alert("Data berhasil dihapus!");
+    //             fetchDomisili();
+    //         } else {
+    //             alert("Gagal menghapus data.");
+    //         }
+    //     } catch (err) {
+    //         console.error("Gagal hapus data:", err);
+    //         alert("Terjadi kesalahan saat menghapus.");
+    //     }
+    // };
 
     const handleAddNew = () => {
         setFormData({
@@ -178,7 +184,11 @@ const TabDomisiliSantri = () => {
             ...prev,
             waktuMulai: new Date().toISOString().slice(0, 10),
         }));
+
+
     };
+
+    const [showFormModal, setShowFormModal] = useState(false);
 
     return (
         <div>
@@ -221,27 +231,30 @@ const TabDomisiliSantri = () => {
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                                <button
+                                {/* <button
                                     onClick={() => handleDelete(item.id)}
                                     className="text-red-600 hover:text-red-800"
                                 >
                                     Hapus
-                                </button>
+                                </button> */}
                                 {!item.tanggal_keluar && (
                                     <>
+                                     <button
+                                            onClick={() => setShowFormModal(true)}
+                                            className="text-blue-600 hover:text-blue-800"
+                                            title="Pindah"
+                                        >
+                                            <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
+                                        </button>
                                         <button
                                             onClick={() => handleKeluarDomisili(item.id)}
-                                            className="text-yellow-600 hover:text-yellow-800"
+                                            className="text-yellow-600 hover:text-yellow-800 mr-2"
+                                            title="Keluar"
                                         >
-                                            Keluar
-                                        </button>
-                                        <button
-                                            onClick={() => handlePindahDomisili(item.id)}
-                                            className="text-blue-600 hover:text-blue-800"
-                                        >
-                                            Pindah
+                                            <FontAwesomeIcon icon={faRightFromBracket} />Keluar
                                         </button>
                                     </>
+
                                 )}
                             </div>
                         </li>
@@ -353,6 +366,10 @@ const TabDomisiliSantri = () => {
                     </div>
                 </form>
             )}
+
+            {showFormModal && (
+                <ModalPindahDomisili isOpen={showFormModal} onClose={() => setShowFormModal(false)} formData={formData} setFormData={setFormData} filterWilayah={filterWilayah} handleFilterChangeWilayah={handleFilterChangeWilayah} handleSubmit={handleSubmit} selectedWilayah={selectedWilayah} setEditId={setEditId} />
+            )}
         </div>
     );
 };
@@ -363,7 +380,7 @@ const TextInput = ({ label, value, onChange, type = "text", required = false }) 
         <input
             type={type}
             className="mt-1 block w-full p-2 border rounded-md"
-            value={value}   
+            value={value}
             onChange={onChange}
             required={required}
         />
