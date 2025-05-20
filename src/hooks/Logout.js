@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { API_BASE_URL } from "./config";
+import { getCookie, removeTokenCookie } from "../utils/cookieUtils";
 
 const useLogout = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -7,7 +8,7 @@ const useLogout = () => {
 
   const logout = useCallback(async () => {
     const url = `${API_BASE_URL}logout`;
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     if (!token) {
       setLogoutError("Token tidak ditemukan");
@@ -52,10 +53,9 @@ const useLogout = () => {
         console.log("Logout berhasil (204 No Content)");
       }
 
-      // ✅ Hapus token dari localStorage
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-
+      removeTokenCookie();
+      localStorage.clear();
+      sessionStorage.clear();
       // return data;
     } catch (error) {
       console.error("Logout error:", error);

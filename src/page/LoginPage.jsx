@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useLogin from "../hooks/Login";
 import logo from "../assets/logo.png";
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -16,9 +17,23 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const userData = await login({ email, password, rememberMe }); 
+
+      if (userData.success === false) {
+      Swal.fire({
+        icon: "error",
+        title: "Login Gagal",
+        text: userData.message || "Terjadi kesalahan saat login.",
+      });
+      return; // jangan lanjut ke navigate
+    }
+
       navigate("/dashboard");
     } catch (err) {
-      alert(err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.message || "Terjadi kesalahan.",
+      });
     }
   };
 
