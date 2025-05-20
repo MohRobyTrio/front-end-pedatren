@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -14,14 +14,8 @@ const schema = yup.object({
   rombel: yup.string().optional(),
   noInduk: yup.string().required('Nomor induk wajib diisi'),
   tglMulai: yup.date().required('Tanggal mulai wajib diisi'),
-  tglAkhir: yup.date().optional()
-    .test(
-      'is-after-start',
-      'Tanggal akhir harus setelah tanggal mulai',
-      function (value) {
-        return !value || value >= this.parent.tglMulai
-      }
-    ),
+  tglAkhir: yup.date().nullable().transform((value) => (value === "" ? null : value)),
+  status: yup.string().optional()
 });
 
 const TabPendidikan = () => {
@@ -37,7 +31,15 @@ const TabPendidikan = () => {
   const [kelasOptions, setKelasOptions] = useState([]);
   const [rombelOptions, setRombelOptions] = useState([]);
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
+  // State untuk menyimpan ID (hanya untuk parameter dropdown)
+  const [selectedIds, setSelectedIds] = useState({
+    lembaga_id: '',
+    jurusan_id: '',
+    kelas_id: '',
+    rombel_id: ''
+  });
+
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset, getValues } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       lembaga: '',
@@ -46,12 +48,12 @@ const TabPendidikan = () => {
       rombel: '',
       noInduk: '',
       tglMulai: '',
-      tglAkhir: '',
+      tglAkhir: null,
       status: ''
     }
   });
 
-  // Watch selected values for chained dropdowns
+  // Watch selected values
   const selectedLembaga = watch('lembaga');
   const selectedJurusan = watch('jurusan');
   const selectedKelas = watch('kelas');
@@ -63,22 +65,22 @@ const TabPendidikan = () => {
     try {
       setIsLoading(true);
       setErrorHistory(null);
-      const response = await axios.get(`${API_BASE_URL}formulir/${biodata_id}/pendidikan`, {
-        params: { biodata_id }
-      });
+      const response = await axios.get(`${API_BASE_URL}formulir/${biodata_id}/pendidikan`);
 
-      if (response.data.data && response.data.data.length > 0) {
-        setHistoryPendidikan(response.data.data);
+      if (response.data.data) {
+        const data = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
+        setHistoryPendidikan(data);
 
-        // Otomatis isi form dengan data terbaru
-        const latestData = response.data.data[0];
-        fillFormWithHistory(latestData);
+        // Otomatis isi form dengan data terbaru jika ada
+        if (data.length > 0) {
+          fillFormWithHistory(data[0]);
+        }
       } else {
         setHistoryPendidikan([]);
       }
     } catch (error) {
       console.error('Error loading history pendidikan:', error);
-      setErrorHistory('Gagal memuat history pendidikan. Silakan coba lagi.');
+      setErrorHistory(error.response?.data?.message || 'Gagal memuat history pendidikan. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
@@ -86,14 +88,31 @@ const TabPendidikan = () => {
 
   // Isi form dengan data history
   const fillFormWithHistory = (historyData) => {
-    setValue('lembaga', historyData.lembaga_id || '');
-    setValue('jurusan', historyData.jurusan_id || '');
-    setValue('kelas', historyData.kelas_id || '');
-    setValue('rombel', historyData.rombel_id || '');
+    // Set nilai text/nama
+    setValue('lembaga', historyData.nama_lembaga || '');
+    setValue('jurusan', historyData.nama_jurusan || '');
+    setValue('kelas', historyData.nama_kelas || '');
+    setValue('rombel', historyData.nama_rombel || '');
     setValue('noInduk', historyData.no_induk || '');
     setValue('tglMulai', historyData.tanggal_masuk || '');
-    setValue('tglAkhir', historyData.tanggal_keluar || '');
+    setValue('tglAkhir', historyData.tanggal_keluar || null);
     setValue('status', historyData.status || '');
+
+    // Cari ID untuk keperluan dropdown chaining
+    const findId = (options, name, fieldName = 'nama') => {
+      return options.find(opt => opt[fieldName] === name || opt[`nama_${fieldName}`] === name)?.id || '';
+    };
+
+    // Update selectedIds setelah form diisi
+    setTimeout(() => {
+      setSelectedIds({
+        lembaga_id: findId(lembagaOptions, historyData.nama_lembaga, 'lembaga'),
+        jurusan_id: findId(jurusanOptions, historyData.nama_jurusan),
+        kelas_id: findId(kelasOptions, historyData.nama_kelas),
+        rombel_id: findId(rombelOptions, historyData.nama_rombel)
+      });
+    }, 0);
+
     setIsUpdateMode(true);
   };
 
@@ -101,10 +120,12 @@ const TabPendidikan = () => {
   useEffect(() => {
     const fetchLembaga = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/${hapusini}/lembaga`);
-        setLembagaOptions(response.data.data);
+        const response = await axios.get(`${API_BASE_URL}dropdown/lembaga`);
+        const data = Array.isArray(response.data) ? response.data : [response.data];
+        setLembagaOptions(data || []);
       } catch (error) {
         console.error('Error fetching lembaga:', error);
+        setLembagaOptions([]);
       }
     };
 
@@ -112,102 +133,193 @@ const TabPendidikan = () => {
     loadHistoryPendidikan();
   }, [biodata_id]);
 
-  // Load jurusan based on selected lembaga
+  // Load jurusan based on selected lembaga ID
   useEffect(() => {
     const fetchJurusan = async () => {
-      if (!selectedLembaga) return;
+      if (!selectedIds.lembaga_id) {
+        setJurusanOptions([]);
+        return;
+      }
+
       try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/lembaga/${selectedLembaga}/jurusan`);
-        setJurusanOptions(response.data.data);
-        setValue('jurusan', ''); // Reset jurusan when lembaga changes
+        const response = await axios.get(`${API_BASE_URL}dropdown/jurusan/${selectedIds.lembaga_id}`);
+        setJurusanOptions(Array.isArray(response.data) ? response.data : [response.data]);
+        console.log(response.data);
+        
       } catch (error) {
         console.error('Error fetching jurusan:', error);
+        setJurusanOptions([]);
       }
     };
 
     fetchJurusan();
-  }, [selectedLembaga, setValue]);
+  }, [selectedIds.lembaga_id]);
 
-  // Load kelas based on selected jurusan
+  // Load kelas based on selected jurusan ID
   useEffect(() => {
     const fetchKelas = async () => {
-      if (!selectedJurusan) return;
+      if (!selectedIds.jurusan_id) {
+        setKelasOptions([]);
+        return;
+      }
+
       try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/jurusan/${selectedJurusan}/kelas`);
-        setKelasOptions(response.data.data);
-        setValue('kelas', ''); // Reset kelas when jurusan changes
+        const response = await axios.get(`${API_BASE_URL}dropdown/kelas/${selectedIds.jurusan_id}`);
+        setKelasOptions(Array.isArray(response.data) ? response.data : [response.data]);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching kelas:', error);
+        setKelasOptions([]);
       }
     };
 
     fetchKelas();
-  }, [selectedJurusan, setValue]);
+  }, [selectedIds.jurusan_id]);
 
-  // Load rombel based on selected kelas
+  // Load rombel based on selected kelas ID
   useEffect(() => {
     const fetchRombel = async () => {
-      if (!selectedKelas) return;
+      if (!selectedIds.kelas_id) {
+        setRombelOptions([]);
+        return;
+      }
+
       try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/kelas/${selectedKelas}/rombel`);
-        setRombelOptions(response.data.data);
-        setValue('rombel', ''); // Reset rombel when kelas changes
+        const response = await axios.get(`${API_BASE_URL}dropdown/rombel/${selectedIds.kelas_id}`);
+        setRombelOptions(Array.isArray(response.data) ? response.data : [response.data]);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching rombel:', error);
+        setRombelOptions([]);
       }
     };
 
     fetchRombel();
-  }, [selectedKelas, setValue]);
+  }, [selectedIds.kelas_id]);
+
+  // Handle perubahan dropdown lembaga - PERBAIKAN DISINI
+  const handleLembagaChange = useCallback((e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = lembagaOptions.find(l => l.nama_lembaga === selectedValue);
+
+    // Set nilai form secara langsung
+    setValue('lembaga', selectedValue, { shouldValidate: true });
+
+    // Reset nilai dropdown yang dependent
+    setValue('jurusan', '', { shouldValidate: true });
+    setValue('kelas', '', { shouldValidate: true });
+    setValue('rombel', '', { shouldValidate: true });
+
+    // Update selectedIds setelah form diupdate
+    setSelectedIds(prev => ({
+      ...prev,
+      lembaga_id: selectedOption?.id || '',
+      jurusan_id: '',
+      kelas_id: '',
+      rombel_id: ''
+    }));
+  }, [lembagaOptions, setValue, setSelectedIds]);
+
+  // Handle perubahan dropdown jurusan - PERBAIKAN DISINI
+  const handleJurusanChange = useCallback((e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = jurusanOptions.find(j => j.nama === selectedValue);
+
+    // Set nilai form secara langsung
+    setValue('jurusan', selectedValue, { shouldValidate: true });
+
+    // Reset nilai dropdown yang dependent
+    setValue('kelas', '', { shouldValidate: true });
+    setValue('rombel', '', { shouldValidate: true });
+
+    // Update selectedIds setelah form diupdate
+    setSelectedIds(prev => ({
+      ...prev,
+      jurusan_id: selectedOption?.id || '',
+      kelas_id: '',
+      rombel_id: ''
+    }));
+  }, [jurusanOptions, setValue, setSelectedIds]);
+
+  // Handle perubahan dropdown kelas - PERBAIKAN DISINI
+  const handleKelasChange = useCallback((e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = kelasOptions.find(k => k.nama === selectedValue);
+
+    // Set nilai form secara langsung
+    setValue('kelas', selectedValue, { shouldValidate: true });
+
+    // Reset nilai dropdown yang dependent
+    setValue('rombel', '', { shouldValidate: true });
+
+    // Update selectedIds setelah form diupdate
+    setSelectedIds(prev => ({
+      ...prev,
+      kelas_id: selectedOption?.id || '',
+      rombel_id: ''
+    }));
+  }, [kelasOptions, setValue, setSelectedIds]);
+
+  // Handle perubahan dropdown rombel - PERBAIKAN DISINI
+  const handleRombelChange = useCallback((e) => {
+    const selectedValue = e.target.value;
+    const selectedOption = rombelOptions.find(r => r.nama === selectedValue);
+
+    // Set nilai form secara langsung
+    setValue('rombel', selectedValue, { shouldValidate: true });
+
+    // Update selectedIds setelah form diupdate
+    setSelectedIds(prev => ({
+      ...prev,
+      rombel_id: selectedOption?.id || ''
+    }));
+  }, [rombelOptions, setValue, setSelectedIds]);
 
   // Submit form
   const onSubmit = async (data) => {
     setIsLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('lembaga_id', data.lembaga);
-      formData.append('jurusan_id', data.jurusan);
-      formData.append('kelas_id', data.kelas);
-      formData.append('rombel_id', data.rombel);
-      formData.append('no_induk', data.noInduk);
-      formData.append('tgl_mulai', data.tglMulai);
-      if (data.tglAkhir) formData.append('tgl_akhir', data.tglAkhir);
+      const payload = {
+        lembaga_id: selectedIds.lembaga_id,
+        jurusan_id: selectedIds.jurusan_id || null,
+        kelas_id: selectedIds.kelas_id || null,
+        rombel_id: selectedIds.rombel_id || null,
+        no_induk: data.noInduk,
+        tanggal_masuk: data.tglMulai,
+        tanggal_keluar: data.tglAkhir || null,
+        status: data.status || null
+      };
+
 
       let response;
       if (isUpdateMode && biodata_id) {
-        response = await axios.post(
-          `${API_BASE_URL}formulir/${biodata_id}/pendidikan?_method=PUT`,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+        response = await axios.put(
+          `${API_BASE_URL}formulir/${biodata_id}/pendidikan`,
+          payload
         );
       } else {
-        response = await axios.post(
-          `${API_BASE_URL}formulir/${biodata_id}/pendidikan?_method=POST`,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+        response = await axios.put(
+          `${API_BASE_URL}formulir/${biodata_id}/pendidikan/pindah`,
+          payload
         );
-      }
+      };
 
       alert(isUpdateMode ? 'Data pendidikan berhasil diupdate!' : 'Data pendidikan berhasil disimpan!');
-
-      // Reload history setelah simpan/update
       loadHistoryPendidikan();
 
       if (!isUpdateMode) {
         reset();
-      }
-
+        setSelectedIds({
+          lembaga_id: '',
+          jurusan_id: '',
+          kelas_id: '',
+          rombel_id: ''
+        });
+      };
     } catch (error) {
       console.error('Error saving data:', error);
-      if (error.response?.data?.errors) {
-        const backendErrors = error.response.data.errors;
-        Object.keys(backendErrors).forEach(key => {
-          alert(`${key}: ${backendErrors[key][0]}`);
-        });
-      } else {
-        alert('Terjadi kesalahan. Silakan coba lagi.');
-      }
+      alert(error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
@@ -215,6 +327,12 @@ const TabPendidikan = () => {
 
   const handleAddNew = () => {
     reset();
+    setSelectedIds({
+      lembaga_id: '',
+      jurusan_id: '',
+      kelas_id: '',
+      rombel_id: ''
+    });
     setIsUpdateMode(false);
   };
 
@@ -229,17 +347,16 @@ const TabPendidikan = () => {
         {isUpdateMode ? `Formulir Pendidikan: ID ${biodata_id}` : 'Formulir Pendidikan Baru'}
       </h1>
 
-      {/* Debug Info */}
-      <div className="mb-4 p-2 bg-gray-100 text-xs">
-        <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
-        <p>ID: {biodata_id || 'tidak ada'}</p>
-      </div>
-      <div className="mb-4 p-2 bg-gray-100 text-xs">
-        <pre>{JSON.stringify(watch(), null, 2)}</pre>
-      </div>
-
       {/* History Pendidikan */}
       <div className="mb-6">
+        {/* Debug Info - untuk development, bisa dihapus di production */}
+        <div className="mb-4 p-2 bg-gray-100 text-xs">
+          <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
+          <p>ID: {biodata_id || 'tidak ada'}</p>
+        </div>
+        <div className="mb-4 p-2 bg-gray-100 text-xs">
+          <pre>{JSON.stringify(watch(), null, 2)}</pre>
+        </div>
         <h2 className="text-lg font-semibold mb-2">History Pendidikan</h2>
 
         {errorHistory && (
@@ -274,9 +391,7 @@ const TabPendidikan = () => {
                       {item.tanggal_keluar ? ` s/d ${item.tanggal_keluar}` : ' - Sekarang'}
                     </p>
                   </div>
-                  <span className={`px-2 py-1 text-xs rounded-full ${item.status === 'aktif'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
+                  <span className={`px-2 py-1 text-xs rounded-full ${item.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                     }`}>
                     {item.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}
                   </span>
@@ -313,12 +428,15 @@ const TabPendidikan = () => {
               <select
                 id="lembaga"
                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                {...register('lembaga')}
+                value={selectedLembaga || ""}
+                onChange={handleLembagaChange}
                 disabled={isLoading}
               >
                 <option value="">Pilih Lembaga</option>
-                {lembagaOptions.map(lembaga => (
-                  <option key={lembaga.id} value={lembaga.id}>{lembaga.nama}</option>
+                {lembagaOptions?.map(lembaga => (
+                  <option key={lembaga.id} value={lembaga.nama_lembaga}>
+                    {lembaga.nama_lembaga}
+                  </option>
                 ))}
               </select>
             </div>
@@ -330,18 +448,19 @@ const TabPendidikan = () => {
           {/* Jurusan */}
           <div className="flex flex-col">
             <label htmlFor="jurusan" className="text-black mb-1">
-              Jurusan *
+              Jurusan
             </label>
             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
               <select
                 id="jurusan"
                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                {...register('jurusan')}
-                disabled={!selectedLembaga || isLoading}
+                value={selectedJurusan || ""}
+                onChange={handleJurusanChange}
+                disabled={!selectedIds.lembaga_id || isLoading}
               >
                 <option value="">Pilih Jurusan</option>
                 {jurusanOptions.map(jurusan => (
-                  <option key={jurusan.id} value={jurusan.id}>{jurusan.nama}</option>
+                  <option key={jurusan.id} value={jurusan.nama_jurusan}>{jurusan.nama_jurusan}</option>
                 ))}
               </select>
             </div>
@@ -355,18 +474,19 @@ const TabPendidikan = () => {
           {/* Kelas */}
           <div className="flex flex-col">
             <label htmlFor="kelas" className="text-black mb-1">
-              Kelas *
+              Kelas
             </label>
             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
               <select
                 id="kelas"
                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                {...register('kelas')}
-                disabled={!selectedJurusan || isLoading}
+                value={selectedKelas || ""}
+                onChange={handleKelasChange}
+                disabled={!selectedIds.jurusan_id || isLoading}
               >
                 <option value="">Pilih Kelas</option>
                 {kelasOptions.map(kelas => (
-                  <option key={kelas.id} value={kelas.id}>{kelas.nama}</option>
+                  <option key={kelas.id} value={kelas.nama_kelas}>{kelas.nama_kelas}</option>
                 ))}
               </select>
             </div>
@@ -378,18 +498,19 @@ const TabPendidikan = () => {
           {/* Rombel */}
           <div className="flex flex-col">
             <label htmlFor="rombel" className="text-black mb-1">
-              Rombel *
+              Rombel
             </label>
             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
               <select
                 id="rombel"
                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                {...register('rombel')}
-                disabled={!selectedKelas || isLoading}
+                value={watch('rombel') || ""}
+                onChange={handleRombelChange}
+                disabled={!selectedIds.kelas_id || isLoading}
               >
                 <option value="">Pilih Rombel</option>
                 {rombelOptions.map(rombel => (
-                  <option key={rombel.id} value={rombel.id}>{rombel.nama}</option>
+                  <option key={rombel.id} value={rombel.nama_rombel}>{rombel.nama_rombel}</option>
                 ))}
               </select>
             </div>
