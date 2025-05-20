@@ -14,20 +14,49 @@ import {
   subPesertaDidik, tabsFormulir
 } from './data/menuData';
 import { useEffect, useRef } from 'react';
+import { getCookie, removeTokenCookie } from './utils/cookieUtils';
+import Swal from 'sweetalert2';
+
+
+// const isTokenExpired = () => {
+//   const expiresAt = localStorage.getItem("expiresAt");
+//   if (!expiresAt) return false;
+
+//   return Date.now() > parseInt(expiresAt, 10);
+// };
 
 // Helper untuk cek apakah user login
 const isLoggedIn = () => {
-  return (
-    !!localStorage.getItem("token") ||
-    !!sessionStorage.getItem("token")
-  );
+  const token = getCookie("token");
+  const expiredAt = getCookie("expiredAt");
+  const sessionToken = sessionStorage.getItem("token");
+  const isSessionActive = sessionStorage.getItem("activeSession") === "true";
+
+  // Kalau tidak ada token sama sekali → tidak login
+  if (!token && !sessionToken) return false;
+
+  if (isSessionActive) {console.log("masih aktif")};
+  
+
+  // Kalau token expired → remove token dan logout
+  if (expiredAt && Date.now() > parseInt(expiredAt, 10) && !isSessionActive) {
+    removeTokenCookie();
+    Swal.fire({
+      title: 'Sesi Berakhir',
+      text: 'Sesi anda telah berakhir, silakan login kembali.',
+      icon: 'warning',
+      confirmButtonText: 'OK'
+    });
+    return false;
+  }
+
+  return true;
 };
 
 //Helper untuk matikan login
 // const isLoggedIn = () => {
 //   return true
 // };
-
 
 // Private route hanya untuk user yang sudah login
 const PrivateRoute = () => {
@@ -53,20 +82,6 @@ const RedirectToDashboard = () => {
 
   return null;
 };
-
-// const RedirectToBiodata = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   useEffect(() => {
-//     if (location.pathname === '/formulir') {
-//       console.log("redirect to /formulir/biodata");
-//       navigate('/formulir/biodata', { replace: true });
-//     }
-//   }, [location, navigate]);
-
-//   return null;
-// };
 
 const RedirectToBiodata = () => {
   const navigate = useNavigate();
