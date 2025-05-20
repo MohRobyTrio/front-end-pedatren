@@ -1,7 +1,6 @@
-// src/hooks/useLogin.js
-
 import { useState, useCallback } from "react";
 import { API_BASE_URL } from "./config";
+import { setTokenCookie } from "../utils/cookieUtils";
 
 const useLogin = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -32,9 +31,8 @@ const login = useCallback(async ({ email, password, rememberMe }) => {
 
     if (data.token) {
       const role = data.user.roles[0] || ""; 
-
       if (rememberMe) {
-        localStorage.setItem("token", data.token);
+        setTokenCookie(data.token);
         localStorage.setItem("name", data.user.name);
         localStorage.setItem("role", role);
       } else {
@@ -42,7 +40,10 @@ const login = useCallback(async ({ email, password, rememberMe }) => {
         sessionStorage.setItem("name", data.user.name);
         sessionStorage.setItem("role", role);
       }
+
     }
+
+    sessionStorage.setItem("activeSession", "true");
 
     return data;
   } catch (error) {

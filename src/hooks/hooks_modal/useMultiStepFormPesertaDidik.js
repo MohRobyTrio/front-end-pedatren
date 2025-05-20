@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
   const [activeTab, setActiveTab] = useState(0);
@@ -91,7 +92,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
       });
 
       const token =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
+        getCookie("token") || sessionStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}crud/pesertadidik`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
