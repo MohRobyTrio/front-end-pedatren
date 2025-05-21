@@ -8,7 +8,7 @@ const DetailWaliKelas = ({ waliKelas }) => (
                     <th className="px-3 py-2 border-b">Jurusan</th>
                     <th className="px-3 py-2 border-b">Kelas</th>
                     <th className="px-3 py-2 border-b">Rombel</th>
-                    <th className="px-3 py-2 border-b">Periode Mulai</th>
+                    <th className="px-3 py-2 border-b">Periode Awal</th>
                     <th className="px-3 py-2 border-b">Periode Akhir</th>
                 </tr>
             </thead>
@@ -27,7 +27,7 @@ const DetailWaliKelas = ({ waliKelas }) => (
                                 <td className="px-3 py-2 border-b">{item.Jurusan || "-"}</td>
                                 <td className="px-3 py-2 border-b">{item.Kelas || "-"}</td>
                                 <td className="px-3 py-2 border-b">{item.Rombel || "-"}</td>
-                                <td className="px-3 py-2 border-b">{item.Periode_mulai || "-"}</td>  
+                                <td className="px-3 py-2 border-b">{item.Periode_awal || "-"}</td>  
                                 <td className="px-3 py-2 border-b">{item.Periode_akhir || "-"}</td>  
                             </tr>
                         ))

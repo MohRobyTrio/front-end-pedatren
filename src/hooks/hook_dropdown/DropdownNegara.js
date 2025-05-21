@@ -7,6 +7,18 @@ const DropdownNegara = () => {
     const [selectedNegara, setSelectedNegara] = useState({ negara: "", provinsi: "", kabupaten: "", kecamatan: "" });
 
     useEffect(() => {
+        const sessionData = sessionStorage.getItem("menuNegara");
+
+    if (sessionData) {
+    const parsed = JSON.parse(sessionData);
+    setData(parsed.negara);
+    setFilterNegara({
+      negara: [{ value: "", label: "Semua Negara" }, ...parsed.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
+      provinsi: [{ value: "", label: "Semua Provinsi" }],
+      kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+      kecamatan: [{ value: "", label: "Semua Kecamatan" }]
+    });
+  } else {
         fetch(`${API_BASE_URL}dropdown/negara`)
             .then((res) => res.json())
             .then((data) => {
@@ -17,6 +29,7 @@ const DropdownNegara = () => {
                     kabupaten: [{ value: "", label: "Semua Kabupaten" }],
                     kecamatan: [{ value: "", label: "Semua Kecamatan" }]
                 });
+                sessionStorage.setItem("menuNegara", JSON.stringify(data));
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -28,12 +41,12 @@ const DropdownNegara = () => {
                     kecamatan: [{ value: "", label: "Semua Kecamatan" }]
                 });
             });
+        }
     }, []);
 
     const handleFilterChangeNegara = (newFilter) => {
         setSelectedNegara(prevFilters => {
             const updatedFilters = { ...prevFilters, ...newFilter };
-        console.log("Negara changed:", updatedFilters);
 
             // Jika negara berubah, reset semua dropdown di bawahnya
             if (newFilter.negara) {

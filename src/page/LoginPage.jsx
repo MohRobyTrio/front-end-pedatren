@@ -16,16 +16,16 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const userData = await login({ email, password, rememberMe }); 
+      const userData = await login({ email, password, rememberMe });
 
       if (userData.success === false) {
-      Swal.fire({
-        icon: "error",
-        title: "Login Gagal",
-        text: userData.message || "Terjadi kesalahan saat login.",
-      });
-      return; // jangan lanjut ke navigate
-    }
+        Swal.fire({
+          icon: "error",
+          title: "Login Gagal",
+          text: userData.message || "Terjadi kesalahan saat login.",
+        });
+        return; // jangan lanjut ke navigate
+      }
 
       navigate("/dashboard");
     } catch (err) {
@@ -70,26 +70,12 @@ const LoginPage = () => {
               type="email"
               id="email"
               className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
-              placeholder="name@company.com"
+              placeholder="name@gmail.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          {/* <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
-              Kata Sandi
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
-              placeholder="••••••••"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div> */}
           <div className="mb-4">
             <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
               Kata Sandi
@@ -100,7 +86,7 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 pr-10"
-                placeholder="••••••••"
+                placeholder="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

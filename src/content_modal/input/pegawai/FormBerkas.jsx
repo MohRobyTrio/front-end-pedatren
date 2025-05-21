@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FileDropInput from "../../../components/FileDropInput";
 
-const FormBerkasPeserta = ({ control, setValue, jenisBerkasList }) => {
+const FormBerkasPegawai = ({ control, setValue, jenisBerkasList }) => {
     const [berkas, setBerkas] = useState([]);
 
     const handleRemove = (jenisId) => {
@@ -32,7 +32,7 @@ const FormBerkasPeserta = ({ control, setValue, jenisBerkasList }) => {
                         setBerkas(updated);
                     }}
                     control={control}
-                    nameModal="modalPeserta"
+                    nameModal="modalPegawai"
                 />
             );
         })}
@@ -41,4 +41,4 @@ const FormBerkasPeserta = ({ control, setValue, jenisBerkasList }) => {
 
 };
 
-export default FormBerkasPeserta;
+export default FormBerkasPegawai;

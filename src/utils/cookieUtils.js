@@ -2,7 +2,7 @@
 export const setTokenCookie = (token) => {
   // const expires = new Date(Date.now() + expiresInMinutes * 60 * 1000).toUTCString();
   // document.cookie = `token=${token}; expires=${expires}; path=/`;
-const expiresInDays = 7;
+  const expiresInDays = 7;
   const expiredAt = Date.now() + expiresInDays * 24 * 60 * 60 * 1000; // 7 hari dalam ms
   document.cookie = `token=${token}; path=/`;
   document.cookie = `expiredAt=${expiredAt}; path=/`;

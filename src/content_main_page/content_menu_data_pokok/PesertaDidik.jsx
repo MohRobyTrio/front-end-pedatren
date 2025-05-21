@@ -16,6 +16,8 @@ import ModalDetail from "../../components/ModalDetail";
 import { FaFileExport, FaPlus } from "react-icons/fa";
 // import ModalForm from "../../components/ModalFormPesertaDidik";
 import MultiStepModal from "../../components/ModalFormPesertaDidik";
+import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
+import { jenisBerkasList } from "../../data/menuData";
 
 const PesertaDidik = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -179,6 +181,8 @@ const PesertaDidik = () => {
 
     const [showFormModal, setShowFormModal] = useState(false);
 
+    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList);
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
@@ -304,7 +308,7 @@ const PesertaDidik = () => {
                 )}
 
                 {showFormModal && (
-                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
+                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 
                 )}
 

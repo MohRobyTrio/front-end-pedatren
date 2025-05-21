@@ -23,7 +23,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 }}
                                 placeholder="Masukkan NIK Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('nik_ayah', { required: true })}
+                                 {...register('modalPeserta.nik_ayah', { required: true })}
                                  required
                             />
                             {errors.no_kk && <span>KK wajib diisi</span>}
@@ -44,7 +44,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Nama Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('nama_ayah', { required: true })}
+                                {...register('modalPeserta.nama_ayah', { required: true })}
                                  required
                             />
                         </div>
@@ -64,7 +64,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('tempat_lahir_ayah', { required: true })}
+                                {...register('modalPeserta.tempat_lahir_ayah', { required: true })}
                                  required
                             />
                         </div>
@@ -83,7 +83,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="tanggal_lahir_ayah"
                                 name="tanggal_lahir_ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tanggal_lahir_ayah", { required: true })}
+                                {...register("modalPeserta.tanggal_lahir_ayah", { required: true })}
                                 required
                             />
                         </div>
@@ -102,7 +102,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("no_telepon_ayah", { required: true })}
+                                {...register("modalPeserta.no_telepon_ayah", { required: true })}
                                 required
                             />
                         </div>
@@ -120,7 +120,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="pendidikan_terakhir_ayah"
                                 name="pendidikan_terakhir_ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                {...register("pendidikan_terakhir_ayah", { required: true })}
+                                {...register("modalPeserta.pendidikan_terakhir_ayah", { required: true })}
                                 required
                             >
                                 <option value="">
@@ -151,7 +151,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Pekerjaan Ayah"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("pekerjaan_ayah", { required: true })}
+                                {...register("modalPeserta.pekerjaan_ayah", { required: true })}
                                 required
                             />
                         </div>
@@ -170,7 +170,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="1.000.000"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("penghasilan_ayah", { required: true })}
+                                {...register("modalPeserta.penghasilan_ayah", { required: true })}
                                 required
                             />
                         </div>
@@ -182,12 +182,12 @@ const FormKeluarga = ({ register, errors }) => {
                         Wafat *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="wafat_ayah" value="0" className="w-4 h-4" {...register("wafat_ayah", { required: true })}
+                        <input type="radio" name="wafat_ayah" value="0" className="w-4 h-4" {...register("modalPeserta.wafat_ayah", { required: true })}
                                 required />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="wafat_ayah" value="1" className="w-4 h-4" {...register("wafat_ayah", { required: true })}
+                        <input type="radio" name="wafat_ayah" value="1" className="w-4 h-4" {...register("modalPeserta.wafat_ayah", { required: true })}
                                 required />
                         <span>Ya</span>
                     </label>
@@ -215,7 +215,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 }}
                                 placeholder="Masukkan NIK Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("nik_ibu", { required: true })}
+                                {...register("modalPeserta.nik_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -235,7 +235,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Nama Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("nama_ibu", { required: true })}
+                                {...register("modalPeserta.nama_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -255,7 +255,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tempat_lahir_ibu", { required: true })}
+                                {...register("modalPeserta.tempat_lahir_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -274,7 +274,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="tanggal_lahir_ibu"
                                 name="tanggal_lahir_ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tanggal_lahir_ibu", { required: true })}
+                                {...register("modalPeserta.tanggal_lahir_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -293,7 +293,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("no_telepon_ibu", { required: true })}
+                                {...register("modalPeserta.no_telepon_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -311,7 +311,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="pendidikan_terakhir_ibu"
                                 name="pendidikan_terakhir_ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                {...register("pendidikan_terakhir_ibu", { required: true })}
+                                {...register("modalPeserta.pendidikan_terakhir_ibu", { required: true })}
                                 required
                             >
                                 <option value="">
@@ -342,7 +342,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Pekerjaan Ibu"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("pekerjaan_ibu", { required: true })}
+                                {...register("modalPeserta.pekerjaan_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -361,7 +361,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="1.000.000"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("penghasilan_ibu", { required: true })}
+                                {...register("modalPeserta.penghasilan_ibu", { required: true })}
                                 required
                             />
                         </div>
@@ -373,12 +373,12 @@ const FormKeluarga = ({ register, errors }) => {
                         Wafat *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="wafat_ibu" value="0" className="w-4 h-4" {...register("wafat_ibu", { required: true })}
+                        <input type="radio" name="wafat_ibu" value="0" className="w-4 h-4" {...register("modalPeserta.wafat_ibu", { required: true })}
                                 required />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="wafat_ibu" value="1" className="w-4 h-4" {...register("wafat_ibu", { required: true })}
+                        <input type="radio" name="wafat_ibu" value="1" className="w-4 h-4" {...register("modalPeserta.wafat_ibu", { required: true })}
                                 required />
                         <span>Ya</span>
                     </label>
@@ -407,7 +407,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 }}
                                 placeholder="Masukkan NIK Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("nik_wali", { required: true })}
+                                {...register("modalPeserta.nik_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -427,7 +427,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Nama Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("nama_wali", { required: true })}
+                                {...register("modalPeserta.nama_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -444,7 +444,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="hubungan"
                                 name="hubungan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                {...register("hubungan", { required: true })}
+                                {...register("modalPeserta.hubungan", { required: true })}
                                 required
                             >
                                 <option value="">
@@ -478,7 +478,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tempat_lahir_wali", { required: true })}
+                                {...register("modalPeserta.tempat_lahir_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -497,7 +497,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="tanggal_lahir_wali"
                                 name="tanggal_lahir_wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tanggal_lahir_wali", { required: true })}
+                                {...register("modalPeserta.tanggal_lahir_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -516,7 +516,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("no_telepon_wali", { required: true })}
+                                {...register("modalPeserta.no_telepon_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -534,7 +534,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 id="pendidikan_terakhir_wali"
                                 name="pendidikan_terakhir_wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                {...register("pendidikan_terakhir_wali", { required: true })}
+                                {...register("modalPeserta.pendidikan_terakhir_wali", { required: true })}
                                 required
                             >
                                 <option value="">
@@ -566,7 +566,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="text"
                                 placeholder="Masukkan Pekerjaan Wali"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("pekerjaan_wali", { required: true })}
+                                {...register("modalPeserta.pekerjaan_wali", { required: true })}
                                 required
                             />
                         </div>
@@ -585,7 +585,7 @@ const FormKeluarga = ({ register, errors }) => {
                                 type="number"
                                 placeholder="1.000.000"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("penghasilan_wali", { required: true })}
+                                {...register("modalPeserta.penghasilan_wali", { required: true })}
                                 required
                             />
                         </div>
