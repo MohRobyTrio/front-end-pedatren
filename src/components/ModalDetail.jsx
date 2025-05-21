@@ -58,6 +58,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
                 else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
 
+                else if (menu === 23) endpoint = `pengunjung/${item.id}`;
+
                 if (!endpoint) throw new Error('Menu tidak valid');
 
                 const res = await fetch(`${API_BASE_URL}data-pokok/${endpoint}`);

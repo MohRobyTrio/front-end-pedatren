@@ -1,40 +1,67 @@
-import { useState, useEffect } from 'react';
+import {  useMemo, useState } from "react";
+import Filters from "../../components/Filters";
+import SearchBar from "../../components/SearchBar";
 import { OrbitProgress } from "react-loading-indicators";
-
-const useFetchPengunjung = (page, limit) => {
-    const [data, setData] = useState([]);
-    const [totalData, setTotalData] = useState(0);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/data-pokok/pengunjung?page=${page}&per_page=${limit}`)
-            .then(res => {
-                if (!res.ok) throw new Error('Network response was not ok');
-                return res.json();
-            })
-            .then(json => {
-                setData(json.data || []);
-                setTotalData(json.total_data || 0);
-                setTotalPages(json.total_pages || 1);
-                setLoading(false);
-            })
-            .catch(err => {
-                setError(err.message || 'Failed to fetch');
-                setLoading(false);
-            });
-    }, [page, limit]);
-
-    return { data, totalData, totalPages, loading, error };
-};
+import Pagination from "../../components/Pagination";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import useFetchPengunjung from "../../hooks/hooks_menu_mahrom/Pengunjung";
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import ModalDetail from "../../components/ModalDetail";
 
 const Pengunjung = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(25);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    }; 
 
-    const { data, totalData, totalPages, loading, error } = useFetchPengunjung(currentPage, limit);
+    const [filters, setFilters] = useState({
+        wilayah: "",
+        jenisKelamin: "",
+        jenisGroup: ""
+    });
+
+    const { filterWilayah } = DropdownWilayah();
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.label || "";
+
+    const updatedFilters = useMemo(() => ({
+        ...filters,
+        negara: negaraTerpilih,
+        provinsi: provinsiTerpilih,
+        kabupaten: kabupatenTerpilih,
+        kecamatan: kecamatanTerpilih,
+        wilayah: wilayahTerpilih
+    }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih, wilayahTerpilih]);    
+
+    const {
+        pengunjung,
+        loading,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages,
+        currentPage,
+        setCurrentPage
+    } = useFetchPengunjung(updatedFilters);
+
+    const [showFilters, setShowFilters] = useState(false);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -46,24 +73,38 @@ const Pengunjung = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pengunjung</h1>
-                <div className="flex items-center space-x-2">
+                {/* <div className="space-x-2 flex flex-wrap">
                     <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                </div>
+                </div> */}
             </div>
-            {error && (
-                <div className="mb-4 text-red-600">
-                    Error: {error}
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
+                    <Filters showFilters={showFilters} filterOptions={{ wilayah: filterWilayah.wilayah }} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                 </div>
-            )}
-            {loading ? (
-                <div className="flex justify-center py-10">
-                    <OrbitProgress variant="disc" color="#2a6999" size="small" />
-                </div>
-            ) : (
-                <>
+
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    showViewButtons={false}
+                />
+
+                {error ? (
+                    <div className="text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                            Muat Ulang
+                        </button>
+                    </div>
+                ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                            <thead className="bg-gray-100 text-gray-700">
                                 <tr>
                                     <th className="px-3 py-2 border-b">#</th>
                                     <th className="px-3 py-2 border-b">Wilayah Mahrom</th>
@@ -73,19 +114,19 @@ const Pengunjung = () => {
                                     <th className="px-3 py-2 border-b">Tanggal Kunjungan</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {data.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="10" className="text-center py-4">Tidak ada data</td>
-                                    </tr>
+                            <tbody className="text-gray-800 text-center">
+                                {loading ? (
+                                    <tr><td colSpan="6" className="py-6"><OrbitProgress variant="disc" color="#2a6999" size="small" /></td></tr>
+                                ) : pengunjung.length === 0 ? (
+                                    <tr><td colSpan="6" className="py-6">Tidak ada data</td></tr>
                                 ) : (
-                                    data.map((item, index) => (
-                                        <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                    pengunjung.map((item, index) => (
+                                        <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-left hover:cursor-pointer" onClick={() => openModal(item)}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.wilayah}</td>
+                                            <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
                                             <td className="px-3 py-2 border-b">
-                                                <div>{item.nama_pengunjung}</div>
-                                                <div className="text-gray-500 text-sm italic">({item.status})</div>
+                                                <div>{item.nama_pengunjung || "-"}</div>
+                                                <div className="text-gray-500 text-sm italic">({item.status || "-"})</div>
                                             </td>
                                             <td className="px-3 py-2 border-b">
                                                 <div>{item.santri_dikunjungi}</div>
@@ -93,37 +134,29 @@ const Pengunjung = () => {
                                                     {item.lembaga}, {item.jurusan}
                                                 </div>
                                             </td>
-                                            <td className="px-3 py-2 border-b">{item.jumlah_rombongan}</td>
-                                            <td className="px-3 py-2 border-b">{item.tanggal_kunjungan}</td>
+                                            <td className="px-3 py-2 border-b">{item.jumlah_rombongan || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.tanggal_kunjungan || "-"}</td>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
                         </table>
                     </div>
+                )}
 
-                    <div className="flex justify-between items-center">
-                        <div>Total Data: {totalData}</div>
-                        <div className="space-x-2">
-                            <button
-                                disabled={currentPage === 1}
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                className={`px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-700'}`}
-                            >
-                                Prev
-                            </button>
-                            <span>{currentPage} / {totalPages}</span>
-                            <button
-                                disabled={currentPage === totalPages}
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                className={`px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-700'}`}
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                </>
-            )}
+                {isModalOpen && (
+                    <ModalDetail
+                        title="Pengunjung"
+                        menu={23}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
+
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
+            </div>
         </div>
     );
 };
