@@ -1,7 +1,8 @@
 import { API_BASE_URL } from "../../hooks/config";
-import { getCookie } from "../../utils/cookieUtils";
 
-const token = sessionStorage.getItem("token") || getCookie("token");
+
+
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
 /**
  * Ambil list domisili berdasarkan biodataId (index)
@@ -50,12 +51,11 @@ export const createDomisili = async (biodataId, data) => {
       headers: { 
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
-       },
+      },
       body: JSON.stringify({
         wilayah: data.wilayah,
         blok: data.blok,
         kamar: data.kamar,
-        nomor_induk: data.nomorIndukSantri,
         waktu_mulai: data.waktuMulai,
         waktu_akhir: data.waktuAkhir,
       }),
@@ -79,12 +79,14 @@ export const updateDomisili = async (id, data) => {
   try {
     const res = await fetch(`${API_BASE_URL}${id}/domisili`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       body: JSON.stringify({
         wilayah: data.wilayah,
         blok: data.blok,
         kamar: data.kamar,
-        nomor_induk: data.nomorIndukSantri,
         waktu_mulai: data.waktuMulai,
         waktu_akhir: data.waktuAkhir,
       }),
