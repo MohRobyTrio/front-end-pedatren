@@ -1,6 +1,6 @@
 import { useState } from "react";
 import blankProfile from "../assets/blank_profile.png";
-import ModalDetail from "./ModalDetail";
+import ModalDetail from "./modal/ModalDetail";
 
 const PesertaItem = ({ data, title, menu }) => {
     const [openModal, setOpenModal] = useState(false);

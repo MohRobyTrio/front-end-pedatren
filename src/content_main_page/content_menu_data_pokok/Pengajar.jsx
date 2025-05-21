@@ -9,7 +9,7 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import blankProfile from "../../assets/blank_profile.png";
 import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
-import ModalDetail from '../../components/ModalDetail';
+import ModalDetail from '../../components/modal/ModalDetail';
 import { downloadFile } from '../../utils/downloadFile';
 import { FaFileExport } from 'react-icons/fa';
 import { API_BASE_URL } from '../../hooks/config';

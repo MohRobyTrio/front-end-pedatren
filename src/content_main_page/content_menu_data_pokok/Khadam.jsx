@@ -10,7 +10,7 @@ import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
-import ModalDetail from "../../components/ModalDetail";
+import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
 
 const Khadam = () => {

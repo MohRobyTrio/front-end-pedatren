@@ -7,7 +7,7 @@ import blankProfile from "../../assets/blank_profile.png";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
 import { useEffect, useMemo, useState } from 'react';
-import ModalDetail from '../../components/ModalDetail';
+import ModalDetail from '../../components/modal/ModalDetail';
 
 const Wali = () => {
     const [selectedItem, setSelectedItem] = useState(null);

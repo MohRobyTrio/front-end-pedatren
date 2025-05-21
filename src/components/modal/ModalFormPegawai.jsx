@@ -3,14 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
-import useMultiStepFormPegawai from "../hooks/hooks_modal/useMultiStepFormPegawai";
-import FormBiodata from "../content_modal/input/pegawai/FormBiodata";
-import FormKaryawan from "../content_modal/input/pegawai/FormKaryawan";
-import FormPengajar from "../content_modal/input/pegawai/FormPengajar";
-import FormPengurus from "../content_modal/input/pegawai/FormPengurus";
-import FormWaliKelas from "../content_modal/input/pegawai/FormWaliKelas";
-import FormBerkasPegawai from "../content_modal/input/pegawai/FormBerkas";
-import { jenisBerkasList } from "../data/menuData";
+import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
+import FormBiodata from "../../content_modal/input/pegawai/FormBiodata";
+import FormKaryawan from "../../content_modal/input/pegawai/FormKaryawan";
+import FormPengajar from "../../content_modal/input/pegawai/FormPengajar";
+import FormPengurus from "../../content_modal/input/pegawai/FormPengurus";
+import FormWaliKelas from "../../content_modal/input/pegawai/FormWaliKelas";
+import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
+import { jenisBerkasList } from "../../data/menuData";
 
 const MultiStepFormPegawai = ({ isOpen, onClose }) => {
     const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = useMultiStepFormPegawai(onClose);

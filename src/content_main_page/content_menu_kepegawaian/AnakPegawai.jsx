@@ -10,7 +10,7 @@ import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownWilayah from '../../hooks/hook_dropdown/DropdownWilayah';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import DropdownAngkatan from '../../hooks/hook_dropdown/DropdownAngkatan';
-import ModalDetail from '../../components/ModalDetail';
+import ModalDetail from '../../components/modal/ModalDetail';
 
 const AnakPegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);

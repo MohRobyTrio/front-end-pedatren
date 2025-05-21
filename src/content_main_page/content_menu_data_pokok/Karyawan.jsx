@@ -9,7 +9,7 @@ import Pagination from '../../components/Pagination';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import useDropdownGolonganJabatan from '../../hooks/hook_dropdown/DropdownGolonganJabatan';
-import ModalDetail from '../../components/ModalDetail';
+import ModalDetail from '../../components/modal/ModalDetail';
 import { downloadFile } from '../../utils/downloadFile';
 import { API_BASE_URL } from '../../hooks/config';
 import { FaFileExport } from 'react-icons/fa';

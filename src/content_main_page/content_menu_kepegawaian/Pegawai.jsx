@@ -10,11 +10,11 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from '../../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import ModalDetail from '../../components/ModalDetail';
+import ModalDetail from '../../components/modal/ModalDetail';
 import { downloadFile } from '../../utils/downloadFile';
 import { API_BASE_URL } from '../../hooks/config';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
-import MultiStepFormPegawai from '../../components/ModalFormPegawai';
+import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 
 const Pegawai = () => {
     const [exportLoading, setExportLoading] = useState(false);

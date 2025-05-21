@@ -6,7 +6,7 @@ import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import useFetchOrangTua from "../../hooks/hooks_menu_data_pokok/Orangtua";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
-import ModalDetail from "../../components/ModalDetail";
+import ModalDetail from "../../components/modal/ModalDetail";
 
 const OrangTua = () => {
     const [selectedItem, setSelectedItem] = useState(null);

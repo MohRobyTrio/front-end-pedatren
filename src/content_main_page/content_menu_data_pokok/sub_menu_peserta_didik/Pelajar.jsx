@@ -11,7 +11,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 // import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import useFetchPelajar from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Pelajar";
-import ModalDetail from "../../../components/ModalDetail";
+import ModalDetail from "../../../components/modal/ModalDetail";
 
 const Pelajar = () => {
     const [selectedItem, setSelectedItem] = useState(null);

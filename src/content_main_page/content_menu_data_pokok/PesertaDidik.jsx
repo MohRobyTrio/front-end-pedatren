@@ -12,10 +12,10 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
-import ModalDetail from "../../components/ModalDetail";
+import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport, FaPlus } from "react-icons/fa";
 // import ModalForm from "../../components/ModalFormPesertaDidik";
-import MultiStepModal from "../../components/ModalFormPesertaDidik";
+import MultiStepModal from "../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
 import { jenisBerkasList } from "../../data/menuData";
 

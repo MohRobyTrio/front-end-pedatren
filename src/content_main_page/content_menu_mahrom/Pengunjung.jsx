@@ -6,7 +6,7 @@ import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchPengunjung from "../../hooks/hooks_menu_mahrom/Pengunjung";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
-import ModalDetail from "../../components/ModalDetail";
+import ModalDetail from "../../components/modal/ModalDetail";
 
 const Pengunjung = () => {
     const [selectedItem, setSelectedItem] = useState(null);

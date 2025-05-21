@@ -3,11 +3,11 @@ import { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave } from 'react-icons/fa';
-import FormBiodata from '../content_modal/input/peserta_didik/FormBiodata';
-import FormKeluarga from '../content_modal/input/peserta_didik/FormKeluarga';
-import FormDomisiliPendidikan from '../content_modal/input/peserta_didik/FormDomisiliPendidikan';
-import { jenisBerkasList } from '../data/menuData';
-import FormBerkasPeserta from '../content_modal/input/peserta_didik/FormBerkas';
+import FormBiodata from '../../content_modal/input/peserta_didik/FormBiodata';
+import FormKeluarga from '../../content_modal/input/peserta_didik/FormKeluarga';
+import FormDomisiliPendidikan from '../../content_modal/input/peserta_didik/FormDomisiliPendidikan';
+import { jenisBerkasList } from '../../data/menuData';
+import FormBerkasPeserta from '../../content_modal/input/peserta_didik/FormBerkas';
 
 export default function MultiStepModal({ isOpen, onClose, formState }) {
     const {

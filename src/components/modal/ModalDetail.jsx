@@ -6,19 +6,19 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 // import axios from "axios";
 import { OrbitProgress } from "react-loading-indicators";
-import { API_BASE_URL } from "../hooks/config";
-import DetailBiodata from "../content_modal/detail/DetailBiodata";
-import DetailKeluarga from "../content_modal/detail/DetailKeluarga";
-import DetailPendidikan from "../content_modal/detail/DetailPendidikan";
-import DetailStatusSantri from "../content_modal/detail/DetailStatusSantri";
-import DetailDomisili from "../content_modal/detail/DetailDomisili";
-import DetailKunjunganMahrom from "../content_modal/detail/DetailKunjunganMahrom";
-import DetailCatatanProgress from "../content_modal/detail/DetailCatatanProgress";
-import DetailKhadam from "../content_modal/detail/DetailKhadam";
-import DetailPengurus from "../content_modal/detail/DetailPengurus";
-import DetailKaryawan from "../content_modal/detail/DetailKaryawan";
-import DetailWaliKelas from "../content_modal/detail/DetailWaliKelas";
-import DetailPengajar from "../content_modal/detail/DetailPengajar";
+import { API_BASE_URL } from "../../hooks/config";
+import DetailBiodata from "../../content_modal/detail/DetailBiodata";
+import DetailKeluarga from "../../content_modal/detail/DetailKeluarga";
+import DetailPendidikan from "../../content_modal/detail/DetailPendidikan";
+import DetailStatusSantri from "../../content_modal/detail/DetailStatusSantri";
+import DetailDomisili from "../../content_modal/detail/DetailDomisili";
+import DetailKunjunganMahrom from "../../content_modal/detail/DetailKunjunganMahrom";
+import DetailCatatanProgress from "../../content_modal/detail/DetailCatatanProgress";
+import DetailKhadam from "../../content_modal/detail/DetailKhadam";
+import DetailPengurus from "../../content_modal/detail/DetailPengurus";
+import DetailKaryawan from "../../content_modal/detail/DetailKaryawan";
+import DetailWaliKelas from "../../content_modal/detail/DetailWaliKelas";
+import DetailPengajar from "../../content_modal/detail/DetailPengajar";
 
 // Placeholder untuk tab lainnya
 const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
@@ -264,20 +264,14 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                             {/* Footer */}
                             <div className="mt-4 pt-4 text-right space-x-2">
-
-                                {/* set id session */}
-                                {/* <Link to="/formulir" onClick={() => sessionStorage.setItem("biodata_id", item.biodata_id)}>
-                                    <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
-                                        Buka di Formulir
-                                    </button>
-                                </Link> */}
-
                                 {/* set id route */}
-                                <Link to={`/formulir/${item.biodata_id}/biodata`}>
-                                    <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
-                                        Buka di Formulir
-                                    </button>
-                                </Link>
+                                {menu !== 23 &&(
+                                    <Link to={`/formulir/${item.biodata_id}/biodata`}>
+                                        <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
+                                            Buka di Formulir
+                                        </button>
+                                    </Link>
+                                )}
                                 <button
                                     onClick={onClose}
                                     className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"

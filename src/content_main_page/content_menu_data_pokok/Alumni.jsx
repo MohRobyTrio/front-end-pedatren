@@ -11,7 +11,7 @@ import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
-import ModalDetail from "../../components/ModalDetail";
+import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
 
 const Alumni = () => {
