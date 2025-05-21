@@ -5,9 +5,15 @@ import { Fragment } from "react";
 import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
 import useMultiStepFormPegawai from "../hooks/hooks_modal/useMultiStepFormPegawai";
 import FormBiodata from "../content_modal/input/pegawai/FormBiodata";
+import FormKaryawan from "../content_modal/input/pegawai/FormKaryawan";
+import FormPengajar from "../content_modal/input/pegawai/FormPengajar";
+import FormPengurus from "../content_modal/input/pegawai/FormPengurus";
+import FormWaliKelas from "../content_modal/input/pegawai/FormWaliKelas";
+import FormBerkasPegawai from "../content_modal/input/pegawai/FormBerkas";
+import { jenisBerkasList } from "../data/menuData";
 
 const MultiStepFormPegawai = ({ isOpen, onClose }) => {
-    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch } = useMultiStepFormPegawai(onClose);
+    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = useMultiStepFormPegawai(onClose);
 
     const tabs = [
         {
@@ -18,27 +24,27 @@ const MultiStepFormPegawai = ({ isOpen, onClose }) => {
         {
             id: 1,
             label: "Karyawan",
-            content: <h1>Karyawan</h1>
+            content: <FormKaryawan register={register} watch={watch} setValue={setValue} />
         },
         {
             id: 2,
             label: "Pengajar",
-            content: <h1>Pengajar</h1>
+            content: <FormPengajar register={register} watch={watch} setValue={setValue} />
         },
         {
             id: 3,
             label: "Pengurus",
-            content: <h1>Pengurus</h1>
+            content: <FormPengurus register={register} watch={watch} setValue={setValue} />
         },
         {
             id: 4,
             label: "Wali Kelas",
-            content: <h1>Wali Kelas</h1>
+            content: <FormWaliKelas register={register} watch={watch} setValue={setValue} control={control} />
         },
         {
             id: 5,
             label: "Berkas",
-            content: <h1>Berkas</h1>
+            content: <FormBerkasPegawai errors={errors} control={control} setValue={setValue} jenisBerkasList={jenisBerkasList} />
         }
     ]
 
@@ -81,7 +87,7 @@ const MultiStepFormPegawai = ({ isOpen, onClose }) => {
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Pegawai</Dialog.Title>
                             </div>
                             <form 
-                            // onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                            onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
                              className="flex-1 overflow-y-auto p-2">
                                 {/* {renderStep()} */}
                                 <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
@@ -144,7 +150,7 @@ const MultiStepFormPegawai = ({ isOpen, onClose }) => {
                                     ) : (
                                         <button
                                             type="submit"
-                                            // onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                                            onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
                                             className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
                                         >
                                             <FaSave />

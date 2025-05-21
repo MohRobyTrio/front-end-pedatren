@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import { getCookie } from "../../utils/cookieUtils";
+import { API_BASE_URL } from "../config";
+import { jenisBerkasList } from "../../data/menuData";
 
 const useMultiStepFormPegawai = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -13,6 +17,12 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     control,
     formState: { errors },
   } = useForm();
+
+  const watchedValues = watch();
+
+  useEffect(() => {
+    console.log("Data inputan berubah:", watchedValues);
+  }, [watchedValues]);
 
   const nextStep = async () => {
     const form = document.querySelector("form");
@@ -43,6 +53,192 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     }
   };
 
+  // const onValidSubmit = async (data) => {
+  //   try {
+  //     const confirmResult = await Swal.fire({
+  //       title: "Yakin ingin mengirim data?",
+  //       text: "Pastikan semua data sudah benar!",
+  //       icon: "question",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Ya, kirim",
+  //       cancelButtonText: "Batal",
+  //     });
+
+  //     if (!confirmResult.isConfirmed) return;
+
+  //     const formData = new FormData();
+
+  //     // === Append data dari modalPegawai (field utama) ===
+  //     if (data.modalPegawai) {
+  //       Object.entries(data.modalPegawai).forEach(([key, val]) => {
+  //         if (val !== null && val !== undefined) {
+  //           formData.append(key, val);
+  //         }
+  //       });
+  //     }
+
+  //     // === Append file berkas ===
+  //     const berkas = [];
+  //     for (let i = 1; i <= 18; i++) {
+  //       const fileKey = `file_${i}`;
+  //       if (data[fileKey]) {
+  //         berkas.push({
+  //           file: data[fileKey],
+  //           jenis_berkas_id: i.toString(),
+  //         });
+  //       }
+  //     }
+
+  //     berkas.forEach((b, i) => {
+  //       formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+  //       formData.append(`berkas[${i}][file_path]`, b.file);
+  //     });
+
+  //     // === Eksekusi API ===
+  //     const token = getCookie("token") || sessionStorage.getItem("token");
+  //     const response = await fetch(`${API_BASE_URL}crud/pegawai`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: formData,
+  //     });
+
+  //     const result = await response.json();
+
+  //     // === Cek response ===
+  //     if (!response.ok) {
+  //       const errorMessages = result.errors
+  //         ? Object.entries(result.errors).map(
+  //             ([field, messages]) =>
+  //               `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+  //           )
+  //         : [result.message || "Gagal mengirim data"];
+
+  //       await Swal.fire({
+  //         icon: "error",
+  //         title: "Gagal",
+  //         html: `<div style="text-align: left;">${errorMessages.join(
+  //           "<br>"
+  //         )}</div>`,
+  //       });
+
+  //       throw new Error(result.message);
+  //     }
+
+  //     await Swal.fire({
+  //       icon: "success",
+  //       title: "Berhasil!",
+  //       text: "Data pegawai berhasil dikirim.",
+  //     });
+
+  //     onClose?.();
+  //   } catch (error) {
+  //     console.error("Terjadi kesalahan:", error);
+  //   }
+  // };
+
+  const onValidSubmit = async (data) => {
+  try {
+    const confirmResult = await Swal.fire({
+      title: "Yakin ingin mengirim data?",
+      text: "Pastikan semua data sudah benar!",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, kirim",
+      cancelButtonText: "Batal",
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
+    const formData = new FormData();
+
+    // === Append data dari modalPegawai (field utama) ===
+    if (data.modalPegawai) {
+      Object.entries(data.modalPegawai).forEach(([key, val]) => {
+        if (val !== null && val !== undefined) {
+          formData.append(key, val);
+        }
+      });
+    }
+
+    // === Append file berkas ===
+    const berkas = [];
+    for (let i = 1; i <= 18; i++) {
+      const fileKey = `file_${i}`;
+      if (data[fileKey]) {
+        berkas.push({
+          file: data[fileKey],
+          jenis_berkas_id: i.toString(),
+        });
+      }
+    }
+
+    berkas.forEach((b, i) => {
+      formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+      formData.append(`berkas[${i}][file_path]`, b.file);
+    });
+
+    // === Eksekusi API ===
+    const token = getCookie("token") || sessionStorage.getItem("token");
+    const response = await fetch(`${API_BASE_URL}crud/pegawai`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    // === Cek response ===
+    if (!response.ok) {
+      const errorMessages = result.errors
+        ? Object.entries(result.errors).map(
+            ([field, messages]) =>
+              `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+          )
+        : [result.message || "Gagal mengirim data"];
+
+      await Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        html: `<div style="text-align: left;">${errorMessages.join("<br>")}</div>`,
+      });
+
+      throw new Error(result.message);
+    }
+
+    await Swal.fire({
+      icon: "success",
+      title: "Berhasil!",
+      text: "Data pegawai berhasil dikirim.",
+    });
+
+    onClose?.();
+  } catch (error) {
+    console.error("Terjadi kesalahan:", error);
+  }
+};
+
+const onInvalidSubmit = (errors) => {
+    const fileErrors = Object.keys(errors)
+      .filter((key) => key.startsWith("file_"))
+      .map((key) => {
+        const id = parseInt(key.split("_")[1], 10);
+        const berkas = jenisBerkasList.find((item) => item.id === id);
+        return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
+      });
+
+    if (fileErrors.length > 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Berkas wajib diunggah",
+        html: `<pre style="text-align: left;">${fileErrors.join("<br>")}</pre>`,
+      });
+    }
+  };
+
   const prevStep = () => {
     const prevTab = activeTab - 1;
     if (prevTab >= 0) setActiveTab(prevTab);
@@ -60,6 +256,8 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     setActiveTab,
     nextStep,
     prevStep,
+    onValidSubmit,
+    onInvalidSubmit
   };
 };
 

@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 
 // Helper untuk cek apakah user login
 const isLoggedIn = () => {
+  // return true
   const token = getCookie("token");
   const expiredAt = getCookie("expiredAt");
   const sessionToken = sessionStorage.getItem("token");

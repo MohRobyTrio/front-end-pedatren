@@ -2,7 +2,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Controller } from "react-hook-form";
 
-const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, control }) => {
+const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, control, nameModal }) => {
     const handleChange = (e, onChange) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -29,7 +29,7 @@ const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, 
     return (
         <Controller
             control={control}
-            name={`file_${id}`}
+            name={`${nameModal}.file_${id}`}
             rules={{ required: required && !selected }}
             defaultValue={null}
             render={({ field, fieldState }) => (

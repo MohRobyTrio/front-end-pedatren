@@ -26,7 +26,7 @@ const FormDomisiliPendidikan = ({ register, control }) => {
                                         }`}
                                 >
                                     <Controller
-                                        name={label}
+                                        name={`modalPeserta.${label}`}
                                         control={control}
                                         rules={{ required: true }}
                                         defaultValue={selectedFilters[label] || ""}
@@ -75,7 +75,7 @@ const FormDomisiliPendidikan = ({ register, control }) => {
                                 type="text"
                                 placeholder="Masukkan No. Induk"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('no_induk', { required: true })}
+                                 {...register('modalPeserta.no_induk', { required: true })}
                                  required
                             />
                         </div>
@@ -95,7 +95,7 @@ const FormDomisiliPendidikan = ({ register, control }) => {
                                 id="tanggal_masuk_pendidikan"
                                 name="tanggal_masuk_pendidikan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tanggal_masuk_pendidikan", { required: true })}
+                                {...register("modalPeserta.tanggal_masuk_pendidikan", { required: true })}
                                 required
                             />
                         </div>
@@ -115,7 +115,7 @@ const FormDomisiliPendidikan = ({ register, control }) => {
                                 id="tanggal_masuk_domisili"
                                 name="tanggal_masuk_domisili"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("tanggal_masuk_domisili", { required: true })}
+                                {...register("modalPeserta.tanggal_masuk_domisili", { required: true })}
                                 required
                             />
                         </div>

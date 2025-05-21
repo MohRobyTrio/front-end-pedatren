@@ -7,6 +7,22 @@ const DropdownLembaga = () => {
     const [selectedLembaga, setSelectedLembaga] = useState({ lembaga: "", jurusan: "", kelas: "", rombel: "" });
 
     useEffect(() => {
+        const sessionData = sessionStorage.getItem("menuLembaga");
+
+    if (sessionData) {
+      const parsed = JSON.parse(sessionData);
+      setData(parsed.lembaga);
+      setFilterLembaga({
+        lembaga: [
+          { value: "", label: "Semua Lembaga" },
+          ...parsed.lembaga.map((l) => ({ value: l.id, label: l.nama_lembaga }))
+        ],
+        jurusan: [{ value: "", label: "Semua Jurusan" }],
+        kelas: [{ value: "", label: "Semua Kelas" }],
+        rombel: [{ value: "", label: "Semua Rombel" }]
+      });
+    } else {
+
         fetch(`${API_BASE_URL}dropdown/lembaga`)
             .then((res) => res.json())
             .then((data) => {
@@ -17,6 +33,7 @@ const DropdownLembaga = () => {
                     kelas: [{ value: "", label: "Semua Kelas" }],
                     rombel: [{ value: "", label: "Semua Rombel" }]
                 });
+                sessionStorage.setItem("menuLembaga", JSON.stringify(data));
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -27,6 +44,7 @@ const DropdownLembaga = () => {
                     rombel: [{ value: "", label: "Semua Rombel" }]
                 });
             });
+        }
     }, []);
 
     const handleFilterChangeLembaga = (newFilter) => {

@@ -72,11 +72,13 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
 
       const formData = new FormData();
       // Append all form data (singkat)
-      Object.entries(data).forEach(([key, val]) => {
-        if (!key.startsWith("file_")) {
-          formData.append(key, val);
-        }
-      });
+      if (data.modalPeserta) {
+        Object.entries(data.modalPeserta).forEach(([key, val]) => {
+          if (!key.startsWith("file_")) {
+            formData.append(key, val);
+          }
+        });
+      }
 
       const berkas = [];
       for (let i = 1; i <= 18; i++) {
@@ -91,8 +93,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
         formData.append(`berkas[${i}][file_path]`, b.file);
       });
 
-      const token =
-        getCookie("token") || sessionStorage.getItem("token");
+      const token = getCookie("token") || sessionStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}crud/pesertadidik`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
