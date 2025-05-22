@@ -42,6 +42,8 @@ const ModalAddSantriFormulir = ({ isOpen, onClose }) => {
                             <div className="pb-4">
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Status Santri</Dialog.Title>
                             </div>
+
+                            
                         </Dialog.Panel>
                     </Transition.Child>
                 </div>

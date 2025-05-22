@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import { API_BASE_URL } from "../../hooks/config";
+import { getCookie } from "../../utils/cookieUtils";
 
 
 // Skema validasi form
@@ -93,7 +94,7 @@ const TabBiodata = () => {
         }
     });
 
-    const kewarganegaraan = watch('kewarganegaraan');
+    // const kewarganegaraan = watch('kewarganegaraan');
 
     // Handle perubahan dropdown wilayah
     const handleWilayahChange = (e, level) => {
@@ -114,10 +115,21 @@ const TabBiodata = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.get(`${API_BASE_URL}formulir/${id}/biodata/show`);
-            const responseData = response.data;
+            // const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/biodata/show`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Authorization': `Bearer ${token}`
+                }
+            });
 
-            console.log("Response dari API:", responseData); // Debugging
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log("Response dari API:", responseData);
 
             // Validasi response
             if (!responseData || !responseData.data) {
@@ -134,6 +146,7 @@ const TabBiodata = () => {
                 nama: biodata.nama || '',
                 no_passport: biodata.no_passport || '',
                 nik: biodata.nik || '',
+                nomor_kk: biodata.no_kk || '',
                 jenis_kelamin: biodata.jenis_kelamin === 'l' ? 'l' : 'p',
 
                 // Tanggal lahir
@@ -261,6 +274,7 @@ const TabBiodata = () => {
 
             // Append manual satu per satu jika perlu transform
             formData.append('tanggal_lahir', tanggalLahir);
+            formData.append('no_kk', data.nomor_kk);
             formData.append('nama', data.nama);
             // formData.append('jenis_kelamin', data.jenis_kelamin); // sekarang 'l' atau 'p'
             formData.append('no_telepon', data.telepon1);
@@ -274,7 +288,7 @@ const TabBiodata = () => {
             // formData.append('wafat', data.wafat === 'Ya' ? '1' : '0');
 
             [
-                'tempat_lahir', 'no_passport', 'nomor_kk', 'nik',
+                'tempat_lahir', 'no_passport', 'nik',
                 'anak_keberapa', 'dari_saudara', 'tinggal_bersama',
                 'email', 'jenis_kelamin','wafat',
                 'pekerjaan','jalan', 'kode_pos'
@@ -424,11 +438,11 @@ const TabBiodata = () => {
                         Kewarganegaraan *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wni" {...register('kewarganegaraan')} className="w-4 h-4" />
+                        <input type="radio" name="kewarganegaraan" value="wni" {...register('kewarganegaraan')} className="w-4 h-4" disabled />
                         <span>WNI</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wna" {...register('kewarganegaraan')} className="w-4 h-4" />
+                        <input type="radio" name="kewarganegaraan" value="wna" {...register('kewarganegaraan')} className="w-4 h-4" disabled />
                         <span>WNA</span>
                     </label>
                 </div>
