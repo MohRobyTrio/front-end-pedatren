@@ -343,21 +343,30 @@ const TabPendidikan = () => {
   return (
     <div className="relative p-2 bg-white">
       {/* Judul Formulir */}
-      <h1 className="text-xl font-bold mb-4">
-        {isUpdateMode ? `Formulir Pendidikan: ID ${biodata_id}` : 'Formulir Pendidikan Baru'}
+      <h1 className="text-xl font-bold flex items-center justify-between">Pendidikan
+        {/* <button
+          onClick={openAddModal}
+          type="button"
+          className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+        >
+          <i className="fas fa-plus"></i>
+          <span>Tambah Data</span>
+        </button> */}
       </h1>
 
       {/* History Pendidikan */}
       <div className="mb-6">
         {/* Debug Info - untuk development, bisa dihapus di production */}
-        <div className="mb-4 p-2 bg-gray-100 text-xs">
+        {/* <div className="mb-4 p-2 bg-gray-100 text-xs">
           <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
           <p>ID: {biodata_id || 'tidak ada'}</p>
-        </div>
-        <div className="mb-4 p-2 bg-gray-100 text-xs">
-          <pre>{JSON.stringify(watch(), null, 2)}</pre>
-        </div>
-        <h2 className="text-lg font-semibold mb-2">History Pendidikan</h2>
+        </div> */}
+        {/* <div className="mb-4 p-2 bg-gray-100 text-xs"> */}
+          {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
+        {/* </div> */}
+        {/* <h2 className="text-lg font-semibold mb-2">History Pendidikan</h2> */}
+
+        <br />
 
         {errorHistory && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -377,7 +386,7 @@ const TabPendidikan = () => {
               <div
                 key={item.id}
                 onClick={() => fillFormWithHistory(item)}
-                className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${watch('noInduk') === item.no_induk ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${watch('noInduk') === item.no_induk ? 'border-blue-100 bg-blue-50' : 'border-gray-200'
                   }`}
               >
                 <div className="flex justify-between items-start">
@@ -411,176 +420,148 @@ const TabPendidikan = () => {
             onClick={handleAddNew}
             className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Tambah Pendidikan Baru
+            Tambah Pendidikan
           </button>
         )}
       </div>
 
       {/* Form Pendidikan */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Lembaga */}
-          <div className="flex flex-col">
-            <label htmlFor="lembaga" className="text-black mb-1">
-              Lembaga *
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <select
-                id="lembaga"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                value={selectedLembaga || ""}
-                onChange={handleLembagaChange}
-                disabled={isLoading}
-              >
-                <option value="">Pilih Lembaga</option>
-                {lembagaOptions?.map(lembaga => (
-                  <option key={lembaga.id} value={lembaga.nama_lembaga}>
-                    {lembaga.nama_lembaga}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {errors.lembaga && (
-              <p className="text-red-500 text-sm mt-1">{errors.lembaga.message}</p>
-            )}
-          </div>
-
-          {/* Jurusan */}
-          <div className="flex flex-col">
-            <label htmlFor="jurusan" className="text-black mb-1">
-              Jurusan
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <select
-                id="jurusan"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                value={selectedJurusan || ""}
-                onChange={handleJurusanChange}
-                disabled={!selectedIds.lembaga_id || isLoading}
-              >
-                <option value="">Pilih Jurusan</option>
-                {jurusanOptions.map(jurusan => (
-                  <option key={jurusan.id} value={jurusan.nama_jurusan}>{jurusan.nama_jurusan}</option>
-                ))}
-              </select>
-            </div>
-            {errors.jurusan && (
-              <p className="text-red-500 text-sm mt-1">{errors.jurusan.message}</p>
-            )}
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4 mt-4">
+        <div className="sm:col-span-2 md:col-span-2">
+          <label htmlFor="lembaga" className="block text-sm font-medium text-gray-700">
+            Lembaga *
+          </label>
+          <select
+            id="lembaga"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={selectedLembaga || ""}
+            onChange={handleLembagaChange}
+            disabled={isLoading}
+          >
+            <option value="">Pilih Lembaga</option>
+            {lembagaOptions?.map(lembaga => (
+              <option key={lembaga.id} value={lembaga.nama_lembaga}>
+                {lembaga.nama_lembaga}
+              </option>
+            ))}
+          </select>
+          {errors.lembaga && (
+            <p className="text-red-500 text-sm mt-1">{errors.lembaga.message}</p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Kelas */}
-          <div className="flex flex-col">
-            <label htmlFor="kelas" className="text-black mb-1">
-              Kelas
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <select
-                id="kelas"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                value={selectedKelas || ""}
-                onChange={handleKelasChange}
-                disabled={!selectedIds.jurusan_id || isLoading}
-              >
-                <option value="">Pilih Kelas</option>
-                {kelasOptions.map(kelas => (
-                  <option key={kelas.id} value={kelas.nama_kelas}>{kelas.nama_kelas}</option>
-                ))}
-              </select>
-            </div>
-            {errors.kelas && (
-              <p className="text-red-500 text-sm mt-1">{errors.kelas.message}</p>
-            )}
-          </div>
-
-          {/* Rombel */}
-          <div className="flex flex-col">
-            <label htmlFor="rombel" className="text-black mb-1">
-              Rombel
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <select
-                id="rombel"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                value={watch('rombel') || ""}
-                onChange={handleRombelChange}
-                disabled={!selectedIds.kelas_id || isLoading}
-              >
-                <option value="">Pilih Rombel</option>
-                {rombelOptions.map(rombel => (
-                  <option key={rombel.id} value={rombel.nama_rombel}>{rombel.nama_rombel}</option>
-                ))}
-              </select>
-            </div>
-            {errors.rombel && (
-              <p className="text-red-500 text-sm mt-1">{errors.rombel.message}</p>
-            )}
-          </div>
+        <div className="sm:col-span-2 md:col-span-2">
+          <label htmlFor="jurusan" className="block text-sm font-medium text-gray-700">
+            Jurusan
+          </label>
+          <select
+            id="jurusan"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={selectedJurusan || ""}
+            onChange={handleJurusanChange}
+            disabled={!selectedIds.lembaga_id || isLoading}
+          >
+            <option value="">Pilih Jurusan</option>
+            {jurusanOptions.map(jurusan => (
+              <option key={jurusan.id} value={jurusan.nama_jurusan}>{jurusan.nama_jurusan}</option>
+            ))}
+          </select>
+          {errors.jurusan && (
+            <p className="text-red-500 text-sm mt-1">{errors.jurusan.message}</p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Nomor Induk */}
-          <div className="flex flex-col">
-            <label htmlFor="noInduk" className="text-black mb-1">
-              Nomor Induk *
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <input
-                id="noInduk"
-                type="text"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                {...register('noInduk')}
-                disabled={isLoading}
-              />
-            </div>
-            {errors.noInduk && (
-              <p className="text-red-500 text-sm mt-1">{errors.noInduk.message}</p>
-            )}
-          </div>
-
-          {/* Tanggal Mulai */}
-          <div className="flex flex-col">
-            <label htmlFor="tglMulai" className="text-black mb-1">
-              Tanggal Mulai *
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <input
-                id="tglMulai"
-                type="date"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                {...register('tglMulai')}
-                disabled={isLoading}
-              />
-            </div>
-            {errors.tglMulai && (
-              <p className="text-red-500 text-sm mt-1">{errors.tglMulai.message}</p>
-            )}
-          </div>
-
-          {/* Tanggal Akhir */}
-          <div className="flex flex-col">
-            <label htmlFor="tglAkhir" className="text-black mb-1">
-              Tanggal Akhir
-            </label>
-            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-              <input
-                id="tglAkhir"
-                type="date"
-                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                {...register('tglAkhir')}
-                disabled={isLoading}
-              />
-            </div>
-            {errors.tglAkhir && (
-              <p className="text-red-500 text-sm mt-1">{errors.tglAkhir.message}</p>
-            )}
-          </div>
+        <div className="sm:col-span-2 md:col-span-2">
+          <label htmlFor="kelas" className="block text-sm font-medium text-gray-700">
+            Kelas
+          </label>
+          <select
+            id="kelas"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={selectedKelas || ""}
+            onChange={handleKelasChange}
+            disabled={!selectedIds.jurusan_id || isLoading}
+          >
+            <option value="">Pilih Kelas</option>
+            {kelasOptions.map(kelas => (
+              <option key={kelas.id} value={kelas.nama_kelas}>{kelas.nama_kelas}</option>
+            ))}
+          </select>
+          {errors.kelas && (
+            <p className="text-red-500 text-sm mt-1">{errors.kelas.message}</p>
+          )}
         </div>
 
-        {/* Tombol Simpan */}
-        <div className="mt-4">
+        <div className="sm:col-span-2 md:col-span-2">
+          <label htmlFor="rombel" className="block text-sm font-medium text-gray-700">
+            Rombel
+          </label>
+          <select
+            id="rombel"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={watch('rombel') || ""}
+            onChange={handleRombelChange}
+            disabled={!selectedIds.kelas_id || isLoading}
+          >
+            <option value="">Pilih Rombel</option>
+            {rombelOptions.map(rombel => (
+              <option key={rombel.id} value={rombel.nama_rombel}>{rombel.nama_rombel}</option>
+            ))}
+          </select>
+          {errors.rombel && (
+            <p className="text-red-500 text-sm mt-1">{errors.rombel.message}</p>
+          )}
+        </div>
+
+        <div className="sm:col-span-2 md:col-span-2">
+          <label htmlFor="noInduk" className="block text-sm font-medium text-gray-700">
+            Nomor Induk *
+          </label>
+          <input
+            id="noInduk"
+            type="text"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            {...register('noInduk')}
+            disabled={isLoading}
+          />
+          {errors.noInduk && (
+            <p className="text-red-500 text-sm mt-1">{errors.noInduk.message}</p>
+          )}
+        </div>
+      
+        <div className="sm:col-span-2 md:col-span-3">
+          <label htmlFor="tglMulai" className="block text-sm font-medium text-gray-700">
+            Tanggal Mulai *
+          </label>
+          <input
+            id="tglMulai"
+            type="date"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            {...register('tglMulai')}
+            disabled={isLoading}
+          />
+          {errors.tglMulai && (
+            <p className="text-red-500 text-sm mt-1">{errors.tglMulai.message}</p>
+          )}
+        </div>
+
+        <div className="sm:col-span-2 md:col-span-3">
+          <label htmlFor="tglAkhir" className="block text-sm font-medium text-gray-700">
+            Tanggal Akhir
+          </label>
+          <input
+            id="tglAkhir"
+            type="date"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            {...register('tglAkhir')}
+            disabled={isLoading}
+          />
+          {errors.tglAkhir && (
+            <p className="text-red-500 text-sm mt-1">{errors.tglAkhir.message}</p>
+          )}
+        </div>
+
+        <div className="col-span-8 flex justify-start gap-2 mt-4">
           <button
             type="submit"
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-400"

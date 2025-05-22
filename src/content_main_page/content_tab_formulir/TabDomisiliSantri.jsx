@@ -285,7 +285,7 @@ const TabDomisiliSantri = () => {
             const tanggalKeluar = result.value;
 
             try {
-                const res = await axios.put(`${API_BASE_URL}formulir/${domisiliId}/domisili`, {
+                const res = await axios.put(`${API_BASE_URL}formulir/${domisiliId}/domisili/keluar`, {
                     tanggal_keluar: tanggalKeluar
                 });
 
@@ -318,23 +318,32 @@ const TabDomisiliSantri = () => {
     return (
         <div className="relative p-2 bg-white">
             {/* Judul Formulir */}
-            <h1 className="text-xl font-bold mb-4">
-                {isUpdateMode ? `Formulir Domisili: ID ${biodata_id}` : 'Formulir Domisili Baru'}
+            <h1 className="text-xl font-bold flex items-center justify-between">Domisili Santri
+                {/* <button
+                    onClick={open}
+                    type="button"
+                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                >
+                    <i className="fas fa-plus"></i>
+                    <span>Tambah Data</span>
+                </button> */}
             </h1>
 
             {/* History Domisili */}
             <div className="mb-6">
                 {/* Debug Info - untuk development, bisa dihapus di production */}
-                <div className="mb-4 p-2 bg-gray-100 text-xs">
+                {/* <div className="mb-4 p-2 bg-gray-100 text-xs">
                     <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
                     <p>Biodata ID: {biodata_id || 'tidak ada'}</p>
                     <p>Selected IDs: {JSON.stringify(selectedIds)}</p>
-                </div>
-                <div className="mb-4 p-2 bg-gray-100 text-xs">
-                    <pre>{JSON.stringify(watch(), null, 2)}</pre>
+                </div> */}
+                {/* <div className="mb-4 p-2 bg-gray-100 text-xs"> */}
+                    {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
                     {/* <pre>{JSON.stringify(errors, null, 2)}</pre> ini bisa diaktifkan untuk debug error */}
-                </div>
-                <h2 className="text-lg font-semibold mb-2">History Domisili</h2>
+                {/* </div> */}
+                {/* <h2 className="text-lg font-semibold mb-2">History Domisili</h2> */}
+
+                <br />
 
                 {errorHistory && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -360,7 +369,7 @@ const TabDomisiliSantri = () => {
                                         getValues('blok') === item.nama_blok &&
                                         getValues('kamar') === item.nama_kamar &&
                                         getValues('waktuMulai') === (item.tanggal_masuk?.slice(0, 10) || ''))
-                                        ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                                        ? 'border-blue-100 bg-blue-50' : 'border-gray-200'
                                     }`}
                             >
                                 <div className="flex justify-between items-start">
@@ -403,7 +412,7 @@ const TabDomisiliSantri = () => {
                                                 e.stopPropagation(); // Mencegah onClick parent terpicu
                                                 handleKeluarDomisili(item.id);
                                             }}
-                                            className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1"
+                                            className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1"
                                             title="Keluar Domisili"
                                         >
                                             <FontAwesomeIcon icon={faRightFromBracket} />Keluar
@@ -423,131 +432,119 @@ const TabDomisiliSantri = () => {
                     <button
                         type="button"
                         onClick={handleAddNew}
-                        className="mt-3 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                     >
-                        Tambah Domisili Baru
+                        Tambah Domisili
                     </button>
                 )}
             </div>
 
             {/* Form Domisili */}
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4 bg-gray-50 p-4 rounded shadow">
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Wilayah */}
-                    <div className="flex flex-col">
-                        <label htmlFor="wilayah" className="text-black mb-1">
+                    <div>
+                        <label htmlFor="wilayah" className="block text-sm font-medium text-gray-700">
                             Wilayah *
                         </label>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <select
-                                id="wilayah"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={selectedWilayah || ""}
-                                {...register('wilayah')}
-                                onChange={handleWilayahChange}
-                                disabled={isLoading}
-                            >
-                                <option value="">Pilih Wilayah</option>
-                                {wilayahOptions.map(option => (
-                                    <option key={option.id} value={option.nama_wilayah}>
-                                        {option.nama_wilayah}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <select
+                            id="wilayah"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            value={selectedWilayah || ""}
+                            {...register('wilayah')}
+                            onChange={handleWilayahChange}
+                            disabled={isLoading}
+                        >
+                            <option value="">Pilih Wilayah</option>
+                            {wilayahOptions.map(option => (
+                                <option key={option.id} value={option.nama_wilayah}>
+                                    {option.nama_wilayah}
+                                </option>
+                            ))}
+                        </select>
                         {errors.wilayah && (
                             <p className="text-red-500 text-sm mt-1">{errors.wilayah.message}</p>
                         )}
                     </div>
 
-                    {/* Blok */}
-                    <div className="flex flex-col">
-                        <label htmlFor="blok" className="text-black mb-1">
+                    <div>
+                        <label htmlFor="blok" className="block text-sm font-medium text-gray-700">
                             Blok
                         </label>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <select
-                                id="blok"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={selectedBlok || ""}
-                                {...register('blok')}
-                                onChange={handleBlokChange}
-                                disabled={!selectedIds.wilayah_id || isLoading}
-                            >
-                                <option value="">Pilih Blok</option>
-                                {blokOptions.map(option => (
-                                    <option key={option.id} value={option.nama_blok}>{option.nama_blok}</option>
-                                ))}
-                            </select>
-                        </div>
+                        <select
+                            id="blok"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            value={selectedBlok || ""}
+                            {...register('blok')}
+                            onChange={handleBlokChange}
+                            disabled={!selectedIds.wilayah_id || isLoading}
+                        >
+                            <option value="">Pilih Blok</option>
+                            {blokOptions.map(option => (
+                                <option key={option.id} value={option.nama_blok}>{option.nama_blok}</option>
+                            ))}
+                        </select>
                         {errors.blok && (
                             <p className="text-red-500 text-sm mt-1">{errors.blok.message}</p>
                         )}
                     </div>
 
-                    {/* Kamar */}
-                    <div className="flex flex-col">
-                        <label htmlFor="kamar" className="text-black mb-1">
+                    <div>
+                        <label htmlFor="kamar" className="block text-sm font-medium text-gray-700">
                             Kamar
                         </label>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <select
-                                id="kamar"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                value={watch('kamar') || ""}
-                                {...register('kamar')}
-                                onChange={handleKamarChange}
-                                disabled={!selectedIds.blok_id || isLoading}
-                            >
-                                <option value="">Pilih Kamar</option>
-                                {kamarOptions.map(option => (
-                                    <option key={option.id} value={option.nama_kamar}>{option.nama_kamar}</option>
-                                ))}
-                            </select>
-                        </div>
+                        <select
+                            id="kamar"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            value={watch('kamar') || ""}
+                            {...register('kamar')}
+                            onChange={handleKamarChange}
+                            disabled={!selectedIds.blok_id || isLoading}
+                        >
+                            <option value="">Pilih Kamar</option>
+                            {kamarOptions.map(option => (
+                                <option key={option.id} value={option.nama_kamar}>{option.nama_kamar}</option>
+                            ))}
+                        </select>
                         {errors.kamar && (
                             <p className="text-red-500 text-sm mt-1">{errors.kamar.message}</p>
                         )}
                     </div>
 
-                    {/* Waktu Mulai */}
-                    <div className="flex flex-col">
-                        <label htmlFor="waktuMulai" className="text-black mb-1">
+                    <div>
+                        <label htmlFor="waktuMulai" className="block text-sm font-medium text-gray-700">
                             Tanggal Mulai *
                         </label>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <input
-                                id="waktuMulai"
-                                type="date"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('waktuMulai')}
-                                disabled={isLoading}
-                            />
-                        </div>
+                        <input
+                            id="waktuMulai"
+                            type="date"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            {...register('waktuMulai')}
+                            disabled={isLoading}
+                        />
                         {errors.waktuMulai && (
                             <p className="text-red-500 text-sm mt-1">{errors.waktuMulai.message}</p>
                         )}
                     </div>
 
-                    {/* Waktu Akhir */}
-                    <div className="flex flex-col">
-                        <label htmlFor="waktuAkhir" className="text-black mb-1">
+                    <div>
+                        <label htmlFor="waktuAkhir" className="block text-sm font-medium text-gray-700">
                             Tanggal Akhir
                         </label>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                            <input
-                                id="waktuAkhir"
-                                type="date"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('waktuAkhir')}
-                                disabled={isLoading}
-                            />
-                        </div>
+                        <input
+                            id="waktuAkhir"
+                            type="date"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            {...register('waktuAkhir')}
+                            disabled={isLoading}
+                        />
                         {errors.waktuAkhir && (
                             <p className="text-red-500 text-sm mt-1">{errors.waktuAkhir.message}</p>
                         )}
                     </div>
                 </div>
+
+                <br />
 
                 <div className="flex justify-start gap-2 mt-1">
                     <button
@@ -568,7 +565,7 @@ const TabDomisiliSantri = () => {
                     </button>
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Menyimpan...' : 'Simpan'}
