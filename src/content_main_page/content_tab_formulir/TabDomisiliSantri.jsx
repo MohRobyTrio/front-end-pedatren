@@ -394,7 +394,7 @@ const TabDomisiliSantri = () => {
                                     </span>
                                 </div>
                                 {!item.tanggal_keluar && ( // Hanya tampilkan tombol jika domisili aktif
-                                    <div className="flex flex-wrap gap-2 mt-2">
+                                    <div className="flex flex-wrap gap-2 mt-2 gap-x-4">
                                         <button
                                             type="button"
                                             onClick={(e) => {
@@ -573,6 +573,7 @@ const TabDomisiliSantri = () => {
                 </div>
             </form>
             {/* ModalPindahDomisili tidak lagi digunakan karena logika pindah domisili di handle di form yang sama */}
+
         </div>
     );
 };

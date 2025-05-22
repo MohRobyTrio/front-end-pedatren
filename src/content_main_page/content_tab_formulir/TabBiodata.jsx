@@ -179,6 +179,17 @@ const TabBiodata = () => {
                 }
             });
 
+            const nikTerisi = !!formData.nik && formData.nik.trim() !== '';
+            const passportTerisi = !!formData.no_passport && formData.no_passport.trim() !== '';
+
+            if (nikTerisi) {
+                setValue('kewarganegaraan', 'wni');
+            } else if (passportTerisi) {
+                setValue('kewarganegaraan', 'wna');
+            }
+            if (formData.tanggal_lahir.tahun) {
+                hitungUmur(formData.tanggal_lahir.tahun, formData.tanggal_lahir.bulan);
+            }
             // Set dropdown wilayah
             if (biodata.negara_id) {
                 handleFilterChangeNegara({ negara: biodata.negara_id.toString() });
@@ -229,13 +240,13 @@ const TabBiodata = () => {
     }, [biodata_id]);
 
     // Handle perubahan photo
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setPhoto(file);
-            setPhotoPreview(URL.createObjectURL(file));
-        }
-    };
+    // const handlePhotoChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         setPhoto(file);
+    //         setPhotoPreview(URL.createObjectURL(file));
+    //     }
+    // };
 
     // Submit form
     const onSubmit = async (data) => {
@@ -385,28 +396,28 @@ const TabBiodata = () => {
     return (
         <div className="relative p-2 bg-white ">
             {/* Judul Formulir */}
-            <h1 className="text-xl font-bold mb-4">{isUpdateMode
+            {/* <h1 className="text-xl font-bold mb-4">{isUpdateMode
                         ? `Formulir Update: ID ${biodata_id}`
-                        : 'Formulir Baru'}</h1>
+                        : 'Formulir Baru'}</h1> */}
 
             {/* Foto - dibuat responsif */}
-            <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
+            {/* <div className="w-48 h-56 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden shadow md:absolute md:top-4 md:right-4">
                 <img
                     src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
                     alt="Foto Santri"
                     className="object-cover w-full h-full"
                 />
-            </div>
+            </div> */}
 
             <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2 space-y-4 w-full">
                 {/* Debug Info - untuk development, bisa dihapus di production */}
-                <div className="mb-4 p-2 bg-gray-100 text-xs">
+                {/* <div className="mb-4 p-2 bg-gray-100 text-xs">
                     <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
                     <p>ID: {biodata_id || 'tidak ada'}</p>
                 </div>
                 <div className="mb-4 p-2 bg-gray-100 text-xs">
                     <pre>{JSON.stringify(watch(), null, 2)}</pre>
-                </div>
+                </div> */}
                 {/* Kewarganegaraan */}
                 <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                     <label htmlFor="kewarganegaraan" className="lg:w-1/4 text-black">
