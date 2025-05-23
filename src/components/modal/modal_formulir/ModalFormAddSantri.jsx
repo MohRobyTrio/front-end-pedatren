@@ -1,63 +1,9 @@
-// import { faTimes } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { Dialog, Transition } from "@headlessui/react";
-// import { Fragment } from "react";
-
-// const ModalAddSantriFormulir = ({ isOpen, onClose }) => {
-//     return (
-//         <Transition appear show={isOpen} as={Fragment}>
-//             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
-//                 <Transition.Child
-//                     as={Fragment}
-//                     enter="transition-opacity duration-300"
-//                     enterFrom="opacity-0"
-//                     enterTo="opacity-100"
-//                     leave="transition-opacity duration-200"
-//                     leaveFrom="opacity-100"
-//                     leaveTo="opacity-0"
-//                 >
-//                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-//                 </Transition.Child>
-
-//                 <div className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-//                     <Transition.Child
-//                         as={Fragment}
-//                         enter="transition-transform duration-300 ease-out"
-//                         enterFrom="scale-95 opacity-0"
-//                         enterTo="scale-100 opacity-100"
-//                         leave="transition-transform duration-200 ease-in"
-//                         leaveFrom="scale-100 opacity-100"
-//                         leaveTo="scale-95 opacity-0"
-//                     >
-//                         <Dialog.Panel className="bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full h-full relative max-h-[90vh] flex flex-col">
-//                             {/* Tombol Close */}
-//                             <button
-//                                 onClick={onClose}
-//                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-//                             >
-//                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
-//                             </button>
-
-//                             {/* Header */}
-//                             <div className="pb-4">
-//                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Status Santri</Dialog.Title>
-//                             </div>
-
-
-//                         </Dialog.Panel>
-//                     </Transition.Child>
-//                 </div>
-//             </Dialog>
-//         </Transition>
-//     );
-// };
-
-// export default ModalAddSantriFormulir;
-
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+import Swal from "sweetalert2";
+import { API_BASE_URL } from "../../../hooks/config";
 
 const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
     const [formData, setFormData] = useState({
@@ -69,33 +15,61 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-console.log(biodataId);
+
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
 
         try {
-            const response = await fetch(`http://localhost:8000/api/formulir/${biodataId}/santri`, {
+            const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/santri`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    // Jika pakai Laravel Sanctum / token auth, tambahkan Authorization
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
             });
-            
 
+            const result = await response.json();
+
+            // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Gagal submit:", errorData);
-                alert("Gagal menyimpan data.");
-            } else {
-                alert("Data berhasil disimpan!");
-                onClose(); // tutup modal
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
+
+            // ✅ Jika status dari backend false meskipun HTTP 200
+            if (!result.status) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${result.message}</div>`,
+                });
+                return; // Jangan lempar error, cukup berhenti
+            }
+
+            // ✅ Sukses
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: "Data berhasil dikirim.",
+            });
+
+            onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
-            alert("Terjadi kesalahan saat mengirim data.");
+            await Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: "Terjadi kesalahan saat mengirim data.",
+            });
         }
     };
-
 
     return (
         <Transition appear show={isOpen} as={Fragment}>

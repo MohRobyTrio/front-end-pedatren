@@ -28,8 +28,6 @@ const useLogout = () => {
       });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(errorData.message || "Logout gagal");
         let errorMessage = "Logout gagal";
         try {
           const errorData = await response.json();
@@ -42,9 +40,6 @@ const useLogout = () => {
         }
         throw new Error(errorMessage);
       }
-
-      // const data = await response.json();
-      // console.log("Logout berhasil:", data);
 
       if (response.status !== 204) {
         const data = await response.json();
