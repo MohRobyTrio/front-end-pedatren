@@ -169,7 +169,7 @@ const TabSantri = () => {
             </h1>
 
             {showAddModal && (
-                <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} />
+                <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} />
             )}
             
             <div className="mt-5 space-y-6">

@@ -124,7 +124,7 @@ const TabKhadam = () => {
                                         : "bg-red-100 text-red-700"
                                     }`}
                             >
-                                {khadam.status === 1 ? "Aktif" : "Tidak Aktif"}
+                                {khadam.status === 1 ? "Aktif" : "Nonaktif"}
                             </span>
                         </div>
 
@@ -173,6 +173,7 @@ const TabKhadam = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
+                                        {khadam.status === 1 && (
                                         <button
                                             type="button"
                                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
@@ -180,6 +181,7 @@ const TabKhadam = () => {
                                         >
                                             Simpan
                                         </button>
+                                        )}
                                         <button
                                             type="button"
                                             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none"

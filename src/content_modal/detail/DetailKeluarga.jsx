@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const renderStatus = (value) => {
     if (value === true || value === 1) return <FontAwesomeIcon icon={faCheck} className="text-green-600" />;
     // if (value === false || value === 0) return <FontAwesomeIcon icon={faTimes} className="text-red-600" />;
-    if (value === false || value === 0) return "";
+    if (value === false || value === 0 || value === null) return "";
     return "-";
 };
 
@@ -33,8 +33,8 @@ const DetailKeluarga = ({ keluarga }) => (
                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                 <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                <td className="px-3 py-2 border-b capitalize">{item.status || "-"}</td>
-                                <td className="px-3 py-2 border-b">{renderStatus(item.wali)}</td>
+                                <td className="px-3 py-2 border-b capitalize">{item.status || item.status_keluarga || "-"}</td>
+                                <td className="px-3 py-2 border-b">{renderStatus(item.wali || item.sebagai_wali || item["sebagai wali"])}</td>
                             </tr>
                         ))
                     )
