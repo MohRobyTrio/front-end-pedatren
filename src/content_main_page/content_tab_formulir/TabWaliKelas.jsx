@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormSantri";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import { getCookie } from "../../utils/cookieUtils";
 
 const TabWaliKelas = () => {
     const { biodata_id } = useParams();
@@ -15,67 +16,81 @@ const TabWaliKelas = () => {
     const [startDate, setStartDate] = useState("");
 
     const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
-    const [loadingDetailWaliKelas, setLoadingDetailWaliKelas] = useState(false);
+    const [loadingDetailWaliKelas, setLoadingDetailWaliKelas] = useState(null);
     const [loadingUpdateWaliKelas, setLoadingUpdateWaliKelas] = useState(false);
 
-    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, setSelectedFilterLembaga } = DropdownLembaga();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
-    useEffect(() => {
-        const fetchWaliKelas = async () => {
-            try {
-                setLoadingWaliKelas(true);
-                const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/walikelas`);
-                const result = await response.json();
-                console.log(result);
+    const fetchWaliKelas = useCallback(async () => {
+        const token = sessionStorage.getItem("token") || getCookie("token");
+        if (!biodata_id || !token) return;
+        try {
+            setLoadingWaliKelas(true);
+            const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/walikelas`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            console.log(result);
 
-                setWaliKelasList(result.data || []);
-            } catch (error) {
-                console.error("Gagal mengambil data WaliKelas:", error);
-            } finally {
-                setLoadingWaliKelas(false);
-            }
-        };
-
-        if (biodata_id) fetchWaliKelas();
+            setWaliKelasList(result.data || []);
+        } catch (error) {
+            console.error("Gagal mengambil data WaliKelas:", error);
+        } finally {
+            setLoadingWaliKelas(false);
+        }
     }, [biodata_id]);
+
+    useEffect(() => {    
+        fetchWaliKelas();
+    }, [fetchWaliKelas]);
 
     useEffect(() => {
         // Saat selectedFilterLembaga diisi, panggil handleFilterChangeLembaga secara bertahap
         if (selectedWaliKelasDetail) {
             if (selectedWaliKelasDetail.lembaga_id) {
-                handleFilterChangeLembaga({ lembaga_id: selectedWaliKelasDetail.lembaga_id });
+                handleFilterChangeLembaga({ lembaga: selectedWaliKelasDetail.lembaga_id });
             }
             if (selectedWaliKelasDetail.jurusan_id) {
-                handleFilterChangeLembaga({ jurusan_id: selectedWaliKelasDetail.jurusan_id });
+                handleFilterChangeLembaga({ jurusan: selectedWaliKelasDetail.jurusan_id });
             }
             if (selectedWaliKelasDetail.kelas_id) {
-                handleFilterChangeLembaga({ kelas_id: selectedWaliKelasDetail.kelas_id });
+                handleFilterChangeLembaga({ kelas: selectedWaliKelasDetail.kelas_id });
             }
             if (selectedWaliKelasDetail.rombel_id) {
-                handleFilterChangeLembaga({ rombel_id: selectedWaliKelasDetail.rombel_id });
+                handleFilterChangeLembaga({ rombel: selectedWaliKelasDetail.rombel_id });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWaliKelasDetail]);
 
     const handleCardClick = async (id) => {
         try {
-            setLoadingDetailWaliKelas(true);
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/walikelas/show`);
-            const result = await response.json();            
+            setLoadingDetailWaliKelas(id);
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/walikelas/show`, 
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            const result = await response.json();        
+            console.log(result);
+                
             setSelectedWaliKelasId(id);
             setSelectedWaliKelasDetail(result.data);
-            setSelectedFilterLembaga({
-                lembaga_id: result.data.lembaga_id?.toString() || "",
-                jurusan_id: result.data.jurusan_id?.toString() || "",
-                kelas_id: result.data.kelas_id?.toString() || "",
-                rombel_id: result.data.rombel_id?.toString() || "",
-            });
-            setEndDate(result.data.periode_awal || "");
-            setStartDate(result.data.periode_akhir || "");
+            setEndDate(result.data.periode_akhir || "");
+            setStartDate(result.data.periode_awal || "");
         } catch (error) {
             console.error("Gagal mengambil detail WaliKelas:", error);
         } finally {
-            setLoadingDetailWaliKelas(false);
+            setLoadingDetailWaliKelas(null);
         }
     };
 
@@ -102,12 +117,14 @@ const TabWaliKelas = () => {
 
         try {
             setLoadingUpdateWaliKelas(true);
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(payload),
                 }
@@ -202,7 +219,7 @@ const TabWaliKelas = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailWaliKelas ? (
+                        {loadingDetailWaliKelas === waliKelas.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>

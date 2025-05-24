@@ -82,7 +82,7 @@ const TabSantri = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailSantri ? (
+                        {loadingDetailSantri === santri.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>

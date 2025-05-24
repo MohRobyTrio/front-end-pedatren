@@ -4,30 +4,25 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
+import { getCookie } from "../../../utils/cookieUtils";
 
-export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, data, feature }) => {
+export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, data, feature, fetch }) => {
     let endpoint = '';
     let metod = '';
     let id = '';
-    let ket = '';
-    let tgl_mulai = '';
     if (feature == 1) {
-        ket = "";
-        tgl_mulai = "";
         id = biodataId;
         metod = "POST";
         endpoint = "khadam";
     } else {
-        ket = data?.keterangan;
-        tgl_mulai = data?.tanggal_mulai;
         id = data.id
         metod = "PUT"
         endpoint = "khadam/pindah"
     }
 
     const [formData, setFormData] = useState({
-        keterangan: ket,
-        tanggal_mulai: tgl_mulai
+        keterangan: "",
+        tanggal_mulai: ""
     });    
 
     const handleSubmit = async (e) => {
@@ -45,23 +40,23 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
         if (!confirmResult.isConfirmed) return;
 
         try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method: metod,
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
 
             const result = await response.json();
 
-            // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
-            // ✅ Jika status dari backend false meskipun HTTP 200
-            if (!result.status) {
+            if ("status" in result && !result.status) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
@@ -77,6 +72,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                 text: "Data berhasil dikirim.",
             });
 
+            fetch?.();
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -217,10 +213,12 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id }) => {
         if (!confirmResult.isConfirmed) return;
 
         try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/keluar`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
@@ -233,7 +231,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id }) => {
             }
 
             // ✅ Jika status dari backend false meskipun HTTP 200
-            if (!result.status) {
+            if ("status" in result && !result?.status) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
