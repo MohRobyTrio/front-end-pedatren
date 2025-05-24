@@ -126,7 +126,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isLoggingIn}
-            className="w-full text-white bg-blue-600 hover:bg-blue-700 rounded-lg px-5 py-2.5 text-center"
+            className={`w-full text-white rounded-lg px-5 py-2.5 text-center ${isLoggingIn ? "bg-blue-700 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
           >
             {isLoggingIn ? <Load /> : "Login"}
           </button>
