@@ -16,50 +16,71 @@ const SantriAfektifCard = ({ santri }) => {
     return (
         <div className="rounded-lg mb-4">
             {santri.catatan?.map((catatan, i) => (
-                <div key={i} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4">
-                    {/* Foto Santri */}
-                    <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
+                <div
+                    key={i}
+                    className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4"
+                >
+                    {/* Foto Santri*/}
+                    <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 rounded-md bg-gray-200 overflow-hidden">
                         {santri.foto ? (
-                            <img src={santri.foto} alt={santri.nama_santri} className="w-full h-full object-cover" />
+                            <img src={santri.foto} 
+                            alt={santri.nama_santri} 
+                            className="w-full h-full object-cover" />
                         ) : (
-                            <i className="fas fa-user text-gray-400 text-4xl"></i>
+                            <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
+                                <i className="fas fa-user text-gray-400 text-4xl"></i>
+                            </div>
                         )}
                     </div>
 
                     {/* Info Santri */}
-                    <div className="flex-1 space-y-2 min-w-[200px]">
+                    <div className="col-span-12 md:col-span-3 lg:col-span-3 space-y-2">
                         <h2 className="text-lg font-semibold">{santri.nama_santri}</h2>
-                        <p className="text-sm text-gray-600">
-                            Domisili: {santri.blok} - {santri.wilayah}</p>
-                        <p className="text-sm text-gray-600">
-                            Pendidikan : {[santri.pendidikan, santri.lembaga].filter(Boolean).join(' - ')}
+                        <p className="text-sm text-gray-800">
+                            Domisili: {santri.blok} - {santri.wilayah}
+                        </p>
+                        <p className="text-sm text-gray-800">
+                            Pendidikan: {[santri.pendidikan, santri.lembaga].filter(Boolean).join(' - ') || 'Tidak ada'}
                         </p>
                     </div>
 
                     {/* Detail Catatan */}
-                    <div className="flex-1 space-y-2 min-w-[150px]">
-                        <h2>
-                            {catatan.kategori}: <span className={`${nilaiConfig[catatan.nilai]?.color || 'text-gray-600'}`}>
+                    <div className="col-span-12 md:col-span-5 lg:col-span-5 space-y-1">
+                        <h2 className='text-lg font-semibold'>
+                            {catatan.kategori}:{' '}
+                            <span className={`${nilaiConfig[catatan.nilai]?.color || 'text-gray-600'}`}>
                                 [ {catatan.nilai} ]
                             </span>
                         </h2>
-                        <p className="text-sm">{nilaiConfig[catatan.nilai]?.label}</p>
-                        <p className="text-sm font-semibold">Tindak Lanjut:</p>
-                        <p className="text-sm">{catatan.tindak_lanjut}</p>
+                        <p className="text-md text-gray-800">{nilaiConfig[catatan.nilai]?.label || 'Tidak ada'}</p>
+                        <h2 className="text-md font-semibold">Tindak Lanjut :</h2>
+                        <p className="text-md text-gray-800">{catatan.tindak_lanjut || 'Tidak ada'}</p>
                     </div>
 
-                    {/* Pencatat */}
-                    <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
-                        <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                            {catatan.fotoPencatat ? (
-                                <img src={catatan.fotoPencatat} alt={catatan.pencatat} className="w-full h-full object-cover" />
-                            ) : (
-                                <i className="fas fa-user text-gray-400"></i>
-                            )}
+                    {/* Pencatat  */}
+                    <div className="col-span-12 md:col-span-2 lg:col-span-2 space-y-2">
+                        <div className="flex items-start gap-3">
+                            <div className="p-1 flex items-center justify-center flex-shrink-0">
+                                <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                                    {catatan.fotoPencatat ? (
+                                        <img
+                                            src={catatan.fotoPencatat}
+                                            alt={catatan.pencatat}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <i className="fas fa-user text-gray-400"></i>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-bold">Pencatat:</p>
+                                <p className="text-sm">{catatan.pencatat || 'Tidak ada'}</p>
+                                <p className="text-sm text-gray-700">({catatan.jabatanPencatat || 'Tidak ada'})</p>
+                                <br />
+                            </div>
                         </div>
-                        <p className="text-sm font-bold">{catatan.pencatat}</p>
-                        <p className="text-sm">({catatan.jabatanPencatat})</p>
-                        <p className="text-xs text-gray-500">{catatan.waktu_pencatatan}</p>
+                        <p className="text-end text-xs text-gray-500">{catatan.waktu_pencatatan || 'Tidak ada'}</p>
                     </div>
                 </div>
             ))}
