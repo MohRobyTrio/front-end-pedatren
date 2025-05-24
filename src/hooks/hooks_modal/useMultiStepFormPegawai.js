@@ -212,7 +212,7 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     await Swal.fire({
       icon: "success",
       title: "Berhasil!",
-      text: "Data pegawai berhasil dikirim.",
+      text: result.message,
     });
 
     onClose?.();
