@@ -5,7 +5,6 @@ import { setTokenCookie } from "../utils/cookieUtils";
 const useLogin = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-//   const lastLoginRequest = useRef("");
 
 const login = useCallback(async ({ email, password, rememberMe }) => {
   const url = `${API_BASE_URL}login`;

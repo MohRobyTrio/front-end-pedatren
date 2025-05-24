@@ -1,83 +1,216 @@
+import { useEffect, useMemo, useState } from "react";
+import useFetchKognitif from "../../hooks/hook_menu_kepesantrenan/catatan_kognitif"; 
+import SantriAfektifCard from "../../components/catatanCard";
+import SearchBar from "../../components/SearchBar";
+import Filters from "../../components/Filters";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { useState } from "react";
+import { OrbitProgress } from "react-loading-indicators";
+import Pagination from "../../components/Pagination";
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 
 const CatatanKognitif = () => {
-    const [search, setSearch] = useState("");
+    const [filters, setFilters] = useState({
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+        jenisKelamin: "",
+        kategori: "",
+        nilai: ""
+    });
 
-    const filterOptions = {
-        negara: ["Semua Negara", "Indonesia", "Malaysia", "Singapura"],
-        provinsi: ["Semua Provinsi", "Jawa Barat", "Jawa Tengah", "Jawa Timur"],
-        kabupaten: ["Semua Kabupaten", "Bandung", "Semarang", "Surabaya"],
-        kecamatan: ["Semua Kecamatan", "Cimahi", "Ungaran", "Gubeng"],
-        wilayah: ["Pilih Wilayah", "wilayah A", "wilayah B"]
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+
+    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
+    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
+    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
+    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
+    const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
+    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
+
+    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
+    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
+    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
+    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
+
+    const updatedFilters = useMemo(() => ({
+        ...filters,
+        negara: negaraTerpilih,
+        provinsi: provinsiTerpilih,
+        kabupaten: kabupatenTerpilih,
+        kecamatan: kecamatanTerpilih,
+        wilayah: wilayahTerpilih,
+        blok: blokTerpilih,
+        kamar: kamarTerpilih,
+        lembaga: lembagaTerpilih,
+        jurusan: jurusanTerpilih,
+        kelas: kelasTerpilih,
+        rombel: rombelTerpilih,
+    }), [
+        filters,
+        negaraTerpilih, provinsiTerpilih, kabupatenTerpilih, kecamatanTerpilih,
+        wilayahTerpilih, blokTerpilih, kamarTerpilih,
+        lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih
+    ]);
+
+    const [page, setPage] = useState(1);
+
+    const {
+        groupedData,
+        loading,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        searchTerm,
+        setSearchTerm,
+        fetchData
+    } = useFetchKognitif(filters);
+
+    const [showFilters, setShowFilters] = useState(false);
+
+    //Fetch data saat filter/page berubah
+    useEffect(() => {
+        fetchData(updatedFilters, filters, page);
+    }, [updatedFilters, filters, page, fetchData]);
+
+    //debuging
+    useEffect(() => {
+        console.log('Updated Filters:', updatedFilters);
+        console.log('Filters:', filters);
+        fetchData(updatedFilters, page);
+    }, [updatedFilters, page, fetchData]);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
+
+    // useEffect(() => {
+    //     fetchData(updatedFilters);
+    // }, [fetchData, updatedFilters]);
+
+    const filter3 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
+        ],
+        kategori: [
+            { label: "Semua Materi", value: "" },
+            { label: "Kebahasaan", value: "kebahasaan" },
+            { label: "Baca kitab kuning", value: "baca kitab kuning" },
+            { label: "Hafalan / Tahfidz", value: "hafalan tahfidz" },
+            { label: "Furudhul Ainiyah", value: "furudul ainiyah" },
+            { label: "Tulis Al-Quran", value: "tulis al-quran" },
+            { label: "Baca Al-Quran", value: "baca al-quran" }
+        ],
+        nilai: [
+            { label: "Semua Score", value: "" },
+            { label: "Score A", value: "a" },
+            { label: "Score B", value: "B" },
+            { label: "Score C", value: "C" },
+            { label: "Score D", value: "D" },
+            { label: "Score E", value: "E" }
+        ]
+    }
 
     return (
         <div className="flex-1 p-6">
             <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-                <h1 className="text-2xl font-bold">Catatan Kognitif</h1>
+                <h1 className="text-2xl font-bold mb-6">Catatan Kognitif</h1>
                 <div className="space-x-2 flex flex-wrap">
                     <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Wali Asuh Tidak Menginput</button>
                     <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Statistik</button>
                 </div>
             </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                    {Object.entries(filterOptions).map(([key, options]) => (
-                        <select key={key} className="border p-2 rounded w-full sm:w-auto">
-                            {options.map((option) => (
-                                <option key={option} value={option}>{option}</option>
-                            ))}
-                        </select>
-                    ))}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterNegara}
+                        onChange={handleFilterChangeNegara}
+                        selectedFilters={selectedNegara}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterWilayah}
+                        onChange={handleFilterChangeWilayah}
+                        selectedFilters={selectedWilayah}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterLembaga}
+                        onChange={handleFilterChangeLembaga}
+                        selectedFilters={selectedLembaga}
+                    />
+                    <Filters 
+                        showFilters={showFilters}
+                        filterOptions={filter3}
+                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                        selectedFilters={filters}
+                    />
+
                 </div>
-                <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
-                    <div className="flex items-center gap-2">
-                        <select className="border p-2 rounded">
-                            <option>25</option>
-                            <option>50</option>
-                            <option>100</option>
-                        </select>
-                        <span>Total data 0</span>
-                    </div>
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <input
-                            type="text"
-                            placeholder="Cari Catatan ..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="border p-2 rounded flex-1"
-                        />
-                        <button className="p-2 bg-green-500 text-white rounded">
-                            <i className="fas fa-filter"></i>
-                        </button>
-                    </div>
-                </div>
-                <div className="space-y-4">
-                    {[...Array(2)].map((_, i) => (
-                        <div key={i} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white">
-                            <img src="https://via.placeholder.com/100" alt="foto" className="w-24 h-24 rounded-md" />
-                            <div className="flex-1 space-y-2 min-w-[200px]">
-                                <h2 className="text-lg font-semibold">Bilqhis Madhania Faidah Putri</h2>
-                                <p className="text-sm text-gray-600">Domisili: C.4 (Al-Mahdi) - Daerah Robi'ah Al-Adawiyah</p>
-                                <p className="text-sm text-gray-600">Pendidikan: IPS Reguler - SMA-NJ</p>
-                            </div>
-                            <div className="flex-1 space-y-2 min-w-[150px]">
-                                <h2>Kebahasaan: <span className="text-green-600">[ B ]</span></h2>
-                                <p className="text-sm">baik</p>
-                                <p className="text-sm font-semibold">Tindak Lanjut:</p>
-                                <p className="text-sm">Tingkatkan kebahasaan dengan baik dan benar.</p>
-                            </div>
-                            <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
-                                <img src="https://via.placeholder.com/60" alt="wali asuh" className="w-16 h-16 rounded-full" />
-                                <p className="text-sm font-bold">Sitti Naiesa</p>
-                                <p className="text-sm">(waliasuh)</p>
-                                <p className="text-xs text-gray-500">26 Nov 2024 14:42:51</p>
-                            </div>
+
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    totalFiltered={groupedData.length}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    showViewButtons={false}
+                // toggleView={setViewMode}
+                />
+
+                <div>
+                    {error && (
+                        <div className="bg-red-50 text-red-600 p-3 rounded mb-4">
+                            Error: {error}
                         </div>
-                    ))}
+                    )}
+
+                    <div className="space-y-4">
+                        {loading ? (
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                            </div>
+                        ) : Object.values(groupedData).length > 0 ? (
+                            Object.values(groupedData).map(santri => (
+                                <SantriAfektifCard key={santri.id_santri} santri={santri} />
+                            ))
+                        ) : (
+                        <p className="text-center py-8 text-gray-500">Tidak ada data</p>
+                        )}
+                    </div>
                 </div>
+
+                {totalPages > 1 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
+                    />
+                )}
             </div>
+
         </div>
     );
 };
