@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 
+// const DropdownLembaga = ({ defaultValues }) => {
 const DropdownLembaga = () => {
     const [data, setData] = useState([]);
     const [filterLembaga, setFilterLembaga] = useState({ lembaga: [], jurusan: [], kelas: [], rombel: [] });
@@ -48,6 +49,7 @@ const DropdownLembaga = () => {
     }, []);
 
     const handleFilterChangeLembaga = (newFilter) => {
+          console.log("Dropdown berubah:", newFilter);
         setSelectedLembaga(prevFilters => {
             const updatedFilters = { ...prevFilters, ...newFilter };
 
@@ -89,7 +91,47 @@ const DropdownLembaga = () => {
         });
     }, [selectedLembaga.lembaga, data, selectedLembaga.jurusan, selectedLembaga.kelas, filterLembaga.lembaga]);
 
-    return { filterLembaga, selectedLembaga, handleFilterChangeLembaga };
+    const setSelectedFilterLembaga = (filters) => {
+      setSelectedLembaga(filters);
+    };
+
+    // useEffect(() => {
+    //   if (data.length > 0 && defaultValues?.lembaga_id) {
+    //     setSelectedLembaga((prev) => ({
+    //       ...prev,
+    //       lembaga: defaultValues.lembaga_id.toString(),
+    //     }));
+    //   }
+    // }, [data, defaultValues?.lembaga_id]);
+
+    // useEffect(() => {
+    //   if (filterLembaga.jurusan.length > 1 && defaultValues?.jurusan_id) {
+    //     setSelectedLembaga((prev) => ({
+    //       ...prev,
+    //       jurusan: defaultValues.jurusan_id.toString(),
+    //     }));
+    //   }
+    // }, [filterLembaga.jurusan, defaultValues?.jurusan_id]);
+
+    // useEffect(() => {
+    //   if (filterLembaga.kelas.length > 1 && defaultValues?.kelas_id) {
+    //     setSelectedLembaga((prev) => ({
+    //       ...prev,
+    //       kelas: defaultValues.kelas_id.toString(),
+    //     }));
+    //   }
+    // }, [filterLembaga.kelas, defaultValues?.kelas_id]);
+
+    // useEffect(() => {
+    //   if (filterLembaga.rombel.length > 1 && defaultValues?.rombel_id) {
+    //     setSelectedLembaga((prev) => ({
+    //       ...prev,
+    //       rombel: defaultValues.rombel_id.toString(),
+    //     }));
+    //   }
+    // }, [filterLembaga.rombel, defaultValues?.rombel_id]);
+
+    return { filterLembaga, selectedLembaga, handleFilterChangeLembaga, setSelectedFilterLembaga };
 };
 
 export default DropdownLembaga;

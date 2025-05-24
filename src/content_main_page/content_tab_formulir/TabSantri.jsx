@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormAddSantri";
+import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormSantri";
 import { OrbitProgress } from "react-loading-indicators";
 import { useSantri } from "../../hooks/hooks_formulir/tabSantri";
 

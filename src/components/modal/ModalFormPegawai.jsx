@@ -94,6 +94,7 @@ const MultiStepFormPegawai = ({ isOpen, onClose }) => {
                                     {tabs.map((tab) => (
                                         <li key={tab.id}>
                                             <button
+                                                type="button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     if (unlockedTabs.includes(tab.id)) setActiveTab(tab.id);

@@ -33,29 +33,3 @@ body {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-
-.slide-down-enter {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-.slide-down-enter-active {
-  max-height: 500px; /* atur sesuai tinggi maksimal form */
-  opacity: 1;
-  overflow: hidden;
-}
-
-.slide-down-exit {
-  max-height: 500px;
-  opacity: 1;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-.slide-down-exit-active {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
