@@ -94,6 +94,12 @@ const CatatanKognitif = () => {
         fetchData(updatedFilters, page);
     }, [updatedFilters, page, fetchData]);
 
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     // useEffect(() => {
     //     fetchData(updatedFilters);
     // }, [fetchData, updatedFilters]);
@@ -196,12 +202,13 @@ const CatatanKognitif = () => {
                     </div>
                 </div>
 
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onChange={setCurrentPage}
-                    className="mt-6"
-                />
+                {totalPages > 1 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
+                    />
+                )}
             </div>
 
         </div>

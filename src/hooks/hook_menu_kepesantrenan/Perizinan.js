@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { API_BASE_URL } from '../config';
 
-const useFetchPerizinan = () => {
+const useFetchPerizinan = (filters) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,10 +12,6 @@ const useFetchPerizinan = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const lastRequest = useRef('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-
-
-  // Field yang akan dijadikan sebagai searchable
-  const SEARCHABLE_FIELDS = ['nama_santri', 'provinsi', 'kabupaten', 'lembaga'];
 
   // Debounce searchTerm selama 400ms
   useEffect(() => {
@@ -34,15 +30,31 @@ const useFetchPerizinan = () => {
     // Handle search
     if (debouncedSearchTerm) {
       url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
-      url += `&search_fields=${SEARCHABLE_FIELDS.join(',')}`;
     }
+
+    // Handle filters
+    if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
+    if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
+    if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
+    if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+    if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
+    if (filters?.blok && filters.blok !== "Semua Blok") url += `&blok=${encodeURIComponent(filters.blok)}`;
+    if (filters?.kamar && filters.kamar !== "Semua Kamar") url += `&kamar=${encodeURIComponent(filters.kamar)}`;
+    if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+    if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
+    if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
+    if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+    if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+    if (filters?.bermalam) url += `&bermalam=${encodeURIComponent(filters.bermalam)}`;
+    if (filters?.jenis_izin) url += `&jenis_izin=${encodeURIComponent(filters.jenis_izin)}`;
+    if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
     
     // Handle filters
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && value !== 'Semua') {
-        url += `&${key}=${encodeURIComponent(value)}`;
-      }
-    });
+    // Object.entries(filters).forEach(([key, value]) => {
+    //   if (value && value !== 'Semua') {
+    //     url += `&${key}=${encodeURIComponent(value)}`;
+    //   }
+    // });
 
     // Skip duplicate requests
     if (lastRequest.current === url) {
@@ -50,6 +62,7 @@ const useFetchPerizinan = () => {
       return;
     }
     lastRequest.current = url;
+    console.log('Fetching data from:', url);
 
     try {
       setLoading(true);
@@ -92,7 +105,7 @@ const useFetchPerizinan = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, debouncedSearchTerm]);
+  }, [currentPage, filters, limit, debouncedSearchTerm]);
 
   // Helper function untuk menghitung durasi
   const calculateDuration = (start, end) => {
@@ -119,7 +132,7 @@ const useFetchPerizinan = () => {
     setCurrentPage(1);
   }, [limit, searchTerm]);
 
-  // Filter options
+  // Filter options (tidak digunakan)
   const filterOptions = useMemo(() => {
     const options = {
       alasan_izin: [],

@@ -5,11 +5,11 @@ const SantriAfektifCard = ({ santri }) => {
 
     // Config nilai
     const nilaiConfig = {
-        'A': { label: 'sangat baik', color: 'bg-green-100 text-green-800' },
-        'B': { label: 'baik', color: 'bg-blue-100 text-blue-800' },
-        'C': { label: 'cukup', color: 'bg-yellow-100 text-yellow-800' },
-        'D': { label: 'kurang', color: 'bg-red-100 text-red-800' },
-        'E': { label: 'sangat kurang', color: 'bg-pink-100 text-pink-800' },
+        'A': { label: 'sangat baik', color: ' text-green-800' },
+        'B': { label: 'baik', color: ' text-blue-800' },
+        'C': { label: 'cukup', color: ' text-yellow-800' },
+        'D': { label: 'kurang', color: ' text-red-800' },
+        'E': { label: 'sangat kurang', color: ' text-pink-800' },
         
     };
 
