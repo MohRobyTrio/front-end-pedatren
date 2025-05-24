@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
+import Swal from "sweetalert2";
 
 export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, setFeature }) => {
     const [khadamList, setKhadamList] = useState([]);
@@ -16,26 +17,40 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
 
     const token = sessionStorage.getItem("token") || getCookie("token");
 
+    const fetchKhadam = useCallback(async () => {
+        if (!biodata_id || !token) return;
+        try {
+            setLoadingKhadam(true);
+            const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/khadam`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            setKhadamList(result.data || []);
+        } catch (error) {
+            console.error("Gagal mengambil data Khadam:", error);
+        } finally {
+            setLoadingKhadam(false);
+        }
+    }, [biodata_id, token]);
+
     useEffect(() => {
-        const fetchKhadam = async () => {
-            try {
-                setLoadingKhadam(true);
-                const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/khadam`);
-                const result = await response.json();
-                setKhadamList(result.data || []);
-            } catch (error) {
-                console.error("Gagal mengambil data Khadam:", error);
-            } finally {
-                setLoadingKhadam(false);
-            }
-        };
-        if (biodata_id) fetchKhadam();
-    }, [biodata_id]);
+        fetchKhadam();
+    }, [fetchKhadam]);
 
     const handleCardClick = async (id) => {
         try {
             setLoadingDetailKhadamId(id);
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`);
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const result = await response.json();
             setSelectedKhadamId(id);
             setSelectedKhadamDetail(result.data);
@@ -72,13 +87,28 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
             );
             const result = await response.json();
             if (response.ok) {
-                alert(`Data berhasil diperbarui! : ${result.message}`);
-                setSelectedKhadamDetail(result.data || payload);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data berhasil diperbarui!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });                   setSelectedKhadamDetail(result.data || payload);
+                fetchKhadam();
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal update',
+                    text: result.message || 'Terjadi kesalahan saat memperbarui data',
+                });
             }
         } catch (error) {
             console.error("Error saat update:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Terjadi kesalahan saat mengirim permintaan',
+            });
         } finally {
             setLoadingUpdateKhadam(false);
         }
@@ -86,7 +116,13 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
         try {
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`);
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const result = await response.json();
             setSelectedKhadamId(id);
             setSelectedKhadamData(result.data);
@@ -100,6 +136,7 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
     return {
         khadamList,
         loadingKhadam,
+        fetchKhadam,
         handleCardClick,
         loadingDetailKhadamId,
         selectedKhadamDetail,

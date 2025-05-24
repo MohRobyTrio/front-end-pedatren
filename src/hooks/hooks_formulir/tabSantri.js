@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
+import Swal from "sweetalert2";
 
 export const useSantri = (biodata_id) => {
     const [santriList, setSantriList] = useState([]);
@@ -9,30 +11,48 @@ export const useSantri = (biodata_id) => {
     const [startDate, setStartDate] = useState("");
 
     const [loadingSantri, setLoadingSantri] = useState(true);
-    const [loadingDetailSantri, setLoadingDetailSantri] = useState(false);
+    const [loadingDetailSantri, setLoadingDetailSantri] = useState(null);
     const [loadingUpdateSantri, setLoadingUpdateSantri] = useState(false);
 
-    useEffect(() => {
-        const fetchSantri = async () => {
-            try {
-                setLoadingSantri(true);
-                const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/santri`);
-                const result = await response.json();
-                setSantriList(result.data || []);
-            } catch (error) {
-                console.error("Gagal mengambil data santri:", error);
-            } finally {
-                setLoadingSantri(false);
-            }
-        };
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
-        if (biodata_id) fetchSantri();
-    }, [biodata_id]);
+    const fetchSantri = useCallback(async () => {
+        if (!biodata_id || !token) return;
+        try {
+            setLoadingSantri(true);
+            const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/santri`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            setSantriList(result.data || []);
+        } catch (error) {
+            console.error("Gagal mengambil data santri:", error);
+        } finally {
+            setLoadingSantri(false);
+        }
+    }, [biodata_id, token]);
+
+    // Ambil data santri pertama kali
+    useEffect(() => {
+        fetchSantri();
+    }, [fetchSantri]);
 
     const handleCardClick = async (id) => {
         try {
-            setLoadingDetailSantri(true);
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/santri/show`);
+            setLoadingDetailSantri(id);
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/santri/show`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             const result = await response.json();
             setSelectedSantriId(id);
             setSelectedSantriDetail(result.data);
@@ -41,7 +61,7 @@ export const useSantri = (biodata_id) => {
         } catch (error) {
             console.error("Gagal mengambil detail santri:", error);
         } finally {
-            setLoadingDetailSantri(false);
+            setLoadingDetailSantri(null);
         }
     };
 
@@ -63,19 +83,36 @@ export const useSantri = (biodata_id) => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(payload),
                 }
             );
             const result = await response.json();
             if (response.ok) {
-                alert("Data berhasil diperbarui!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data berhasil diperbarui!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });                
                 setSelectedSantriDetail(result.data || payload);
+                fetchSantri();
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal update',
+                    text: result.message || 'Terjadi kesalahan saat memperbarui data',
+                });
             }
         } catch (error) {
             console.error("Error saat update:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Terjadi kesalahan saat mengirim permintaan',
+            });
         } finally {
             setLoadingUpdateSantri(false);
         }

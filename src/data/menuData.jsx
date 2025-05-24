@@ -37,6 +37,7 @@ import TabPengurus from "../content_main_page/content_tab_formulir/TabPengurus";
 import TabProgress from "../content_main_page/content_tab_formulir/TabProgress";
 import TabSantri from "../content_main_page/content_tab_formulir/TabSantri";
 import TabWaliAsuh from "../content_main_page/content_tab_formulir/TabWaliAsuh";
+import TabWaliKelas from "../content_main_page/content_tab_formulir/TabWaliKelas";
 import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPres";
 import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
@@ -115,6 +116,7 @@ export const tabsFormulir = [
   { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
   { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
   { id: "pengurus", label: "Pengurus", link: "pengurus", content: <TabPengurus /> },
+  { id: "walikelas", label: "Wali Kelas", link: "wali-kelas", content: <TabWaliKelas /> },
   { id: "khadam", label: "Khadam", link: "khadam", content: <TabKhadam /> },
   { id: "berkas", label: "Berkas", link: "berkas", content: <TabBerkas /> },
   { id: "warpes", label: "Warga Pesantren", link: "warga-pesantren", content: <TabWarPes /> },

@@ -4,13 +4,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
+import { getCookie } from "../../../utils/cookieUtils";
 
 const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
     const [formData, setFormData] = useState({
-        nis: "",
-        tanggal_masuk: "",
-        tanggal_keluar: "",
-        status: ""
+        tanggal_masuk: ""
     });
 
     const handleSubmit = async (e) => {
@@ -28,10 +26,12 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
         if (!confirmResult.isConfirmed) return;
 
         try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/santri`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
@@ -48,7 +48,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
-                    html: `<div style="text-align: left;">${result.message}</div>`,
+                    html: `<div style="text-align: center;">${result.message}</div>`,
                 });
                 return; // Jangan lempar error, cukup berhenti
             }
@@ -119,25 +119,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="nis" className="block text-gray-700">NIS *</label>
-                                                    <input
-                                                        type="text"
-                                                        inputMode="numeric"
-                                                        onInput={(e) => {
-                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                                                        }}
-                                                        id="nis"
-                                                        name="nis"
-                                                        value={formData.nis}
-                                                        onChange={(e) => setFormData({ ...formData, nis: e.target.value })}
-                                                        maxLength={50}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan NIS"
-                                                    />
-                                                </div>
+                                            <div className="space-y-4">                                                
                                                 <div>
                                                     <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Masuk *</label>
                                                     <input
@@ -149,46 +131,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Keluar</label>
-                                                    <input
-                                                        type="date"
-                                                        id="tanggal_keluar"
-                                                        name="tanggal_keluar"
-                                                        value={formData.tanggal_keluar}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_keluar: e.target.value })}
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-gray-700 mb-1">Status</label>
-                                                    <div className="flex items-center space-x-4">
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="status"
-                                                                value="aktif"
-                                                                checked={formData.status === "aktif"}
-                                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                                                className="form-radio text-blue-600 h-4 w-4"
-                                                            />
-                                                            <span className="ml-2 text-sm text-gray-700">Aktif</span>
-                                                        </label>
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="status"
-                                                                value="nonaktif"
-                                                                checked={formData.status === "nonaktif"}
-                                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                                                className="form-radio text-blue-600 h-4 w-4"
-                                                            />
-                                                            <span className="ml-2 text-sm text-gray-700">Nonaktif</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-
+                                                </div>                                            
                                             </div>
                                         </div>
                                     </div>

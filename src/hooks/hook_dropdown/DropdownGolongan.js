@@ -57,7 +57,7 @@ const DropdownGolongan = () => {
             );
             setAllGolonganList(allGolongan);
             // Kalau mau cek console log
-            console.log("All Golongan (id + GolonganNama):", allGolongan);
+            // console.log("All Golongan (id + GolonganNama):", allGolongan);
         }
     }, [golonganData]);
 
