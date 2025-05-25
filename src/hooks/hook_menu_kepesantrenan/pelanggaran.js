@@ -40,12 +40,14 @@ const useFetchPelanggaran = (filters) => {
     if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
     if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
     if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
-    if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
-    if (filters?.status_pelanggaran && filters.status_pelanggaran !== " ") {
+    if (filters?.jenisKelamin && filters.jenisKelamin !== "") {
+      url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+    }
+    if (filters?.status_pelanggaran && filters.status_pelanggaran !== "") {
       url += `&status_pelanggaran=${encodeURIComponent(filters.status_pelanggaran)}`;
     }
-    if (filters?.jenis_putusan) url += `&jenis_putusan=${encodeURIComponent(filters.jenis_putusan)}`;
-    if (filters?.jenis_pelanggaran && filters.jenis_pelanggaran !== " ") {
+    if (filters?.jenis_putusan && filters.jenis_putusan !== "") url += `&jenis_putusan=${encodeURIComponent(filters.jenis_putusan)}`;
+    if (filters?.jenis_pelanggaran && filters.jenis_pelanggaran !== "") {
       url += `&jenis_pelanggaran=${encodeURIComponent(filters.jenis_pelanggaran)}`;
     }
 
@@ -103,8 +105,8 @@ const useFetchPelanggaran = (filters) => {
 
   // Auto fetch when dependencies change
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchData(filters);
+  }, [fetchData, filters]);
 
   // Reset to page 1 when limit or search changes
   // useEffect(() => {

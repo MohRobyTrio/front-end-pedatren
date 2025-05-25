@@ -80,8 +80,8 @@ const DataPerizinan = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    fetchData(filters);
-  }, [filters, fetchData]);
+    fetchData(updatedFilters, filters);
+  }, [updatedFilters, filters, fetchData]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -104,17 +104,26 @@ const DataPerizinan = () => {
       { label: "Rombongan / Personal", value: "" },
       { label: "Rombongan", value: "rombongan" },
       { label: "Personal", value: "personal" }
-    ],
-    status: [
-      { label: "Semua Status Izin", value: "" },
-      { label: "Sedang Proses Izin", value: "sedang proses izin" },
-      { label: "Perizinan Diterima", value: "perizinan diterima" },
-      { label: "Sudah Berada Di Luar Pondok", value: "sudah berada diluar pondok" },
-      { label: "Perizinan Ditolak", value: "perizinan ditolak" },
-      { label: "Perizinan Dibatalkan", value: "dibatalkan" },
-      { label: "Telat (sudah kembali)", value: "telat(sudah kembali)" },
-      { label: "Telat (belum kembali", value: "telat(belum kembali)" },
-      { label: "Kembali Tepat Waktu", value: "kembali tepat waktu" }
+    ]
+    // status_izin: [
+    //   { label: "Semua Status Izin", value: "" },
+    //   { label: "Sedang Proses Izin", value: "sedang proses izin" },
+    //   { label: "Perizinan Diterima", value: "perizinan diterima" },
+    //   { label: "Sudah Berada Di Luar Pondok", value: "sudah berada diluar pondok" },
+    //   { label: "Perizinan Ditolak", value: "perizinan ditolak" },
+    //   { label: "Perizinan Dibatalkan", value: "dibatalkan" },
+    //   { label: "Telat (sudah kembali)", value: "telat(sudah kembali)" },
+    //   { label: "Telat (belum kembali", value: "telat(belum kembali)" },
+    //   { label: "Kembali Tepat Waktu", value: "kembali tepat waktu" }
+    // ]
+  }
+
+  const filter4 = {
+    masa_telat:[
+      { label: "Semua Masa Telat", value: "" },
+      { label: "Lebih Dari 1 Minggu", value: "lebih dari seminggu" },
+      { label: "Lebih Dari 2 Minggu", value: "lebih dari 2 minggu" },
+      { label: "Lebih Dari 1 Bulan", value: "lebih dari satu bulan" }
     ]
   }
 
@@ -152,6 +161,12 @@ const DataPerizinan = () => {
           <Filters
             showFilters={showFilters}
             filterOptions={filter3}
+            onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+            selectedFilters={filters}
+          />
+          <Filters
+            showFilters={showFilters}
+            filterOptions={filter4}
             onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
             selectedFilters={filters}
           />
@@ -224,9 +239,13 @@ const PerizinanCard = ({ data }) => {
           {/* Left Section - Student Photo */}
           <div className="md:w-1/5 mb-4 md:mb-0">
             <img
-              src={data.foto_profil || blankProfile}
-              alt={data.nama_santri}
-              className="w-32 h-40 object-cover border border-gray-300 bg-gray-400"
+              alt={data.nama_santri || "-"}
+              className="w-32 h-40 object-cover"
+              src={data.foto_profil}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = blankProfile;
+              }}
             />
           </div>
 

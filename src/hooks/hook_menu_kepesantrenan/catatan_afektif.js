@@ -45,8 +45,9 @@ const useFetchAfektif = (filters) => {
     if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
     if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
     if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
-    if (filters?.kategori) url += `&kategori=${encodeURIComponent(filters.kategori)}`;
-    if (filters?.nilai) url += `&nilai=${encodeURIComponent(filters.nilai)}`;
+    if (filters?.kategori && filters.kategori !== "") {url += `&kategori=${encodeURIComponent(filters.kategori)}`;}
+    if (filters?.nilai && filters.nilai !== "") {url += `&score=${encodeURIComponent(filters.nilai)}`;}
+    if (filters?.periode && filters.periode !== "") {url += `&periode=${encodeURIComponent(filters.periode)}`;}
 
     // Skip duplicate requests
     if (lastRequest.current === url) {

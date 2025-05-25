@@ -3,6 +3,7 @@ import useFetchPelanggaran from "../../hooks/hook_menu_kepesantrenan/pelanggaran
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import { OrbitProgress } from "react-loading-indicators";
+import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
@@ -64,8 +65,8 @@ const DataPelanggaran = () => {
 
     // Fetch data saat filter/page berubah
     useEffect(() => {
-        fetchData(filters);
-    }, [filters, page, fetchData]);
+        fetchData(updatedFilters, filters);
+    }, [updatedFilters, filters, page, fetchData]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -184,7 +185,15 @@ const PelanggaranCard = ({ data }) => {
             {/* Foto Santri */}
             <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
                 {data.foto_profil ? (
-                    <img src={data.foto_profil} alt={data.nama_santri} className="w-full h-full object-cover" />
+                    <img 
+                        src={data.foto_profil} 
+                        alt={data.nama_santri} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = blankProfile;
+                        }}
+                    />
                 ) : (
                     <i className="fas fa-user text-gray-400 text-4xl"></i>
                 )}

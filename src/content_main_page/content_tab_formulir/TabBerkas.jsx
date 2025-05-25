@@ -1,87 +1,121 @@
-import { useEffect, useState } from "react";
-import { FaDownload } from "react-icons/fa";
+import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileImage, faFileAlt, faFilePdf, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
+import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
+import { useParams } from 'react-router-dom';
 
-const TabBerkas = () => {
-  const [berkas, setBerkas] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function TabBerkas() {
+  const { biodata_id } = useParams();
+  const bioId = biodata_id;
+  const { berkasList, loading, error, fetchBerkas, createBerkas, updateBerkas } = useBerkas(bioId);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null); // {id, keterangan} untuk edit
 
   useEffect(() => {
     fetchBerkas();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bioId]);
 
-  const fetchBerkas = async () => {
+  function iconForType(type) {
+    if (!type) return faFileAlt;
+    if (type.includes('image')) return faFileImage;
+    if (type.includes('pdf')) return faFilePdf;
+    return faFileAlt;
+  }
+
+  const handleOpenAdd = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+
+  const handleOpenEdit = (berkas) => {
+    setEditData({ id: berkas.id, keterangan: berkas.keterangan || '' });
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleSubmit = async ({ file, keterangan, id }) => {
     try {
-      const response = await fetch(
-        "https://0708-103-147-134-167.ngrok-free.app/api/v1/1/berkas",
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
+      if (id) {
+        // update
+        const formData = new FormData();
+        if (file) formData.append('file', file);
+        formData.append('keterangan', keterangan);
+        await updateBerkas(id, formData);
+        alert('Berkas berhasil diperbarui');
+      } else {
+        // add
+        if (!file) {
+          alert('Pilih file terlebih dahulu');
+          return;
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data");
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('keterangan', keterangan);
+        await createBerkas(bioId, formData);
+        alert('Berkas berhasil ditambahkan');
       }
-
-      const data = await response.json();
-      setBerkas(data);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      setModalOpen(false);
+      fetchBerkas();
+    } catch (err) {
+      alert(err.message || 'Terjadi kesalahan');
     }
   };
 
   return (
-    <>
-      <h1 className="text-xl font-bold">Berkas</h1>
-      <p className="text-gray-500 text-sm italic mt-1">
-        *Berkas berupa ekstensi gambar (JPG/PNG), yang memuat lembar scan KK, KTP, Ijazah, Sertifikat, dll
-      </p>
-      <hr className="border-t border-gray-300 my-4" />
+    <div className="px-2 sm:px-4 w-full">
+  <div className="flex justify-between items-center mb-4">
+    <h1 className="text-xl font-bold">Berkas</h1>
+    <button
+      onClick={handleOpenAdd}
+      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center"
+    >
+      Tambah Berkas
+    </button>
+  </div>
 
-      {loading ? (
-        <p className="text-center text-gray-500">Memuat data...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : berkas.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {berkas.map((item, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-4 relative">
-              <span className="absolute top-2 left-2 bg-purple-300 text-purple-800 px-2 py-1 text-xs font-bold rounded">
-                Berkas
-              </span>
-              {item.fileUrl && (
-                <a
-                  href={item.fileUrl}
-                  download
-                  className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-                >
-                  <FaDownload size={18} />
-                </a>
-              )}
-              {item.fileUrl ? (
-                <img
-                  src={item.fileUrl}
-                  alt={item.nama || "Berkas"}
-                  className="w-full h-40 object-cover rounded mt-4"
-                />
-              ) : (
-                <div className="w-full h-40 flex items-center justify-center bg-gray-200 text-gray-500">
-                  Tidak ada gambar
-                </div>
-              )}
-              <p className="text-sm text-gray-700 mt-2">{item.nama || "*tanpa deskripsi"}</p>
-            </div>
-          ))}
+  {loading && <p>Loading...</p>}
+  {error && <p className="text-red-500">{error}</p>}
+
+  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 mb-6 w-full">
+    {berkasList.length === 0 && !loading && <p className="col-span-full text-center">Belum ada berkas.</p>}
+    {berkasList.map((berkas) => (
+      <div
+        key={berkas.id}
+        className="border rounded p-3 flex items-center space-x-3 bg-white shadow-sm w-full"
+      >
+        <FontAwesomeIcon
+          icon={iconForType(berkas.mime_type)}
+          size="2x"
+          className="text-blue-600"
+        />
+        <div className="flex-1">
+          <p className="font-semibold truncate">{berkas.nama_jenis_berkas || 'File'}</p>
+          <p className="text-sm text-gray-600">{berkas.keterangan}</p>
         </div>
-      ) : (
-        <p className="text-gray-500 text-center">Tidak ada berkas tersedia</p>
-      )}
-    </>
-  );
-};
+        <button
+          onClick={() => handleOpenEdit(berkas)}
+          className="text-yellow-500 hover:text-yellow-700"
+          aria-label="Edit berkas"
+          title="Edit berkas"
+        >
+          <FontAwesomeIcon icon={faEdit} size="lg" />
+        </button>
+      </div>
+    ))}
+  </div>
 
-export default TabBerkas;
+
+      <ModalBerkas
+        isOpen={modalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+        initialData={editData}
+      />
+    </div>
+  );
+}

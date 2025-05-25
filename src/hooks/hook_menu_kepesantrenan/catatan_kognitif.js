@@ -42,8 +42,10 @@ const useFetchKognitif = (filters) => {
 
         // Filter tambahan
         if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
-        if (filters?.kategori) url += `&kategori=${encodeURIComponent(filters.kategori)}`;
-        if (filters?.nilai) url += `&nilai=${encodeURIComponent(filters.nilai)}`;
+        if (filters?.kategori && filters.kategori !== "") {url += `&kategori=${encodeURIComponent(filters.kategori)}`;}
+        if (filters?.nilai && filters.nilai !== "") {url += `&score=${encodeURIComponent(filters.nilai)}`;}
+        if (filters?.periode && filters.periode !== "") {url += `&periode=${encodeURIComponent(filters.periode)}`;}
+
 
         // Skip request duplikat
         if (lastRequest.current === url) {
@@ -77,8 +79,8 @@ const useFetchKognitif = (filters) => {
 
     // Fetch data saat dependency berubah
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        fetchData(filters);
+    }, [fetchData, filters]);
 
     // Reset ke halaman pertama saat limit berubah
     useEffect(() => {
