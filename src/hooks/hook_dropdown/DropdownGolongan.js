@@ -55,7 +55,14 @@ const DropdownGolongan = () => {
             const allGolongan = golonganData.flatMap(kategori =>
                 kategori.golongan.map(g => ({ id: g.id, GolonganNama: g.GolonganNama }))
             );
-            setAllGolonganList(allGolongan);
+
+            // Tambahkan opsi default di awal
+            const allGolonganWithDefault = [
+                { id: '', GolonganNama: 'Pilih Golongan' },
+                ...allGolongan
+            ];
+
+            setAllGolonganList(allGolonganWithDefault);
             // Kalau mau cek console log
             // console.log("All Golongan (id + GolonganNama):", allGolongan);
         }
