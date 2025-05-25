@@ -9,6 +9,7 @@ import Pagination from "../../components/Pagination";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import { API_BASE_URL } from "../../hooks/config";
 
 const CatatanAfektif = () => {
     const [filters, setFilters] = useState({
@@ -25,8 +26,36 @@ const CatatanAfektif = () => {
         rombel: "",
         jenisKelamin: "",
         kategori: "",
-        nilai: ""
+        nilai: "",
+        periode: ""
     });
+
+    // Menggunakan custom hooks untuk dropdown
+    useEffect(() => {
+        const fetchPeriode = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}dropdown/periode`);
+                const data = await response.json();
+
+                // Format data menjadi array of objects agar sesuai dengan struktur Filters
+                const formatted = data.map((item) => ({
+                    label: item === "Semua" ? "Semua Periode" : item,
+                    value: item === "Semua" ? "" : item,
+                }));
+
+                setListPeriode(formatted);
+            } catch (error) {
+                console.error("Gagal mengambil data periode:", error);
+            } finally {
+                setLoadingPeriode(false);
+            }
+        };
+
+        fetchPeriode();
+    }, []);
+
+    const [listPeriode, setListPeriode] = useState([]);
+    const [loadingPeriode, setLoadingPeriode] = useState(true);
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
@@ -93,21 +122,19 @@ const CatatanAfektif = () => {
         ],
         kategori: [
             { label: "Semua Materi", value: "" },
-            { label: "Kebahasaan", value: "kebahasaan" },
-            { label: "Baca kitab kuning", value: "baca kitab kuning" },
-            { label: "Hafalan / Tahfidz", value: "hafalan tahfidz" },
-            { label: "Furudhul Ainiyah", value: "furudul ainiyah" },
-            { label: "Tulis Al-Quran", value: "tulis al-quran" },
-            { label: "Baca Al-Quran", value: "baca al-quran" }
+            { label: "Akhlak", value: "akhlak" },
+            { label: "Kebersihan", value: "kebersihan" },
+            { label: "Kepedulian", value: "kepedulian" }
         ],
         nilai: [
             { label: "Semua Score", value: "" },
-            { label: "Score A", value: "a" },
+            { label: "Score A", value: "A" },
             { label: "Score B", value: "B" },
             { label: "Score C", value: "C" },
             { label: "Score D", value: "D" },
             { label: "Score E", value: "E" }
-        ]
+        ],
+        periode: listPeriode
     }
 
     // Fetch data saat filter/page berubah
@@ -153,7 +180,13 @@ const CatatanAfektif = () => {
                     />
                     <Filters
                         showFilters={showFilters}
-                        filterOptions={filter3}
+                        filterOptions={{
+                            ...filter3,
+                            nilai: filters.kategori
+                                ? filter3.nilai
+                                : [{ label: "Semua Score", value: "", disabled: true }],
+                                periode: filter3.periode
+                        }}
                         onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
                         selectedFilters={filters}
                     />
