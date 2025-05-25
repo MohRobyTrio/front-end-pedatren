@@ -247,9 +247,10 @@ const TabWaliKelas = () => {
                             <div className="flex items-center justify-between w-full">
                                 <div>
                                     <h5 className="text-lg font-bold">{waliKelas.Lembaga}</h5>
-                                    <p className="text-gray-600 text-sm">Jurusan: {waliKelas.Jurusan}</p>
+                                    {/* <p className="text-gray-600 text-sm">Jurusan: {waliKelas.Jurusan}</p>
                                     <p className="text-gray-600 text-sm">Kelas: {waliKelas.Kelas}</p>
                                     <p className="text-gray-600 text-sm">Rombel: {waliKelas.Rombel}</p>
+                                    <p className="text-gray-600 text-sm">Jumlah Murid: {waliKelas.jumlah_murid}</p> */}
                                     <p className="text-gray-600 text-sm">
                                         Sejak {formatDate(waliKelas.Periode_awal)}{" "}
                                         Sampai {waliKelas.Periode_akhir ? formatDate(waliKelas.Periode_akhir) : "Sekarang"}

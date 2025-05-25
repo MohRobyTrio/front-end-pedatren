@@ -178,7 +178,8 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                Tambah Data Baru
+                                                {feature === 1 ? ("Tambah Data Baru") : ("Pindah")}
+                                                
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
