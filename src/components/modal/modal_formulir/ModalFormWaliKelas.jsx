@@ -1,21 +1,77 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
-export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, data, feature, refetchData }) => {
+const Filters = ({ filterOptions, onChange, selectedFilters }) => {
+    const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+        return (
+            <div className="flex flex-col gap-4 w-full">
+                {Object.entries(filterOptions).map(([label, options], index) => (
+                    <div key={`${label}-${index}`}>
+                        <label htmlFor={label} className="block text-gray-700">
+                            {capitalizeFirst(label)} *
+                        </label>
+                        <select
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                            onChange={(e) => onChange({ [label]: e.target.value })}
+                            value={selectedFilters[label] || ""}
+                            disabled={options.length <= 1}
+                        >
+                            {options.map((option, idx) => (
+                                <option key={idx} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+
+    // Ubah label index ke-0 menjadi "Pilih ..."
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+            
+    // Buat versi baru filterLembaga yang labelnya diubah
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+        jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+        kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
+        rombel: updateFirstOptionLabel(filterLembaga.rombel, "Pilih Rombel"),
+    };
+
     const isTambah = feature == 1;
-    const endpoint = isTambah ? "khadam" : "khadam/pindah";
+    const endpoint = isTambah ? "walikelas" : "walikelas/pindah";
     const metod = isTambah ? "POST" : "PUT";
-    const id = isTambah ? biodataId : data.id;
+    const id = isTambah ? biodataId : cardId;    
 
     const [formData, setFormData] = useState({
-        keterangan: "",
-        tanggal_mulai: ""
-    });    
+        lembaga_id: "",
+        jurusan_id: "",
+        kelas_id: "",
+        rombel_id: "",
+        jumlah_murid: "",
+        periode_awal: ""
+    });
+
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            lembaga_id: selectedLembaga.lembaga || "",
+            jurusan_id: selectedLembaga.jurusan || "",
+            kelas_id: selectedLembaga.kelas || "",
+            rombel_id: selectedLembaga.rombel || "",
+        }));
+    }, [selectedLembaga]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -42,35 +98,28 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                 body: JSON.stringify(formData),
             });
 
-            // console.log({ id, endpoint, metod, formData });
-
-            // console.log(`Mengirim ke: ${API_BASE_URL}formulir/${id}/${endpoint}`);
-
-            // if (!response) throw new Error("Tidak ada response dari server.");
-
             const result = await response.json();
 
+            // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
-            // if ("status" in result && !result.status) {
-           if (!("data" in result)) {
+            // ✅ Jika status dari backend false meskipun HTTP 200
+            if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
-                    html: `<div style="text-align: left;">${result.message}</div>`,
+                    html: `<div style="text-align: center;">${result.message}</div>`,
                 });
                 return; // Jangan lempar error, cukup berhenti
             }
-
-            // console.log(result);
 
             // ✅ Sukses
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil!",
-                text: `Data berhasil dikirim.`,
+                text: "Data berhasil dikirim.",
             });
 
             refetchData?.();
@@ -80,7 +129,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: `Terjadi kesalahan saat mengirim data. ${error}`,
+                text: "Terjadi kesalahan saat mengirim data.",
             });
         }
     };
@@ -129,37 +178,40 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                {feature == 1 ? (
-                                                    "Tambah Data Baru"
-                                                ) : (
-                                                    "Pindah"
-                                                )}
+                                                Tambah Data Baru
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">
+                                            <div className="space-y-4">    
+                                                <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />     
+
                                                 <div>
-                                                    <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>
+                                                    <label htmlFor="jumlah_murid" className="block text-gray-700">Jumlah Murid *</label>
                                                     <input
                                                         type="text"
-                                                        id="nis"
-                                                        name="nis"
-                                                        value={formData.keterangan}
-                                                        onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                                                        maxLength={255}
+                                                        inputMode="numeric"
+                                                        onInput={(e) => {
+                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                        }}
+                                                        id="jumlah_murid"
+                                                        name="jumlah_murid"
+                                                        value={formData.jumlah_murid}
+                                                        onChange={(e) => setFormData({ ...formData, jumlah_murid: e.target.value })}
+                                                        maxLength={50}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan Keterangan"
+                                                        placeholder="Masukkan Jumlah Murid"
                                                     />
                                                 </div>
+
                                                 <div>
-                                                    <label htmlFor="tanggal_mulai" className="block text-gray-700">Tanggal Mulai *</label>
+                                                    <label htmlFor="periode_awal" className="block text-gray-700">Periode Awal *</label>
                                                     <input
                                                         type="date"
-                                                        id="tanggal_mulai"
-                                                        name="tanggal_mulai"
-                                                        value={formData.tanggal_mulai}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_mulai: e.target.value })}
+                                                        id="periode_awal"
+                                                        name="periode_awal"
+                                                        value={formData.periode_awal}
+                                                        onChange={(e) => setFormData({ ...formData, periode_awal: e.target.value })}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
@@ -194,9 +246,9 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
     );
 };
 
-export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) => {
+export const ModalKeluarWaliKelasFormulir = ({ isOpen, onClose, id, refetchData }) => {
     const [formData, setFormData] = useState({
-        tanggal_akhir: ""
+        periode_akhir: ""
     });    
 
     const handleSubmit = async (e) => {
@@ -215,7 +267,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/keluar`, {
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/walikelas/keluar`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -312,13 +364,13 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="tanggal_akhir" className="block text-gray-700">Tanggal Akhir *</label>
+                                                    <label htmlFor="periode_akhir" className="block text-gray-700">Periode Akhir *</label>
                                                     <input
                                                         type="date"
-                                                        id="tanggal_akhir"
-                                                        name="tanggal_akhir"
-                                                        value={formData.tanggal_akhir}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_akhir: e.target.value })}
+                                                        id="periode_akhir"
+                                                        name="periode_akhir"
+                                                        value={formData.periode_akhir}
+                                                        onChange={(e) => setFormData({ ...formData, periode_akhir: e.target.value })}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />

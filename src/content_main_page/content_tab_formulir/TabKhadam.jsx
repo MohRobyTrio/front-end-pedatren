@@ -73,11 +73,11 @@ const TabKhadam = () => {
             </h1>
 
             {showAddModal && (
-                <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} data={selectedKhadamData} fetch={fetchKhadam} />
+                <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} data={selectedKhadamData} refetchData={fetchKhadam} />
             )}
 
             {showOutModal && (
-                <ModalKeluarKhadamFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedKhadamId}/>
+                <ModalKeluarKhadamFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedKhadamId} refetchData={fetchKhadam}/>
             )}
 
             <div className="mt-5 space-y-6">

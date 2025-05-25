@@ -1,25 +1,44 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormSantri";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { getCookie } from "../../utils/cookieUtils";
+import { ModalAddWaliKelasFormulir, ModalKeluarWaliKelasFormulir } from "../../components/modal/modal_formulir/ModalFormWaliKelas";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 const TabWaliKelas = () => {
     const { biodata_id } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showOutModal, setShowOutModal] = useState(false);
     const [waliKelasList, setWaliKelasList] = useState([]);
     const [selectedWaliKelasId, setSelectedWaliKelasId] = useState(null);
     const [selectedWaliKelasDetail, setSelectedWaliKelasDetail] = useState(null);
+    const [jmlMurid, setJmlMurid] = useState("");
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
+    const [feature, setFeature] = useState(null);
 
     const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
     const [loadingDetailWaliKelas, setLoadingDetailWaliKelas] = useState(null);
     const [loadingUpdateWaliKelas, setLoadingUpdateWaliKelas] = useState(false);
 
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+
+    // Ubah label index ke-0 menjadi "Pilih ..."
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    // Buat versi baru filterLembaga yang labelnya diubah
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+        jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+        kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
+        rombel: updateFirstOptionLabel(filterLembaga.rombel, "Pilih Rombel"),
+    };
 
     const fetchWaliKelas = useCallback(async () => {
         const token = sessionStorage.getItem("token") || getCookie("token");
@@ -44,7 +63,7 @@ const TabWaliKelas = () => {
         }
     }, [biodata_id]);
 
-    useEffect(() => {    
+    useEffect(() => {
         fetchWaliKelas();
     }, [fetchWaliKelas]);
 
@@ -64,14 +83,14 @@ const TabWaliKelas = () => {
                 handleFilterChangeLembaga({ rombel: selectedWaliKelasDetail.rombel_id });
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWaliKelasDetail]);
 
     const handleCardClick = async (id) => {
         try {
             setLoadingDetailWaliKelas(id);
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/walikelas/show`, 
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/walikelas/show`,
                 {
                     method: 'GET',
                     headers: {
@@ -80,11 +99,12 @@ const TabWaliKelas = () => {
                     }
                 }
             );
-            const result = await response.json();        
+            const result = await response.json();
             console.log(result);
-                
+
             setSelectedWaliKelasId(id);
             setSelectedWaliKelasDetail(result.data);
+            setJmlMurid(result.data.jumlah_murid || "");
             setEndDate(result.data.periode_akhir || "");
             setStartDate(result.data.periode_awal || "");
         } catch (error) {
@@ -129,6 +149,7 @@ const TabWaliKelas = () => {
                     body: JSON.stringify(payload),
                 }
             );
+            console.log(`${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`);
             const result = await response.json();
             if (response.ok) {
                 alert(`Data berhasil diperbarui! ${result.message}-${result.data}`);
@@ -151,6 +172,15 @@ const TabWaliKelas = () => {
         setShowAddModal(true);
     };
 
+    const closeOutModal = () => {
+        setShowOutModal(false);
+    };
+
+    const openOutModal = (id) => {
+        setSelectedWaliKelasId(id);
+        setShowOutModal(true);
+    };
+
     const Filters = ({ filterOptions, onChange, selectedFilters }) => {
         return (
             <div className="flex flex-col gap-4 w-full">
@@ -160,10 +190,10 @@ const TabWaliKelas = () => {
                             {capitalizeFirst(label)} *
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1}
+                            disabled={options.length <= 1 || selectedWaliKelasDetail.status_aktif === "tidak aktif"}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -179,7 +209,11 @@ const TabWaliKelas = () => {
         <div className="block" id="WaliKelas">
             <h1 className="text-xl font-bold flex items-center justify-between">Wali Kelas
                 <button
-                    onClick={openAddModal}
+                    onClick={() => {
+                        setFeature(1);
+                        openAddModal();
+                    }
+                    }
                     type="button"
                     className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
                 >
@@ -189,7 +223,11 @@ const TabWaliKelas = () => {
             </h1>
 
             {showAddModal && (
-                <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} />
+                <ModalAddWaliKelasFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedWaliKelasId} refetchData={fetchWaliKelas} feature={feature} />
+            )}
+
+            {showOutModal && (
+                <ModalKeluarWaliKelasFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedWaliKelasId} refetchData={fetchWaliKelas} />
             )}
 
             <div className="mt-5 space-y-6">
@@ -203,19 +241,58 @@ const TabWaliKelas = () => {
                     <div key={waliKelas.id}>
                         {/* Card */}
                         <div
-                            className="bg-white shadow-md rounded-lg p-6 cursor-pointer w-full flex justify-between items-center"
+                            className="bg-white shadow-md rounded-lg p-6 cursor-pointer w-full flex flex-col items-start gap-2"
                             onClick={() => handleCardClick(waliKelas.id)}
                         >
-                            <div>
-                                <h5 className="text-lg font-bold">{waliKelas.Lembaga}</h5>
-                                <p className="text-gray-600 text-sm">Jurusan: {waliKelas.Jurusan}</p>
-                                <p className="text-gray-600 text-sm">Kelas: {waliKelas.Kelas}</p>
-                                <p className="text-gray-600 text-sm">Rombel: {waliKelas.Rombel}</p>
-                                <p className="text-gray-600 text-sm">
-                                    Sejak {formatDate(waliKelas.Periode_awal)}{" "}
-                                    Sampai {waliKelas.Periode_akhir ? formatDate(waliKelas.Periode_akhir) : "Sekarang"}
-                                </p>
+                            <div className="flex items-center justify-between w-full">
+                                <div>
+                                    <h5 className="text-lg font-bold">{waliKelas.Lembaga}</h5>
+                                    <p className="text-gray-600 text-sm">Jurusan: {waliKelas.Jurusan}</p>
+                                    <p className="text-gray-600 text-sm">Kelas: {waliKelas.Kelas}</p>
+                                    <p className="text-gray-600 text-sm">Rombel: {waliKelas.Rombel}</p>
+                                    <p className="text-gray-600 text-sm">
+                                        Sejak {formatDate(waliKelas.Periode_awal)}{" "}
+                                        Sampai {waliKelas.Periode_akhir ? formatDate(waliKelas.Periode_akhir) : "Sekarang"}
+                                    </p>
+                                </div>
+                                <span
+                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${waliKelas.status_aktif === "aktif"
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-red-100 text-red-700"
+                                        }`}
+                                >
+                                    {waliKelas.status_aktif === "aktif" ? "Aktif" : "Nonaktif"}
+                                </span>
                             </div>
+
+                            {!waliKelas.Periode_akhir && (
+                                <div className="flex flex-wrap gap-2 gap-x-4 mt-2">
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setFeature(2);
+                                            openAddModal();
+                                            // handleOpenAddModalWithDetail(khadam.id, 2);
+                                        }}
+                                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                        title="Pindah Khadam"
+                                    >
+                                        <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openOutModal(waliKelas.id);
+                                        }}
+                                        className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+                                        title="Keluar Khadam"
+                                    >
+                                        <FontAwesomeIcon icon={faRightFromBracket} />Keluar
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Form Input */}
@@ -227,9 +304,30 @@ const TabWaliKelas = () => {
                             <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 {/* Kolom kiri: Dropdown dependent */}
                                 <div className="flex flex-col gap-4">
-                                    <Filters filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
+                                    <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                                 </div>
                                 <div className="flex flex-col gap-4">
+                                    <div>
+                                        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                                            Jumlah Murid
+                                        </label>
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            onInput={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                            }}
+                                            id="jumlah_murid"
+                                            name="jumlah_murid"
+                                            value={jmlMurid}
+                                            onChange={(e) => setJmlMurid(e.target.value)}
+                                            maxLength={50}
+                                            placeholder="Masukkan Jumlah Murid"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
+                                        />
+                                    </div>
+
                                     <div>
                                         <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
                                             Periode Awal
@@ -237,7 +335,8 @@ const TabWaliKelas = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -250,9 +349,10 @@ const TabWaliKelas = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500  bg-gray-200 text-gray-500"
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -260,18 +360,20 @@ const TabWaliKelas = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        <button
-                                            type="button"
-                                            disabled={loadingUpdateWaliKelas}
-                                            className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdateWaliKelas ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
-                                            onClick={handleUpdate}
-                                        >
-                                            {loadingUpdateWaliKelas ? (
-                                                <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
-                                            ) :
-                                                "Update"
-                                            }
-                                        </button>
+                                        {waliKelas.status_aktif === "aktif" && (
+                                            <button
+                                                type="button"
+                                                disabled={loadingUpdateWaliKelas}
+                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdateWaliKelas ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                                                onClick={handleUpdate}
+                                            >
+                                                {loadingUpdateWaliKelas ? (
+                                                    <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
+                                                ) :
+                                                    "Update"
+                                                }
+                                            </button>
+                                        )}
                                         <button
                                             type="button"
                                             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
