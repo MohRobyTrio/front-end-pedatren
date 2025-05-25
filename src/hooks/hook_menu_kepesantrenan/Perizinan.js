@@ -47,7 +47,7 @@ const useFetchPerizinan = (filters) => {
     if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
     if (filters?.bermalam) url += `&bermalam=${encodeURIComponent(filters.bermalam)}`;
     if (filters?.jenis_izin) url += `&jenis_izin=${encodeURIComponent(filters.jenis_izin)}`;
-    if (filters?.status_izin) url += `&status_izin=${encodeURIComponent(filters.status_izin)}`;
+    if (filters?.status && filters.status !== "") url += `&status=${encodeURIComponent(filters.status)}`;
     if (filters?.masa_telat && filters.masa_telat !== "") url += `&masa_telat=${encodeURIComponent(filters.masa_telat)}`;
     
     // Handle filters

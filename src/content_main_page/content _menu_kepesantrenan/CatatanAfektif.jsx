@@ -37,11 +37,17 @@ const CatatanAfektif = () => {
                 const response = await fetch(`${API_BASE_URL}dropdown/periode`);
                 const data = await response.json();
 
-                // Format data menjadi array of objects agar sesuai dengan struktur Filters
-                const formatted = data.map((item) => ({
-                    label: item === "Semua" ? "Semua Periode" : item,
-                    value: item === "Semua" ? "" : item,
-                }));
+                // Ambil hanya bagian afektif dari respons API
+                const afektifData = data.afektif;
+
+                // Tambahkan pilihan "Semua Periode" sebagai pilihan pertama
+                const formatted = [
+                    { label: "Semua Periode", value: "" },
+                    ...afektifData.map((item) => ({
+                        label: item,
+                        value: item,
+                    })),
+                ];
 
                 setListPeriode(formatted);
             } catch (error) {
