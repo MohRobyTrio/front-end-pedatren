@@ -115,12 +115,12 @@ const TabBiodata = () => {
         setIsLoading(true);
 
         try {
-            // const token = sessionStorage.getItem("token") || getCookie("token");
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/biodata/show`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
-                    // 'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
 

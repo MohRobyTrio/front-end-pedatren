@@ -16,6 +16,7 @@ const TabKhadam = () => {
     const {
         khadamList,
         loadingKhadam,
+        fetchKhadam,
         handleCardClick,
         loadingDetailKhadamId,
         selectedKhadamDetail,
@@ -72,7 +73,7 @@ const TabKhadam = () => {
             </h1>
 
             {showAddModal && (
-                <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} data={selectedKhadamData}/>
+                <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} data={selectedKhadamData} fetch={fetchKhadam} />
             )}
 
             {showOutModal && (

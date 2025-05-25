@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormAddSantri";
+import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormSantri";
 import { OrbitProgress } from "react-loading-indicators";
 import { useSantri } from "../../hooks/hooks_formulir/tabSantri";
 
@@ -82,7 +82,7 @@ const TabSantri = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailSantri ? (
+                        {loadingDetailSantri === santri.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
