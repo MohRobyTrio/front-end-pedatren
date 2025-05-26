@@ -25,7 +25,7 @@ const TabPendidikan = () => {
   const [loadingDetailPendidikan, setLoadingDetailPendidikan] = useState(null);
   const [loadingUpdatePendidikan, setLoadingUpdatePendidikan] = useState(false);
 
-  const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+  const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, setSelectedLembaga } = DropdownLembaga();
 
   // Ubah label index ke-0 menjadi "Pilih ..."
   const updateFirstOptionLabel = (list, label) =>
@@ -66,23 +66,6 @@ const TabPendidikan = () => {
     fetchPendidikan();
   }, [fetchPendidikan]);
 
-  useEffect(() => {
-    if (selectedPendidikanDetail) {
-      if (selectedPendidikanDetail.lembaga_id) {
-        handleFilterChangeLembaga({ lembaga: selectedPendidikanDetail.lembaga_id });
-      }
-      if (selectedPendidikanDetail.jurusan_id) {
-        handleFilterChangeLembaga({ jurusan: selectedPendidikanDetail.jurusan_id });
-      }
-      if (selectedPendidikanDetail.kelas_id) {
-        handleFilterChangeLembaga({ kelas: selectedPendidikanDetail.kelas_id });
-      }
-      if (selectedPendidikanDetail.rombel_id) {
-        handleFilterChangeLembaga({ rombel: selectedPendidikanDetail.rombel_id });
-      }
-    }
-  }, [selectedPendidikanDetail]);
-
   const handleCardClick = async (id) => {
     try {
       setLoadingDetailPendidikan(id);
@@ -102,12 +85,88 @@ const TabPendidikan = () => {
       setEndDate(result.data.tanggal_keluar || "");
       setStartDate(result.data.tanggal_masuk || "");
       setStatus(result.data.status || "");
+
+      // Set dropdown values berdasarkan nama (cari ID berdasarkan nama)
+      const dropdownValues = {};
+      
+      // Cari ID berdasarkan nama lembaga
+      if (result.data.nama_lembaga) {
+        const lembagaOption = filterLembaga.lembaga.find(item => item.label === result.data.nama_lembaga);
+        if (lembagaOption) {
+          dropdownValues.lembaga = lembagaOption.value;
+        }
+      }
+      
+      // Cari ID berdasarkan nama jurusan
+      if (result.data.nama_jurusan) {
+        const jurusanOption = filterLembaga.jurusan.find(item => item.label === result.data.nama_jurusan);
+        if (jurusanOption) {
+          dropdownValues.jurusan = jurusanOption.value;
+        }
+      }
+      
+      // Cari ID berdasarkan nama kelas
+      if (result.data.nama_kelas) {
+        const kelasOption = filterLembaga.kelas.find(item => item.label === result.data.nama_kelas);
+        if (kelasOption) {
+          dropdownValues.kelas = kelasOption.value;
+        }
+      }
+      
+      // Cari ID berdasarkan nama rombel
+      if (result.data.nama_rombel) {
+        const rombelOption = filterLembaga.rombel.find(item => item.label === result.data.nama_rombel);
+        if (rombelOption) {
+          dropdownValues.rombel = rombelOption.value;
+        }
+      }
+
+      console.log('Data from API:', result.data);
+      console.log('Dropdown values to set:', dropdownValues);
+      console.log('Available options:', filterLembaga);
+
+      // Jika ada setSelectedLembaga function, gunakan itu
+      if (setSelectedLembaga && typeof setSelectedLembaga === 'function') {
+        setSelectedLembaga(dropdownValues);
+      } else {
+        // Gunakan handleFilterChangeLembaga secara bertahap dengan delay
+        const setDropdownValues = async () => {
+          if (dropdownValues.lembaga) {
+            await handleFilterChangeLembaga({ lembaga: dropdownValues.lembaga });
+            
+            // Tunggu sebentar untuk memastikan jurusan options ter-load
+            setTimeout(() => {
+              if (dropdownValues.jurusan) {
+                handleFilterChangeLembaga({ jurusan: dropdownValues.jurusan });
+                
+                setTimeout(() => {
+                  if (dropdownValues.kelas) {
+                    handleFilterChangeLembaga({ kelas: dropdownValues.kelas });
+                    
+                    setTimeout(() => {
+                      if (dropdownValues.rombel) {
+                        handleFilterChangeLembaga({ rombel: dropdownValues.rombel });
+                      }
+                    }, 50);
+                  }
+                }, 50);
+              }
+            }, 100);
+          }
+        };
+        
+        setDropdownValues();
+      }
+
     } catch (error) {
       console.error("Gagal mengambil detail Pendidikan:", error);
     } finally {
       setLoadingDetailPendidikan(null);
     }
   };
+
+  // Hapus useEffect yang lama untuk selectedPendidikanDetail
+  // karena sekarang sudah ditangani di handleCardClick
 
   const handleUpdate = async () => {
     if (!selectedPendidikanDetail) return;
@@ -129,6 +188,9 @@ const TabPendidikan = () => {
       tanggal_keluar: endDate || null,
       status: status || null
     };
+
+    console.log("Payload:", payload);
+    
 
     try {
       setLoadingUpdatePendidikan(true);
@@ -185,10 +247,10 @@ const TabPendidikan = () => {
               {capitalizeFirst(label)} {label === 'lembaga' ? '*' : ''}
             </label>
             <select
-              className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedPendidikanDetail?.status === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+              className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedPendidikanDetail?.status !== "aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
               onChange={(e) => onChange({ [label]: e.target.value })}
               value={selectedFilters[label] || ""}
-              disabled={options.length <= 1 || selectedPendidikanDetail?.status === "tidak aktif"}
+              disabled={options.length <= 1 || selectedPendidikanDetail?.status !== "aktif"}
             >
               {options.map((option, idx) => (
                 <option key={idx} value={option.value}>{option.label}</option>
@@ -252,13 +314,13 @@ const TabPendidikan = () => {
             >
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <h5 className="text-lg font-bold">{pendidikan.nama_lembaga}</h5>
-                  <p className="text-gray-600 text-sm">Jurusan: {pendidikan.nama_jurusan || '-'}</p>
-                  <p className="text-gray-600 text-sm">Kelas: {pendidikan.nama_kelas || '-'}</p>
-                  <p className="text-gray-600 text-sm">Rombel: {pendidikan.nama_rombel || '-'}</p>
-                  <p className="text-gray-600 text-sm">No. Induk: {pendidikan.no_induk}</p>
+                  <h5 className="text-lg font-bold">{pendidikan.nama_lembaga} - {pendidikan.nama_jurusan}</h5>
+                  {/* <p className="text-gray-600 text-sm">Jurusan: {pendidikan.nama_jurusan || '-'}</p> */}
+                  {/* <p className="text-gray-600 text-sm">Kelas: {pendidikan.nama_kelas || '-'}</p> */}
+                  {/* <p className="text-gray-600 text-sm">Rombel: {pendidikan.nama_rombel || '-'}</p> */}
+                  <p className="text-gray-600 text-sm">No. Induk : {pendidikan.no_induk}</p>
                   <p className="text-gray-600 text-sm">
-                    Periode: {formatDate(pendidikan.tanggal_masuk)}
+                    Sejak : {formatDate(pendidikan.tanggal_masuk)}
                     {pendidikan.tanggal_keluar ? ` s/d ${formatDate(pendidikan.tanggal_keluar)}` : ' - Sekarang'}
                   </p>
                 </div>
@@ -330,8 +392,8 @@ const TabPendidikan = () => {
                       onChange={(e) => setNoInduk(e.target.value)}
                       maxLength={50}
                       placeholder="Masukkan Nomor Induk"
-                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      disabled={selectedPendidikanDetail?.status !== "aktif"}
                     />
                   </div>
 
@@ -342,8 +404,8 @@ const TabPendidikan = () => {
                     <input
                       type="date"
                       id="startDate"
-                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      disabled={selectedPendidikanDetail?.status !== "aktif"}
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                     />
@@ -356,29 +418,29 @@ const TabPendidikan = () => {
                     <input
                       type="date"
                       id="endDate"
-                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                      disabled
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                      Status
-                    </label>
-                    <select
-                      id="status"
-                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
-                    >
-                      <option value="">Pilih Status</option>
-                      <option value="aktif">Aktif</option>
-                      <option value="tidak aktif">Tidak Aktif</option>
-                    </select>
-                  </div>
+                  {/* <div> */}
+                    {/* <label htmlFor="status" className="block text-sm font-medium text-gray-700"> */}
+                      {/* Status */}
+                    {/* </label> */}
+                    {/* <select */}
+                      {/* id="status" */}
+                      {/* className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`} */}
+                      {/* value={status} */}
+                      {/* onChange={(e) => setStatus(e.target.value)} */}
+                      {/* disabled={selectedPendidikanDetail?.status !== "aktif"} */}
+                    {/* // > */}
+                      {/* <option value="">Pilih Status</option> */}
+                      {/* <option value="aktif">Aktif</option> */}
+                      {/* <option value="tidak aktif">Tidak Aktif</option> */}
+                    {/* </select> */}
+                  {/* </div> */}
                 </div>
 
                 <div>
