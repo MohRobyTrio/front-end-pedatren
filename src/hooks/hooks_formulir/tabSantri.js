@@ -9,16 +9,17 @@ export const useSantri = (biodata_id) => {
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
+    const [error, setError] = useState(false);
 
     const [loadingSantri, setLoadingSantri] = useState(true);
     const [loadingDetailSantri, setLoadingDetailSantri] = useState(null);
-    const [loadingUpdateSantri, setLoadingUpdateSantri] = useState(false);
 
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     const fetchSantri = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
+            setError(false);
             setLoadingSantri(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/santri`, {
                 method: 'GET',
@@ -31,6 +32,7 @@ export const useSantri = (biodata_id) => {
             setSantriList(result.data || []);
         } catch (error) {
             console.error("Gagal mengambil data santri:", error);
+            setError(true);
         } finally {
             setLoadingSantri(false);
         }
@@ -76,7 +78,14 @@ export const useSantri = (biodata_id) => {
         };
 
         try {
-            setLoadingUpdateSantri(true);
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang memperbarui data santri.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedSantriId}/santri`,
                 {
@@ -89,6 +98,7 @@ export const useSantri = (biodata_id) => {
                 }
             );
             const result = await response.json();
+            Swal.close();
             if (response.ok) {
                 Swal.fire({
                     icon: 'success',
@@ -113,12 +123,12 @@ export const useSantri = (biodata_id) => {
                 title: 'Error',
                 text: 'Terjadi kesalahan saat mengirim permintaan',
             });
-        } finally {
-            setLoadingUpdateSantri(false);
-        }
+        } 
     };
 
     return {
+        error,
+        fetchSantri,
         santriList,
         selectedSantriId,
         selectedSantriDetail,
@@ -126,7 +136,6 @@ export const useSantri = (biodata_id) => {
         startDate,
         loadingSantri,
         loadingDetailSantri,
-        loadingUpdateSantri,
         setEndDate,
         setStartDate,
         setSelectedSantriDetail,

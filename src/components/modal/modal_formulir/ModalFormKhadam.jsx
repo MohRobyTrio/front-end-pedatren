@@ -32,6 +32,14 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method: metod,
@@ -50,6 +58,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
 
             const result = await response.json();
 
+            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -214,6 +223,14 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/keluar`, {
                 method: "PUT",
@@ -225,7 +242,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
             });
 
             const result = await response.json();
-
+            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");

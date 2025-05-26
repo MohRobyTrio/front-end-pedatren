@@ -35,7 +35,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     );
 };
 
-export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature, handleAddAPI }) => {
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
 
@@ -114,7 +114,20 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
         if (!confirmResult.isConfirmed) return;
 
+        if (feature === 3) {
+            await handleAddAPI(formData, materiList);
+            return;
+        }
+
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             console.log("token :",token);
             
@@ -160,7 +173,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
             const result = await response.json();
 
             console.log(result);
-
+            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -256,7 +269,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                {feature === 1 ? ("Tambah Data Baru") : ("Pindah")}
+                                                {feature === 1 ? "Tambah Data Baru" : feature == 2 ? "Pindah" : "Tambah Materi"}
                                             </Dialog.Title>
 
                                             {showAddMateriModal && (
@@ -265,6 +278,8 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
+                                                {feature != 3 && (
+                                                    <>
                                                 <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
 
                                                 <div>
@@ -299,7 +314,8 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                         ))}
                                                     </select>
                                                 </div>
-
+                                                </>
+                                                )}
                                                 <div>
                                                     <label htmlFor="tahun_masuk" className="block text-gray-700">Tanggal Masuk *</label>
                                                     <input
@@ -424,6 +440,14 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/pengajar/keluar`, {
                 method: "PUT",
@@ -435,7 +459,7 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
             });
 
             const result = await response.json();
-
+            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");

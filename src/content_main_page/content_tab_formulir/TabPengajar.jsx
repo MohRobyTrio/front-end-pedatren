@@ -8,12 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket, faTrash } from "@fortawesome/free-solid-svg-icons";
 import DropdownGolongan from "../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
-import { ModalAddMateriPengajarFormulir, ModalAddPengajarFormulir, ModalKeluarPengajarFormulir } from "../../components/modal/modal_formulir/ModalFormPengajar";
+import { ModalAddPengajarFormulir, ModalKeluarPengajarFormulir } from "../../components/modal/modal_formulir/ModalFormPengajar";
+import Swal from "sweetalert2";
 
 const TabPengajar = () => {
     const { biodata_id } = useParams();
     const [showAddModal, setShowAddModal] = useState(false);
-    const [showAddMateriModal, setShowAddMateriModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [pengajarList, setPengajarList] = useState([]);
     const [selectedPengajarId, setSelectedPengajarId] = useState(null);
@@ -23,10 +23,10 @@ const TabPengajar = () => {
     const [startDate, setStartDate] = useState("");
     const [feature, setFeature] = useState(null);
     const [golongan, setGolongan] = useState("");
+    const [error, setError] = useState(false);
 
     const [loadingPengajar, setLoadingPengajar] = useState(true);
     const [loadingDetailPengajar, setLoadingDetailPengajar] = useState(null);
-    const [loadingUpdatePengajar, setLoadingUpdatePengajar] = useState(false);
 
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
@@ -44,6 +44,7 @@ const TabPengajar = () => {
         const token = sessionStorage.getItem("token") || getCookie("token");
         if (!biodata_id || !token) return;
         try {
+            setError(false);
             setLoadingPengajar(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/pengajar`, {
                 method: 'GET',
@@ -58,6 +59,7 @@ const TabPengajar = () => {
             setPengajarList(result.data || []);
         } catch (error) {
             console.error("Gagal mengambil data Pengajar:", error);
+            setError(true);
         } finally {
             setLoadingPengajar(false);
         }
@@ -111,10 +113,12 @@ const TabPengajar = () => {
             setEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
             const formattedMateri = result.data.materi.map(item => ({
+                id: item.id || "-",
                 nama: item.nama_materi || "-",
                 menit: item.jumlah_menit || "-",
                 tahun_masuk: item.tahun_masuk || "-",
-                tahun_akhir: item.tahun_akhir || "-"
+                tahun_akhir: item.tahun_akhir || "-",
+                status: item.status_aktif || "-"
             }));
             setMateriList(formattedMateri || []);        
         } catch (error) {
@@ -130,12 +134,20 @@ const TabPengajar = () => {
         const { lembaga } = selectedLembaga;
 
         if (!lembaga) {
-            alert("Dropdown Lembaga harus dipilih.");
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Lembaga Belum Dipilih',
+                text: 'Dropdown Lembaga harus dipilih.',
+            });    
             return;
         }
 
         if (materiList.length === 0) {
-            alert("Minimal satu materi harus ditambahkan.");
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Materi Kosong',
+                text: 'Minimal satu materi harus ditambahkan.',
+            }); 
             return;
         }
 
@@ -143,18 +155,20 @@ const TabPengajar = () => {
             lembaga_id: lembaga,
             golongan_id: golongan,
             jabatan: jabatan,
-            tahun_masuk: startDate,
-                
-            nama_materi: materiList.map(m => m.nama),
-            jumlah_menit: materiList.map(m => m.menit),
-            tahun_masuk_materi_ajar: materiList.map(m => m.tahun_masuk),
-            tahun_akhir_materi_ajar: materiList.map(m => m.tahun_akhir),
+            tahun_masuk: startDate
         };
 
         console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
         try {
-            setLoadingUpdatePengajar(true);
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang memperbarui data pengajar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedPengajarId}/pengajar`,
@@ -171,48 +185,177 @@ const TabPengajar = () => {
             const result = await response.json();
             console.log(result);
             
+            Swal.close();
             if (response.ok) {
-                alert(`Data berhasil diperbarui! ${result.message}-${result.data}`);
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil!",
+                    text: result.message || "Data berhasil diperbarui.",
+                });
                 setSelectedPengajarDetail(result.data || payload);
                 fetchPengajar();
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal Memperbarui",
+                    text: result.message || "Terjadi kesalahan saat memperbarui data.",
+                });
             }
         } catch (error) {
             console.error("Error saat update:", error);
-        } finally {
-            setLoadingUpdatePengajar(false);
-        }
+            await Swal.fire({
+                icon: "error",
+                title: "Terjadi Kesalahan",
+                text: "Gagal menghubungi server. Silakan coba lagi.",
+            });
+        } 
     };
 
     const [materiList, setMateriList] = useState([])
-    const [form, setForm] = useState({ nama: '', menit: '', tahun_masuk: '', tahun_akhir: '' })
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value })
+    const handleAdd = async (formData, materiList) => {
+        try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang menonaktifkan materi.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const pengajarId = selectedPengajarId; // asumsi ID pengajar tersedia
+
+            const payload = {
+                ...formData,
+                materi_ajar: materiList.map(item => ({
+                    nama_materi: item.nama || null,
+                    jumlah_menit: item.menit ? parseInt(item.menit) : null
+                })),
+            };
+            
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
+
+            const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            console.log(result);
+            Swal.close();
+            if (!response.ok || !("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: center;">${result.message || 'Gagal menambahkan materi.'}</div>`,
+                });
+                return;
+            }
+
+            // Jika berhasil, refresh data
+            fetchPengajar();
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "Materi berhasil ditambahkan"
+            });
+
+            closeAddModal();
+        } catch (error) {
+            console.error("Gagal menambahkan materi:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Terjadi Kesalahan",
+                text: "Gagal mengirim data ke server. Silakan coba lagi."
+            });
+        }
+    };
+
+
+    // const handleRemove = (indexToRemove) => {
+    //     const updatedList = materiList.filter((_, index) => index !== indexToRemove)
+    //     setMateriList(updatedList)
+    // }
+
+    const handleRemove = async (indexToRemove, e) => {
+        e.preventDefault()
+        const materiToRemove = materiList[indexToRemove];
+        const pengajarId = selectedPengajarId;
+        const materiId = materiToRemove.id;
+
+        try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang menonaktifkan materi.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            console.log(token);
+            
+
+            console.log(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`);
+            
+            const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            console.log(result);
+
+             Swal.close();
+            if (!response.ok) {
+                console.log("gagal");
+                
+                throw new Error("Gagal menonaktifkan materi");
+            }
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: center;">${result.message}</div>`,
+                });
+                return; // Jangan lempar error, cukup berhenti
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                html: "Materi berhasil dinonaktifkan",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            fetchPengajar();
+        } catch (error) {
+            Swal.close();
+            console.error("Error saat menonaktifkan materi:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Terjadi kesalahan",
+                text: "Gagal menonaktifkan materi. Silakan coba lagi.",
+            });
+        }
     }
 
-    const handleAdd = () => {
-        // e.preventDefault();
-        if (!form.nama || !form.menit) return
-
-        setMateriList([
-            ...materiList,
-            { nama: form.nama, menit: parseInt(form.menit), tahun_masuk: form.tahun_masuk, tahun_akhir: form.tahun_akhir }
-        ])
-        setForm({ nama: '', menit: '', tahun_masuk: '', tahun_akhir: '' })
-        closeAddMateriModal();
-    }
-
-    const handleRemove = (indexToRemove) => {
-        const updatedList = materiList.filter((_, index) => index !== indexToRemove)
-        setMateriList(updatedList)
-    }
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/pengajar/show`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -225,7 +368,7 @@ const TabPengajar = () => {
             setFeature(featureNum);
             setShowAddModal(true);
         } catch (error) {
-            console.error("Gagal mengambil detail Khadam:", error);
+            console.error("Gagal mengambil detail Pengajar:", error);
         }
     };
 
@@ -235,14 +378,6 @@ const TabPengajar = () => {
 
     const openAddModal = () => {
         setShowAddModal(true);
-    };
-
-    const closeAddMateriModal = () => {
-        setShowAddMateriModal(false);
-    };
-
-    const openAddMateriModal = () => {
-        setShowAddMateriModal(true);
     };
 
     const closeOutModal = () => {
@@ -262,6 +397,8 @@ const TabPengajar = () => {
         { label: "Pengkaderan", value: "pengkaderan" }
     ]
 
+    const semuaNonaktif = materiList.every(item => item.status === "tidak aktif");
+
     return (
         <div className="block" id="Pengajar">
             <h1 className="text-xl font-bold flex items-center justify-between">Pengajar
@@ -280,11 +417,7 @@ const TabPengajar = () => {
             </h1>
             
             {showAddModal && (
-                <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} />
-            )}
-
-            {showAddMateriModal && (
-                <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={1} />
+                <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} handleAddAPI={handleAdd} />
             )}
 
             {showOutModal && (
@@ -295,6 +428,16 @@ const TabPengajar = () => {
                 {loadingPengajar ? (
                     <div className="flex justify-center items-center">
                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                    </div>
+                ) : error ? (
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={fetchPengajar}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Coba Lagi
+                        </button>
                     </div>
                 ) : pengajarList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -366,7 +509,7 @@ const TabPengajar = () => {
                                             </label>
                                             <select
                                                 className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${updatedFilterLembaga.lembaga.length <= 1 || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                onChange={(e) => setGolongan({ lembaga: e.target.value })}
+                                                onChange={(e) => handleFilterChangeLembaga({ lembaga: e.target.value })}
                                                 value={selectedLembaga.lembaga || ""}
                                                 disabled={updatedFilterLembaga.lembaga.length <= 1 || selectedPengajarDetail.status === "tidak aktif"}
                                             >
@@ -383,7 +526,7 @@ const TabPengajar = () => {
                                             </label>
                                             <select
                                                 className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                onChange={(e) => setGolongan({ golongan_id: e.target.value })}
+                                                onChange={(e) => setGolongan(e.target.value )}
                                                 value={golongan}
                                                 disabled={allGolonganList.length <= 1 || selectedPengajarDetail.status === "tidak aktif"}
                                             >
@@ -401,7 +544,7 @@ const TabPengajar = () => {
                                             </label>
                                             <select
                                                 className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                onChange={(e) => setJabatan({ jabatan: e.target.value })}
+                                                onChange={(e) => setJabatan(e.target.value)}
                                                 value={jabatan}
                                                 disabled={selectedPengajarDetail.status === "tidak aktif"}
                                             >
@@ -452,7 +595,8 @@ const TabPengajar = () => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                openAddMateriModal();
+                                                setFeature(3);
+                                                openAddModal();
                                                 console.log("add");                                            
                                             }}
                                             className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
@@ -469,10 +613,11 @@ const TabPengajar = () => {
                                                 <th className="px-3 py-2 border-b">No</th>
                                                 <th className="px-3 py-2 border-b">Nama Materi</th>
                                                 <th className="px-3 py-2 border-b">Jumlah Menit</th>
-                                                <th className="px-3 py-2 border-b">Tanggal Masuk Materi Ajar</th>
-                                                <th className="px-3 py-2 border-b">Tanggal Akhir Materi Ajar</th>
-                                                {pengajar.status === "aktif" && (
-                                                <th className="px-3 py-2 border-b">Aksi</th>
+                                                <th className="px-3 py-2 border-b">Tanggal Masuk</th>
+                                                <th className="px-3 py-2 border-b">Tanggal Akhir</th>
+                                                <th className="px-3 py-2 border-b">Status</th>
+                                                {pengajar.status === "aktif" && !semuaNonaktif && (
+                                                    <th className="px-3 py-2 border-b">Aksi</th>
                                                 )}
                                             </tr>
                                         </thead>
@@ -484,14 +629,24 @@ const TabPengajar = () => {
                                                     <td className="px-3 py-2 border-b">{item.menit}</td>
                                                     <td className="px-3 py-2 border-b">{item.tahun_masuk}</td>
                                                     <td className="px-3 py-2 border-b">{item.tahun_akhir}</td>
-                                                    {pengajar.status === "aktif" && (
+                                                    <td className="px-3 py-2 border-b"><span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "aktif"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status === "aktif" ? "Aktif" : "Nonaktif"}
+                                                    </span></td>
+                                                    {pengajar.status === "aktif" && !semuaNonaktif && (
                                                     <td className="px-3 py-2 border-b">
-                                                        <button
-                                                            onClick={() => handleRemove(index)}
-                                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                                        >
-                                                            <FontAwesomeIcon icon={faTrash} />
-                                                        </button>
+                                                        {item.status === "aktif" && (
+                                                            <button
+                                                                onClick={(e) => handleRemove(index, e)}
+                                                                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                            >
+                                                                <FontAwesomeIcon icon={faTrash} />
+                                                            </button>
+                                                        )}
                                                     </td>
                                                     )}
                                                 </tr>
@@ -511,15 +666,10 @@ const TabPengajar = () => {
                                         {pengajar.status === "aktif" && (
                                             <button
                                                 type="button"
-                                                disabled={loadingUpdatePengajar}
-                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdatePengajar ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
                                                 onClick={handleUpdate}
                                             >
-                                                {loadingUpdatePengajar ? (
-                                                    <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
-                                                ) :
-                                                    "Update"
-                                                }
+                                                Update
                                             </button>
                                         )}
                                         <button
