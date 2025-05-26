@@ -40,7 +40,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     list.length > 0
       ? [{ ...list[0], label }, ...list.slice(1)]
       : list;
-      
+
   // Buat versi baru filterLembaga yang labelnya diubah
   const updatedFilterLembaga = {
     lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
@@ -52,7 +52,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
   const isTambah = feature == 1;
   const endpoint = isTambah ? "pendidikan" : "pendidikan/pindah";
   const metod = isTambah ? "POST" : "PUT";
-  const id = isTambah ? biodataId : cardId;    
+  const id = isTambah ? biodataId : cardId;
 
   const [formData, setFormData] = useState({
     lembaga_id: "",
@@ -61,8 +61,8 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     rombel_id: "",
     no_induk: "",
     tanggal_masuk: "",
-    tanggal_keluar: "",
-    status: ""
+    // tanggal_keluar: "", // Komentar field tanggal_keluar
+    // status: "" // Komentar field status
   });
 
   useEffect(() => {
@@ -191,12 +191,12 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                       </Dialog.Title>
 
                       {/* FORM ISI */}
-                      <div className="space-y-4">    
-                        <Filters 
-                          filterOptions={updatedFilterLembaga} 
-                          onChange={handleFilterChangeLembaga} 
-                          selectedFilters={selectedLembaga} 
-                        />     
+                      <div className="space-y-4">
+                        <Filters
+                          filterOptions={updatedFilterLembaga}
+                          onChange={handleFilterChangeLembaga}
+                          selectedFilters={selectedLembaga}
+                        />
 
                         <div>
                           <label htmlFor="no_induk" className="block text-gray-700">Nomor Induk *</label>
@@ -226,7 +226,8 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                           />
                         </div>
 
-                        <div>
+                        {/* Komentar field tanggal_keluar */}
+                        {/* <div>
                           <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Akhir</label>
                           <input
                             type="date"
@@ -236,9 +237,10 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                             onChange={(e) => setFormData({ ...formData, tanggal_keluar: e.target.value })}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
-                        </div>
+                        </div> */}
 
-                        <div>
+                        {/* Komentar field status */}
+                        {/* <div>
                           <label htmlFor="status" className="block text-gray-700">Status</label>
                           <select
                             id="status"
@@ -251,7 +253,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                             <option value="aktif">Aktif</option>
                             <option value="tidak aktif">Tidak Aktif</option>
                           </select>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -284,17 +286,18 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
 
 export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData }) => {
   const [formData, setFormData] = useState({
-    tanggal_keluar: ""
-  });    
+    tanggal_keluar: "",
+    status: "" // Tambahkan field status
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.tanggal_keluar) {
+    if (!formData.tanggal_keluar || !formData.status) {
       await Swal.fire({
         icon: "error",
         title: "Data tidak lengkap",
-        text: "Tanggal keluar wajib diisi",
+        text: "Tanggal keluar dan status wajib diisi",
       });
       return;
     }
@@ -414,7 +417,27 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
-                        </div>                                            
+                        </div>
+
+                        <div>
+                          <label htmlFor="status" className="block text-gray-700">Status *</label>
+                          <select
+                            id="status"
+                            name="status"
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                            required
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            <option value="">Pilih Status</option>
+                            <option value="do">DropOut</option>
+                            <option value="berhenti">Berhenti</option>
+                            <option value="cuti">Cuti</option>
+                            <option value="alumni">Alumni</option>
+                            <option value="nonaktif">Non Aktif</option>
+                          </select>
+
+                        </div>
                       </div>
                     </div>
                   </div>
