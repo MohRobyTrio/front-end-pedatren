@@ -35,11 +35,17 @@ const CatatanKognitif = () => {
                 const response = await fetch(`${API_BASE_URL}dropdown/periode`);
                 const data = await response.json();
 
-                // Format data menjadi array of objects agar sesuai dengan struktur Filters
-                const formatted = data.map((item) => ({
-                    label: item === "Semua" ? "Semua Periode" : item,
-                    value: item === "Semua" ? "" : item,
-                }));
+                // Ambil hanya bagian kognitif dari respons API
+                const kognitifData = data.kognitif;
+
+                // Tambahkan pilihan "Semua Periode" sebagai pilihan pertama
+                const formatted = [
+                    { label: "Semua Periode", value: "" },
+                    ...kognitifData.map((item) => ({
+                        label: item,
+                        value: item,
+                    })),
+                ];
 
                 setListPeriode(formatted);
             } catch (error) {

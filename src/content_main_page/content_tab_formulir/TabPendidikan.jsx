@@ -1,578 +1,435 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import axios from 'axios';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
-
-// Skema validasi form
-const schema = yup.object({
-  lembaga: yup.string().required('Lembaga wajib dipilih'),
-  jurusan: yup.string().optional(),
-  kelas: yup.string().optional(),
-  rombel: yup.string().optional(),
-  noInduk: yup.string().required('Nomor induk wajib diisi'),
-  tglMulai: yup.date().required('Tanggal mulai wajib diisi'),
-  tglAkhir: yup.date().nullable().transform((value) => (value === "" ? null : value)),
-  status: yup.string().optional()
-});
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import { getCookie } from "../../utils/cookieUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { ModalAddPendidikanFormulir, ModalKeluarPendidikanFormulir } from "../../components/modal/modal_formulir/ModalFormPendidikan";
 
 const TabPendidikan = () => {
   const { biodata_id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUpdateMode, setIsUpdateMode] = useState(false);
-  const [historyPendidikan, setHistoryPendidikan] = useState([]);
-  const [errorHistory, setErrorHistory] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showOutModal, setShowOutModal] = useState(false);
+  const [pendidikanList, setPendidikanList] = useState([]);
+  const [selectedPendidikanId, setSelectedPendidikanId] = useState(null);
+  const [selectedPendidikanDetail, setSelectedPendidikanDetail] = useState(null);
+  const [noInduk, setNoInduk] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [status, setStatus] = useState("");
+  const [feature, setFeature] = useState(null);
 
-  // Data options from API
-  const [lembagaOptions, setLembagaOptions] = useState([]);
-  const [jurusanOptions, setJurusanOptions] = useState([]);
-  const [kelasOptions, setKelasOptions] = useState([]);
-  const [rombelOptions, setRombelOptions] = useState([]);
+  const [loadingPendidikan, setLoadingPendidikan] = useState(true);
+  const [loadingDetailPendidikan, setLoadingDetailPendidikan] = useState(null);
+  const [loadingUpdatePendidikan, setLoadingUpdatePendidikan] = useState(false);
 
-  // State untuk menyimpan ID (hanya untuk parameter dropdown)
-  const [selectedIds, setSelectedIds] = useState({
-    lembaga_id: '',
-    jurusan_id: '',
-    kelas_id: '',
-    rombel_id: ''
-  });
+  const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch, reset, getValues } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      lembaga: '',
-      jurusan: '',
-      kelas: '',
-      rombel: '',
-      noInduk: '',
-      tglMulai: '',
-      tglAkhir: null,
-      status: ''
-    }
-  });
+  // Ubah label index ke-0 menjadi "Pilih ..."
+  const updateFirstOptionLabel = (list, label) =>
+    list.length > 0
+      ? [{ ...list[0], label }, ...list.slice(1)]
+      : list;
 
-  // Watch selected values
-  const selectedLembaga = watch('lembaga');
-  const selectedJurusan = watch('jurusan');
-  const selectedKelas = watch('kelas');
+  // Buat versi baru filterLembaga yang labelnya diubah
+  const updatedFilterLembaga = {
+    lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+    jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+    kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
+    rombel: updateFirstOptionLabel(filterLembaga.rombel, "Pilih Rombel"),
+  };
 
-  // Load history pendidikan
-  const loadHistoryPendidikan = async () => {
-    if (!biodata_id) return;
-
+  const fetchPendidikan = useCallback(async () => {
+    const token = sessionStorage.getItem("token") || getCookie("token");
+    if (!biodata_id || !token) return;
     try {
-      setIsLoading(true);
-      setErrorHistory(null);
-      const response = await axios.get(`${API_BASE_URL}formulir/${biodata_id}/pendidikan`);
-
-      if (response.data.data) {
-        const data = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
-        setHistoryPendidikan(data);
-
-        // Otomatis isi form dengan data terbaru jika ada
-        if (data.length > 0) {
-          fillFormWithHistory(data[0]);
+      setLoadingPendidikan(true);
+      const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/pendidikan`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
-      } else {
-        setHistoryPendidikan([]);
-      }
-    } catch (error) {
-      console.error('Error loading history pendidikan:', error);
-      setErrorHistory(error.response?.data?.message || 'Gagal memuat history pendidikan. Silakan coba lagi.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Isi form dengan data history
-  const fillFormWithHistory = (historyData) => {
-    // Set nilai text/nama
-    setValue('lembaga', historyData.nama_lembaga || '');
-    setValue('jurusan', historyData.nama_jurusan || '');
-    setValue('kelas', historyData.nama_kelas || '');
-    setValue('rombel', historyData.nama_rombel || '');
-    setValue('noInduk', historyData.no_induk || '');
-    setValue('tglMulai', historyData.tanggal_masuk || '');
-    setValue('tglAkhir', historyData.tanggal_keluar || null);
-    setValue('status', historyData.status || '');
-
-    // Cari ID untuk keperluan dropdown chaining
-    const findId = (options, name, fieldName = 'nama') => {
-      return options.find(opt => opt[fieldName] === name || opt[`nama_${fieldName}`] === name)?.id || '';
-    };
-
-    // Update selectedIds setelah form diisi
-    setTimeout(() => {
-      setSelectedIds({
-        lembaga_id: findId(lembagaOptions, historyData.nama_lembaga, 'lembaga'),
-        jurusan_id: findId(jurusanOptions, historyData.nama_jurusan),
-        kelas_id: findId(kelasOptions, historyData.nama_kelas),
-        rombel_id: findId(rombelOptions, historyData.nama_rombel)
       });
-    }, 0);
-
-    setIsUpdateMode(true);
-  };
-
-  // Load dropdown options
-  useEffect(() => {
-    const fetchLembaga = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/lembaga`);
-        const data = Array.isArray(response.data) ? response.data : [response.data];
-        setLembagaOptions(data || []);
-      } catch (error) {
-        console.error('Error fetching lembaga:', error);
-        setLembagaOptions([]);
-      }
-    };
-
-    fetchLembaga();
-    loadHistoryPendidikan();
+      const result = await response.json();
+      setPendidikanList(result.data || []);
+    } catch (error) {
+      console.error("Gagal mengambil data Pendidikan:", error);
+    } finally {
+      setLoadingPendidikan(false);
+    }
   }, [biodata_id]);
 
-  // Load jurusan based on selected lembaga ID
   useEffect(() => {
-    const fetchJurusan = async () => {
-      if (!selectedIds.lembaga_id) {
-        setJurusanOptions([]);
-        return;
-      }
+    fetchPendidikan();
+  }, [fetchPendidikan]);
 
-      try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/jurusan/${selectedIds.lembaga_id}`);
-        setJurusanOptions(Array.isArray(response.data) ? response.data : [response.data]);
-        console.log(response.data);
-        
-      } catch (error) {
-        console.error('Error fetching jurusan:', error);
-        setJurusanOptions([]);
-      }
-    };
-
-    fetchJurusan();
-  }, [selectedIds.lembaga_id]);
-
-  // Load kelas based on selected jurusan ID
   useEffect(() => {
-    const fetchKelas = async () => {
-      if (!selectedIds.jurusan_id) {
-        setKelasOptions([]);
-        return;
+    if (selectedPendidikanDetail) {
+      if (selectedPendidikanDetail.lembaga_id) {
+        handleFilterChangeLembaga({ lembaga: selectedPendidikanDetail.lembaga_id });
       }
-
-      try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/kelas/${selectedIds.jurusan_id}`);
-        setKelasOptions(Array.isArray(response.data) ? response.data : [response.data]);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching kelas:', error);
-        setKelasOptions([]);
+      if (selectedPendidikanDetail.jurusan_id) {
+        handleFilterChangeLembaga({ jurusan: selectedPendidikanDetail.jurusan_id });
       }
-    };
-
-    fetchKelas();
-  }, [selectedIds.jurusan_id]);
-
-  // Load rombel based on selected kelas ID
-  useEffect(() => {
-    const fetchRombel = async () => {
-      if (!selectedIds.kelas_id) {
-        setRombelOptions([]);
-        return;
+      if (selectedPendidikanDetail.kelas_id) {
+        handleFilterChangeLembaga({ kelas: selectedPendidikanDetail.kelas_id });
       }
-
-      try {
-        const response = await axios.get(`${API_BASE_URL}dropdown/rombel/${selectedIds.kelas_id}`);
-        setRombelOptions(Array.isArray(response.data) ? response.data : [response.data]);
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching rombel:', error);
-        setRombelOptions([]);
+      if (selectedPendidikanDetail.rombel_id) {
+        handleFilterChangeLembaga({ rombel: selectedPendidikanDetail.rombel_id });
       }
-    };
+    }
+  }, [selectedPendidikanDetail]);
 
-    fetchRombel();
-  }, [selectedIds.kelas_id]);
-
-  // Handle perubahan dropdown lembaga - PERBAIKAN DISINI
-  const handleLembagaChange = useCallback((e) => {
-    const selectedValue = e.target.value;
-    const selectedOption = lembagaOptions.find(l => l.nama_lembaga === selectedValue);
-
-    // Set nilai form secara langsung
-    setValue('lembaga', selectedValue, { shouldValidate: true });
-
-    // Reset nilai dropdown yang dependent
-    setValue('jurusan', '', { shouldValidate: true });
-    setValue('kelas', '', { shouldValidate: true });
-    setValue('rombel', '', { shouldValidate: true });
-
-    // Update selectedIds setelah form diupdate
-    setSelectedIds(prev => ({
-      ...prev,
-      lembaga_id: selectedOption?.id || '',
-      jurusan_id: '',
-      kelas_id: '',
-      rombel_id: ''
-    }));
-  }, [lembagaOptions, setValue, setSelectedIds]);
-
-  // Handle perubahan dropdown jurusan - PERBAIKAN DISINI
-  const handleJurusanChange = useCallback((e) => {
-    const selectedValue = e.target.value;
-    const selectedOption = jurusanOptions.find(j => j.nama === selectedValue);
-
-    // Set nilai form secara langsung
-    setValue('jurusan', selectedValue, { shouldValidate: true });
-
-    // Reset nilai dropdown yang dependent
-    setValue('kelas', '', { shouldValidate: true });
-    setValue('rombel', '', { shouldValidate: true });
-
-    // Update selectedIds setelah form diupdate
-    setSelectedIds(prev => ({
-      ...prev,
-      jurusan_id: selectedOption?.id || '',
-      kelas_id: '',
-      rombel_id: ''
-    }));
-  }, [jurusanOptions, setValue, setSelectedIds]);
-
-  // Handle perubahan dropdown kelas - PERBAIKAN DISINI
-  const handleKelasChange = useCallback((e) => {
-    const selectedValue = e.target.value;
-    const selectedOption = kelasOptions.find(k => k.nama === selectedValue);
-
-    // Set nilai form secara langsung
-    setValue('kelas', selectedValue, { shouldValidate: true });
-
-    // Reset nilai dropdown yang dependent
-    setValue('rombel', '', { shouldValidate: true });
-
-    // Update selectedIds setelah form diupdate
-    setSelectedIds(prev => ({
-      ...prev,
-      kelas_id: selectedOption?.id || '',
-      rombel_id: ''
-    }));
-  }, [kelasOptions, setValue, setSelectedIds]);
-
-  // Handle perubahan dropdown rombel - PERBAIKAN DISINI
-  const handleRombelChange = useCallback((e) => {
-    const selectedValue = e.target.value;
-    const selectedOption = rombelOptions.find(r => r.nama === selectedValue);
-
-    // Set nilai form secara langsung
-    setValue('rombel', selectedValue, { shouldValidate: true });
-
-    // Update selectedIds setelah form diupdate
-    setSelectedIds(prev => ({
-      ...prev,
-      rombel_id: selectedOption?.id || ''
-    }));
-  }, [rombelOptions, setValue, setSelectedIds]);
-
-  // Submit form
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-
+  const handleCardClick = async (id) => {
     try {
-      const payload = {
-        lembaga_id: selectedIds.lembaga_id,
-        jurusan_id: selectedIds.jurusan_id || null,
-        kelas_id: selectedIds.kelas_id || null,
-        rombel_id: selectedIds.rombel_id || null,
-        no_induk: data.noInduk,
-        tanggal_masuk: data.tglMulai,
-        tanggal_keluar: data.tglAkhir || null,
-        status: data.status || null
-      };
+      setLoadingDetailPendidikan(id);
+      const token = sessionStorage.getItem("token") || getCookie("token");
+      const response = await fetch(`${API_BASE_URL}formulir/${id}/pendidikan/show`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const result = await response.json();
 
-
-      let response;
-      if (isUpdateMode && biodata_id) {
-        response = await axios.put(
-          `${API_BASE_URL}formulir/${biodata_id}/pendidikan`,
-          payload
-        );
-      } else {
-        response = await axios.put(
-          `${API_BASE_URL}formulir/${biodata_id}/pendidikan/pindah`,
-          payload
-        );
-      };
-
-      alert(isUpdateMode ? 'Data pendidikan berhasil diupdate!' : 'Data pendidikan berhasil disimpan!');
-      loadHistoryPendidikan();
-
-      if (!isUpdateMode) {
-        reset();
-        setSelectedIds({
-          lembaga_id: '',
-          jurusan_id: '',
-          kelas_id: '',
-          rombel_id: ''
-        });
-      };
+      setSelectedPendidikanId(id);
+      setSelectedPendidikanDetail(result.data);
+      setNoInduk(result.data.no_induk || "");
+      setEndDate(result.data.tanggal_keluar || "");
+      setStartDate(result.data.tanggal_masuk || "");
+      setStatus(result.data.status || "");
     } catch (error) {
-      console.error('Error saving data:', error);
-      alert(error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.');
+      console.error("Gagal mengambil detail Pendidikan:", error);
     } finally {
-      setIsLoading(false);
+      setLoadingDetailPendidikan(null);
     }
   };
 
-  const handleAddNew = () => {
-    reset();
-    setSelectedIds({
-      lembaga_id: '',
-      jurusan_id: '',
-      kelas_id: '',
-      rombel_id: ''
-    });
-    setIsUpdateMode(false);
+  const handleUpdate = async () => {
+    if (!selectedPendidikanDetail) return;
+
+    const { lembaga, jurusan, kelas, rombel } = selectedLembaga;
+
+    if (!lembaga || !noInduk || !startDate) {
+      alert("Lembaga, Nomor Induk, dan Tanggal Mulai wajib diisi");
+      return;
+    }
+
+    const payload = {
+      lembaga_id: lembaga,
+      jurusan_id: jurusan || null,
+      kelas_id: kelas || null,
+      rombel_id: rombel || null,
+      no_induk: noInduk,
+      tanggal_masuk: startDate,
+      tanggal_keluar: endDate || null,
+      status: status || null
+    };
+
+    try {
+      setLoadingUpdatePendidikan(true);
+      const token = sessionStorage.getItem("token") || getCookie("token");
+      const response = await fetch(
+        `${API_BASE_URL}formulir/${selectedPendidikanId}/pendidikan`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      const result = await response.json();
+      if (response.ok) {
+        alert(`Data pendidikan berhasil diperbarui!`);
+        setSelectedPendidikanDetail(result.data || payload);
+        fetchPendidikan();
+      } else {
+        alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+      }
+    } catch (error) {
+      console.error("Error saat update:", error);
+    } finally {
+      setLoadingUpdatePendidikan(false);
+    }
   };
 
-  if (isLoading && isUpdateMode) {
-    return <div className="text-center p-5">Loading data...</div>;
-  }
+  const closeAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const openAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const closeOutModal = () => {
+    setShowOutModal(false);
+  };
+
+  const openOutModal = (id) => {
+    setSelectedPendidikanId(id);
+    setShowOutModal(true);
+  };
+
+  const Filters = ({ filterOptions, onChange, selectedFilters }) => {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        {Object.entries(filterOptions).map(([label, options], index) => (
+          <div key={`${label}-${index}`}>
+            <label htmlFor={label} className="block text-sm font-medium text-gray-700">
+              {capitalizeFirst(label)} {label === 'lembaga' ? '*' : ''}
+            </label>
+            <select
+              className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedPendidikanDetail?.status === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+              onChange={(e) => onChange({ [label]: e.target.value })}
+              value={selectedFilters[label] || ""}
+              disabled={options.length <= 1 || selectedPendidikanDetail?.status === "tidak aktif"}
+            >
+              {options.map((option, idx) => (
+                <option key={idx} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div className="relative p-2 bg-white">
-      {/* Judul Formulir */}
+    <div className="block" id="Pendidikan">
       <h1 className="text-xl font-bold flex items-center justify-between">Pendidikan
-        {/* <button
-          onClick={openAddModal}
+        <button
+          onClick={() => {
+            setFeature(1);
+            openAddModal();
+          }}
           type="button"
           className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
         >
           <i className="fas fa-plus"></i>
           <span>Tambah Data</span>
-        </button> */}
+        </button>
       </h1>
 
-      {/* History Pendidikan */}
-      <div className="mb-6">
-        {/* Debug Info - untuk development, bisa dihapus di production */}
-        {/* <div className="mb-4 p-2 bg-gray-100 text-xs">
-          <p>Mode: {isUpdateMode ? 'Update' : 'Baru'}</p>
-          <p>ID: {biodata_id || 'tidak ada'}</p>
-        </div> */}
-        {/* <div className="mb-4 p-2 bg-gray-100 text-xs"> */}
-          {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
-        {/* </div> */}
-        {/* <h2 className="text-lg font-semibold mb-2">History Pendidikan</h2> */}
+      {showAddModal && (
+        <ModalAddPendidikanFormulir
+          isOpen={showAddModal}
+          onClose={closeAddModal}
+          biodataId={biodata_id}
+          cardId={selectedPendidikanId}
+          refetchData={fetchPendidikan}
+          feature={feature}
+        />
+      )}
 
-        <br />
+      {showOutModal && (
+        <ModalKeluarPendidikanFormulir
+          isOpen={showOutModal}
+          onClose={closeOutModal}
+          id={selectedPendidikanId}
+          refetchData={fetchPendidikan}
+        />
+      )}
 
-        {errorHistory && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {errorHistory}
-            <button
-              onClick={loadHistoryPendidikan}
-              className="ml-2 text-red-700 underline"
+      <div className="mt-5 space-y-6">
+        {loadingPendidikan ? (
+          <div className="flex justify-center items-center">
+            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+          </div>
+        ) : pendidikanList.length === 0 ? (
+          <p className="text-center text-gray-500">Tidak ada data</p>
+        ) : pendidikanList.map((pendidikan) => (
+          <div key={pendidikan.id}>
+            {/* Card */}
+            <div
+              className="bg-white shadow-md rounded-lg p-6 cursor-pointer w-full flex flex-col items-start gap-2"
+              onClick={() => handleCardClick(pendidikan.id)}
             >
-              Coba Lagi
-            </button>
-          </div>
-        )}
-
-        {historyPendidikan.length > 0 ? (
-          <div className="space-y-3">
-            {historyPendidikan.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => fillFormWithHistory(item)}
-                className={`p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors ${watch('noInduk') === item.no_induk ? 'border-blue-100 bg-blue-50' : 'border-gray-200'
-                  }`}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium">{item.nama_lembaga} - {item.nama_jurusan}</h3>
-                    <p className="text-sm text-gray-600">
-                      {item.nama_kelas} - {item.nama_rombel} | No. Induk: {item.no_induk}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Periode: {item.tanggal_masuk}
-                      {item.tanggal_keluar ? ` s/d ${item.tanggal_keluar}` : ' - Sekarang'}
-                    </p>
-                  </div>
-                  <span className={`px-2 py-1 text-xs rounded-full ${item.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                    }`}>
-                    {item.status === 'aktif' ? 'Aktif' : 'Tidak Aktif'}
-                  </span>
+              <div className="flex items-center justify-between w-full">
+                <div>
+                  <h5 className="text-lg font-bold">{pendidikan.nama_lembaga}</h5>
+                  <p className="text-gray-600 text-sm">Jurusan: {pendidikan.nama_jurusan || '-'}</p>
+                  <p className="text-gray-600 text-sm">Kelas: {pendidikan.nama_kelas || '-'}</p>
+                  <p className="text-gray-600 text-sm">Rombel: {pendidikan.nama_rombel || '-'}</p>
+                  <p className="text-gray-600 text-sm">No. Induk: {pendidikan.no_induk}</p>
+                  <p className="text-gray-600 text-sm">
+                    Periode: {formatDate(pendidikan.tanggal_masuk)}
+                    {pendidikan.tanggal_keluar ? ` s/d ${formatDate(pendidikan.tanggal_keluar)}` : ' - Sekarang'}
+                  </p>
                 </div>
+                <span
+                  className={`text-sm font-semibold px-3 py-1 rounded-full ${pendidikan.status === "aktif"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                    }`}
+                >
+                  {pendidikan.status === "aktif" ? "Aktif" : "Nonaktif"}
+                </span>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-            {isLoading ? 'Memuat history...' : 'Tidak ada history pendidikan'}
-          </div>
-        )}
 
-        {historyPendidikan.length > 0 && (
-          <button
-            type="button"
-            onClick={handleAddNew}
-            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Tambah Pendidikan
-          </button>
-        )}
+              {!pendidikan.tanggal_keluar && (
+                <div className="flex flex-wrap gap-2 gap-x-4 mt-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFeature(2);
+                      openAddModal();
+                    }}
+                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                    title="Pindah Pendidikan"
+                  >
+                    <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openOutModal(pendidikan.id);
+                    }}
+                    className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+                    title="Keluar Pendidikan"
+                  >
+                    <FontAwesomeIcon icon={faRightFromBracket} />Keluar
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Form Input */}
+            {loadingDetailPendidikan === pendidikan.id ? (
+              <div className="flex justify-center items-center mt-4">
+                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+              </div>
+            ) : selectedPendidikanId === pendidikan.id && selectedPendidikanDetail && (
+              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {/* Kolom kiri: Dropdown dependent */}
+                <div className="flex flex-col gap-4">
+                  <Filters
+                    filterOptions={updatedFilterLembaga}
+                    onChange={handleFilterChangeLembaga}
+                    selectedFilters={selectedLembaga}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <label htmlFor="noInduk" className="block text-sm font-medium text-gray-700">
+                      Nomor Induk *
+                    </label>
+                    <input
+                      type="text"
+                      id="noInduk"
+                      name="noInduk"
+                      value={noInduk}
+                      onChange={(e) => setNoInduk(e.target.value)}
+                      maxLength={50}
+                      placeholder="Masukkan Nomor Induk"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                      Tanggal Mulai *
+                    </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                      Tanggal Akhir
+                    </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <select
+                      id="status"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      disabled={selectedPendidikanDetail?.status === "tidak aktif"}
+                    >
+                      <option value="">Pilih Status</option>
+                      <option value="aktif">Aktif</option>
+                      <option value="tidak aktif">Tidak Aktif</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
+                  <div className="flex space-x-2 mt-1">
+                    {pendidikan.status === "aktif" && (
+                      <button
+                        type="button"
+                        disabled={loadingUpdatePendidikan}
+                        className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdatePendidikan ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                        onClick={handleUpdate}
+                      >
+                        {loadingUpdatePendidikan ? (
+                          <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
+                        ) :
+                          "Update"
+                        }
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
+                      onClick={() => {
+                        setSelectedPendidikanId(null);
+                        setSelectedPendidikanDetail(null);
+                        setNoInduk("");
+                        setStartDate("");
+                        setEndDate("");
+                        setStatus("");
+                      }}
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+        ))}
       </div>
-
-      {/* Form Pendidikan */}
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4 mt-4">
-        <div className="sm:col-span-2 md:col-span-2">
-          <label htmlFor="lembaga" className="block text-sm font-medium text-gray-700">
-            Lembaga *
-          </label>
-          <select
-            id="lembaga"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            value={selectedLembaga || ""}
-            onChange={handleLembagaChange}
-            disabled={isLoading}
-          >
-            <option value="">Pilih Lembaga</option>
-            {lembagaOptions?.map(lembaga => (
-              <option key={lembaga.id} value={lembaga.nama_lembaga}>
-                {lembaga.nama_lembaga}
-              </option>
-            ))}
-          </select>
-          {errors.lembaga && (
-            <p className="text-red-500 text-sm mt-1">{errors.lembaga.message}</p>
-          )}
-        </div>
-
-        <div className="sm:col-span-2 md:col-span-2">
-          <label htmlFor="jurusan" className="block text-sm font-medium text-gray-700">
-            Jurusan
-          </label>
-          <select
-            id="jurusan"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            value={selectedJurusan || ""}
-            onChange={handleJurusanChange}
-            disabled={!selectedIds.lembaga_id || isLoading}
-          >
-            <option value="">Pilih Jurusan</option>
-            {jurusanOptions.map(jurusan => (
-              <option key={jurusan.id} value={jurusan.nama_jurusan}>{jurusan.nama_jurusan}</option>
-            ))}
-          </select>
-          {errors.jurusan && (
-            <p className="text-red-500 text-sm mt-1">{errors.jurusan.message}</p>
-          )}
-        </div>
-
-        <div className="sm:col-span-2 md:col-span-2">
-          <label htmlFor="kelas" className="block text-sm font-medium text-gray-700">
-            Kelas
-          </label>
-          <select
-            id="kelas"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            value={selectedKelas || ""}
-            onChange={handleKelasChange}
-            disabled={!selectedIds.jurusan_id || isLoading}
-          >
-            <option value="">Pilih Kelas</option>
-            {kelasOptions.map(kelas => (
-              <option key={kelas.id} value={kelas.nama_kelas}>{kelas.nama_kelas}</option>
-            ))}
-          </select>
-          {errors.kelas && (
-            <p className="text-red-500 text-sm mt-1">{errors.kelas.message}</p>
-          )}
-        </div>
-
-        <div className="sm:col-span-2 md:col-span-2">
-          <label htmlFor="rombel" className="block text-sm font-medium text-gray-700">
-            Rombel
-          </label>
-          <select
-            id="rombel"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            value={watch('rombel') || ""}
-            onChange={handleRombelChange}
-            disabled={!selectedIds.kelas_id || isLoading}
-          >
-            <option value="">Pilih Rombel</option>
-            {rombelOptions.map(rombel => (
-              <option key={rombel.id} value={rombel.nama_rombel}>{rombel.nama_rombel}</option>
-            ))}
-          </select>
-          {errors.rombel && (
-            <p className="text-red-500 text-sm mt-1">{errors.rombel.message}</p>
-          )}
-        </div>
-
-        <div className="sm:col-span-2 md:col-span-2">
-          <label htmlFor="noInduk" className="block text-sm font-medium text-gray-700">
-            Nomor Induk *
-          </label>
-          <input
-            id="noInduk"
-            type="text"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            {...register('noInduk')}
-            disabled={isLoading}
-          />
-          {errors.noInduk && (
-            <p className="text-red-500 text-sm mt-1">{errors.noInduk.message}</p>
-          )}
-        </div>
-      
-        <div className="sm:col-span-2 md:col-span-3">
-          <label htmlFor="tglMulai" className="block text-sm font-medium text-gray-700">
-            Tanggal Mulai *
-          </label>
-          <input
-            id="tglMulai"
-            type="date"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            {...register('tglMulai')}
-            disabled={isLoading}
-          />
-          {errors.tglMulai && (
-            <p className="text-red-500 text-sm mt-1">{errors.tglMulai.message}</p>
-          )}
-        </div>
-
-        <div className="sm:col-span-2 md:col-span-3">
-          <label htmlFor="tglAkhir" className="block text-sm font-medium text-gray-700">
-            Tanggal Akhir
-          </label>
-          <input
-            id="tglAkhir"
-            type="date"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            {...register('tglAkhir')}
-            disabled={isLoading}
-          />
-          {errors.tglAkhir && (
-            <p className="text-red-500 text-sm mt-1">{errors.tglAkhir.message}</p>
-          )}
-        </div>
-
-        <div className="col-span-8 flex justify-start gap-2 mt-4">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Menyimpan...' : 'Simpan'}
-          </button>
-        </div>
-      </form>
     </div>
   );
 };
+
+// Format tanggal ke ID
+const formatDate = (dateStr) => {
+  const options = { year: "numeric", month: "short", day: "2-digit" };
+  return new Date(dateStr).toLocaleDateString("id-ID", options);
+};
+
+// Kapitalisasi huruf pertama
+const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export default TabPendidikan;

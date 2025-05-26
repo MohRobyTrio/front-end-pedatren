@@ -104,18 +104,18 @@ const DataPerizinan = () => {
       { label: "Rombongan / Personal", value: "" },
       { label: "Rombongan", value: "rombongan" },
       { label: "Personal", value: "personal" }
+    ],
+    status: [
+      { label: "Semua Status Izin", value: "" },
+      { label: "Sedang Proses Izin", value: "sedang proses izin" },
+      { label: "Perizinan Diterima", value: "perizinan diterima" },
+      { label: "Sudah Berada Di Luar Pondok", value: "sudah berada diluar pondok" },
+      { label: "Perizinan Ditolak", value: "perizinan ditolak" },
+      { label: "Perizinan Dibatalkan", value: "dibatalkan" },
+      { label: "Telat (sudah kembali)", value: "telat(sudah kembali)" },
+      { label: "Telat (belum kembali", value: "telat(belum kembali)" },
+      { label: "Kembali Tepat Waktu", value: "kembali tepat waktu" }
     ]
-    // status_izin: [
-    //   { label: "Semua Status Izin", value: "" },
-    //   { label: "Sedang Proses Izin", value: "sedang proses izin" },
-    //   { label: "Perizinan Diterima", value: "perizinan diterima" },
-    //   { label: "Sudah Berada Di Luar Pondok", value: "sudah berada diluar pondok" },
-    //   { label: "Perizinan Ditolak", value: "perizinan ditolak" },
-    //   { label: "Perizinan Dibatalkan", value: "dibatalkan" },
-    //   { label: "Telat (sudah kembali)", value: "telat(sudah kembali)" },
-    //   { label: "Telat (belum kembali", value: "telat(belum kembali)" },
-    //   { label: "Kembali Tepat Waktu", value: "kembali tepat waktu" }
-    // ]
   }
 
   const filter4 = {
