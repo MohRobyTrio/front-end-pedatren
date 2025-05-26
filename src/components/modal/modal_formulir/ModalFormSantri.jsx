@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 
-const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
+const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const [formData, setFormData] = useState({
         tanggal_masuk: ""
     });
@@ -26,6 +26,14 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/santri`, {
                 method: "POST",
@@ -37,7 +45,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
             });
 
             const result = await response.json();
-
+            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -60,6 +68,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId }) => {
                 text: "Data berhasil dikirim.",
             });
 
+            refetchData?.();
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

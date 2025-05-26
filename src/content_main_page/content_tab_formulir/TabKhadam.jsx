@@ -14,6 +14,7 @@ const TabKhadam = () => {
     const [feature, setFeature] = useState(null);
 
     const {
+        error,
         khadamList,
         loadingKhadam,
         fetchKhadam,
@@ -30,7 +31,6 @@ const TabKhadam = () => {
         setEndDate,
         setKeterangan,
         handleUpdate,
-        loadingUpdateKhadam,
         handleOpenAddModalWithDetail
     } = useKhadam({ biodata_id, setSelectedKhadamData, setShowAddModal, setFeature });
 
@@ -84,6 +84,16 @@ const TabKhadam = () => {
                 {loadingKhadam ? (
                     <div className="flex justify-center items-center">
                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                    </div>
+                ) : error ? (
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={fetchKhadam}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Coba Lagi
+                        </button>
                     </div>
                 ) : khadamList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -199,15 +209,10 @@ const TabKhadam = () => {
                                     {khadam.status === 1 && (
                                         <button
                                             type="button"
-                                            disabled={loadingUpdateKhadam}
-                                            className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdateKhadam ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                                            className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
                                             onClick={handleUpdate}
                                         >
-                                            {loadingUpdateKhadam ? (
-                                                <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
-                                            ) : (
-                                                "Update"
-                                            )}
+                                            Update
                                         </button>
                                     )}
                                     <button

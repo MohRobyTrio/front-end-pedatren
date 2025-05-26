@@ -7,6 +7,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import { ModalAddWaliKelasFormulir, ModalKeluarWaliKelasFormulir } from "../../components/modal/modal_formulir/ModalFormWaliKelas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 
 const TabWaliKelas = () => {
     const { biodata_id } = useParams();
@@ -19,10 +20,10 @@ const TabWaliKelas = () => {
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const [feature, setFeature] = useState(null);
+    const [error, setError] = useState(false);
 
     const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
     const [loadingDetailWaliKelas, setLoadingDetailWaliKelas] = useState(null);
-    const [loadingUpdateWaliKelas, setLoadingUpdateWaliKelas] = useState(false);
 
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
@@ -44,6 +45,7 @@ const TabWaliKelas = () => {
         const token = sessionStorage.getItem("token") || getCookie("token");
         if (!biodata_id || !token) return;
         try {
+            setError(false);
             setLoadingWaliKelas(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/walikelas`, {
                 method: 'GET',
@@ -58,6 +60,7 @@ const TabWaliKelas = () => {
             setWaliKelasList(result.data || []);
         } catch (error) {
             console.error("Gagal mengambil data WaliKelas:", error);
+            setError(true);
         } finally {
             setLoadingWaliKelas(false);
         }
@@ -136,7 +139,15 @@ const TabWaliKelas = () => {
         console.log("Payload yang dikirim ke API:", payload);
 
         try {
-            setLoadingUpdateWaliKelas(true);
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            // setLoadingUpdateWaliKelas(true);
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`,
@@ -151,6 +162,7 @@ const TabWaliKelas = () => {
             );
             console.log(`${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`);
             const result = await response.json();
+            Swal.close();
             if (response.ok) {
                 alert(`Data berhasil diperbarui! ${result.message}-${result.data}`);
                 setSelectedWaliKelasDetail(result.data || payload);
@@ -159,9 +171,7 @@ const TabWaliKelas = () => {
             }
         } catch (error) {
             console.error("Error saat update:", error);
-        } finally {
-            setLoadingUpdateWaliKelas(false);
-        }
+        } 
     };
 
     const closeAddModal = () => {
@@ -234,6 +244,16 @@ const TabWaliKelas = () => {
                 {loadingWaliKelas ? (
                     <div className="flex justify-center items-center">
                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                    </div>
+                ) : error ? (
+                    <div className="col-span-3 text-center py-10">
+                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
+                        <button
+                            onClick={fetchWaliKelas}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Coba Lagi
+                        </button>
                     </div>
                 ) : waliKelasList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -364,15 +384,10 @@ const TabWaliKelas = () => {
                                         {waliKelas.status_aktif === "aktif" && (
                                             <button
                                                 type="button"
-                                                disabled={loadingUpdateWaliKelas}
-                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdateWaliKelas ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
                                                 onClick={handleUpdate}
                                             >
-                                                {loadingUpdateWaliKelas ? (
-                                                    <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
-                                                ) :
-                                                    "Update"
-                                                }
+                                                Update
                                             </button>
                                         )}
                                         <button

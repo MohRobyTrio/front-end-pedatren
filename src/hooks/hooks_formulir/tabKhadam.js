@@ -7,19 +7,20 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
     const [khadamList, setKhadamList] = useState([]);
     const [loadingKhadam, setLoadingKhadam] = useState(false);
     const [loadingDetailKhadamId, setLoadingDetailKhadamId] = useState(null);
-    const [loadingUpdateKhadam, setLoadingUpdateKhadam] = useState(false);
 
     const [selectedKhadamId, setSelectedKhadamId] = useState(null);
     const [selectedKhadamDetail, setSelectedKhadamDetail] = useState(null);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [keterangan, setKeterangan] = useState("");
+    const [error, setError] = useState(false);
 
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     const fetchKhadam = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
+            setError(false);
             setLoadingKhadam(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/khadam`, {
                 method: 'GET',
@@ -32,6 +33,7 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
             setKhadamList(result.data || []);
         } catch (error) {
             console.error("Gagal mengambil data Khadam:", error);
+            setError(true);
         } finally {
             setLoadingKhadam(false);
         }
@@ -73,7 +75,14 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
         };
 
         try {
-            setLoadingUpdateKhadam(true);
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang memperbarui data khadam.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedKhadamId}/khadam`,
                 {
@@ -86,6 +95,7 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                 }
             );
             const result = await response.json();
+            Swal.close();
             if (response.ok) {
                 Swal.fire({
                     icon: 'success',
@@ -109,8 +119,6 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                 title: 'Error',
                 text: 'Terjadi kesalahan saat mengirim permintaan',
             });
-        } finally {
-            setLoadingUpdateKhadam(false);
         }
     };
 
@@ -134,6 +142,7 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
     };
 
     return {
+        error,
         khadamList,
         loadingKhadam,
         fetchKhadam,
@@ -150,7 +159,6 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
         setEndDate,
         setKeterangan,
         handleUpdate,
-        loadingUpdateKhadam,
         handleOpenAddModalWithDetail
     };
 };
