@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FaPlus } from "react-icons/fa";
 
-const FormPengajar = ({ register, watch, setValue }) => {
+const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const golongan = watch("modalPegawai.golongan_id_pengajar");
     const { filterLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
+    const lembaga = watch("modalPegawai.lembaga_id_pengajar");
+    const existingMateri = watch("modalPegawai.materi_ajar");
 
     const listGolonganNama = allGolonganList.map(g => ({
         value: g.id,
@@ -51,6 +53,29 @@ const FormPengajar = ({ register, watch, setValue }) => {
             jumlah_menit: item.menit
         })));
     }, [materiList, setValue]);
+
+    useEffect(() => {
+        // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
+        console.log("handle", activeTab);
+        if (activeTab !== 2) return;
+        console.log("handle change", activeTab);
+        
+        if (lembaga && filterLembaga.lembaga.length >= 1) {
+            setValue('modalPegawai.lembaga_id_pengajar', lembaga);
+        }
+        if (golongan && allGolonganList.length >= 1) {
+            console.log("golongan handle ",golongan);
+            
+            setValue('modalPegawai.golongan_id_pengajar', golongan)
+        }
+        if (existingMateri && existingMateri.length > 0 && materiList.length === 0) {
+            const hydratedMateri = existingMateri.map(item => ({
+                nama: item.nama_materi,
+                menit: item.jumlah_menit
+            }));
+            setMateriList(hydratedMateri);
+        }
+    }, [activeTab, filterLembaga.lembaga, allGolonganList.length, materiList.length, lembaga, golongan, existingMateri, setValue]);
 
     return (
         <div className="space-y-2">

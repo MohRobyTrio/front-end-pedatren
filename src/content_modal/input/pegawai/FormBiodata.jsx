@@ -1,12 +1,16 @@
-import { useMemo } from "react";
+import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodata = ({ register, watch, setValue, control }) => {
+const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
     const kewarganegaraan = watch("modalPegawai.kewarganegaraan");
+    const negara = watch("modalPegawai.negara_id");
+    const provinsi = watch("modalPegawai.provinsi_id");
+    const kabupaten = watch("modalPegawai.kabupaten_id");
+    const kecamatan = watch("modalPegawai.kecamatan_id");
 
     const handleKewarganegaraanChange = (e) => {
         const value = e.target.value;
@@ -20,17 +24,41 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
         }
     };
 
+    useEffect(() => {
+        // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
+        if (activeTab !== 0) return;
+        // console.log("handle");
+        
+        if (negara) {
+            // console.log("negara handle ",negara);
+            handleFilterChangeNegara({ negara: negara });
+        }
+        if (provinsi) {
+            // console.log("provinsi handle ",provinsi);
+            handleFilterChangeNegara({ provinsi: provinsi });
+        }
+        if (kabupaten) {
+            // console.log("kabupaten handle ",kabupaten);
+            handleFilterChangeNegara({ kabupaten: kabupaten });
+        }
+        if (kecamatan) {
+            // console.log("kecamatan handle ",kecamatan);
+            handleFilterChangeNegara({ kecamatan: kecamatan });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
+
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
             ? [{ ...list[0], label }, ...list.slice(1)]
             : list;
 
-    const updatedFilterNegara = useMemo(() => ({
-        lembaga: updateFirstOptionLabel(filterNegara.negara, "Pilih Negara"),
+    const updatedFilterNegara = {
+        negara: updateFirstOptionLabel(filterNegara.negara, "Pilih Negara"),
         provinsi: updateFirstOptionLabel(filterNegara.provinsi, "Pilih Provinsi"),
         kabupaten: updateFirstOptionLabel(filterNegara.kabupaten, "Pilih Kabupaten"),
         kecamatan: updateFirstOptionLabel(filterNegara.kecamatan, "Pilih Kecamatan")
-    }), [filterNegara]);
+    };
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 

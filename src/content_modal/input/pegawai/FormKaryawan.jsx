@@ -2,10 +2,12 @@ import { useEffect } from "react";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
-const FormKaryawan = ({ register, watch, setValue }) => {
+const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
     const golonganJabatan = watch("modalPegawai.golongan_jabatan_id_karyawan");
     const { filterLembaga } = DropdownLembaga();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
+
+    const lembaga = watch("modalPegawai.lembaga_id_karyawan");
 
     useEffect(() => {
         if (golonganJabatan && golonganJabatan !== "") {
@@ -14,6 +16,21 @@ const FormKaryawan = ({ register, watch, setValue }) => {
             setValue("modalPegawai.karyawan", "0");
         }
     }, [golonganJabatan, setValue]);
+
+    useEffect(() => {
+        // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
+        // console.log("handle", activeTab);
+        if (activeTab !== 1) return;
+        // console.log("handle change", activeTab);
+        
+        if (lembaga && filterLembaga.lembaga.length >= 1) {
+            setValue('modalPegawai.lembaga_id_karyawan', lembaga);
+        }
+        if (golonganJabatan && menuGolonganJabatan.length >= 1) {
+            setValue('modalPegawai.golongan_jabatan_id_karyawan', golonganJabatan);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, filterLembaga.lembaga, menuGolonganJabatan]);
 
     return (
         <div className="space-y-2">
@@ -47,9 +64,9 @@ const FormKaryawan = ({ register, watch, setValue }) => {
                 <div className="md:w-full md:max-w-md max-w-none">
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                         <select
+                            {...register('modalPegawai.lembaga_id_karyawan', { required: true })}
                             className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${filterLembaga?.lembaga?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                             disabled={filterLembaga?.lembaga?.length <= 1}
-                            {...register('modalPegawai.lembaga_id_karyawan', { required: true })}
                             required
                         >
                             {filterLembaga?.lembaga.map((option, idx) => (

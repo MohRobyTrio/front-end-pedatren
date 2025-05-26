@@ -15,6 +15,7 @@ import { downloadFile } from '../../utils/downloadFile';
 import { API_BASE_URL } from '../../hooks/config';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
+import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 
 const Pegawai = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -158,6 +159,8 @@ const Pegawai = () => {
       
     const [showFormModal, setShowFormModal] = useState(false);
 
+    const formState = useMultiStepFormPegawai(() => setShowFormModal(false));
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -297,7 +300,7 @@ const Pegawai = () => {
                 )}
 
                 {showFormModal && (
-                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} />
+                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
                 )}
 
                 {totalPages > 1 && (

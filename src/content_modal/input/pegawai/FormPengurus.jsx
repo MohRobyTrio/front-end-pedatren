@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
 
-const FormPengurus = ({ register, watch, setValue }) => {
+const FormPengurus = ({ register, watch, setValue, activeTab }) => {
     const golonganJabatan = watch("modalPegawai.golongan_jabatan_id_pengurus");
+    const satuanKerja = watch("modalPegawai.satuan_kerja_pengurus");
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { menuSatuanKerja } = useDropdownSatuanKerja();
 
@@ -14,6 +15,24 @@ const FormPengurus = ({ register, watch, setValue }) => {
             setValue("modalPegawai.pengurus", "0");
         }
     }, [golonganJabatan, setValue]);
+
+    useEffect(() => {
+        // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
+        console.log("handle", activeTab);
+        if (activeTab !== 3) return;
+        console.log("handle change", activeTab);
+
+        if (golonganJabatan && menuGolonganJabatan.length >= 1) {
+            // console.log("golongan jabatan handle", golonganJabatan);
+            
+            setValue('modalPegawai.golongan_jabatan_id_pengurus', golonganJabatan);
+        }
+        if (satuanKerja && menuSatuanKerja.length >= 1) {
+            // console.log("golongan jabatan handle", golonganJabatan);
+            
+            setValue('modalPegawai.satuan_kerja_pengurus', satuanKerja);
+        }
+    }, [activeTab, golonganJabatan, menuGolonganJabatan.length, menuSatuanKerja.length, satuanKerja, setValue]);
 
     return (
         <div className="space-y-2">

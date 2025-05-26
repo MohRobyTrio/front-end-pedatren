@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
-import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
 import FormBiodata from "../../content_modal/input/pegawai/FormBiodata";
 import FormKaryawan from "../../content_modal/input/pegawai/FormKaryawan";
 import FormPengajar from "../../content_modal/input/pegawai/FormPengajar";
@@ -12,34 +11,34 @@ import FormWaliKelas from "../../content_modal/input/pegawai/FormWaliKelas";
 import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
 import { jenisBerkasList } from "../../data/menuData";
 
-const MultiStepFormPegawai = ({ isOpen, onClose }) => {
-    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = useMultiStepFormPegawai(onClose);
+const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
+    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = formState;
 
     const tabs = [
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} />
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab}/>
         },
         {
             id: 1,
             label: "Karyawan",
-            content: <FormKaryawan register={register} watch={watch} setValue={setValue} />
+            content: <FormKaryawan register={register} watch={watch} setValue={setValue} activeTab={activeTab} />
         },
         {
             id: 2,
             label: "Pengajar",
-            content: <FormPengajar register={register} watch={watch} setValue={setValue} />
+            content: <FormPengajar register={register} watch={watch} setValue={setValue} activeTab={activeTab} />
         },
         {
             id: 3,
             label: "Pengurus",
-            content: <FormPengurus register={register} watch={watch} setValue={setValue} />
+            content: <FormPengurus register={register} watch={watch} setValue={setValue} activeTab={activeTab} />
         },
         {
             id: 4,
             label: "Wali Kelas",
-            content: <FormWaliKelas register={register} watch={watch} setValue={setValue} control={control} />
+            content: <FormWaliKelas register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} />
         },
         {
             id: 5,
