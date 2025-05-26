@@ -31,13 +31,11 @@ const TabPengajar = () => {
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
 
-    // Ubah label index ke-0 menjadi "Pilih ..."
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
             ? [{ ...list[0], label }, ...list.slice(1)]
             : list;
 
-    // Buat versi baru filterLembaga yang labelnya diubah
     const updatedFilterLembaga = {
         lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga")
     };
@@ -70,15 +68,21 @@ const TabPengajar = () => {
     }, [fetchPengajar]);
 
     useEffect(() => {
-        // Saat selectedFilterLembaga diisi, panggil handleFilterChangeLembaga secara bertahap
         if (selectedPengajarDetail) {
             if (selectedPengajarDetail.lembaga_id) {
                 handleFilterChangeLembaga({ lembaga: selectedPengajarDetail.lembaga_id });
             }
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedPengajarDetail]);
+
+    useEffect(() => {
+        if (selectedPengajarId) {
+            handleCardClick(selectedPengajarId);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pengajarList]);
+
 
     // useEffect(() => {
     //     console.log(golongan);        
@@ -205,6 +209,26 @@ const TabPengajar = () => {
         setMateriList(updatedList)
     }
 
+    const handleOpenAddModalWithDetail = async (id, featureNum) => {
+        try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const result = await response.json();
+            setSelectedPengajarDetail(result.data); 
+            setSelectedPengajarId(id);
+            setFeature(featureNum);
+            setShowAddModal(true);
+        } catch (error) {
+            console.error("Gagal mengambil detail Khadam:", error);
+        }
+    };
+
     const closeAddModal = () => {
         setShowAddModal(false);
     };
@@ -260,7 +284,7 @@ const TabPengajar = () => {
             )}
 
             {showAddMateriModal && (
-                <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} />
+                <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={1} />
             )}
 
             {showOutModal && (
@@ -305,9 +329,7 @@ const TabPengajar = () => {
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            setFeature(2);
-                                            openAddModal();
-                                            // handleOpenAddModalWithDetail(khadam.id, 2);
+                                            handleOpenAddModalWithDetail(pengajar.id, 2);
                                         }}
                                         className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                                         title="Pindah Khadam"

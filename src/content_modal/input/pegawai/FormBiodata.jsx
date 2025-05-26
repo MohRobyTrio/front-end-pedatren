@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
@@ -19,25 +20,17 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
         }
     };
 
-    // const customMenuNegara = [
-    //     { value: "", label: selectedNegara.negara === "" ? "Pilih Negara" : "Semua Negara" },
-    //     ...filterNegara.negara.filter((_, idx) => idx !== 0) // hindari duplikasi
-    // ];
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
 
-    // const customMenuProvinsi = [
-    //     { value: "", label: selectedNegara.provinsi === "" ? "Pilih Provinsi" : "Semua Provinsi" },
-    //     ...filterNegara.provinsi
-    // ];
-
-    // const customMenuKabupaten = [
-    //     { value: "", label: selectedNegara.kabupaten === "" ? "Pilih Kabupaten" : "Semua Kabupaten" },
-    //     ...filterNegara.kabupaten
-    // ];
-
-    // const customMenuKecamatan = [
-    //     { value: "", label: selectedNegara.kecamatan === "" ? "Pilih Kecamatan" : "Semua Kecamatan" },
-    //     ...filterNegara.kecamatan
-    // ];
+    const updatedFilterNegara = useMemo(() => ({
+        lembaga: updateFirstOptionLabel(filterNegara.negara, "Pilih Negara"),
+        provinsi: updateFirstOptionLabel(filterNegara.provinsi, "Pilih Provinsi"),
+        kabupaten: updateFirstOptionLabel(filterNegara.kabupaten, "Pilih Kabupaten"),
+        kecamatan: updateFirstOptionLabel(filterNegara.kecamatan, "Pilih Kecamatan")
+    }), [filterNegara]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -459,7 +452,7 @@ const FormBiodata = ({ register, watch, setValue, control }) => {
 
                 <hr className="border-t border-gray-300 my-4" />
 
-                <Filters filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} control={control} />
+                <Filters filterOptions={updatedFilterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} control={control} />
 
                 <hr className="border-t border-gray-300 my-4" />
 

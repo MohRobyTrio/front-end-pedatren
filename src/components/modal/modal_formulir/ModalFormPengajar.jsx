@@ -55,6 +55,9 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
     const metod = isTambah ? "POST" : "PUT";
     const id = isTambah ? biodataId : cardId;
 
+    // console.log("id :",id);
+    // console.log("id :",feature);
+
     const [formData, setFormData] = useState({
         lembaga_id: "",
         golongan_id: "",
@@ -113,22 +116,37 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const nama_materi = materiList.map(item => item.nama);
-            const jumlah_menit = materiList.map(item => parseInt(item.menit));
-            const tahun_masuk_materi_ajar = materiList.map(item => item.tahun_masuk || null);
-            const tahun_akhir_materi_ajar = materiList.map(item => item.tahun_akhir || null);
+            console.log("token :",token);
+            
+            
+            // const nama_materi = materiList.map(item => item.nama);
+            // const jumlah_menit = materiList.map(item => parseInt(item.menit));
+            // const tahun_masuk_materi_ajar = materiList.map(item => item.tahun_masuk || null);
+            // const tahun_akhir_materi_ajar = materiList.map(item => item.tahun_akhir || null);
 
-            let payload = {
-                ...formData,
-                nama_materi,
-                jumlah_menit,
-            };
+            let payload = { ...formData };
 
             if (feature == 1) {
-                payload.tahun_masuk_materi_ajar = tahun_masuk_materi_ajar;
-                payload.tahun_akhir_materi_ajar = tahun_akhir_materi_ajar;
+                // Struktur untuk feature 1
+                payload = {
+                    ...formData,
+                    nama_materi: materiList.map(item => item.nama),
+                    jumlah_menit: materiList.map(item => parseInt(item.menit)),
+                    tahun_masuk_materi_ajar: materiList.map(item => item.tahun_masuk || null),
+                    tahun_akhir_materi_ajar: materiList.map(item => item.tahun_akhir || null),
+                };
+            } else if (feature == 2) {
+                // Struktur untuk feature 2
+                payload = {
+                    ...formData,
+                    materi_ajar: materiList.map(item => ({
+                        nama_materi: item.nama || null,
+                        jumlah_menit: item.menit ? parseInt(item.menit) : null,
+                    })),
+                };
             }
-            // console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
+
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method: metod,
@@ -242,7 +260,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                             </Dialog.Title>
 
                                             {showAddMateriModal && (
-                                                <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} />
+                                                <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={feature} />
                                             )}
 
                                             {/* FORM ISI */}
@@ -545,7 +563,9 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
     );
 };
 
-export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, form, handleChange }) => {
+export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, form, handleChange, feature }) => {
+    console.log(feature);
+    
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -590,7 +610,7 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                Masukkan Tanggal
+                                                Tambah Materi Ajar
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
@@ -619,6 +639,8 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
                                                 </div>
+                                                {feature === 1 && (
+                                                    <>
                                                 <div>
                                                     <label htmlFor="periode_akhir" className="block text-gray-700">Tahun Masuk Materi Ajar *</label>
                                                     <input
@@ -642,6 +664,8 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
                                                 </div>
+                                                </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
