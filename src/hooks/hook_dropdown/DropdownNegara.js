@@ -9,38 +9,39 @@ const DropdownNegara = () => {
     useEffect(() => {
         const sessionData = sessionStorage.getItem("menuNegara");
 
-    if (sessionData) {
-    const parsed = JSON.parse(sessionData);
-    setData(parsed.negara);
-    setFilterNegara({
-      negara: [{ value: "", label: "Semua Negara" }, ...parsed.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
-      provinsi: [{ value: "", label: "Semua Provinsi" }],
-      kabupaten: [{ value: "", label: "Semua Kabupaten" }],
-      kecamatan: [{ value: "", label: "Semua Kecamatan" }]
-    });
-  } else {
-        fetch(`${API_BASE_URL}dropdown/negara`)
-            .then((res) => res.json())
-            .then((data) => {
-                setData(data.negara);
-                setFilterNegara({
-                    negara: [{ value: "", label: "Semua Negara" }, ...data.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
-                    provinsi: [{ value: "", label: "Semua Provinsi" }],
-                    kabupaten: [{ value: "", label: "Semua Kabupaten" }],
-                    kecamatan: [{ value: "", label: "Semua Kecamatan" }]
-                });
-                sessionStorage.setItem("menuNegara", JSON.stringify(data));
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                // Jika fetch gagal, tetap set "Semua Negara"
-                setFilterNegara({
-                    negara: [{ value: "", label: "Semua Negara" }],
-                    provinsi: [{ value: "", label: "Semua Provinsi" }],
-                    kabupaten: [{ value: "", label: "Semua Kabupaten" }],
-                    kecamatan: [{ value: "", label: "Semua Kecamatan" }]
-                });
+        if (sessionData) {
+            const parsed = JSON.parse(sessionData);
+            setData(parsed.negara);
+            setFilterNegara({
+                negara: [{ value: "", label: "Semua Negara" }, ...parsed.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
+                provinsi: [{ value: "", label: "Semua Provinsi" }],
+                kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+                kecamatan: [{ value: "", label: "Semua Kecamatan" }]
             });
+        } else {
+            fetch(`${API_BASE_URL}dropdown/negara`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setData(data.negara);
+                    setFilterNegara({
+                        negara: [{ value: "", label: "Semua Negara" }, ...data.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
+                        provinsi: [{ value: "", label: "Semua Provinsi" }],
+                        kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+                        kecamatan: [{ value: "", label: "Semua Kecamatan" }]
+                    });
+                    sessionStorage.setItem("menuNegara", JSON.stringify(data));
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    // Jika fetch gagal, tetap set "Semua Negara"
+                    setFilterNegara({
+                        negara: [{ value: "", label: "Semua Negara" }],
+                        provinsi: [{ value: "", label: "Semua Provinsi" }],
+                        kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+                        kecamatan: [{ value: "", label: "Semua Kecamatan" }]
+                    });
+                }
+            );
         }
     }, []);
 

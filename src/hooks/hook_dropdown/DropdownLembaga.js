@@ -49,7 +49,6 @@ const DropdownLembaga = () => {
     }, []);
 
     const handleFilterChangeLembaga = (newFilter) => {
-        console.log(newFilter);
         
         setSelectedLembaga(prevFilters => {
             const updatedFilters = { ...prevFilters, ...newFilter };

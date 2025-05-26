@@ -2,17 +2,38 @@ import { useEffect } from "react";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import { Controller } from "react-hook-form";
 
-const FormWaliKelas = ({ register, watch, setValue, control }) => {
-    const golonganJabatan = watch("modalPegawai.golongan_jabatan_id_karyawan");
+const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
+    const lembaga = watch("modalPegawai.lembaga");
+    const jurusan = watch("modalPegawai.jurusan");
+    const kelas = watch("modalPegawai.kelas");
+    const rombel = watch("modalPegawai.rombel");
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
     useEffect(() => {
-        if (golonganJabatan && golonganJabatan !== "") {
+        if (lembaga && lembaga !== "") {
             setValue("modalPegawai.karyawan", "1");
         } else {
             setValue("modalPegawai.karyawan", "0");
         }
-    }, [golonganJabatan, setValue]);
+    }, [lembaga, setValue]);
+
+    useEffect(() => {
+        if (activeTab !== 4) return;
+        
+        if (lembaga && filterLembaga.lembaga.length >= 1) {
+            handleFilterChangeLembaga({ lembaga: lembaga });
+        }
+        if (jurusan && filterLembaga.jurusan.length >= 1) {
+            handleFilterChangeLembaga({ jurusan: jurusan });
+        }
+        if (kelas && filterLembaga.kelas.length >= 1) {
+            handleFilterChangeLembaga({ kelas: kelas });
+        }
+        if (rombel && filterLembaga.rombel.length >= 1) {
+            handleFilterChangeLembaga({ rombel: rombel });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
