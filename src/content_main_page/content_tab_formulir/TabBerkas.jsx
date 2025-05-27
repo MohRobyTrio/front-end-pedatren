@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImage, faFileAlt, faFilePdf, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faFileImage, faFileAlt, faFilePdf, faEdit, faDownload  } from '@fortawesome/free-solid-svg-icons';
 import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
@@ -81,34 +81,71 @@ export default function TabBerkas() {
   {loading && <p>Loading...</p>}
   {error && <p className="text-red-500">{error}</p>}
 
-  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 mb-6 w-full">
-    {berkasList.length === 0 && !loading && <p className="col-span-full text-center">Belum ada berkas.</p>}
-    {berkasList.map((berkas) => (
-      <div
-        key={berkas.id}
-        className="border rounded p-3 flex items-center space-x-3 bg-white shadow-sm w-full"
+  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+  {berkasList.length === 0 && !loading && (
+    <p className="col-span-full text-center">Belum ada berkas.</p>
+  )}
+  {berkasList.map((berkas) => (
+    <div
+      key={berkas.id}
+      className="relative bg-white shadow rounded-lg overflow-hidden border group"
+    >
+      {/* Tombol Edit */}
+      <button
+        onClick={() => handleOpenEdit(berkas)}
+        className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
+        title="Edit berkas"
       >
-        <FontAwesomeIcon
-          icon={iconForType(berkas.mime_type)}
-          size="2x"
-          className="text-blue-600"
-        />
-        <div className="flex-1">
-          <p className="font-semibold truncate">{berkas.nama_jenis_berkas || 'File'}</p>
-          <p className="text-sm text-gray-600">{berkas.keterangan}</p>
-        </div>
-        <button
-          onClick={() => handleOpenEdit(berkas)}
-          className="text-yellow-500 hover:text-yellow-700"
-          aria-label="Edit berkas"
-          title="Edit berkas"
-        >
-          <FontAwesomeIcon icon={faEdit} size="lg" />
-        </button>
-      </div>
-    ))}
-  </div>
+        <FontAwesomeIcon icon={faEdit} />
+      </button>
 
+      {/* Tombol Download */}
+      <a
+        href={berkas.file_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-2 right-2 z-10 text-gray-600 hover:text-blue-600"
+        title="Download"
+      >
+       <FontAwesomeIcon icon={faDownload} />
+      </a>
+
+      {/* Label Jenis Berkas */}
+      <div className="absolute top-2 left-2 bg-purple-200 text-purple-700 text-xs px-2 py-1 rounded shadow">
+        {berkas.nama_jenis_berkas || 'Berkas'}
+      </div>
+
+      {/* Preview Gambar */}
+      <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+        {berkas.file_url && berkas.mime_type.includes('image') ? (
+          <img
+            src={berkas.file_url}
+            alt={berkas.nama_jenis_berkas || 'berkas'}
+            className="object-contain h-full w-full"
+          />
+        ) : (
+          <FontAwesomeIcon
+            icon={iconForType(berkas.mime_type)}
+            size="3x"
+            className="text-gray-400"
+          />
+        )}
+      </div>
+
+      {/* Deskripsi */}
+      <div className="p-3 text-center">
+        <p className="text-sm font-medium text-gray-700">
+          {berkas.nama_jenis_berkas || <span className="italic text-gray-400">*tanpa deskripsi</span>}
+        </p>
+        <div className="mt-2">
+          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
+            {berkas.nama_jenis_berkas || 'Berkas'}
+          </span>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
 
       <ModalBerkas
         isOpen={modalOpen}
