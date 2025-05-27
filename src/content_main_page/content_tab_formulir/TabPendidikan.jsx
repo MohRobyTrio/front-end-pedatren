@@ -165,8 +165,6 @@ const TabPendidikan = () => {
     }
   };
 
-  // Hapus useEffect yang lama untuk selectedPendidikanDetail
-  // karena sekarang sudah ditangani di handleCardClick
 
   const handleUpdate = async () => {
     if (!selectedPendidikanDetail) return;
