@@ -24,7 +24,7 @@ const useFetchAfektif = (filters) => {
     };
   }, [searchTerm]);
 
-  const fetchData = useCallback(async (filters = {}) => {
+  const fetchData = useCallback(async () => {
     let url = `${API_BASE_URL}data-pokok/catatan-afektif?limit=${limit}&page=${currentPage}`;
 
     // Handle search

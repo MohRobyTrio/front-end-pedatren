@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
@@ -49,6 +49,14 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method,
@@ -60,6 +68,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
             });
 
             const result = await response.json();
+            Swal.close();
             if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data pengurus berhasil disimpan." });

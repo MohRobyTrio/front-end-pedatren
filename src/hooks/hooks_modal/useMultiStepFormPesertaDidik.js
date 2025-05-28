@@ -84,6 +84,15 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
 
             if (!confirmResult.isConfirmed) return;
 
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             const formData = new FormData();
             // Append all form data (singkat)
             if (data.modalPeserta) {
@@ -126,6 +135,8 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
             const result = await response.json();
 
             // console.log(result);
+
+            Swal.close();
 
             if (!response.ok) {
                 const errorMessages = result.errors
