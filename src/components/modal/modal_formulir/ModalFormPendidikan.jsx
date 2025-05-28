@@ -100,6 +100,11 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     if (!confirmResult.isConfirmed) return;
 
     try {
+
+      console.log("formData:", formData);
+      console.log("id:", id);
+      
+
       const token = sessionStorage.getItem("token") || getCookie("token");
       const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
         method: metod,
@@ -314,6 +319,9 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
     if (!confirmResult.isConfirmed) return;
 
     try {
+
+      console.log("formData:", formData);
+
       const token = sessionStorage.getItem("token") || getCookie("token");
       const response = await fetch(`${API_BASE_URL}formulir/${id}/pendidikan/keluar`, {
         method: "PUT",
@@ -348,6 +356,7 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
       refetchData?.();
       onClose?.();
     } catch (error) {
+      console.error('Terjadi kesalahan:', error.response?.data || error.message);
       console.error("Terjadi kesalahan:", error);
       await Swal.fire({
         icon: "error",

@@ -315,15 +315,17 @@ const TabBiodata = () => {
                 formData.append('photo', photo);
             }
 
+            const token = sessionStorage.getItem("token") || getCookie("token");
+
             let response;
 
              if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
                 // Double check - pastikan hanya update dengan ID valid
                 console.log(`Updating record with ID: ${biodata_id}`);
-                // Update data
                 response = await axios.post(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
             } else {
@@ -331,7 +333,8 @@ const TabBiodata = () => {
                 // Create new data
                 response = await axios.post(`${API_BASE_URL}formulir/biodata?_method=POST`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
             }
@@ -365,24 +368,6 @@ const TabBiodata = () => {
         return <div className="text-center p-5">Loading data...</div>;
     }
 
-    // const [tanggalLahir, setTanggalLahir] = useState({
-    //     tahun: "2001",
-    //     bulan: "Desember",
-    //     hari: "30",
-    // });
-
-    // const [umur, setUmur] = useState(22);
-
-    // const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-    // const daftarBulan = [
-    //     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    //     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    // ];
-    // const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
-
-    //Menghitung umur saat tanggal lahir berubah
-    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
-    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
     const hitungUmur = (tahun, bulan) => {
         if (!tahun) return;
 

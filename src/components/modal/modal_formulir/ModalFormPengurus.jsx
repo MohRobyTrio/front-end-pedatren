@@ -49,6 +49,9 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
         if (!confirmResult.isConfirmed) return;
 
         try {
+            console.log("Submitting data:", formData);
+            
+
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method,

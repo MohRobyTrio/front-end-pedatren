@@ -236,6 +236,9 @@ const TabPendidikan = () => {
     setShowOutModal(true);
   };
 
+  console.log("selectedPendidikanId:", selectedPendidikanId);
+
+
   const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     return (
       <div className="flex flex-col gap-4 w-full">
