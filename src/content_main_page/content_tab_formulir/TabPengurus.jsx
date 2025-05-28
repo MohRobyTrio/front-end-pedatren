@@ -113,9 +113,9 @@ const TabPengurus = () => {
       keterangan_jabatan: keteranganJabatan,
       satuan_kerja: selectedSatuanKerja,
       golongan_jabatan_id: selectedGolonganJabatanId,
-      jabatan_kontrak: jabatanKontrak,
-      tanggal_masuk: startDate,
-      tanggal_keluar: endDate || null,
+      jabatan: jabatanKontrak,
+      tanggal_mulai: startDate,
+      tanggal_akhir: endDate || null,
       status: status || null
     };
 
@@ -227,7 +227,7 @@ const TabPengurus = () => {
                   </p>
                   {/* <p className="text-gray-600 text-sm">Golongan: {pengurus.golongan_jabatan || '-'}</p> */}
                   <p className="text-gray-600 text-sm">
-                    Masa Jabatan: {formatDate(pengurus.tanggal_masuk)}
+                    Periode: {formatDate(pengurus.tanggal_masuk)}
                     {pengurus.tanggal_keluar ? ` s/d ${formatDate(pengurus.tanggal_keluar)}` : ' - Sekarang'}
                   </p>
                 </div>
