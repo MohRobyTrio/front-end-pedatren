@@ -162,8 +162,8 @@ const TabKaryawan = () => {
   };
 
   const closeAddModal = () => setShowAddModal(false);
-  const openAddModal = () => {
-      setSelectedKaryawanId(null); // Reset selected ID for new entry if modal is reused for add/pindah
+  const openAddModal = (karyawanId = null) => {
+      setSelectedKaryawanId(karyawanId); // Reset selected ID for new entry if modal is reused for add/pindah
       setShowAddModal(true);
   }
   const closeOutModal = () => setShowOutModal(false);
@@ -171,7 +171,8 @@ const TabKaryawan = () => {
   const handlePindahJabatan = (karyawanId) => {
     setSelectedKaryawanId(karyawanId); // Set ID karyawan yang akan dipindah
     setFeature(2); // Mode pindah
-    openAddModal();
+    openAddModal(karyawanId);
+    console.log("handlePindahJabatan called with karyawanId:", karyawanId);
   };
 
   const handleKeluarJabatan = (karyawanId) => {
@@ -179,6 +180,8 @@ const TabKaryawan = () => {
     setShowOutModal(true);
   };
 
+  // console.log("selectedKaryawanId:", selectedKaryawanId);
+  
   // debuging logs untuk golongan jabatan
   // console.log("menuGolonganJabatan", menuGolonganJabatan);
   // console.log("selectedGolonganJabatanId", selectedGolonganJabatanId);
@@ -218,7 +221,8 @@ const TabKaryawan = () => {
           biodataId={biodata_id}
           refetchData={fetchKaryawan}
           feature={feature}
-          karyawanIdToPindah={feature === 2 ? selectedKaryawanId : null} // Kirim ID karyawan jika mode pindah
+          // cardId={selectedKaryawanId || null}
+          karyawanIdToPindah={selectedKaryawanId} // Kirim ID karyawan jika mode pindah
         />
       )}
 
@@ -270,7 +274,6 @@ const TabKaryawan = () => {
                 </span>
               </div>
 
-              {/* Tombol Pindah/Keluar (logika disamakan dengan TabPengurus: !tanggal_keluar) */}
               {!karyawan.tanggal_keluar && karyawan.status === "aktif" && ( // Ditambahkan pengecekan status aktif juga, karena bisa jadi tanggal keluar null tapi status sudah nonaktif dari proses lain
                 <div className="flex flex-wrap gap-2 gap-x-4 mt-2">
                   <button

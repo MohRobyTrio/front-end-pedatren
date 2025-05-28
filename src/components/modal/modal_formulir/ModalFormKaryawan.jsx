@@ -8,21 +8,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembagaDoang";
 
-export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchData, feature, karyawanIdToPindah }) => {
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { menuLembaga: lembagaOptions } = useDropdownLembaga();
 
     const isTambah = feature === 1;
     const endpoint = isTambah ? "karyawan" : "karyawan/pindah";
     const method = isTambah ? "POST" : "PUT";
-    const id = isTambah ? biodataId : cardId;
+    const id = isTambah ? biodataId : karyawanIdToPindah;
 
     const [formData, setFormData] = useState({
         lembaga_id: "",
         golongan_jabatan_id: "",
         keterangan_jabatan: "",
         jabatan: "",
-        tanggal_mulai: "",
+        tanggal_mulai: "", //backend meminta agar tanggal hari ini atau setelahnya
     });
 
     const handleSubmit = async (e) => {
@@ -50,15 +50,21 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, cardId, r
         if (!confirmResult.isConfirmed) return;
 
         try {
+            console.log("ID:", id); //cek id
+            console.log("Data:", formData);
+
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
                 method,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });
+            console.log("token:", token)
+            console.log("formData:", formData);
+            console.log("response:", response);
 
             const result = await response.json();
             if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -129,7 +135,7 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                             >
                                                 {/* <option value="">Pilih Golongan Jabatan</option> */}
                                                 {menuGolonganJabatan.map((opt) => (
-                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                    <option key={opt.value} value={opt.id}>{opt.label}</option>
                                                 ))}
                                             </select>
                                         </div>
