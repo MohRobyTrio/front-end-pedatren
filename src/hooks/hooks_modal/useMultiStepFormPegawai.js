@@ -14,6 +14,7 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     trigger,
     watch,
     setValue,
+    reset,
     control,
     formState: { errors },
   } = useForm();
@@ -166,9 +167,9 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     const berkas = [];
     for (let i = 1; i <= 18; i++) {
       const fileKey = `file_${i}`;
-      if (data[fileKey]) {
+      if (data.modalPegawai[fileKey]) {
         berkas.push({
-          file: data[fileKey],
+          file: data.modalPegawai[fileKey],
           jenis_berkas_id: i.toString(),
         });
       }
@@ -192,7 +193,8 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     const result = await response.json();
     // console.log(result);
     
-
+    console.log(result);
+    
     // === Cek response ===
     if (!response.ok) {
       const errorMessages = result.errors
@@ -216,6 +218,13 @@ const useMultiStepFormPegawai = ({ onClose }) => {
       title: "Berhasil!",
       text: result.message,
     });
+
+    const allFields = {
+        ...Object.fromEntries(Object.keys(data.modalPegawai || {}).map(key => [key, ""])),
+        ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`file_${i + 1}`, null]))
+    };
+
+    reset({ modalPegawai: allFields });
 
     onClose?.();
   } catch (error) {
@@ -246,11 +255,25 @@ const onInvalidSubmit = (errors) => {
     if (prevTab >= 0) setActiveTab(prevTab);
   };
 
+  const resetData = () => {
+      const currentModalPegawai = watch("modalPegawai") || {};
+
+      const allFields = {
+          ...Object.fromEntries(Object.keys(currentModalPegawai).map(key => [key, ""])),
+          ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`file_${i + 1}`, null]))
+      };
+
+      reset({ modalPegawai: allFields });
+      setActiveTab(0);               // kembali ke tab pertama
+      setUnlockedTabs([0]);  
+  }
+
   return {
     register,
     handleSubmit,
     control,
     setValue,
+    resetData,
     watch,
     errors,
     activeTab,

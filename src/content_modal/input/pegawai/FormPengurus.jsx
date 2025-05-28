@@ -47,8 +47,7 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                         <select
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             disabled={menuGolonganJabatan?.length <= 1}
-                            {...register('modalPegawai.golongan_jabatan_id_pengurus', { required: true })}
-                            required
+                            {...register('modalPegawai.golongan_jabatan_id_pengurus')}
                         >
                             {menuGolonganJabatan?.map((option, idx) => (
                                 <option key={idx} value={option.id}>{option.label}</option>
@@ -68,8 +67,7 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                         <input
                             type="text"
                             placeholder="Masukkan Jabatan pengurus"
-                            {...register("modalPegawai.jabatan_pengurus", { required: true })}
-                            required
+                            {...register("modalPegawai.jabatan_pengurus")}
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             maxLength={100}
                         />
@@ -86,8 +84,7 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                         <textarea
                             placeholder="Masukkan Keterangan Jabatan"
-                            {...register("modalPegawai.keterangan_jabatan_pengurus", { required: true })}
-                            required
+                            {...register("modalPegawai.keterangan_jabatan_pengurus")}
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             rows={3}
                             maxLength={255}
@@ -106,8 +103,7 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                         <select
                             className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${menuSatuanKerja?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                             disabled={menuSatuanKerja?.length <= 1}
-                            {...register('modalPegawai.satuan_kerja_pengurus', { required: true })}
-                            required
+                            {...register('modalPegawai.satuan_kerja_pengurus')}
                         >
                             {menuSatuanKerja.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -129,8 +125,7 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                             id="tanggal_mulai_pengurus"
                             name="tanggal_mulai_pengurus"
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            {...register("modalPegawai.tanggal_mulai_pengurus", { required: true })}
-                            required
+                            {...register("modalPegawai.tanggal_mulai_pengurus")}
                         />
                     </div>
                 </div>

@@ -1,11 +1,46 @@
 import { Controller } from "react-hook-form";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
+import { useEffect } from "react";
 
-const FormDomisiliPendidikan = ({ register, control }) => {
+const FormDomisiliPendidikan = ({ register, control, watch, activeTab }) => {
+    const lembaga = watch("modalPeserta.lembaga");
+    const jurusan = watch("modalPeserta.jurusan");
+    const kelas = watch("modalPeserta.kelas");
+    const rombel = watch("modalPeserta.rombel");
+    const wilayah = watch("modalPeserta.wilayah");
+    const blok = watch("modalPeserta.blok");
+    const kamar = watch("modalPeserta.kamar");
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
 
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+
+    useEffect(() => {
+        if (activeTab !== 2) return;
+        
+        if (lembaga && filterLembaga.lembaga.length >= 1) {
+            handleFilterChangeLembaga({ lembaga: lembaga });
+        }
+        if (jurusan && filterLembaga.jurusan.length >= 1) {
+            handleFilterChangeLembaga({ jurusan: jurusan });
+        }
+        if (kelas && filterLembaga.kelas.length >= 1) {
+            handleFilterChangeLembaga({ kelas: kelas });
+        }
+        if (rombel && filterLembaga.rombel.length >= 1) {
+            handleFilterChangeLembaga({ rombel: rombel });
+        }
+        if (wilayah && filterWilayah.wilayah.length >= 1) {
+            handleFilterChangeWilayah({ wilayah: wilayah });
+        }
+        if (blok && filterWilayah.blok.length >= 1) {
+            handleFilterChangeWilayah({ blok: blok });
+        }
+        if (kamar && filterWilayah.kamar.length >= 1) {
+            handleFilterChangeWilayah({ kamar: kamar });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 

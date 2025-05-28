@@ -5,165 +5,213 @@ import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 
 export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
-  const [activeTab, setActiveTab] = useState(0);
-  const [unlockedTabs, setUnlockedTabs] = useState([0]);
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    watch,
-    setValue,
-    control,
-    formState: { errors },
-  } = useForm();
+    const [activeTab, setActiveTab] = useState(0);
+    const [unlockedTabs, setUnlockedTabs] = useState([0]);
+    const {
+        register,
+        handleSubmit,
+        trigger,
+        watch,
+        setValue,
+        reset,
+        control,
+        formState: { errors },
+    } = useForm();
 
-  const watchedValues = watch();
+    const watchedValues = watch();
 
-  useEffect(() => {
-    console.log("Data inputan berubah:", watchedValues);
-  }, [watchedValues]);
+    useEffect(() => {
+        console.log("Data inputan berubah:", watchedValues);
+    }, [watchedValues]);
 
-  const nextStep = async () => {
-    const form = document.querySelector("form");
-    if (form && !form.reportValidity()) return;
+    const nextStep = async () => {
+        const form = document.querySelector("form");
+        if (form && !form.reportValidity()) return;
 
-    const valid = await trigger(getFieldsForTab(activeTab));
-    if (!valid) return;
+        const valid = await trigger(getFieldsForTab(activeTab));
+        if (!valid) return;
 
-    const nextTab = activeTab + 1;
-    if (!unlockedTabs.includes(nextTab)) {
-      setUnlockedTabs([...unlockedTabs, nextTab]);
-    }
-    setActiveTab(nextTab);
-  };
-
-  const prevStep = () => {
-    const prevTab = activeTab - 1;
-    if (prevTab >= 0) setActiveTab(prevTab);
-  };
-
-  const getFieldsForTab = (tabId) => {
-    switch (tabId) {
-      case 0:
-        return [];
-      case 1:
-        return [];
-      case 2:
-        return [];
-      case 3:
-        return [];
-      default:
-        return [];
-    }
-  };
-
-  const onValidSubmit = async (data) => {
-    try {
-      const confirmResult = await Swal.fire({
-        title: "Yakin ingin mengirim data?",
-        text: "Pastikan semua data sudah benar!",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Ya, kirim",
-        cancelButtonText: "Batal",
-      });
-
-      if (!confirmResult.isConfirmed) return;
-
-      const formData = new FormData();
-      // Append all form data (singkat)
-      if (data.modalPeserta) {
-        Object.entries(data.modalPeserta).forEach(([key, val]) => {
-          if (!key.startsWith("file_")) {
-            formData.append(key, val);
-          }
-        });
-      }
-
-      const berkas = [];
-      for (let i = 1; i <= 18; i++) {
-        const fileKey = `file_${i}`;
-        if (data[fileKey]) {
-          berkas.push({ file: data[fileKey], jenis_berkas_id: i.toString() });
+        const nextTab = activeTab + 1;
+        if (!unlockedTabs.includes(nextTab)) {
+        setUnlockedTabs([...unlockedTabs, nextTab]);
         }
-      }
+        setActiveTab(nextTab);
+    };
 
-      berkas.forEach((b, i) => {
-        formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
-        formData.append(`berkas[${i}][file_path]`, b.file);
-      });
+    const prevStep = () => {
+        const prevTab = activeTab - 1;
+        if (prevTab >= 0) setActiveTab(prevTab);
+    };
 
-      const token = getCookie("token") || sessionStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}crud/pesertadidik`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+    const getFieldsForTab = (tabId) => {
+        switch (tabId) {
+        case 0:
+            return [];
+        case 1:
+            return [];
+        case 2:
+            return [];
+        case 3:
+            return [];
+        default:
+            return [];
+        }
+    };
 
-      const result = await response.json();
+    const onValidSubmit = async (data) => {
+        const missingFiles = jenisBerkasList
+            .filter(jb => jb.required)
+            .filter(jb => !data.modalPeserta?.[`file_${jb.id}`]);
 
-      if (!response.ok) {
-        const errorMessages = result.errors
-          ? Object.entries(result.errors).map(
-              ([field, messages]) =>
-                `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
-            )
-          : [result.message || "Gagal mengirim data"];
+        if (missingFiles.length > 0) {
+            Swal.fire({
+            icon: "warning",
+            title: "Berkas wajib diunggah",
+            html: missingFiles.map(f => `- ${f.label}`).join("<br>")
+            });
+            return;
+        }
 
-        await Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          html: `<div style="text-align: left;">${errorMessages.join(
-            "<br>"
-          )}</div>`,
+        try {
+            const confirmResult = await Swal.fire({
+                title: "Yakin ingin mengirim data?",
+                text: "Pastikan semua data sudah benar!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Ya, kirim",
+                cancelButtonText: "Batal",
+            });
+
+            if (!confirmResult.isConfirmed) return;
+
+            const formData = new FormData();
+            // Append all form data (singkat)
+            if (data.modalPeserta) {
+                Object.entries(data.modalPeserta).forEach(([key, val]) => {
+                if (!key.startsWith("file_")) {
+                    formData.append(key, val);
+                }
+                });
+            }
+
+            const berkas = [];
+            for (let i = 1; i <= 18; i++) {
+                const fileKey = `file_${i}`;
+                if (data.modalPeserta[fileKey]) {
+                    berkas.push({ file: data.modalPeserta[fileKey], jenis_berkas_id: i.toString() });
+                }
+            }
+
+            berkas.forEach((b, i) => {
+                console.log(`berkas[${i}][jenis_berkas_id]:`, b.jenis_berkas_id);
+                console.log(`berkas[${i}][file_path]:`, b.file);
+            });
+
+            berkas.forEach((b, i) => {
+                formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+                formData.append(`berkas[${i}][file_path]`, b.file);
+            });
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ':', pair[1]);
+            }
+
+            const token = getCookie("token") || sessionStorage.getItem("token");
+            const response = await fetch(`${API_BASE_URL}crud/pesertadidik`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            // console.log(result);
+
+            if (!response.ok) {
+                const errorMessages = result.errors
+                ? Object.entries(result.errors).map(
+                    ([field, messages]) =>
+                        `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+                    )
+                : [result.message || "Gagal mengirim data"];
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${errorMessages.join(
+                        "<br>"
+                    )}</div>`,
+                });
+
+                throw new Error(result.message);
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: "Data berhasil dikirim.",
+            });
+
+            const allFields = {
+                ...Object.fromEntries(Object.keys(data.modalPeserta || {}).map(key => [key, ""])),
+                ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`file_${i + 1}`, null]))
+            };
+
+            reset({ modalPeserta: allFields });
+
+            onClose?.();
+        } catch (error) {
+            console.error("Terjadi kesalahan:", error);
+        }
+    };
+
+    const onInvalidSubmit = (errors) => {
+        console.log(errors);
+        
+        const fileErrors = Object.keys(errors)
+        .filter((key) => key.startsWith("file_"))
+        .map((key) => {
+            const id = parseInt(key.split("_")[1], 10);
+            const berkas = jenisBerkasList.find((item) => item.id === id);
+            return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
         });
 
-        throw new Error(result.message);
-      }
+        if (fileErrors.length > 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "Berkas wajib diunggah",
+            html: `<pre style="text-align: left;">${fileErrors.join("<br>")}</pre>`,
+        });
+        }
+    };
 
-      await Swal.fire({
-        icon: "success",
-        title: "Berhasil!",
-        text: "Data berhasil dikirim.",
-      });
+    const resetData = () => {
+        const currentModalPeserta = watch("modalPeserta") || {};
 
-      onClose?.();
-    } catch (error) {
-      console.error("Terjadi kesalahan:", error);
+        const allFields = {
+            ...Object.fromEntries(Object.keys(currentModalPeserta).map(key => [key, ""])),
+            ...Object.fromEntries(Array.from({ length: 18 }, (_, i) => [`file_${i + 1}`, null]))
+        };
+
+        reset({ modalPeserta: allFields });
+        setActiveTab(0);               // kembali ke tab pertama
+        setUnlockedTabs([0]);  
     }
-  };
 
-  const onInvalidSubmit = (errors) => {
-    const fileErrors = Object.keys(errors)
-      .filter((key) => key.startsWith("file_"))
-      .map((key) => {
-        const id = parseInt(key.split("_")[1], 10);
-        const berkas = jenisBerkasList.find((item) => item.id === id);
-        return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
-      });
-
-    if (fileErrors.length > 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Berkas wajib diunggah",
-        html: `<pre style="text-align: left;">${fileErrors.join("<br>")}</pre>`,
-      });
-    }
-  };
-
-  return {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    watch,
-    errors,
-    activeTab,
-    unlockedTabs,
-    setActiveTab,
-    nextStep,
-    prevStep,
-    onValidSubmit,
-    onInvalidSubmit,
-  };
+    return {
+        register,
+        handleSubmit,
+        control,
+        setValue,
+        resetData,
+        watch,
+        errors,
+        activeTab,
+        unlockedTabs,
+        setActiveTab,
+        nextStep,
+        prevStep,
+        onValidSubmit,
+        onInvalidSubmit,
+    };
 }

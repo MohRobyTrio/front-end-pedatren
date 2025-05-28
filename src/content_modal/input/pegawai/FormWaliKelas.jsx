@@ -56,13 +56,11 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
                                 <Controller
                                     name={`modalPegawai.${label}`}
                                     control={control}
-                                    rules={{ required: true }}
                                     defaultValue={selectedFilters[label] || ""}
                                     render={({ field }) => (
                                         <select
                                             {...field}
                                             id={label}
-                                            required
                                             disabled={options.length <= 1}
                                             className={`w-full py-1.5 pr-3 pl-1 text-base focus:outline-none sm:text-sm ${options.length <= 1 ? "text-gray-500" : ""
                                                 }`}
@@ -127,8 +125,7 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
                             id="periode_awal_wali"
                             name="periode_awal_wali"
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            {...register("modalPegawai.periode_awal_wali", { required: true })}
-                            required
+                            {...register("modalPegawai.periode_awal_wali")}
                         />
                     </div>
                 </div>

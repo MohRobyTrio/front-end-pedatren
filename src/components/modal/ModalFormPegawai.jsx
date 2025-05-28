@@ -2,7 +2,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from "react-icons/fa";
 import FormBiodata from "../../content_modal/input/pegawai/FormBiodata";
 import FormKaryawan from "../../content_modal/input/pegawai/FormKaryawan";
 import FormPengajar from "../../content_modal/input/pegawai/FormPengajar";
@@ -12,7 +12,7 @@ import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
 import { jenisBerkasList } from "../../data/menuData";
 
 const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
-    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = formState;
+    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = formState;
 
     const tabs = [
         {
@@ -138,7 +138,17 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
                                         Sebelumnya
                                     </button>
                                 )}
-                                <div className="ml-auto">
+                                <div className="ml-auto space-x-2">
+                                    {activeTab < tabs.length && (
+                                        <button
+                                            type="button"
+                                            onClick={resetData}
+                                            className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                                        >
+                                            <FaUndo />
+                                            Reset
+                                        </button>
+                                    )}
                                     {activeTab < tabs.length - 1 ? (
                                         <button
                                             onClick={nextStep}

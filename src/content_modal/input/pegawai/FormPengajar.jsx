@@ -90,8 +90,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                         <select
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             disabled={listGolonganNama?.length <= 1}
-                            {...register('modalPegawai.golongan_id_pengajar', { required: true })}
-                            required
+                            {...register('modalPegawai.golongan_id_pengajar')}
                         >
                             {listGolonganNama?.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -111,8 +110,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                         <select
                             className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${filterLembaga?.lembaga?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                             disabled={filterLembaga?.lembaga?.length <= 1}
-                            {...register('modalPegawai.lembaga_id_pengajar', { required: true })}
-                            required
+                            {...register('modalPegawai.lembaga_id_pengajar')}
                         >
                             {filterLembaga?.lembaga.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -132,8 +130,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                         <input
                             type="text"
                             placeholder="Masukkan Jabatan pengajar"
-                            {...register("modalPegawai.jabatan_pengajar", { required: true })}
-                            required
+                            {...register("modalPegawai.jabatan_pengajar")}
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             maxLength={100}
                         />
@@ -153,8 +150,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                             id="tanggal_mulai_pengajar"
                             name="tanggal_mulai_pengajar"
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            {...register("modalPegawai.tanggal_mulai_pengajar", { required: true })}
-                            required
+                            {...register("modalPegawai.tanggal_mulai_pengajar")}
                         />
                     </div>
                 </div>
@@ -172,8 +168,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                             id="tanggal_mulai_materi"
                             name="tanggal_mulai_materi"
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            {...register("modalPegawai.tanggal_mulai_materi", { required: true })}
-                            required
+                            {...register("modalPegawai.tanggal_mulai_materi")}
                         />
                     </div>
                 </div>

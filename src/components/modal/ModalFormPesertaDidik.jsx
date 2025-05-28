@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FaArrowLeft, FaArrowRight, FaSave } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from 'react-icons/fa';
 import FormBiodata from '../../content_modal/input/peserta_didik/FormBiodata';
 import FormKeluarga from '../../content_modal/input/peserta_didik/FormKeluarga';
 import FormDomisiliPendidikan from '../../content_modal/input/peserta_didik/FormDomisiliPendidikan';
@@ -15,6 +15,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         handleSubmit,
         control,
         setValue,
+        resetData,
         watch,
         errors,
         activeTab,
@@ -30,7 +31,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} />
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} />
         },
         {
             id: 1,
@@ -40,7 +41,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         {
             id: 2,
             label: "Domisili & Pendidikan",
-            content: <FormDomisiliPendidikan register={register} control={control} />
+            content: <FormDomisiliPendidikan register={register} control={control} watch={watch} activeTab={activeTab} />
         },
         {
             id: 3,
@@ -114,21 +115,18 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
 
                                 <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
 
-                                {/* <div className="pt-4">
-                                    {tabs.map((tab) => (
-                                        <div
-                                            key={tab.id}
-                                            style={{ display: activeTab === tab.id ? "block" : "none" }}
-                                            aria-hidden={activeTab !== tab.id}
-                                        >
-                                            {tab.content}
-                                        </div>
-                                    ))}
-                                </div> */}
-
                             </form>
 
                             <div className="mt-4 pt-4 flex justify-between">
+                                {/* {activeTab < tabs.length - 1 && (
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                                    >
+                                        <FaTimes />
+                                        Reset
+                                    </button>
+                                )} */}
                                 {activeTab > 0 && (
                                     <button
                                         onClick={prevStep}
@@ -138,7 +136,17 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
                                         Sebelumnya
                                     </button>
                                 )}
-                                <div className="ml-auto">
+                                <div className="ml-auto space-x-2">
+                                    {activeTab < tabs.length && (
+                                        <button
+                                            type="button"
+                                            onClick={resetData}
+                                            className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                                        >
+                                            <FaUndo />
+                                            Reset
+                                        </button>
+                                    )}
                                     {activeTab < tabs.length - 1 ? (
                                         <button
                                             type='button'
@@ -150,7 +158,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
                                         </button>
                                     ) : (
                                         <button
-                                            type="submit"
+                                            type="button"
                                             onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
                                             className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
                                         >
