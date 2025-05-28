@@ -331,7 +331,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                                                 <div>
                                                     <label htmlFor="tanggal_akhir" className="block text-gray-700">Tanggal Akhir *</label>
                                                     <input
-                                                        type="date"
+                                                        type="datetime-local"
                                                         id="tanggal_akhir"
                                                         name="tanggal_akhir"
                                                         value={formData.tanggal_akhir}

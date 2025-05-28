@@ -72,7 +72,7 @@ const TabSantri = () => {
                     <div key={santri.id}>
                         {/* Card */}
                         <div
-                            className="bg-white shadow-md rounded-lg p-6 cursor-pointer w-full flex justify-between items-center"
+                            className="bg-white shadow-lg drop-shadow rounded-lg p-6 cursor-pointer w-full flex justify-between items-center"
                             onClick={() => handleCardClick(santri.id)}
                         >
                             <div>

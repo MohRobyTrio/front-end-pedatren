@@ -19,9 +19,9 @@ import DetailPengurus from "../../content_modal/detail/DetailPengurus";
 import DetailKaryawan from "../../content_modal/detail/DetailKaryawan";
 import DetailWaliKelas from "../../content_modal/detail/DetailWaliKelas";
 import DetailPengajar from "../../content_modal/detail/DetailPengajar";
+import DetailWaliAsuh from "../../content_modal/detail/DetailWaliAsuh";
 
 // Placeholder untuk tab lainnya
-const WaliAsuh = () => <h1 className="text-xl font-bold">Wali Asuh</h1>;
 const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
@@ -54,6 +54,9 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 else if (menu === 11) endpoint = `walikelas/${item.id}`;
                 else if (menu === 12) endpoint = `khadam/${item.biodata_id}`;
                 else if (menu === 13) endpoint = `alumni/${item.biodata_id}`;
+
+                else if (menu === 14) endpoint = `waliasuh/${item.biodata_id}`;
+                else if (menu === 16) endpoint = `anakasuh/${item.biodata_id}`;
 
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
                 else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
@@ -120,10 +123,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             label: "Pendidikan",
             content: <DetailPendidikan pendidikan={data.Pendidikan} />
         },
-        data?.WaliAsuh?.length > 0 && {
+        data?.Wali_Asuh?.length > 0 && {
             id: "waliasuh",
             label: "Wali Asuh",
-            content: <WaliAsuh />
+            content: <DetailWaliAsuh waliAsuh={data.Wali_Asuh} />
         },
         data?.Karyawan?.length > 0 && {
             id: "karyawan",

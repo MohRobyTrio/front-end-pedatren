@@ -9,8 +9,22 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
+import ModalDetail from "../../components/modal/ModalDetail";
 
 const AnakAsuh = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wafathidup: "",
@@ -186,7 +200,7 @@ const AnakAsuh = () => {
                             <p className="text-center col-span-3">Tidak ada data</p>
                         ) : (
                             anakAsuh.map((item, index) => (
-                                <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4">
+                                <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer"  onClick={() => openModal(item)}>
                                     <img
                                         alt={item.nama || "-"}
                                         className="w-20 h-24 object-cover"
@@ -241,7 +255,7 @@ const AnakAsuh = () => {
                                     <tr><td colSpan="9" className="py-6">Tidak ada data</td></tr>
                                 ) : (
                                     anakAsuh.map((item, index) => (
-                                        <tr key={item.id || index} className="hover:bg-gray-50 text-left">
+                                        <tr key={item.id || index} className="hover:bg-gray-50 text-left cursor-pointer"  onClick={() => openModal(item)}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -257,6 +271,15 @@ const AnakAsuh = () => {
                             </tbody>
                         </table>
                     </div>
+                )}
+
+                {isModalOpen && (
+                    <ModalDetail
+                        title="Anak Asuh"
+                        menu={16}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
                 )}
 
                 {totalPages > 1 && (

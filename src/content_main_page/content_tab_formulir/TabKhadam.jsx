@@ -101,7 +101,7 @@ const TabKhadam = () => {
                     <div key={khadam.id}>
                         {/* Card */}
                         <div
-                            className="bg-white shadow-md rounded-lg p-6 cursor-pointer w-full flex flex-col items-start gap-2"
+                            className="bg-white shadow-lg drop-shadow rounded-lg p-6 cursor-pointer w-full flex flex-col items-start gap-2"
                             onClick={() => {
                                 handleCardClick(khadam.id)
                             }}

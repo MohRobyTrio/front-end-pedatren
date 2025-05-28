@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const DetailCatatanProgress = ({ catatanProgress }) => {
     const tabs = [
-        Object.keys(catatanProgress?.Afektif)?.length > 0 && {
+        catatanProgress?.Afektif && Object.keys(catatanProgress?.Afektif)?.length > 0 && {
             id: "afektif",
             label: "Afektif",
             content: (
@@ -40,7 +40,7 @@ const DetailCatatanProgress = ({ catatanProgress }) => {
                 </div>
             )
         },
-        Object.keys(catatanProgress?.Kognitif)?.length > 0 && {
+        catatanProgress?.Kognitif && Object.keys(catatanProgress?.Kognitif)?.length > 0 && {
             id: "kognitif",
             label: "Kognitif",
             content: (
