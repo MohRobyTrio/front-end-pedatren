@@ -6,6 +6,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddDomisiliFormulir, ModalKeluarDomisiliFormulir } from "../../components/modal/modal_formulir/ModalFormDomisili";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 
 const TabDomisiliSantri = () => {
   const { biodata_id } = useParams();
@@ -21,6 +22,39 @@ const TabDomisiliSantri = () => {
   const [loadingDomisili, setLoadingDomisili] = useState(true);
   const [loadingDetailDomisili, setLoadingDetailDomisili] = useState(null);
   const [loadingUpdateDomisili, setLoadingUpdateDomisili] = useState(false);
+
+  // Format tanggal untuk tampilan card
+  const formatDateTimeDisplay = (datetime) => {
+    if (!datetime) return "";
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    };
+    return new Date(datetime).toLocaleDateString("id-ID", options).replace(" pukul", ",");
+  };
+
+  // Tambahkan state untuk dropdown wilayah
+  const {
+    filterWilayah,
+    handleFilterChangeWilayah,
+    selectedWilayah,
+    setSelectedWilayah
+  } = DropdownWilayah();
+
+  // Ubah label dropdown
+  const updateFirstOptionLabel = (list, label) =>
+    list.length > 0
+      ? [{ ...list[0], label }, ...list.slice(1)]
+      : list;
+
+  const updatedFilterWilayah = {
+    wilayah: updateFirstOptionLabel(filterWilayah.wilayah, "Pilih Wilayah"),
+    blok: updateFirstOptionLabel(filterWilayah.blok, "Pilih Blok"),
+    kamar: updateFirstOptionLabel(filterWilayah.kamar, "Pilih Kamar"),
+  };
 
   const fetchDomisili = useCallback(async () => {
     const token = sessionStorage.getItem("token") || getCookie("token");
@@ -62,12 +96,144 @@ const TabDomisiliSantri = () => {
 
       setSelectedDomisiliId(id);
       setSelectedDomisiliDetail(result.data);
-      setStartDate(result.data.tanggal_masuk || "");
-      setEndDate(result.data.tanggal_keluar || "");
+      // setStartDate(result.data.tanggal_masuk || "");
+      // setEndDate(result.data.tanggal_keluar || "");
+      // Parsing datetime ke format input
+      // Format tanggal untuk input
+    const parseDateTimeForInput = (datetime) => {
+      if (!datetime) return "";
+      const date = new Date(datetime);
+      return date.toISOString().split('T')[0]; // Ambil bagian tanggal saja
+    };
+
+      setStartDate(parseDateTimeForInput(result.data.tanggal_masuk));
+      setEndDate(parseDateTimeForInput(result.data.tanggal_keluar));
+
+      // Format untuk input datetime-local (type=datetime-local but value date-only)
+      // setSelectedDomisiliDetail({
+      //   ...result.data,
+      //   // Untuk display di card
+      //   tanggal_masuk: formatForDisplay(result.data.tanggal_masuk),
+      //   tanggal_keluar: result.data.tanggal_keluar ? 
+      //     formatForDisplay(result.data.tanggal_keluar) : null
+      // });
+      
+
+      // Set dropdown values
+      const dropdownValues = {};
+
+      // Cari ID berdasarkan nama
+      if (result.data.nama_wilayah) {
+        const wilayahOption = filterWilayah.wilayah.find(item => item.label === result.data.nama_wilayah);
+        if (wilayahOption) dropdownValues.wilayah = wilayahOption.value;
+      }
+
+      if (result.data.nama_blok) {
+        const blokOption = filterWilayah.blok.find(item => item.label === result.data.nama_blok);
+        if (blokOption) dropdownValues.blok = blokOption.value;
+      }
+
+      if (result.data.nama_kamar) {
+        const kamarOption = filterWilayah.kamar.find(item => item.label === result.data.nama_kamar);
+        if (kamarOption) dropdownValues.kamar = kamarOption.value;
+      }
+
+      // Set selected wilayah
+      if (setSelectedWilayah && typeof setSelectedWilayah === 'function') {
+        setSelectedWilayah(dropdownValues);
+      } else {
+        // Handle perubahan dropdown bertahap
+        const setDropdownValues = async () => {
+          if (dropdownValues.wilayah) {
+            await handleFilterChangeWilayah({ wilayah: dropdownValues.wilayah });
+
+            setTimeout(() => {
+              if (dropdownValues.blok) {
+                handleFilterChangeWilayah({ blok: dropdownValues.blok });
+
+                setTimeout(() => {
+                  if (dropdownValues.kamar) {
+                    handleFilterChangeWilayah({ kamar: dropdownValues.kamar });
+                  }
+                }, 50);
+              }
+            }, 100);
+          }
+        };
+        setDropdownValues();
+      }
+
     } catch (error) {
       console.error("Gagal mengambil detail Domisili:", error);
     } finally {
       setLoadingDetailDomisili(null);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedDomisiliDetail) return;
+
+    const { wilayah, blok, kamar } = selectedWilayah || {};
+
+    // Validasi wajib
+    if (!wilayah || !startDate) {
+      alert("Wilayah dan Tanggal Mulai wajib diisi");
+      return;
+    }
+
+    // Validasi format tanggal
+    // const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    // if (!dateRegex.test(startDate)) {
+    //   alert("Format tanggal mulai tidak valid (harus YYYY-MM-DD)");
+    //   return;
+    // }
+
+    // Format payload sesuai kebutuhan backend
+    const payload = {
+      wilayah_id: wilayah,
+      blok_id: blok || null,
+      kamar_id: kamar || null,
+      tanggal_masuk: startDate,  
+      tanggal_keluar: endDate || null
+    };
+
+    try {
+      setLoadingUpdateDomisili(true);
+      const token = sessionStorage.getItem("token") || getCookie("token");
+      const response = await fetch(
+        `${API_BASE_URL}formulir/${selectedDomisiliId}/domisili`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      // Handle response
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Gagal update");
+
+      alert(`Data domisili berhasil diperbarui!`);
+
+      // Reset form
+      setSelectedDomisiliId(null);
+      setSelectedDomisiliDetail(null);
+      setStartDate("");
+      setEndDate("");
+
+      // Refresh data dengan delay singkat
+      setTimeout(() => {
+        fetchDomisili();
+      }, 300);
+
+    } catch (error) {
+      console.error("Error saat update:", error);
+      alert(error.message || "Terjadi kesalahan saat update");
+    } finally {
+      setLoadingUpdateDomisili(false);
     }
   };
 
@@ -88,11 +254,39 @@ const TabDomisiliSantri = () => {
     setShowOutModal(true);
   };
 
-  // Format tanggal ke ID
-  const formatDate = (dateStr) => {
-    const options = { year: "numeric", month: "short", day: "2-digit" };
-    return new Date(dateStr).toLocaleDateString("id-ID", options);
+  // Komponen dropdown
+  const Filters = ({ filterOptions, onChange, selectedFilters }) => {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        {Object.entries(filterOptions).map(([label, options], index) => (
+          <div key={`${label}-${index}`}>
+            <label htmlFor={label} className="block text-sm font-medium text-gray-700">
+              {capitalizeFirst(label)} {label === 'wilayah' ? '*' : ''}
+            </label>
+            <select
+              className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedDomisiliDetail?.tanggal_keluar ? 'bg-gray-200 text-gray-500' : ''}`}
+              onChange={(e) => onChange({ [label]: e.target.value })}
+              value={selectedFilters[label] || ""}
+              disabled={options.length <= 1 || selectedDomisiliDetail?.tanggal_keluar}
+            >
+              {options.map((option, idx) => (
+                <option key={idx} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
+    );
   };
+
+  // Format tanggal ke ID
+  // const formatDate = (dateStr) => {
+  //   const options = { year: "numeric", month: "short", day: "2-digit" };
+  //   return new Date(dateStr).toLocaleDateString("id-ID", options);
+  // };
+
+  // Kapitalisasi huruf pertama
+  const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <div className="block" id="Domisili">
@@ -111,22 +305,22 @@ const TabDomisiliSantri = () => {
       </h1>
 
       {showAddModal && (
-        <ModalAddDomisiliFormulir 
-          isOpen={showAddModal} 
-          onClose={closeAddModal} 
-          biodataId={biodata_id} 
-          cardId={selectedDomisiliId} 
-          refetchData={fetchDomisili} 
-          feature={feature} 
+        <ModalAddDomisiliFormulir
+          isOpen={showAddModal}
+          onClose={closeAddModal}
+          biodataId={biodata_id}
+          cardId={selectedDomisiliId}
+          refetchData={fetchDomisili}
+          feature={feature}
         />
       )}
 
       {showOutModal && (
-        <ModalKeluarDomisiliFormulir 
-          isOpen={showOutModal} 
-          onClose={closeOutModal} 
-          id={selectedDomisiliId} 
-          refetchData={fetchDomisili} 
+        <ModalKeluarDomisiliFormulir
+          isOpen={showOutModal}
+          onClose={closeOutModal}
+          id={selectedDomisiliId}
+          refetchData={fetchDomisili}
         />
       )}
 
@@ -146,12 +340,17 @@ const TabDomisiliSantri = () => {
             >
               <div className="flex items-center justify-between w-full">
                 <div>
-                  <h5 className="text-lg font-bold">{domisili.nama_wilayah}</h5>
-                  <p className="text-gray-600 text-sm">Blok: {domisili.nama_blok || '-'}</p>
-                  <p className="text-gray-600 text-sm">Kamar: {domisili.nama_kamar || '-'}</p>
-                  <p className="text-gray-600 text-sm">
+                  <h5 className="text-lg font-bold">Wilayah {domisili.nama_wilayah} - {domisili.nama_kamar}</h5>
+                  {/* <p className="text-gray-600 text-sm">Blok: {domisili.nama_blok || '-'}</p> */}
+                  {/* <p className="text-gray-600 text-sm">Kamar: {domisili.nama_kamar || '-'}</p> */}
+                  {/* <p className="text-gray-600 text-sm">
                     Sejak {formatDate(domisili.tanggal_masuk)}
                     {domisili.tanggal_keluar ? ` s/d ${formatDate(domisili.tanggal_keluar)}` : ' - Sekarang'}
+                  </p> */}
+                  <p className="text-gray-600 text-sm">
+                    Sejak {formatDateTimeDisplay(domisili.tanggal_masuk)}
+                    {domisili.tanggal_keluar ?
+                      ` s/d ${formatDateTimeDisplay(domisili.tanggal_keluar)}` : ' - Sekarang'}
                   </p>
                 </div>
                 <span
@@ -192,6 +391,85 @@ const TabDomisiliSantri = () => {
                 </div>
               )}
             </div>
+
+            {/* Form Input */}
+            {loadingDetailDomisili === domisili.id ? (
+              <div className="flex justify-center items-center mt-4">
+                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+              </div>
+            ) : selectedDomisiliId === domisili.id && selectedDomisiliDetail && (
+              <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div className="flex flex-col gap-4">
+                  <Filters
+                    filterOptions={updatedFilterWilayah}
+                    onChange={handleFilterChangeWilayah}
+                    selectedFilters={selectedWilayah}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                      Tanggal Mulai *
+                    </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedDomisiliDetail?.tanggal_keluar ? "bg-gray-200 text-gray-500" : ""}`}
+                      disabled={selectedDomisiliDetail?.tanggal_keluar}
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)} // Simpan hanya tanggal
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                      Tanggal Akhir
+                    </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)} // Simpan hanya tanggal
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
+                  <div className="flex space-x-2 mt-1">
+                    {!selectedDomisiliDetail?.tanggal_keluar && (
+                      <button
+                        type="button"
+                        disabled={loadingUpdateDomisili}
+                        className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none ${loadingUpdateDomisili ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+                        onClick={handleUpdate}
+                      >
+                        {loadingUpdateDomisili ? (
+                          <i className="fas fa-spinner fa-spin text-2xl text-white w-13"></i>
+                        ) :
+                          "Update"
+                        }
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
+                      onClick={() => {
+                        setSelectedDomisiliId(null);
+                        setSelectedDomisiliDetail(null);
+                        setStartDate("");
+                        setEndDate("");
+                      }}
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
           </div>
         ))}
       </div>

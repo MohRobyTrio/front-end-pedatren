@@ -60,9 +60,9 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     kelas_id: "",
     rombel_id: "",
     no_induk: "",
-    tanggal_masuk: "",
-    // tanggal_keluar: "", // Komentar field tanggal_keluar
-    // status: "" // Komentar field status
+    tanggal_masuk: ""
+    // tanggal_keluar: "",
+    // status: ""
   });
 
   useEffect(() => {

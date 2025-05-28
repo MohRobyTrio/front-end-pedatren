@@ -55,8 +55,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
     wilayah_id: "",
     blok_id: "",
     kamar_id: "",
-    tanggal_masuk: "",
-    tanggal_keluar: ""
+    tanggal_masuk: ""
   });
 
   useEffect(() => {
@@ -199,17 +198,17 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
                           />
                         </div>
 
-                        <div>
-                          <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Akhir</label>
-                          <input
+                        {/* <div> */}
+                          {/* <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Akhir</label> */}
+                          {/* <input
                             type="date"
                             id="tanggal_keluar"
                             name="tanggal_keluar"
                             value={formData.tanggal_keluar}
                             onChange={(e) => setFormData({ ...formData, tanggal_keluar: e.target.value })}
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
-                        </div>
+                          /> */}
+                        {/* </div> */}
                       </div>
                     </div>
                   </div>
