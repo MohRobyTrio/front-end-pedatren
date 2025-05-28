@@ -7,8 +7,22 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import ModalDetail from "../../components/modal/ModalDetail";
 
 const DataPelanggaran = () => {
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };
+
     const [filters, setFilters] = useState({
         provinsi: " ",
         lembaga: "",
@@ -158,7 +172,7 @@ const DataPelanggaran = () => {
                         ) : data.length > 0 ? (
                             <div className="">
                                 {data.map(pelanggaran => (
-                                    <PelanggaranCard key={pelanggaran.id} data={pelanggaran} />
+                                    <PelanggaranCard key={pelanggaran.id} data={pelanggaran} openModal={openModal}/>
                                 ))}
                             </div>
                         ) : (
@@ -173,15 +187,24 @@ const DataPelanggaran = () => {
                     handlePageChange={handlePageChange}
                     className="mt-6"
                 />
+
+                {isModalOpen && (
+                    <ModalDetail
+                        title="Pelanggaran"
+                        menu={18}
+                        item={selectedItem}
+                        onClose={closeModal}
+                    />
+                )}
             </div>
         </div>
     );
 };
 
 // Komponen Card untuk Pelanggaran
-const PelanggaranCard = ({ data }) => {
+const PelanggaranCard = ({ data, openModal }) => {
     return (
-        <div key={data.id} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4">
+        <div key={data.id} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4 cursor-pointer" onClick={() => openModal(data)}>
             {/* Foto Santri */}
             <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
                 {data.foto_profil ? (

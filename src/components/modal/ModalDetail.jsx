@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useMemo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -20,13 +20,16 @@ import DetailKaryawan from "../../content_modal/detail/DetailKaryawan";
 import DetailWaliKelas from "../../content_modal/detail/DetailWaliKelas";
 import DetailPengajar from "../../content_modal/detail/DetailPengajar";
 import DetailWaliAsuh from "../../content_modal/detail/DetailWaliAsuh";
+import DetailBerkas from "../../content_modal/detail/DetailBerkas";
+import DetailPemohonIzin from "../../content_modal/detail/DetailPemohonIzin";
+import DetailPengantar from "../../content_modal/detail/DetailPengantar";
+import DetailPelanggaran from "../../content_modal/detail/DetailPelanggaran";
 
 // Placeholder untuk tab lainnya
-const Berkas = () => <h1 className="text-xl font-bold">Berkas</h1>;
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
 const ModalDetail = ({ title, menu, item, onClose }) => {
-    const [activeTab, setActiveTab] = useState("biodata");
+    // const [activeTab, setActiveTab] = useState("biodata");
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -57,6 +60,9 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 else if (menu === 14) endpoint = `waliasuh/${item.biodata_id}`;
                 else if (menu === 16) endpoint = `anakasuh/${item.biodata_id}`;
+
+                else if (menu === 17) endpoint = `perizinan/${item.id}`;
+                else if (menu === 18) endpoint = `pelanggaran/${item.id}`;
 
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
                 else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
@@ -97,89 +103,117 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
 
-    const tabs = !isOnlyError ? [
-        data?.Biodata && {
-            id: "biodata",
-            label: "Biodata",
-            content: <DetailBiodata biodata={data.Biodata} />
-        },
-        data?.Keluarga?.length > 0 && {
-            id: "keluarga",
-            label: "Keluarga",
-            content: <DetailKeluarga keluarga={data.Keluarga} />
-        },
-        (data?.Status_Santri?.Santri?.length > 0 || data?.Status_Santri?.Kewaliasuhan?.length > 0 || data?.Status_Santri?.Info_Perizinan?.length > 0) && {
-            id: "Status Santri",
-            label: "Status Santri",
-            content: <DetailStatusSantri statusSantri={data.Status_Santri} />
-        },
-        data?.Domisili?.length > 0 && {
-            id: "domisili",
-            label: "Domisili",
-            content: <DetailDomisili domisili={data.Domisili} />
-        },
-        data?.Pendidikan?.length > 0 && {
-            id: "pendidikan",
-            label: "Pendidikan",
-            content: <DetailPendidikan pendidikan={data.Pendidikan} />
-        },
-        data?.Wali_Asuh?.length > 0 && {
-            id: "waliasuh",
-            label: "Wali Asuh",
-            content: <DetailWaliAsuh waliAsuh={data.Wali_Asuh} />
-        },
-        data?.Karyawan?.length > 0 && {
-            id: "karyawan",
-            label: "Karyawan",
-            content: <DetailKaryawan karyawan={data.Karyawan} />
-        },
-        data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar).length > 0)) && {
-            id: "pengajar",
-            label: "Pengajar",
-            content: <DetailPengajar pengajar={data.Pengajar} />
-        },
-        data?.Pengurus?.length > 0 && {
-            id: "pengurus",
-            label: "Pengurus",
-            content: <DetailPengurus pengurus={data.Pengurus} />
-        },
-        data?.Wali_Kelas?.length > 0 && {
-            id: "wali_kelas",
-            label: "Wali Kelas",
-            content: <DetailWaliKelas waliKelas={data.Wali_Kelas} />
-        },
-        data?.Berkas?.length > 0 && {
-            id: "berkas",
-            label: "Berkas",
-            content: <Berkas />
-        },
-        data?.WargaPesantren?.length > 0 && {
-            id: "warpes",
-            label: "Warga Pesantren",
-            content: <WarPes />
-        },
-        data?.Catatan_Progress && ((Object.keys(data.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data.Catatan_Progress?.Kognitif).length > 0)) &&
-        {
-            id: "progress",
-            label: "Catatan Progress",
-            content: <DetailCatatanProgress catatanProgress={data.Catatan_Progress} />
-        },
-        data?.Kunjungan_Mahrom?.length > 0 && {
-            id: "Kunjungan Mahrom",
-            label: "Kunjungan Mahrom",
-            content: <DetailKunjunganMahrom kunjunganMahrom={data.Kunjungan_Mahrom} />
-        },
-        data?.Khadam?.length > 0 && {
-            id: "khadam",
-            label: "Khadam",
-            content: <DetailKhadam khadam={data.Khadam} />
-        },
-        data?.error && {
-            id: "error",
-            label: "Error",
-            content: <div>{data?.error}</div>
-        },
-    ].filter(Boolean) : []; // Hapus tab yang tidak punya data    
+    const tabs = useMemo(() => {
+        if (isOnlyError) return [];
+
+        return [
+
+            data?.Biodata && {
+                id: "biodata",
+                label: "Biodata",
+                content: <DetailBiodata biodata={data.Biodata} />
+            },
+            data?.Keluarga?.length > 0 && {
+                id: "keluarga",
+                label: "Keluarga",
+                content: <DetailKeluarga keluarga={data.Keluarga} />
+            },
+            (data?.Status_Santri?.Santri?.length > 0 || data?.Status_Santri?.Kewaliasuhan?.length > 0 || data?.Status_Santri?.Info_Perizinan?.length > 0) && {
+                id: "Status Santri",
+                label: "Status Santri",
+                content: <DetailStatusSantri statusSantri={data.Status_Santri} />
+            },
+            data?.Domisili?.length > 0 && {
+                id: "domisili",
+                label: "Domisili",
+                content: <DetailDomisili domisili={data.Domisili} />
+            },
+            data?.Pendidikan?.length > 0 && {
+                id: "pendidikan",
+                label: "Pendidikan",
+                content: <DetailPendidikan pendidikan={data.Pendidikan} />
+            },
+            data?.Wali_Asuh?.length > 0 && {
+                id: "waliasuh",
+                label: "Wali Asuh",
+                content: <DetailWaliAsuh waliAsuh={data.Wali_Asuh} />
+            },
+            data?.Karyawan?.length > 0 && {
+                id: "karyawan",
+                label: "Karyawan",
+                content: <DetailKaryawan karyawan={data.Karyawan} />
+            },
+            data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar).length > 0)) && {
+                id: "pengajar",
+                label: "Pengajar",
+                content: <DetailPengajar pengajar={data.Pengajar} />
+            },
+            data?.Pengurus?.length > 0 && {
+                id: "pengurus",
+                label: "Pengurus",
+                content: <DetailPengurus pengurus={data.Pengurus} />
+            },
+            data?.Wali_Kelas?.length > 0 && {
+                id: "wali_kelas",
+                label: "Wali Kelas",
+                content: <DetailWaliKelas waliKelas={data.Wali_Kelas} />
+            },
+            data?.WargaPesantren?.length > 0 && {
+                id: "warpes",
+                label: "Warga Pesantren",
+                content: <WarPes />
+            },
+            data?.Catatan_Progress && ((Object.keys(data.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data.Catatan_Progress?.Kognitif).length > 0)) &&
+            {
+                id: "progress",
+                label: "Catatan Progress",
+                content: <DetailCatatanProgress catatanProgress={data.Catatan_Progress} />
+            },
+            data?.Kunjungan_Mahrom?.length > 0 && {
+                id: "kunjungan_mahrom",
+                label: "Kunjungan Mahrom",
+                content: <DetailKunjunganMahrom kunjunganMahrom={data.Kunjungan_Mahrom} />
+            },
+            data?.Khadam?.length > 0 && {
+                id: "khadam",
+                label: "Khadam",
+                content: <DetailKhadam khadam={data.Khadam} />
+            },
+            data?.["Pemohon Izin"] && Object.keys(data?.["Pemohon Izin"]).length > 0 && {
+                id: "pemohon_izin",
+                label: "Pemohon Izin",
+                content: <DetailPemohonIzin pemohonIzin={data?.["Pemohon Izin"]}/>
+            },
+            data?.pelanggaran && Object.keys(data?.pelanggaran).length > 0 && {
+                id: "pelanggaran",
+                label: "Pelanggaran",
+                content: <DetailPelanggaran pelanggaran={data.pelanggaran}/>
+            },
+            data?.Pengantar && Object.keys(data?.Pengantar).length > 0 && {
+                id: "pengantar",
+                label: "Pengantar",
+                content: <DetailPengantar pengantar={data.Pengantar}/>
+            },
+            data?.Berkas?.length > 0 && {
+                id: "berkas",
+                label: "Berkas",
+                content: <DetailBerkas berkas={data.Berkas} />
+            },
+            data?.error && {
+                id: "error",
+                label: "Error",
+                content: <div>{data?.error}</div>
+            },
+        ].filter(Boolean); // Hapus tab yang tidak punya data    
+    }, [data, isOnlyError]);
+
+    const [activeTab, setActiveTab] = useState(null);
+
+    useEffect(() => {
+        if (tabs.length > 0) {
+            setActiveTab(tabs[0].id);
+        }
+    }, [tabs]);
 
     return (
         <Transition appear show={true} as={Fragment}>
@@ -268,7 +302,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                             {/* Footer */}
                             <div className="mt-4 pt-4 text-right space-x-2">
                                 {/* set id route */}
-                                {menu !== 23 &&(
+                                {menu !== 23 && menu !== 17 && menu != 18  && (
                                     <Link to={`/formulir/${item.biodata_id || item.id}/biodata`}>
                                         <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
                                             Buka di Formulir
