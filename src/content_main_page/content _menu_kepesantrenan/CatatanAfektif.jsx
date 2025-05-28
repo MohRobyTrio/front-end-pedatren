@@ -10,6 +10,8 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { API_BASE_URL } from "../../hooks/config";
+import { FaPlus } from "react-icons/fa";
+import { ModalAddProgressAfektif } from "../../components/modal/ModalFormCatatan";
 
 const CatatanAfektif = () => {
     const [filters, setFilters] = useState({
@@ -53,7 +55,7 @@ const CatatanAfektif = () => {
             } catch (error) {
                 console.error("Gagal mengambil data periode:", error);
             } finally {
-                setLoadingPeriode(false);
+                // setLoadingPeriode(false);
             }
         };
 
@@ -61,7 +63,7 @@ const CatatanAfektif = () => {
     }, []);
 
     const [listPeriode, setListPeriode] = useState([]);
-    const [loadingPeriode, setLoadingPeriode] = useState(true);
+    // const [loadingPeriode, setLoadingPeriode] = useState(true);
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
@@ -101,7 +103,7 @@ const CatatanAfektif = () => {
         lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih
     ]);
 
-    const [page, setPage] = useState(1);
+    // const [page, setPage] = useState(1);
 
     const {
         groupedData,
@@ -116,7 +118,7 @@ const CatatanAfektif = () => {
         searchTerm,
         setSearchTerm,
         fetchData
-    } = useFetchAfektif();
+    } = useFetchAfektif(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
 
@@ -144,9 +146,9 @@ const CatatanAfektif = () => {
     }
 
     // Fetch data saat filter/page berubah
-    useEffect(() => {
-        fetchData(updatedFilters, page);
-    }, [updatedFilters, page, fetchData]);
+    // useEffect(() => {
+    //     fetchData(updatedFilters, page);
+    // }, [updatedFilters, page, fetchData]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -154,15 +156,20 @@ const CatatanAfektif = () => {
         }
     };
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
     return (
-        <div className="flex-1 p-6">
-            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-                <h1 className="text-2xl font-bold mb-6">Catatan Afektif</h1>
-                <div className="space-x-2 flex flex-wrap">
-                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Wali Asuh Tidak Menginput</button>
-                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">Statistik</button>
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Catatan Afektif</h1>
+                <div className="flex items-center space-x-2">
+                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                 </div>
             </div>
+
+            {showFormModal && (
+                <ModalAddProgressAfektif isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData}/>
+            )}
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>

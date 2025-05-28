@@ -151,6 +151,14 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     });
 
     if (!confirmResult.isConfirmed) return;
+    Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
     const formData = new FormData();
 
@@ -194,7 +202,7 @@ const useMultiStepFormPegawai = ({ onClose }) => {
     // console.log(result);
     
     console.log(result);
-    
+    Swal.close();
     // === Cek response ===
     if (!response.ok) {
       const errorMessages = result.errors

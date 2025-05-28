@@ -23,7 +23,7 @@ const useFetchKognitif = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async (filters = {}) => {
+    const fetchData = useCallback(async () => {
         let url = `${API_BASE_URL}data-pokok/catatan-kognitif?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;

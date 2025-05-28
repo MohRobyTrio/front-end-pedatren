@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const DetailPelanggaran = ({ pelanggaran }) => {
     const [imgError, setImgError] = useState(false);
@@ -11,52 +11,92 @@ const DetailPelanggaran = ({ pelanggaran }) => {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Detail Pelanggaran</h2>
+            {/* Bagian atas: foto dan info detail */}
             <div className="flex flex-col md:flex-row gap-6">
-                <div className="w-full md:w-1/3">
-                    <div className="border rounded-lg overflow-hidden shadow-md">
+                {/* Foto */}
+                <div className="w-full md:w-1/3 text-sm text-gray-700">
+                    <div className="border rounded-md overflow-hidden shadow">
                         {imgError ? (
-                            <div className="flex items-center justify-center w-full h-64 bg-gray-100 text-gray-400">
+                            <div className="flex items-center justify-center w-full h-60 bg-gray-100 text-gray-400">
                                 <FontAwesomeIcon icon={faImage} className="text-4xl" />
                             </div>
                         ) : (
                             <img
                                 src={pelanggaran.foto_profil}
                                 alt={pelanggaran.nama_santri}
-                                className="w-full h-64 object-cover"
+                                className="w-full h-60 object-cover"
                                 onError={() => setImgError(true)}
                             />
                         )}
                     </div>
                 </div>
 
-                <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-                    <Info label="Nama Santri" value={pelanggaran.nama_santri} />
-                    <Info label="Provinsi" value={pelanggaran.provinsi} />
-                    <Info label="Kabupaten" value={pelanggaran.kabupaten} />
-                    <Info label="Kecamatan" value={pelanggaran.kecamatan} />
-                    <Info label="Wilayah" value={pelanggaran.wilayah} />
-                    <Info label="Blok" value={pelanggaran.blok} />
-                    <Info label="Kamar" value={pelanggaran.kamar} />
-                    <Info label="Lembaga" value={pelanggaran.lembaga} />
-                    <Info label="Jenis Pelanggaran" value={pelanggaran.jenis_pelanggaran} />
-                    <Info label="Status Pelanggaran" value={pelanggaran.status_pelanggaran} />
-                    <Info label="Jenis Putusan" value={pelanggaran.jenis_putusan} />
-                    <Info label="Diproses Mahkamah" value={pelanggaran.diproses_mahkamah ? "Ya" : "Tidak"} />
-                    <Info label="Keterangan" value={pelanggaran.keterangan} />
-                    <Info label="Pencatat" value={pelanggaran.pencatat} />
-                    <Info label="Tanggal Input" value={pelanggaran.tgl_input} />
+                {/* Info Detail */}
+                <div className="w-full md:w-2/3 text-sm text-gray-700">
+                    <div className="text-lg font-semibold mb-2">{pelanggaran.nama_santri}</div>
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2"> */}
+                    <InfoDetail label="Alamat" value={formatAlamat(pelanggaran)} />
+                    <InfoDetail label="Domisili" value={formatDomisili(pelanggaran)} />
+                    <InfoDetail label="Lembaga" value={pelanggaran.lembaga} />
+                    {/* </div> */}
                 </div>
+            </div>
+
+            {/* Bagian bawah: Pelanggaran dan Putusan */}
+            <div className="text-sm text-gray-700 space-y-4">
+                <Section title="Pelanggaran">
+                    <Row label="Jenis Pelanggaran" value={pelanggaran.jenis_pelanggaran} />
+                    <Row label="Diproses Mahkamah" value={pelanggaran.diproses_mahkamah ? "Ya" : <span className="text-red-500">Tidak <FontAwesomeIcon icon={faXmark} /></span>} />
+                    <Row label="Status Pelanggaran" value={pelanggaran.status_pelanggaran} />
+                    <Row label="Pencatat" value={pelanggaran.pencatat || "(AutoSystem)"} />
+                    <Row label="Tanggal Input" value={pelanggaran.tgl_input} />
+                </Section>
+
+                <Section title="Putusan">
+                    <Row label="Jenis Putusan" value={pelanggaran.jenis_putusan || "-"} />
+                    <Row label="Keterangan" value={pelanggaran.keterangan || "-"} />
+                </Section>
+                <hr className="my-2" />
             </div>
         </div>
     );
 };
 
-const Info = ({ label, value }) => (
-    <div>
-        <span className="font-medium text-gray-800">{label}:</span>{" "}
-        <span className="text-gray-600">{value || "-"}</span>
+// Komponen bantu
+const InfoDetail = ({ label, value }) => (
+    <div className="flex">
+        <span className="font-medium w-24">{label}</span>: {value || "-"}
     </div>
 );
+
+const Row = ({ label, value }) => (
+    <div className="flex">
+        <div className="w-40">{label}</div>
+        <div className="flex-1">: {value || "-"}</div>
+    </div>
+);
+
+const Section = ({ title, children }) => (
+    <div>
+        <hr className="my-2" />
+        <div className="font-semibold text-base mb-1">{title}</div>
+        <div className="space-y-1">{children}</div>
+    </div>
+);
+
+// Format alamat (kabupaten, kecamatan, provinsi)
+const formatAlamat = ({ kecamatan, kabupaten, provinsi }) => {
+    const area = [kabupaten, kecamatan].filter(v => v && v !== "-" && v !== null);
+    const prov = provinsi && provinsi !== "-" && provinsi !== null ? provinsi : null;
+    if (area.length === 0 && !prov) return "-";
+    const areaStr = area.join(", ");
+    return prov ? `${areaStr}, ${prov}` : areaStr;
+};
+
+// Format domisili (wilayah, blok, kamar)
+const formatDomisili = ({ wilayah, blok, kamar }) => {
+    const data = [wilayah, blok, kamar].filter(v => v && v !== "-" && v !== null);
+    return data.length ? data.join(" - ") : "-";
+};
 
 export default DetailPelanggaran;
