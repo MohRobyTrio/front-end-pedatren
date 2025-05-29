@@ -8,6 +8,8 @@ import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 
 const DataPelanggaran = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -278,7 +280,17 @@ const PelanggaranCard = ({ data, openModal }) => {
                     <div className="flex">
                         <div className="w-40 text-black-700">Diproses Mahkamah</div>
                         <div className="flex-1 flex items-center">
-                            <span className="text-black-600">: {data.diproses_mahkamah ? 'Ya ✅' : 'Tidak ❌'}</span>
+                            <span className="text-black-600">
+                                : {data.diproses_mahkamah ? (
+                                    <>
+                                        Ya <FontAwesomeIcon icon={faCheck} className="text-green-600" size="md"/>
+                                    </>
+                                ) : (
+                                    <>
+                                        Tidak <FontAwesomeIcon icon={faX} className="text-red-600" size="sm" />
+                                    </>
+                                )}
+                            </span>
                         </div>
                     </div>
 
