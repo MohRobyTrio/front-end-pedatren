@@ -8,9 +8,11 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import blankProfile from "../../assets/blank_profile.png";
 import { ModalAddProgressAfektifFormulir, ModalAddProgressKognitifFormulir, ModalKeluarProgressFormulir } from "../../components/modal/modal_formulir/ModalFormProgress";
+import useLogout from "../../hooks/Logout";
 
 const TabProgress = () => {
 	const { biodata_id } = useParams();
+	const { clearAuthData } = useLogout();
 	const [activeTab, setActiveTab] = useState("afektif");
 	const [showAddAfektifModal, setShowAddAfektifModal] = useState(false);
 	const [showAddKognitifModal, setShowAddKognitifModal] = useState(false);
@@ -63,6 +65,16 @@ const TabProgress = () => {
 					'Authorization': `Bearer ${token}`
 				}
 			});
+			if (response.status === 401) {
+				await Swal.fire({
+					title: "Sesi Berakhir",
+					text: "Sesi anda telah berakhir, silakan login kembali.",
+					icon: "warning",
+					confirmButtonText: "OK",
+				});
+				clearAuthData();
+				return;
+			}
 			const result = await response.json();
 			console.log(result);
 
@@ -74,7 +86,7 @@ const TabProgress = () => {
 		} finally {
 			setLoadingData(false);
 		}
-	}, [biodata_id]);
+	}, [biodata_id, clearAuthData]);
 
 	useEffect(() => {
 		if (activeTab) {
@@ -95,6 +107,16 @@ const TabProgress = () => {
 					}
 				}
 			);
+			if (response.status === 401) {
+				await Swal.fire({
+					title: "Sesi Berakhir",
+					text: "Sesi anda telah berakhir, silakan login kembali.",
+					icon: "warning",
+					confirmButtonText: "OK",
+				});
+				clearAuthData();
+				return;
+			}
 			const result = await response.json();
 			console.log(result);
 
@@ -168,6 +190,16 @@ const TabProgress = () => {
 					body: JSON.stringify(payload),
 				}
 			);
+			if (response.status === 401) {
+				await Swal.fire({
+					title: "Sesi Berakhir",
+					text: "Sesi anda telah berakhir, silakan login kembali.",
+					icon: "warning",
+					confirmButtonText: "OK",
+				});
+				clearAuthData();
+				return;
+			}
 			console.log(`${API_BASE_URL}formulir/${selectedDataId}/catatan-${endpoint}`);
 			const result = await response.json();
 			Swal.close();

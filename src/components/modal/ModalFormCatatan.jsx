@@ -7,11 +7,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
+import useLogout from "../../hooks/Logout";
 
 export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const { menuSantri } = useDropdownSantri();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
+    const { clearAuthData } = useLogout();
 
     const [formData, setFormData] = useState({
         id_santri: "",
@@ -64,6 +66,16 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
             console.log(`Mengirim ke: ${API_BASE_URL}crud/catatan-afektif`);
 
             // if (!response) throw new Error("Tidak ada response dari server.");
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
 
@@ -323,6 +335,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
 };
 
 export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const { menuSantri } = useDropdownSantri();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
@@ -384,6 +397,17 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
             console.log(`Mengirim ke: ${API_BASE_URL}crud/catatan-kognitif`);
 
             // if (!response) throw new Error("Tidak ada response dari server.");
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
 

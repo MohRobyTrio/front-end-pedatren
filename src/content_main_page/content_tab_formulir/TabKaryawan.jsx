@@ -8,9 +8,12 @@ import { getCookie } from "../../utils/cookieUtils"; // Asumsi path utilitas coo
 import { ModalAddKaryawanFormulir, ModalKeluarKaryawanFormulir } from "../../components/modal/modal_formulir/ModalFormKaryawan"; // Sesuaikan path jika perlu
 import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan"; // Ganti atau gunakan hook yang sudah ada
 import useDropdownLembaga from "../../hooks/hook_dropdown/DropdownLembagaDoang"; 
+import useLogout from "../../hooks/Logout";
+import Swal from "sweetalert2";
 
 const TabKaryawan = () => {
   const { biodata_id } = useParams();
+  const { clearAuthData } = useLogout();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showOutModal, setShowOutModal] = useState(false);
   const [karyawanList, setKaryawanList] = useState([]);
@@ -48,6 +51,16 @@ const TabKaryawan = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       setKaryawanList(result.data || []);
     } catch (error) {
@@ -56,7 +69,7 @@ const TabKaryawan = () => {
     } finally {
       setLoadingKaryawan(false);
     }
-  }, [biodata_id]);
+  }, [biodata_id, clearAuthData]);
 
   useEffect(() => {
     fetchKaryawan();
@@ -73,6 +86,16 @@ const TabKaryawan = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       const karyawanData = result.data;
 
@@ -135,6 +158,16 @@ const TabKaryawan = () => {
           body: JSON.stringify(payload),
         }
       );
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       if (response.ok) {
         alert(`Data karyawan berhasil diperbarui!`);

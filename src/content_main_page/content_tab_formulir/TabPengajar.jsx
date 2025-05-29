@@ -10,9 +10,11 @@ import DropdownGolongan from "../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
 import { ModalAddPengajarFormulir, ModalKeluarPengajarFormulir } from "../../components/modal/modal_formulir/ModalFormPengajar";
 import Swal from "sweetalert2";
+import useLogout from "../../hooks/Logout";
 
 const TabPengajar = () => {
     const { biodata_id } = useParams();
+    const { clearAuthData } = useLogout();
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [pengajarList, setPengajarList] = useState([]);
@@ -53,6 +55,16 @@ const TabPengajar = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             const result = await response.json();
             console.log(result);
 
@@ -63,7 +75,7 @@ const TabPengajar = () => {
         } finally {
             setLoadingPengajar(false);
         }
-    }, [biodata_id]);
+    }, [biodata_id, clearAuthData]);
 
     useEffect(() => {
         fetchPengajar();
@@ -103,6 +115,16 @@ const TabPengajar = () => {
                     }
                 }
             );
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             const result = await response.json();
             console.log(result);
 
@@ -181,6 +203,16 @@ const TabPengajar = () => {
                     body: JSON.stringify(payload),
                 }
             );
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             console.log(`${API_BASE_URL}formulir/${selectedPengajarId}/pengajar`);
             const result = await response.json();
             console.log(result);
@@ -244,6 +276,17 @@ const TabPengajar = () => {
                 },
                 body: JSON.stringify(payload)
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
             console.log(result);
@@ -312,6 +355,17 @@ const TabPengajar = () => {
                 }
             });
 
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
+
             const result = await response.json();
             console.log(result);
 
@@ -362,6 +416,16 @@ const TabPengajar = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             const result = await response.json();
             setSelectedPengajarDetail(result.data); 
             setSelectedPengajarId(id);

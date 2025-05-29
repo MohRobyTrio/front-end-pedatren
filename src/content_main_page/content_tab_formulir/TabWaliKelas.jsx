@@ -8,9 +8,11 @@ import { ModalAddWaliKelasFormulir, ModalKeluarWaliKelasFormulir } from "../../c
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
+import useLogout from "../../hooks/Logout";
 
 const TabWaliKelas = () => {
     const { biodata_id } = useParams();
+    const { clearAuthData } = useLogout();
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [waliKelasList, setWaliKelasList] = useState([]);
@@ -54,6 +56,16 @@ const TabWaliKelas = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             const result = await response.json();
             console.log(result);
 
@@ -64,7 +76,7 @@ const TabWaliKelas = () => {
         } finally {
             setLoadingWaliKelas(false);
         }
-    }, [biodata_id]);
+    }, [biodata_id, clearAuthData]);
 
     useEffect(() => {
         fetchWaliKelas();
@@ -102,6 +114,16 @@ const TabWaliKelas = () => {
                     }
                 }
             );
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             const result = await response.json();
             console.log(result);
 
@@ -160,6 +182,16 @@ const TabWaliKelas = () => {
                     body: JSON.stringify(payload),
                 }
             );
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
             console.log(`${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`);
             const result = await response.json();
             Swal.close();

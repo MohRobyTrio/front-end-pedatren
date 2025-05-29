@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
+import useLogout from "../../../hooks/Logout";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
   const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -33,6 +34,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 };
 
 export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+  const { clearAuthData } = useLogout();
   const { filterWilayah, handleFilterChangeWilayah, selectedWilayah } = DropdownWilayah();
 
   const updateFirstOptionLabel = (list, label) =>
@@ -100,6 +102,17 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
         },
         body: JSON.stringify(formData),
       });
+
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
 
       const result = await response.json();
 
@@ -239,6 +252,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
 };
 
 export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }) => {
+  const { clearAuthData } = useLogout();
   const [formData, setFormData] = useState({
     tanggal_keluar: ""
   });    
@@ -276,6 +290,17 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
         },
         body: JSON.stringify(formData),
       });
+
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
 
       const result = await response.json();
 

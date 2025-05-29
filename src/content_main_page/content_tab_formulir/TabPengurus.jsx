@@ -8,9 +8,12 @@ import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-sol
 import { ModalAddPengurusFormulir, ModalKeluarPengurusFormulir } from "../../components/modal/modal_formulir/ModalFormPengurus";
 import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
+import useLogout from "../../hooks/Logout";
+import Swal from "sweetalert2";
 
 const TabPengurus = () => {
   const { biodata_id } = useParams();
+  const { clearAuthData } = useLogout();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showOutModal, setShowOutModal] = useState(false);
   const [pengurusList, setPengurusList] = useState([]);
@@ -60,6 +63,16 @@ const TabPengurus = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       setPengurusList(result.data || []);
     } catch (error) {
@@ -67,7 +80,7 @@ const TabPengurus = () => {
     } finally {
       setLoadingPengurus(false);
     }
-  }, [biodata_id]);
+  }, [biodata_id, clearAuthData]);
 
   useEffect(() => {
     fetchPengurus();
@@ -84,6 +97,16 @@ const TabPengurus = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
 
       setSelectedPengurusId(id);
@@ -138,6 +161,16 @@ const TabPengurus = () => {
           body: JSON.stringify(payload),
         }
       );
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       if (response.ok) {
         alert(`Data pengurus berhasil diperbarui!`);

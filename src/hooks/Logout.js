@@ -6,6 +6,12 @@ const useLogout = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState(null);
 
+  const clearAuthData = () => {
+    removeTokenCookie();
+    localStorage.clear();
+    sessionStorage.clear();
+  };
+
   const logout = useCallback(async () => {
     const url = `${API_BASE_URL}logout`;
     const token = sessionStorage.getItem("token") || getCookie("token");
@@ -26,6 +32,12 @@ const useLogout = () => {
           "Content-Type": "application/json",
         },
       });
+
+      if (response.status === 401) {
+        // Langsung logout jika unauthorized
+        clearAuthData();
+        throw new Error("Unauthorized. Logging out.");
+      }
 
       if (!response.ok) {
         let errorMessage = "Logout gagal";
@@ -48,10 +60,7 @@ const useLogout = () => {
         console.log("Logout berhasil (204 No Content)");
       }
 
-      removeTokenCookie();
-      localStorage.clear();
-      sessionStorage.clear();
-      // return data;
+      clearAuthData();
     } catch (error) {
       console.error("Logout error:", error);
       setLogoutError(error.message);
@@ -63,6 +72,7 @@ const useLogout = () => {
 
   return {
     logout,
+    clearAuthData,
     isLoggingOut,
     logoutError,
   };

@@ -7,6 +7,8 @@ import * as yup from 'yup';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
+import useLogout from "../../hooks/Logout";
+import Swal from "sweetalert2";
 
 
 // Skema validasi form
@@ -49,6 +51,7 @@ const schema = yup.object({
 
 const TabBiodata = () => {
     const { biodata_id } = useParams();
+    const { clearAuthData } = useLogout();
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [photo, setPhoto] = useState(null);
@@ -123,6 +126,17 @@ const TabBiodata = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -250,7 +264,7 @@ const TabBiodata = () => {
             console.log("No valid biodata_id found, staying in create mode");
             setIsUpdateMode(false);
         }
-    }, [biodata_id]);
+    }, [biodata_id, loadPesertaData]);
 
     // Handle perubahan photo
     // const handlePhotoChange = (e) => {
@@ -264,7 +278,7 @@ const TabBiodata = () => {
     // Submit form
     const onSubmit = async (data) => {
         setIsLoading(true);
-
+        const token = sessionStorage.getItem("token") || getCookie("token");
         try {
             // Format tanggal lahir
             const tanggalLahir = `${data.tanggal_lahir.tahun}-${data.tanggal_lahir.bulan}-${data.tanggal_lahir.tanggal}`;
@@ -317,23 +331,53 @@ const TabBiodata = () => {
 
             let response;
 
-             if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
-                // Double check - pastikan hanya update dengan ID valid
+            //  if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
+            //     // Double check - pastikan hanya update dengan ID valid
+            //     console.log(`Updating record with ID: ${biodata_id}`);
+            //     // Update data
+            //     response = await axios.post(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, formData, {
+            //         headers: {
+            //             'Content-Type': 'multipart/form-data',
+            //             'Authorization': `Bearer ${token}`
+            //         }
+            //     });
+            // } else {
+            //     console.log("Creating new record");
+            //     // Create new data
+            //     response = await axios.post(`${API_BASE_URL}formulir/biodata?_method=POST`, formData, {
+            //         headers: {
+            //             'Content-Type': 'multipart/form-data',
+            //             'Authorization': `Bearer ${token}`
+            //         }
+            //     });
+            // }
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    // Jangan set Content-Type secara manual, biarkan browser yang atur
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: formData,
+            };
+
+            if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
                 console.log(`Updating record with ID: ${biodata_id}`);
-                // Update data
-                response = await axios.post(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
+                response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, requestOptions);
             } else {
                 console.log("Creating new record");
-                // Create new data
-                response = await axios.post(`${API_BASE_URL}formulir/biodata?_method=POST`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                response = await fetch(`${API_BASE_URL}formulir/biodata?_method=POST`, requestOptions);
+            }
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
                 });
+                clearAuthData();
+                return;
             }
 
             alert(isUpdateMode ? 'Data berhasil diupdate!' : 'Data berhasil disimpan!');

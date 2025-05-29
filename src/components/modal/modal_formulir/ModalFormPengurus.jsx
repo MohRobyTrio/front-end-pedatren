@@ -7,8 +7,10 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
+import useLogout from "../../../hooks/Logout";
 
 export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+    const { clearAuthData } = useLogout();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { menuSatuanKerja } = useDropdownSatuanKerja();
 
@@ -66,6 +68,17 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
             Swal.close();
@@ -189,6 +202,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
 
 export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const [formData, setFormData] = useState({
         tanggal_akhir: "",
     });
@@ -226,6 +240,17 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
 
