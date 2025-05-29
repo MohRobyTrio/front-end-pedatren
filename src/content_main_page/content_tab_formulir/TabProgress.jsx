@@ -901,18 +901,13 @@ const TabProgress = () => {
 	].filter(Boolean);
 
 	return (
-		<div className="block" id="Catatan">
-			{showAddAfektifModal && (
-				<ModalAddProgressAfektifFormulir biodataId={biodata_id} isOpen={showAddAfektifModal} onClose={closeAddAfektifModal} refetchData={fetchData}  />
-			)}
+		<div className="block" id="Catatan">			
+			<ModalAddProgressAfektifFormulir biodataId={biodata_id} isOpen={showAddAfektifModal} onClose={closeAddAfektifModal} refetchData={fetchData} />
 
-			{showAddKognitifModal && (
-				<ModalAddProgressKognitifFormulir biodataId={biodata_id} isOpen={showAddKognitifModal} onClose={closeAddKognitifModal} refetchData={fetchData}  />
-			)}
+			<ModalAddProgressKognitifFormulir biodataId={biodata_id} isOpen={showAddKognitifModal} onClose={closeAddKognitifModal} refetchData={fetchData} />
 
-			{showOutModal && (
-				<ModalKeluarProgressFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedDataId} refetchData={fetchData} endpoint={activeTab}/>
-			)}
+			<ModalKeluarProgressFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedDataId} refetchData={fetchData} endpoint={activeTab}/>
+			
 			{tabs.length > 0 && (
 				<>
 					<ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500 mt-4">

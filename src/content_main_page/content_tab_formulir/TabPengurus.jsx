@@ -221,7 +221,7 @@ const TabPengurus = () => {
         </button>
       </h1>
 
-      {showAddModal && (
+      {/* {showAddModal && ( */}
         <ModalAddPengurusFormulir
           isOpen={showAddModal}
           onClose={closeAddModal}
@@ -230,16 +230,16 @@ const TabPengurus = () => {
           feature={feature}
           cardId={selectedPengurusId}
         />
-      )}
+      {/* )} */}
 
-      {showOutModal && (
+      {/* {showOutModal && ( */}
         <ModalKeluarPengurusFormulir
           isOpen={showOutModal}
           onClose={closeOutModal}
           id={selectedPengurusId}
           refetchData={fetchPengurus}
         />
-      )}
+      {/* )} */}
 
       <div className="mt-5 space-y-6">
         {loadingPengurus ? (

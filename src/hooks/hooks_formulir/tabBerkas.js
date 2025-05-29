@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 export function useBerkas(bioId) {
     const [berkasList, setBerkasList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     // Ambil daftar berkas
     async function fetchBerkas() {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${API_BASE_URL}formulir/${bioId}/berkas`);
+            const res = await fetch(`${API_BASE_URL}formulir/${bioId}/berkas`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!res.ok) throw new Error("Gagal memuat data berkas");
             const data = await res.json();
             console.log(data);

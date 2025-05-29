@@ -248,7 +248,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -262,7 +262,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
@@ -531,7 +531,7 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -545,7 +545,7 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
@@ -625,7 +625,7 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -639,7 +639,7 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >

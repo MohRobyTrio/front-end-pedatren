@@ -7,12 +7,12 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
 
-export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, data, feature, refetchData }) => {
+export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dataId, feature, refetchData }) => {
     const { clearAuthData } = useLogout();
     const isTambah = feature == 1;
     const endpoint = isTambah ? "khadam" : "khadam/pindah";
     const metod = isTambah ? "POST" : "PUT";
-    const id = isTambah ? biodataId : data.id;
+    const id = isTambah ? biodataId : dataId;
 
     const [formData, setFormData] = useState({
         keterangan: "",
@@ -116,7 +116,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -130,7 +130,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
@@ -313,7 +313,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -327,7 +327,7 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >

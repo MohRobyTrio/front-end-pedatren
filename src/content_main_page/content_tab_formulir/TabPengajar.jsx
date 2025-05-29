@@ -408,27 +408,7 @@ const TabPengajar = () => {
 
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
-        try {
-            const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/pengajar/show`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                return;
-            }
-            const result = await response.json();
-            setSelectedPengajarDetail(result.data); 
+        try {            
             setSelectedPengajarId(id);
             setFeature(featureNum);
             setShowAddModal(true);
@@ -481,13 +461,9 @@ const TabPengajar = () => {
                 </button>
             </h1>
             
-            {showAddModal && (
-                <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} handleAddAPI={handleAdd} />
-            )}
+            <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} handleAddAPI={handleAdd} />
 
-            {showOutModal && (
-                <ModalKeluarPengajarFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedPengajarId} refetchData={fetchPengajar} />
-            )}
+            <ModalKeluarPengajarFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedPengajarId} refetchData={fetchPengajar} />
 
             <div className="mt-5 space-y-6">
                 {loadingPengajar ? (
