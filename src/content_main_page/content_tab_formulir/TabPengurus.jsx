@@ -194,6 +194,9 @@ const TabPengurus = () => {
   //   menuGolonganJabatan.find((opt) => String(opt.id) === String(selectedGolonganJabatanId))
   // );
 
+  // console.log("selectedPengurusId:", selectedPengurusId);
+
+
 
 
   const closeAddModal = () => setShowAddModal(false);
@@ -224,6 +227,7 @@ const TabPengurus = () => {
           biodataId={biodata_id}
           refetchData={fetchPengurus}
           feature={feature}
+          cardId={selectedPengurusId}
         />
       )}
 

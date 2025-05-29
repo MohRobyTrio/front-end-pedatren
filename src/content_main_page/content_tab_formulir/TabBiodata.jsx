@@ -329,6 +329,8 @@ const TabBiodata = () => {
                 formData.append('photo', photo);
             }
 
+            const token = sessionStorage.getItem("token") || getCookie("token");
+
             let response;
 
             //  if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
@@ -409,24 +411,6 @@ const TabBiodata = () => {
         return <div className="text-center p-5">Loading data...</div>;
     }
 
-    // const [tanggalLahir, setTanggalLahir] = useState({
-    //     tahun: "2001",
-    //     bulan: "Desember",
-    //     hari: "30",
-    // });
-
-    // const [umur, setUmur] = useState(22);
-
-    // const daftarTahun = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-    // const daftarBulan = [
-    //     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    //     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    // ];
-    // const daftarHari = Array.from({ length: 31 }, (_, i) => i + 1);
-
-    //Menghitung umur saat tanggal lahir berubah
-    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
-    // Fungsi simpel untuk menghitung umur berdasarkan tahun dan bulan
     const hitungUmur = (tahun, bulan) => {
         if (!tahun) return;
 
