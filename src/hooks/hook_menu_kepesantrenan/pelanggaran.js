@@ -80,14 +80,15 @@ const useFetchPelanggaran = (filters) => {
       // Transform data
       const transformed = result.data.map(item => ({
         ...item,
-        tgl_input: new Date(item.tgl_input).toLocaleString('id-ID', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }),
+        // tgl_input: new Date(item.tgl_input).toLocaleString('id-ID', {
+        //   day: 'numeric',
+        //   month: 'long',
+        //   year: 'numeric',
+        //   hour: '2-digit',
+        //   minute: '2-digit',
+        //   second: '2-digit'
+        // }),
+        tgl_input: item.tgl_input,
         foto_profil: item.foto_profil || null
       }));
 
