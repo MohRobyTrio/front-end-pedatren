@@ -47,9 +47,7 @@ const TabSantri = () => {
                 </button>
             </h1>
 
-            {showAddModal && (
-                <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} refetchData={fetchSantri} />
-            )}
+            <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} refetchData={fetchSantri} />
             
             <div className="mt-5 space-y-6">
                 {loadingSantri ? (

@@ -248,7 +248,7 @@ const TabKaryawan = () => {
         </button>
       </h1>
 
-      {showAddModal && (
+      {/* {showAddModal && ( */}
         <ModalAddKaryawanFormulir
           isOpen={showAddModal}
           onClose={closeAddModal}
@@ -258,16 +258,16 @@ const TabKaryawan = () => {
           // cardId={selectedKaryawanId || null}
           karyawanIdToPindah={selectedKaryawanId} // Kirim ID karyawan jika mode pindah
         />
-      )}
+      {/* )} */}
 
-      {showOutModal && (
+      {/* {showOutModal && ( */}
         <ModalKeluarKaryawanFormulir
           isOpen={showOutModal}
           onClose={closeOutModal}
           id={selectedKaryawanId}
           refetchData={fetchKaryawan}
         />
-      )}
+      {/* )} */}
 
       <div className="mt-5 space-y-6">
         {loadingKaryawan ? (

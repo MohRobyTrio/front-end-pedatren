@@ -96,12 +96,12 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
-                <Transition.Child as={Fragment} enter="transition-opacity duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                <Transition.Child as={Fragment} enter="transition-opacity duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-300" leaveFrom="opacity-100" leaveTo="opacity-0">
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
                 </Transition.Child>
 
                 <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
-                    <Transition.Child as={Fragment} enter="transition-transform duration-300 ease-out" enterFrom="scale-95 opacity-0" enterTo="scale-100 opacity-100" leave="transition-transform duration-200 ease-in" leaveFrom="scale-100 opacity-100" leaveTo="scale-95 opacity-0">
+                    <Transition.Child as={Fragment} enter="transition-transform duration-300 ease-out" enterFrom="scale-95 opacity-0" enterTo="scale-100 opacity-100" leave="transition-transform duration-300 ease-in" leaveFrom="scale-100 opacity-100" leaveTo="scale-95 opacity-0">
                         <Dialog.Panel className="inline-block overflow-y-auto align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
                             <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
@@ -295,7 +295,7 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
                     enter="transition-opacity duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
+                    leave="transition-opacity duration-300"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
@@ -309,7 +309,7 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
                         enter="transition-transform duration-300 ease-out"
                         enterFrom="scale-95 opacity-0"
                         enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
+                        leave="transition-transform duration-300 ease-in"
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >

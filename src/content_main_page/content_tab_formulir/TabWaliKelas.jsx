@@ -265,13 +265,9 @@ const TabWaliKelas = () => {
                 </button>
             </h1>
 
-            {showAddModal && (
-                <ModalAddWaliKelasFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedWaliKelasId} refetchData={fetchWaliKelas} feature={feature} />
-            )}
+            <ModalAddWaliKelasFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedWaliKelasId} refetchData={fetchWaliKelas} feature={feature} />
 
-            {showOutModal && (
-                <ModalKeluarWaliKelasFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedWaliKelasId} refetchData={fetchWaliKelas} />
-            )}
+            <ModalKeluarWaliKelasFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedWaliKelasId} refetchData={fetchWaliKelas} />
 
             <div className="mt-5 space-y-6">
                 {loadingWaliKelas ? (

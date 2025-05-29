@@ -8,7 +8,7 @@ import { useKhadam } from "../../hooks/hooks_formulir/tabKhadam";
 
 const TabKhadam = () => {
     const { biodata_id } = useParams();
-    const [selectedKhadamData, setSelectedKhadamData] = useState(null);
+    // const [selectedKhadamData, setSelectedKhadamData] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [feature, setFeature] = useState(null);
@@ -32,7 +32,7 @@ const TabKhadam = () => {
         setKeterangan,
         handleUpdate,
         handleOpenAddModalWithDetail
-    } = useKhadam({ biodata_id, setSelectedKhadamData, setShowAddModal, setFeature });
+    } = useKhadam({ biodata_id, setShowAddModal, setFeature });
 
     const closeAddModal = () => {
         setShowAddModal(false);
@@ -72,13 +72,9 @@ const TabKhadam = () => {
                 </button>
             </h1>
 
-            {showAddModal && (
-                <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} data={selectedKhadamData} refetchData={fetchKhadam} />
-            )}
+            <ModalAddOrPindahKhadamFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} feature={feature} dataId={selectedKhadamId} refetchData={fetchKhadam} />
 
-            {showOutModal && (
-                <ModalKeluarKhadamFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedKhadamId} refetchData={fetchKhadam}/>
-            )}
+            <ModalKeluarKhadamFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedKhadamId} refetchData={fetchKhadam}/>
 
             <div className="mt-5 space-y-6">
                 {loadingKhadam ? (

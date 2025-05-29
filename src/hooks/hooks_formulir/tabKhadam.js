@@ -4,7 +4,7 @@ import { API_BASE_URL } from "../config";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 
-export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, setFeature }) => {
+export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
     const { clearAuthData } = useLogout();
     const [khadamList, setKhadamList] = useState([]);
     const [loadingKhadam, setLoadingKhadam] = useState(false);
@@ -157,26 +157,26 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
         try {
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if (response.status === 401) {
-              await Swal.fire({
-                title: "Sesi Berakhir",
-                text: "Sesi anda telah berakhir, silakan login kembali.",
-                icon: "warning",
-                confirmButtonText: "OK",
-              });
-              clearAuthData();
-              return;
-            }
-            const result = await response.json();
+            // const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${token}`
+            //     }
+            // });
+            // if (response.status === 401) {
+            //   await Swal.fire({
+            //     title: "Sesi Berakhir",
+            //     text: "Sesi anda telah berakhir, silakan login kembali.",
+            //     icon: "warning",
+            //     confirmButtonText: "OK",
+            //   });
+            //   clearAuthData();
+            //   return;
+            // }
+            // const result = await response.json();
             setSelectedKhadamId(id);
-            setSelectedKhadamData(result.data);
+            // setSelectedKhadamData(result.data);
             setFeature(featureNum);
             setShowAddModal(true);
         } catch (error) {

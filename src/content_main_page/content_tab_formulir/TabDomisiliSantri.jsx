@@ -338,7 +338,7 @@ const TabDomisiliSantri = () => {
         </button>
       </h1>
 
-      {showAddModal && (
+      {/* {showAddModal && ( */}
         <ModalAddDomisiliFormulir
           isOpen={showAddModal}
           onClose={closeAddModal}
@@ -347,16 +347,16 @@ const TabDomisiliSantri = () => {
           refetchData={fetchDomisili}
           feature={feature}
         />
-      )}
+      {/* )} */}
 
-      {showOutModal && (
+      {/* {showOutModal && ( */}
         <ModalKeluarDomisiliFormulir
           isOpen={showOutModal}
           onClose={closeOutModal}
           id={selectedDomisiliId}
           refetchData={fetchDomisili}
         />
-      )}
+      {/* )} */}
 
       <div className="mt-5 space-y-6">
         {loadingDomisili ? (

@@ -313,7 +313,7 @@ const TabPendidikan = () => {
         </button>
       </h1>
 
-      {showAddModal && (
+      {/* {showAddModal && ( */}
         <ModalAddPendidikanFormulir
           isOpen={showAddModal}
           onClose={closeAddModal}
@@ -322,16 +322,16 @@ const TabPendidikan = () => {
           refetchData={fetchPendidikan}
           feature={feature}
         />
-      )}
+      {/* )} */}
 
-      {showOutModal && (
+      {/* {showOutModal && ( */}
         <ModalKeluarPendidikanFormulir
           isOpen={showOutModal}
           onClose={closeOutModal}
           id={selectedPendidikanId}
           refetchData={fetchPendidikan}
         />
-      )}
+      {/* )} */}
 
       <div className="mt-5 space-y-6">
         {loadingPendidikan ? (
