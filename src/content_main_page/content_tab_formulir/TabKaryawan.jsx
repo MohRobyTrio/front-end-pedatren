@@ -69,7 +69,8 @@ const TabKaryawan = () => {
     } finally {
       setLoadingKaryawan(false);
     }
-  }, [biodata_id, clearAuthData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [biodata_id]);
 
   useEffect(() => {
     fetchKaryawan();

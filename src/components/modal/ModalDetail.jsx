@@ -282,7 +282,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                                                     <li key={tab.id}>
                                                         <button
                                                             onClick={() => setActiveTab(tab.id)}
-                                                            className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
+                                                            className={`inline-block p-3 rounded-t-lg border-b-2 cursor-pointer ${activeTab === tab.id
                                                                 ? "text-blue-600 border-blue-600 bg-gray-200"
                                                                 : "border-transparent hover:text-gray-600 hover:bg-gray-50"
                                                                 }`}

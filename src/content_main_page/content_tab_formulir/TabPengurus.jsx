@@ -80,7 +80,8 @@ const TabPengurus = () => {
     } finally {
       setLoadingPengurus(false);
     }
-  }, [biodata_id, clearAuthData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [biodata_id]);
 
   useEffect(() => {
     fetchPengurus();

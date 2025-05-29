@@ -48,7 +48,8 @@ export const useSantri = (biodata_id) => {
         } finally {
             setLoadingSantri(false);
         }
-    }, [biodata_id, clearAuthData, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [biodata_id, token]);
 
     // Ambil data santri pertama kali
     useEffect(() => {
