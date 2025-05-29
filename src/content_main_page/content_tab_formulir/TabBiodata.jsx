@@ -15,7 +15,12 @@ import Swal from "sweetalert2";
 const schema = yup.object({
     kewarganegaraan: yup.string().optional(),
     no_passport: yup.string().optional(),
-    nomor_kk: yup.string().optional(),
+    nomor_kk: yup.string().optional()
+        .test(
+            'len',
+            'No.KK harus 16 digit',
+            (val) => !val || val.length === 16
+        ),
     nik: yup.string().nullable()
         .test(
             'len',
@@ -366,6 +371,14 @@ const TabBiodata = () => {
             if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
                 console.log(`Updating record with ID: ${biodata_id}`);
                 response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, requestOptions);
+
+                //debugging output
+                // console.log("request:", requestOptions);
+                // console.log("response:", response);
+                // console.log("formData", formData);
+                // console.log("result:", await response.json());
+                
+                
             } else {
                 console.log("Creating new record");
                 response = await fetch(`${API_BASE_URL}formulir/biodata?_method=POST`, requestOptions);
@@ -509,6 +522,9 @@ const TabBiodata = () => {
                                 {...register('nomor_kk')}
                             />
                         </div>
+                        {errors.nomor_kk && (
+                            <p className="text-end text-red-500 text-sm">{errors.nomor_kk.message}</p>
+                        )}
                     </div>
                 </div>
 
@@ -527,6 +543,9 @@ const TabBiodata = () => {
                                 {...register('nik')}
                             />
                         </div>
+                        {errors.nik && (
+                            <p className="text-end text-red-500 text-sm">{errors.nik.message}</p>
+                        )}
                     </div>
                 </div>
 
@@ -545,10 +564,10 @@ const TabBiodata = () => {
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register('nama')}
                             />
-                            {errors.nama && (
-                                <p className="text-red-500 text-sm mt-1">{errors.nama.message}</p>
-                            )}
                         </div>
+                        {errors.nama && (
+                            <p className="text-end text-red-500 text-sm mt-1">{errors.nama.message}</p>
+                        )}
                     </div>
                 </div>
                 
@@ -577,7 +596,7 @@ const TabBiodata = () => {
                         <span>Laki-Laki</span>
                     </label>
                     {errors.jenis_kelamin && (
-                        <p className="text-red-500 text-sm">{errors.jenis_kelamin.message}</p>
+                        <p className="text-end text-red-500 text-sm">{errors.jenis_kelamin.message}</p>
                     )}
                 </div>
 
@@ -595,10 +614,10 @@ const TabBiodata = () => {
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register('tempat_lahir')}
                             />
-                            {errors.tempat_lahir && (
-                                <p className="text-red-500 text-sm mt-1">{errors.tempat_lahir.message}</p>
-                            )}
                         </div>
+                        {errors.tempat_lahir && (
+                            <p className="text-end text-red-500 text-sm mt-1">{errors.tempat_lahir.message}</p>
+                        )}
                     </div>
                 </div>
 
@@ -774,10 +793,10 @@ const TabBiodata = () => {
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register('telepon1')}
                             />
-                            {errors.telepon1 && (
-                                <p className="text-red-500 text-sm mt-1">{errors.telepon1.message}</p>
-                            )}
                         </div>
+                        {errors.telepon1 && (
+                            <p className="text-end text-red-500 text-sm mt-1">{errors.telepon1.message}</p>
+                        )}
                     </div>
                 </div>
 
@@ -813,10 +832,10 @@ const TabBiodata = () => {
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register('email')}
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-sm">{errors.email.message}</p>
-                            )}
                         </div>
+                        {errors.email && (
+                            <p className="text-end text-red-500 text-sm">{errors.email.message}</p>
+                        )}
                     </div>
                 </div>
 
@@ -891,8 +910,8 @@ const TabBiodata = () => {
                                     <option key={item.value} value={item.value}>{item.label}</option>
                                 ))}
                             </select>
-                            {errors.negara && <p className="text-red-500 text-sm">{errors.negara.message}</p>}
                         </div>
+                        {errors.negara && <p className="text-end text-red-500 text-sm">{errors.negara.message}</p>}
                     </div>
                 </div>
 
