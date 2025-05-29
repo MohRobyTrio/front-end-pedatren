@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -83,7 +83,7 @@ const TabBiodata = () => {
     // Gunakan komponen DropdownNegara
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             kewarganegaraan: 'wni',
@@ -107,7 +107,7 @@ const TabBiodata = () => {
     };
 
     // Load data peserta jika dalam mode update
-    const loadPesertaData = async (id) => {
+    const loadPesertaData = useCallback(async (id) => {
         // Validasi ID
         if (!id || id.trim() === "") {
             console.warn("ID tidak valid");
@@ -245,7 +245,8 @@ const TabBiodata = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Jika ada ID, berarti mode update
     // useEffect(() => {
@@ -278,7 +279,6 @@ const TabBiodata = () => {
     // Submit form
     const onSubmit = async (data) => {
         setIsLoading(true);
-        const token = sessionStorage.getItem("token") || getCookie("token");
         try {
             // Format tanggal lahir
             const tanggalLahir = `${data.tanggal_lahir.tahun}-${data.tanggal_lahir.bulan}-${data.tanggal_lahir.tanggal}`;
