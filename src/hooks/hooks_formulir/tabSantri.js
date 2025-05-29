@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
+import useLogout from "../Logout";
 
 export const useSantri = (biodata_id) => {
+    const { clearAuthData } = useLogout();
     const [santriList, setSantriList] = useState([]);
     const [selectedSantriId, setSelectedSantriId] = useState(null);
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
@@ -28,6 +30,16 @@ export const useSantri = (biodata_id) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             setSantriList(result.data || []);
         } catch (error) {
@@ -36,7 +48,7 @@ export const useSantri = (biodata_id) => {
         } finally {
             setLoadingSantri(false);
         }
-    }, [biodata_id, token]);
+    }, [biodata_id, clearAuthData, token]);
 
     // Ambil data santri pertama kali
     useEffect(() => {
@@ -55,6 +67,16 @@ export const useSantri = (biodata_id) => {
                     }
                 }
             );
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             setSelectedSantriId(id);
             setSelectedSantriDetail(result.data);
@@ -97,6 +119,16 @@ export const useSantri = (biodata_id) => {
                     body: JSON.stringify(payload),
                 }
             );
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             Swal.close();
             if (response.ok) {

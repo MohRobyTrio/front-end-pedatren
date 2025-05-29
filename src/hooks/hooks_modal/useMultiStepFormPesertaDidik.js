@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
+import useLogout from "../Logout";
 
 export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
+    const { clearAuthData } = useLogout();
     const {
         register,
         handleSubmit,
@@ -135,6 +137,16 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
             const result = await response.json();
 
             // console.log(result);
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: 'Sesi Berakhir',
+                    text: 'Sesi anda telah berakhir, silakan login kembali.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                clearAuthData();
+                return;
+            }
 
             Swal.close();
 

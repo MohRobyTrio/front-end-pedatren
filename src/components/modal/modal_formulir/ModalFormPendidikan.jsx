@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
+import useLogout from "../../../hooks/Logout";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
   const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -33,6 +34,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 };
 
 export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+  const { clearAuthData } = useLogout();
   const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
   // Ubah label index ke-0 menjadi "Pilih ..."
@@ -114,6 +116,17 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
         },
         body: JSON.stringify(formData),
       });
+
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
 
       const result = await response.json();
 
@@ -290,6 +303,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
 };
 
 export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData }) => {
+  const { clearAuthData } = useLogout();
   const [formData, setFormData] = useState({
     tanggal_keluar: "",
     status: "" // Tambahkan field status
@@ -331,6 +345,17 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
         },
         body: JSON.stringify(formData),
       });
+
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
 
       const result = await response.json();
 

@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
 import Swal from "sweetalert2";
+import useLogout from "../Logout";
 
 export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, setFeature }) => {
+    const { clearAuthData } = useLogout();
     const [khadamList, setKhadamList] = useState([]);
     const [loadingKhadam, setLoadingKhadam] = useState(false);
     const [loadingDetailKhadamId, setLoadingDetailKhadamId] = useState(null);
@@ -29,6 +31,16 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             setKhadamList(result.data || []);
         } catch (error) {
@@ -37,7 +49,7 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
         } finally {
             setLoadingKhadam(false);
         }
-    }, [biodata_id, token]);
+    }, [biodata_id, clearAuthData, token]);
 
     useEffect(() => {
         fetchKhadam();
@@ -53,6 +65,16 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             setSelectedKhadamId(id);
             setSelectedKhadamDetail(result.data);
@@ -94,6 +116,16 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                     body: JSON.stringify(payload),
                 }
             );
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             Swal.close();
             if (response.ok) {
@@ -131,6 +163,16 @@ export const useKhadam = ({ biodata_id, setSelectedKhadamData, setShowAddModal, 
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              return;
+            }
             const result = await response.json();
             setSelectedKhadamId(id);
             setSelectedKhadamData(result.data);

@@ -6,8 +6,10 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useDropdownWaliAsuh from "../../../hooks/hook_dropdown/DropdownWaliAsuh";
+import useLogout from "../../../hooks/Logout";
 
 export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
@@ -55,6 +57,17 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             // console.log({ id, endpoint, metod, formData });
 
@@ -305,6 +318,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
 };
 
 export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
@@ -358,6 +372,16 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                 },
                 body: JSON.stringify(formData),
             });
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             // console.log({ id, endpoint, metod, formData });
 
@@ -695,7 +719,8 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
 };
 
 export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, endpoint }) => {
-    console.log(endpoint);
+    const { clearAuthData } = useLogout();
+    // console.log(endpoint);
     
     const [formData, setFormData] = useState({
         tanggal_selesai: ""
@@ -733,6 +758,17 @@ export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, 
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
             Swal.close();

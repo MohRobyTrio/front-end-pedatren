@@ -5,8 +5,10 @@ import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
+import useLogout from "../../../hooks/Logout";
 
 export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, data, feature, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const isTambah = feature == 1;
     const endpoint = isTambah ? "khadam" : "khadam/pindah";
     const metod = isTambah ? "POST" : "PUT";
@@ -55,6 +57,17 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
             // console.log(`Mengirim ke: ${API_BASE_URL}formulir/${id}/${endpoint}`);
 
             // if (!response) throw new Error("Tidak ada response dari server.");
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
 
@@ -204,6 +217,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
 };
 
 export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const [formData, setFormData] = useState({
         tanggal_akhir: ""
     });    
@@ -240,6 +254,17 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
             Swal.close();

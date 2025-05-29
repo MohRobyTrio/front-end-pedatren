@@ -8,6 +8,7 @@ import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
+import useLogout from "../../../hooks/Logout";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -35,7 +36,9 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     );
 };
 
+
 export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature, handleAddAPI }) => {
+    const { clearAuthData } = useLogout();
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
 
@@ -169,6 +172,17 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 },
                 body: JSON.stringify(payload),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
 
@@ -421,6 +435,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 };
 
 export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }) => {
+    const { clearAuthData } = useLogout();
     const [formData, setFormData] = useState({
         tahun_akhir: ""
     });
@@ -457,6 +472,17 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
                 },
                 body: JSON.stringify(formData),
             });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
 
             const result = await response.json();
             Swal.close();

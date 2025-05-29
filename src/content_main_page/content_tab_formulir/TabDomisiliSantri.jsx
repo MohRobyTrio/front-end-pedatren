@@ -7,9 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddDomisiliFormulir, ModalKeluarDomisiliFormulir } from "../../components/modal/modal_formulir/ModalFormDomisili";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import useLogout from "../../hooks/Logout";
+import Swal from "sweetalert2";
 
 const TabDomisiliSantri = () => {
   const { biodata_id } = useParams();
+  const { clearAuthData } = useLogout();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showOutModal, setShowOutModal] = useState(false);
   const [domisiliList, setDomisiliList] = useState([]);
@@ -68,6 +71,16 @@ const TabDomisiliSantri = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
       setDomisiliList(result.data || []);
     } catch (error) {
@@ -75,7 +88,7 @@ const TabDomisiliSantri = () => {
     } finally {
       setLoadingDomisili(false);
     }
-  }, [biodata_id]);
+  }, [biodata_id, clearAuthData]);
 
   useEffect(() => {
     fetchDomisili();
@@ -92,6 +105,16 @@ const TabDomisiliSantri = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
       const result = await response.json();
 
       setSelectedDomisiliId(id);
@@ -211,6 +234,16 @@ const TabDomisiliSantri = () => {
           body: JSON.stringify(payload),
         }
       );
+      if (response.status === 401) {
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        return;
+      }
 
       // Handle response
       const result = await response.json();
