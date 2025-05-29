@@ -6,13 +6,13 @@ import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import Filters from "../../components/Filters";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
-import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
+import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 
 const Alumni = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -48,7 +48,6 @@ const Alumni = () => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
-    const { menuAngkatanKeluarPelajar, menuAngkatanKeluarSantri } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -106,9 +105,15 @@ const Alumni = () => {
             { label: "Alumni Santri-Pelajar/Alumni Pelajar-Santri", value: "alumni pelajar sekaligus santri" }
         ],
 
-        angkatanPelajar: menuAngkatanKeluarPelajar,
+        angkatanPelajar: generateDropdownTahun({
+            placeholder: "Semua Angkatan Pelajar",
+            labelTemplate: "Keluar Tahun {year}"
+        }),
 
-        angkatanSantri: menuAngkatanKeluarSantri
+        angkatanSantri: generateDropdownTahun({
+            placeholder: "Semua Angkatan Santri",
+            labelTemplate: "Keluar Tahun {year}"
+        }),
     }
 
     const filter4 = {

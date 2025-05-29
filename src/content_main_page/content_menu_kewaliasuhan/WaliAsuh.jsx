@@ -8,8 +8,8 @@ import SearchBar from "../../components/SearchBar";
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
-import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import ModalDetail from "../../components/modal/ModalDetail";
+import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 
 const WaliAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -46,7 +46,6 @@ const WaliAsuh = () => {
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
-    const { menuAngkatanSantri } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -82,13 +81,6 @@ const WaliAsuh = () => {
             setFilters(prev => ({ ...prev, jenisWaliAsuh: newFilters.jenisWaliAsuh }));
         }
     };
-
-    const customMenuAngkatanSantri = [
-        menuAngkatanSantri.length > 0
-            ? { ...menuAngkatanSantri[0], label: "Semua Angkatan" }
-            : { value: "", label: "Semua Angkatan" },
-        ...menuAngkatanSantri.slice(1)
-    ];
 
     const updatedFilters = useMemo(() => ({
         ...filters,
@@ -139,7 +131,10 @@ const WaliAsuh = () => {
             { label: "Pelajar Non Santri", value: "pelajar non santri" },
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
-        angkatan: customMenuAngkatanSantri
+        angkatan: generateDropdownTahun({
+            placeholder: "Semua Angkatan",
+            labelTemplate: "Tahun {year}"
+        }),
     }
 
     const filter5 = {

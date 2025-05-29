@@ -8,10 +8,9 @@ import Pagination from "../../../components/Pagination";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
-import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
-// import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import useFetchPelajar from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Pelajar";
 import ModalDetail from "../../../components/modal/ModalDetail";
+import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
 
 const Pelajar = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -50,7 +49,6 @@ const Pelajar = () => {
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
-    const { menuAngkatanPelajar } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -121,7 +119,10 @@ const Pelajar = () => {
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
 
-        angkatanPelajar: menuAngkatanPelajar
+        angkatanPelajar: generateDropdownTahun({
+            placeholder: "Semua Angkatan Pelajar",
+            labelTemplate: "Masuk Tahun {year}"
+        }),
     }
     const filter5 = {
         // Sudah

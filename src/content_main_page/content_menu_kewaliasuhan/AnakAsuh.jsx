@@ -8,8 +8,8 @@ import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
-import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import ModalDetail from "../../components/modal/ModalDetail";
+import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 
 const AnakAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -45,7 +45,6 @@ const AnakAsuh = () => {
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
-    const { menuAngkatanSantri } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -60,13 +59,6 @@ const AnakAsuh = () => {
     const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
     const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
     const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
-
-    const customMenuAngkatanSantri = [
-        menuAngkatanSantri.length > 0
-          ? { ...menuAngkatanSantri[0], label: "Semua Angkatan" }
-          : { value: "", label: "Semua Angkatan" },
-        ...menuAngkatanSantri.slice(1)
-      ];
 
     const updatedFilters = useMemo(() => ({
         ...filters,
@@ -116,7 +108,10 @@ const AnakAsuh = () => {
           { label: "Pelajar Non Santri", value: "pelajar non santri" },
           { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
-        angkatan: customMenuAngkatanSantri
+        angkatan: generateDropdownTahun({
+            placeholder: "Semua Angkatan",
+            labelTemplate: "Tahun {year}"
+        }),
       }
     
       const filter5 = {
