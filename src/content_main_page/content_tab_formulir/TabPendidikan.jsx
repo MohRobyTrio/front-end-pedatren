@@ -365,7 +365,9 @@ const TabPendidikan = () => {
                     : "bg-red-100 text-red-700"
                     }`}
                 >
-                  {pendidikan.status === "aktif" ? "Aktif" : "Nonaktif"}
+                  {pendidikan.status &&
+                    pendidikan.status[0].toUpperCase() + pendidikan.status.slice(1)
+                  }
                 </span>
               </div>
 
@@ -460,22 +462,26 @@ const TabPendidikan = () => {
                     />
                   </div>
 
-                  {/* <div> */}
-                    {/* <label htmlFor="status" className="block text-sm font-medium text-gray-700"> */}
-                      {/* Status */}
-                    {/* </label> */}
-                    {/* <select */}
-                      {/* id="status" */}
-                      {/* className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPendidikanDetail?.status === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`} */}
-                      {/* value={status} */}
-                      {/* onChange={(e) => setStatus(e.target.value)} */}
-                      {/* disabled={selectedPendidikanDetail?.status !== "aktif"} */}
-                    {/* // > */}
-                      {/* <option value="">Pilih Status</option> */}
-                      {/* <option value="aktif">Aktif</option> */}
-                      {/* <option value="tidak aktif">Tidak Aktif</option> */}
-                    {/* </select> */}
-                  {/* </div> */}
+                  <div>
+                    <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <select
+                      id="status"
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      disabled={selectedPendidikanDetail?.status !== "aktif"}
+                    >
+                      <option value="">Pilih Status</option>
+                      <option value="aktif">Aktif</option>
+                      <option value="do">Drop Out</option>
+                      <option value="berhenti">Berhenti</option>
+                      <option value="cuti">Cuti</option>
+                      <option value="alumni">Alumni</option>
+                      <option value="nonaktif">Non Aktif</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
