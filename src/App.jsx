@@ -8,7 +8,7 @@ import LoginPage from './page/LoginPage';
 import NotFound from './content_main_page/NotFound';
 import Formulir from './content_main_page/Formulir';
 import {
-  menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
+  menuDataPokokItems, menuItems, menuKelembagaanItems, menuKepegawaianItems, menuKepesantrenanItems,
   menuKewaliasuhanItems, menuMahromItems, 
   // menuRWSItems, 
   subPesertaDidik, tabsFormulir
@@ -141,6 +141,7 @@ function App() {
               ...menuMahromItems,
               // ...menuRWSItems,
               ...subPesertaDidik,
+              ...menuKelembagaanItems,
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}

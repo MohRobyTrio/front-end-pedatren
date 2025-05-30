@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
     menuDataPokokItems,
     menuItems,
+    menuKelembagaanItems,
     menuKepegawaianItems,
     menuKepesantrenanItems,
     menuKewaliasuhanItems,
@@ -22,6 +23,8 @@ const Sidebar = ({
     setDropdownKepesantrenan,
     dropdownDataMahrom,
     setDropdownMahrom,
+    dropdownDataKelembagaan,
+    setDropdownDataKelembagaan,
     isSidebarOpen,
     toggleDropdown
 }) => {
@@ -190,6 +193,15 @@ const Sidebar = ({
                             onClick={() => toggleDropdown(setDropdownMahrom)}
                         />
                         {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
+                    </div>
+
+                    <div className="mt-4 px-3">
+                        <MenuHeader
+                            name="Kelembagaan"
+                            isOpen={dropdownDataKelembagaan}
+                            onClick={() => toggleDropdown(setDropdownDataKelembagaan)}
+                        />
+                        {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
                     </div>
                 </div>
             </div>
