@@ -38,7 +38,7 @@ import TabProgress from "../content_main_page/content_tab_formulir/TabProgress";
 import TabSantri from "../content_main_page/content_tab_formulir/TabSantri";
 import TabWaliAsuh from "../content_main_page/content_tab_formulir/TabWaliAsuh";
 import TabWaliKelas from "../content_main_page/content_tab_formulir/TabWaliKelas";
-import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPres";
+import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPes";
 import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
@@ -149,4 +149,12 @@ export const jenisBerkasList = [
     { id: 16, label: 'Surat Domisili (jika dari luar kota)', required: false },
     { id: 17, label: 'Surat Keterangan Anak Yatim/Piatu', required: false },
     { id: 18, label: 'Fotokopi Kartu Santri', required: false },
+];
+
+export const jenisJabatan = [
+    { label: "Pilih Jenis jabatan", value: "" },
+    { label: "Kultural", value: "kultural" },
+    { label: "Tetap", value: "tetap" },
+    { label: "Kontrak", value: "kontrak" },
+    { label: "Pengkaderan", value: "pengkaderan" }
 ];

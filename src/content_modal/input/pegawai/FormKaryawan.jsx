@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
+import { jenisJabatan } from "../../../data/menuData";
 
 const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
     const golonganJabatan = watch("modalPegawai.golongan_jabatan_id_karyawan");
@@ -82,13 +83,17 @@ const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
                 </label>
                 <div className="md:w-full md:max-w-md max-w-none">
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                        <input
-                            type="text"
-                            placeholder="Masukkan Jabatan Karyawan"
+                        <select
+                            id="jabatan_karyawan"
                             {...register("modalPegawai.jabatan_karyawan")}
-                            className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            maxLength={100}
-                        />
+                            className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm bg-transparent"
+                        >
+                            {jenisJabatan.map((item, idx) => (
+                                <option key={idx} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>

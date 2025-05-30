@@ -9,6 +9,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
 import useLogout from "../../../hooks/Logout";
+import { jenisJabatan } from "../../../data/menuData";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -222,14 +223,6 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
             });
         }
     };
-
-    const jenisJabatan = [
-        { label: "Pilih Jenis jabatan", value: "" },
-        { label: "Kultural", value: "kultural" },
-        { label: "Tetap", value: "tetap" },
-        { label: "Kontrak", value: "kontrak" },
-        { label: "Pengkaderan", value: "pengkaderan" }
-    ]
 
     const closeAddMateriModal = () => {
         setShowAddMateriModal(false);
@@ -700,17 +693,6 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                                                         value={form.tahun_masuk}
                                                         onChange={handleChange}
                                                         required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="tahun_akhir" className="block text-gray-700">Tahun Akhir Materi Ajar</label>
-                                                    <input
-                                                        type="date"
-                                                        name="tahun_akhir"
-                                                        placeholder="Tahun Akhir Materi Ajar"
-                                                        value={form.tahun_akhir}
-                                                        onChange={handleChange}
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
                                                 </div>

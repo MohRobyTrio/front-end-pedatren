@@ -4,26 +4,26 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 
-export const useSantri = (biodata_id) => {
+export const useWarPes = (biodata_id) => {
     const { clearAuthData } = useLogout();
-    const [santriList, setSantriList] = useState([]);
-    const [selectedSantriId, setSelectedSantriId] = useState(null);
-    const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
-    const [endDate, setEndDate] = useState("");
-    const [startDate, setStartDate] = useState("");
+    const [warPesList, setWarPesList] = useState([]);
+    const [selectedWarPesId, setSelectedWarPesId] = useState(null);
+    const [selectedWarPesDetail, setSelectedWarPesDetail] = useState(null);
     const [error, setError] = useState(false);
+    const [niup, setNiup] = useState("");
+    const [aktif, setAktif] = useState("");
 
-    const [loadingSantri, setLoadingSantri] = useState(true);
-    const [loadingDetailSantri, setLoadingDetailSantri] = useState(null);
+    const [loadingWarPes, setLoadingWarPes] = useState(true);
+    const [loadingDetailWarPes, setLoadingDetailWarPes] = useState(null);
 
     const token = sessionStorage.getItem("token") || getCookie("token");
 
-    const fetchSantri = useCallback(async () => {
+    const fetchWarPes = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
             setError(false);
-            setLoadingSantri(true);
-            const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/santri`, {
+            setLoadingWarPes(true);
+            const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/wargapesantren`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,25 +41,25 @@ export const useSantri = (biodata_id) => {
               return;
             }
             const result = await response.json();
-            setSantriList(result.data || []);
+            setWarPesList(result.data || []);
         } catch (error) {
-            console.error("Gagal mengambil data santri:", error);
+            console.error("Gagal mengambil data warPes:", error);
             setError(true);
         } finally {
-            setLoadingSantri(false);
+            setLoadingWarPes(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [biodata_id, token]);
 
-    // Ambil data santri pertama kali
+    // Ambil data wargapesantren pertama kali
     useEffect(() => {
-        fetchSantri();
-    }, [fetchSantri]);
+        fetchWarPes();
+    }, [fetchWarPes]);
 
     const handleCardClick = async (id) => {
         try {
-            setLoadingDetailSantri(id);
-            const response = await fetch(`${API_BASE_URL}formulir/${id}/santri/show`,
+            setLoadingDetailWarPes(id);
+            const response = await fetch(`${API_BASE_URL}formulir/${id}/wargapesantren/show`,
                 {
                     method: 'GET',
                     headers: {
@@ -79,38 +79,37 @@ export const useSantri = (biodata_id) => {
               return;
             }
             const result = await response.json();
-            setSelectedSantriId(id);
-            setSelectedSantriDetail(result.data);
-            setEndDate(result.data.tanggal_keluar || "");
-            setStartDate(result.data.tanggal_masuk || "");
+            setSelectedWarPesId(id);
+            setSelectedWarPesDetail(result.data);
+            setNiup(result.data.niup);
+            setAktif(result.data.status);
         } catch (error) {
-            console.error("Gagal mengambil detail santri:", error);
+            console.error("Gagal mengambil detail wargapesantren:", error);
         } finally {
-            setLoadingDetailSantri(null);
+            setLoadingDetailWarPes(null);
         }
     };
 
     const handleUpdate = async () => {
-        if (!selectedSantriDetail) return;
+        if (!selectedWarPesDetail) return;
 
         const payload = {
-            nis: selectedSantriDetail.nis,
-            tanggal_masuk: startDate,
-            tanggal_keluar: endDate || null,
-            status: selectedSantriDetail.status || null,
+            niup: niup,
+            status: aktif,
         };
 
         try {
             Swal.fire({
                 title: 'Mohon tunggu...',
-                html: 'Sedang memperbarui data santri.',
+                html: 'Sedang memperbarui data.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
             const response = await fetch(
-                `${API_BASE_URL}formulir/${selectedSantriId}/santri`,
+                `${API_BASE_URL}formulir/${selectedWarPesId}/wargapesantren`,
                 {
                     method: "PUT",
                     headers: {
@@ -120,8 +119,6 @@ export const useSantri = (biodata_id) => {
                     body: JSON.stringify(payload),
                 }
             );
-            const result = await response.json();
-            Swal.close();
             if (response.status === 401) {
               await Swal.fire({
                 title: "Sesi Berakhir",
@@ -132,15 +129,19 @@ export const useSantri = (biodata_id) => {
               clearAuthData();
               return;
             }
+            const result = await response.json();
+            console.log(result);
+            
+            Swal.close();
             if (!("data" in result)) {
-              await Swal.fire({
-                icon: "error",
-                title: "Gagal",
-                html: `<div style="text-align: left;">${
-                  result.message || "Gagal memperbarui data pengurus."
-                }</div>`,
-              });
-              return;
+                await Swal.fire({
+                  icon: "error",
+                  title: "Gagal",
+                  html: `<div style="text-align: left;">${
+                    result.message || "Gagal memperbarui data pengurus."
+                  }</div>`,
+                });
+                return;
             }
             if (response.ok) {
                 Swal.fire({
@@ -150,8 +151,8 @@ export const useSantri = (biodata_id) => {
                     timer: 2000,
                     showConfirmButton: false,
                 });                
-                setSelectedSantriDetail(result.data || payload);
-                fetchSantri();
+                setSelectedWarPesDetail(result.data || payload);
+                fetchWarPes();
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -171,18 +172,18 @@ export const useSantri = (biodata_id) => {
 
     return {
         error,
-        fetchSantri,
-        santriList,
-        selectedSantriId,
-        selectedSantriDetail,
-        endDate,
-        startDate,
-        loadingSantri,
-        loadingDetailSantri,
-        setEndDate,
-        setStartDate,
-        setSelectedSantriDetail,
-        setSelectedSantriId,
+        fetchWarPes,
+        niup,
+        setNiup,
+        aktif,
+        setAktif,
+        warPesList,
+        selectedWarPesId,
+        selectedWarPesDetail,
+        loadingWarPes,
+        loadingDetailWarPes,
+        setSelectedWarPesDetail,
+        setSelectedWarPesId,
         handleCardClick,
         handleUpdate,
     };
