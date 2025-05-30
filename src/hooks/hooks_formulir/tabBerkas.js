@@ -34,29 +34,54 @@ export function useBerkas(bioId) {
 
     // Ambil detail 1 berkas by id
     async function fetchBerkasDetail(id) {
-        const res = await fetch(`${API_BASE_URL}/formulir/${id}/berkas/show`);
+        const res = await fetch(`${API_BASE_URL}formulir/${id}/berkas/show`,{
+            method: "GET",
+            headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+        });
         if (!res.ok) throw new Error("Gagal memuat detail berkas");
         return await res.json();
     }
 
     // Tambah berkas baru
     async function createBerkas(id, formData) {
-        const res = await fetch(`${API_BASE_URL}/${id}/berkas`, {
+        console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
+        const res = await fetch(`${API_BASE_URL}formulir/${id}/berkas`, {
             method: "POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
             body: formData,
         });
-        if (!res.ok) throw new Error("Gagal menambah berkas");
+
+        if (!res.ok) {
+            const errText = await res.text();
+            console.error("Error response:", errText);
+            throw new Error("Gagal menambah berkas");
+        }
+
         return await res.json();
     }
 
     // Update berkas
     async function updateBerkas(id, formData) {
-        const res = await fetch(`${API_BASE_URL}/formulir/${id}/berkas`, {
-            method: "PUT",
+        formData.append('_method', 'PUT');
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
+        const res = await fetch(`${API_BASE_URL}formulir/${id}/berkas`, {
+            method: "POST",
+            headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             body: formData,
         });
+        const result = await res.json();
+        console.log(result);
         if (!res.ok) throw new Error("Gagal mengupdate berkas");
-        return await res.json();
+        return result;
     }
 
     return {
