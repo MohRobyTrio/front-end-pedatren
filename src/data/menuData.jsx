@@ -18,6 +18,7 @@ import SantriNonDomisili from "../content_main_page/content_menu_data_pokok/sub_
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import Golongan from "../content_main_page/content_menu_kelembagaan/Golongan";
+import PindahKelas from "../content_main_page/content_menu_kelembagaan/PindahKelas";
 import GolonganJabatan from "../content_main_page/content_menu_kelembagaan/GolonganJabatan";
 import KategoriGolongan from "../content_main_page/content_menu_kelembagaan/KategoriGolongan";
 import Lembaga from "../content_main_page/content_menu_kelembagaan/Lembaga";
@@ -99,6 +100,7 @@ export const menuKelembagaanItems = [
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
+    { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
 ];
 
 // export const tabsFormulir = [
