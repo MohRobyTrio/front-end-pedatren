@@ -1,15 +1,42 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { ModalAddBerkasPerizinan } from "../../components/modal/ModalFormPerizinan";
+import { ModalAddBerkasPelanggaran } from "../../components/modal/ModalFormPelanggaran";
 
-const DetailBerkas = ({ berkas }) => {
-    if (!berkas || berkas.length === 0) {
-        return <p className="text-gray-500">Tidak ada berkas yang tersedia.</p>;
-    }
+const DetailBerkas = ({ berkas, menu, id, close }) => {
+    const [openPerizinan, setOpenPerizinan] = useState(false);
+    const [openPelanggaran, setOpenPelanggaran] = useState(false);
+
+    const handleTambahClick = () => {      
+        if (menu === 17) {
+            setOpenPerizinan(true);
+        } else if (menu === 18) {
+            setOpenPelanggaran(true);
+        }
+    };
 
     return (
-        <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4">Daftar Berkas</h2>
+        <div>
+            {/* Modal */}
+            <ModalAddBerkasPerizinan isOpen={openPerizinan} onClose={() => setOpenPerizinan(false)} id={id} close={close}/>
+            <ModalAddBerkasPelanggaran isOpen={openPelanggaran} onClose={() => setOpenPelanggaran(false)} id={id} close={close} />
+            
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-xl font-bold flex items-center justify-between">Daftar Berkas
+            </h1>
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleTambahClick();
+                    }}
+                    type="button"
+                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                >
+                    <i className="fas fa-plus"></i>
+                    <span>Tambah</span>
+                </button>
+                </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {berkas.map((url, index) => (
                     <ImageCard key={index} url={url} index={index} />

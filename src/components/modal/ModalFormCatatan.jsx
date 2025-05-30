@@ -187,7 +187,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                 <div>
                                                     <label htmlFor="id_santri" className="block text-gray-700">Nama Santri *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuSantri.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                                                         onChange={(e) => setFormData({ ...formData, id_santri: e.target.value })}
                                                         value={formData.id_santri}
                                                         disabled={menuSantri.length <= 1}
@@ -519,7 +519,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                 <div>
                                                     <label htmlFor="id_santri" className="block text-gray-700">Nama Santri *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuSantri.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                                                         onChange={(e) => setFormData({ ...formData, id_santri: e.target.value })}
                                                         value={formData.id_santri}
                                                         disabled={menuSantri.length <= 1}

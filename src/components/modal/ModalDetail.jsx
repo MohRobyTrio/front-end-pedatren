@@ -194,10 +194,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 label: "Pengantar",
                 content: <DetailPengantar pengantar={data.Pengantar}/>
             },
-            data?.Berkas?.length > 0 && {
+            ((menu === 17 || menu === 18) || (data?.Berkas?.length > 0)) && {
                 id: "berkas",
                 label: "Berkas",
-                content: <DetailBerkas berkas={data.Berkas} />
+                content: <DetailBerkas berkas={data?.Berkas || []} menu={menu} id={item.id} close={onClose} />
             },
             data?.error && {
                 id: "error",
@@ -205,7 +205,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 content: <div>{data?.error}</div>
             },
         ].filter(Boolean); // Hapus tab yang tidak punya data    
-    }, [data, isOnlyError]);
+    }, [data, isOnlyError, item.id, menu, onClose]);
 
     const [activeTab, setActiveTab] = useState(null);
 

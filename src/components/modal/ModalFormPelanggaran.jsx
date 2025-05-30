@@ -303,3 +303,260 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
         </Transition>
     );
 };
+
+export const ModalAddBerkasPelanggaran = ({ isOpen, onClose, id, close }) => {
+    const { clearAuthData } = useLogout();
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Format file harus PDF, JPG, JPEG, atau PNG");
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert("Ukuran file maksimal 2MB");
+                return;
+            }
+
+            setSelectedFile(file);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!selectedFile) {
+            alert("File wajib diunggah");
+            return;
+        }
+
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const token = sessionStorage.getItem("token") || getCookie("token");
+
+            const formDataToSend = new FormData();
+
+            // Tambahkan file
+            formDataToSend.append("file_path", selectedFile);
+
+            const response = await fetch(`${API_BASE_URL}crud/${id}/berkas-pelanggaran`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formDataToSend,
+            });
+
+            Swal.close();
+
+            if (!response) throw new Error("Tidak ada response dari server.");
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${result.message}</div>`,
+                });
+                return;
+            }
+
+            console.log(result);
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: `Data berhasil dikirim.`,
+            });
+
+            onClose?.(); // tutup modal jika ada
+            close?.(); // tutup modal jika ada
+        } catch (error) {
+            console.error("Terjadi kesalahan:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: `Terjadi kesalahan saat mengirim data. ${error.message}`,
+            });
+        }
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50" onClose={onClose}>
+                {/* Background overlay */}
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                {/* Modal content wrapper */}
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-200 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            >
+                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                            </button>
+
+                            <Dialog.Title
+                                as="h3"
+                                className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
+                            >
+                                Tambah Berkas Pelanggaran
+                            </Dialog.Title>
+                            <form className="w-full"
+                                onSubmit={handleSubmit}
+                            >
+                                <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
+                                    <div className="sm:flex sm:items-start">
+                                        <div className="mt-2 sm:mt-0 text-left w-full">
+
+                                            {/* FORM ISI */}
+                                            {/* <label className="block text-gray-700 mb-2">File *</label> */}
+                                            <div className="p-2 rounded-xl border border-gray-300 bg-white">
+                                                <label
+                                                    htmlFor="file_path"
+                                                    className={`relative flex flex-col items-center justify-center w-full aspect-[4/3] min-h-[150px] cursor-pointer ${selectedFile ? '' : 'bg-gray-50 hover:bg-gray-100 border-2 border-gray-300 border-dashed rounded-lg'}`}
+                                                >
+                                                    {selectedFile ? (
+                                                        typeof selectedFile === 'object' && selectedFile.type?.startsWith("image") ? (
+                                                            <div className="relative w-full h-full">
+                                                                <img
+                                                                    src={URL.createObjectURL(selectedFile)}
+                                                                    alt="preview"
+                                                                    className="h-full object-contain w-full"
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setSelectedFile(null)}
+                                                                    className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </div>
+                                                        ) : typeof selectedFile === 'string' ? (
+                                                            <div className="relative w-full h-full">
+                                                                <img
+                                                                    src={selectedFile}
+                                                                    alt="preview"
+                                                                    className="h-full object-contain w-full"
+                                                                    onError={() => setSelectedFile(null)}
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setSelectedFile(null)}
+                                                                    className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-center p-4">
+                                                                <p className="text-sm font-semibold">File {selectedFile.name} telah diunggah</p>
+                                                                <p className="text-blue-600 underline">Klik untuk ganti</p>
+                                                            </div>
+                                                        )
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                            <svg className="w-8 h-8 mb-4 text-gray-500" fill="none" viewBox="0 0 20 16">
+                                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                            </svg>
+                                                            <p className="mb-2 text-sm text-gray-500">
+                                                                <span className="font-semibold">Klik untuk upload</span> atau drag & drop
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">PDF, JPG, PNG (max 2MB)</p>
+                                                        </div>
+                                                    )}
+
+                                                    <input
+                                                        type="file"
+                                                        id="file_path"
+                                                        accept=".pdf,image/jpeg,image/jpg,image/png"
+                                                        onChange={handleFileChange}
+                                                        className="hidden"
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
+                                    <button
+                                        type="submit"
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
+                                    >
+                                        Simpan
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={onClose}
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};
