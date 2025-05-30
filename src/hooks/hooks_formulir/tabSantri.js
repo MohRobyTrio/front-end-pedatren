@@ -9,8 +9,10 @@ export const useSantri = (biodata_id) => {
     const [santriList, setSantriList] = useState([]);
     const [selectedSantriId, setSelectedSantriId] = useState(null);
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
+    const [angkatanId, setAngkatanId] = useState("");
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
+    const [status, setStatus] = useState("");
     const [error, setError] = useState(false);
 
     const [loadingSantri, setLoadingSantri] = useState(true);
@@ -79,10 +81,14 @@ export const useSantri = (biodata_id) => {
               return;
             }
             const result = await response.json();
+            console.log(result);
+            
             setSelectedSantriId(id);
             setSelectedSantriDetail(result.data);
+            setAngkatanId(result.data.angkatan_id || "");
             setEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
+            setStatus(result.data.status || "");
         } catch (error) {
             console.error("Gagal mengambil detail santri:", error);
         } finally {
@@ -94,10 +100,10 @@ export const useSantri = (biodata_id) => {
         if (!selectedSantriDetail) return;
 
         const payload = {
-            nis: selectedSantriDetail.nis,
+            angkatan_id: angkatanId,
             tanggal_masuk: startDate,
             tanggal_keluar: endDate || null,
-            status: selectedSantriDetail.status || null,
+            status: status || null,
         };
 
         try {
@@ -175,12 +181,16 @@ export const useSantri = (biodata_id) => {
         santriList,
         selectedSantriId,
         selectedSantriDetail,
+        angkatanId,
         endDate,
         startDate,
+        status,
         loadingSantri,
         loadingDetailSantri,
+        setAngkatanId,
         setEndDate,
         setStartDate,
+        setStatus,
         setSelectedSantriDetail,
         setSelectedSantriId,
         handleCardClick,

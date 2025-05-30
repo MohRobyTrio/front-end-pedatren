@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useLogout from "../../../hooks/Logout";
+import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
   const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -34,6 +35,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 };
 
 export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
+  const { menuAngkatanSantri } = DropdownAngkatan();
   const { clearAuthData } = useLogout();
   const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
@@ -62,6 +64,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     kelas_id: "",
     rombel_id: "",
     no_induk: "",
+    angkatan_id: "",
     tanggal_masuk: ""
     // tanggal_keluar: "",
     // status: ""
@@ -230,6 +233,22 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                             placeholder="Masukkan Nomor Induk"
                           />
                         </div>
+
+                        <div>
+                          <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
+                          <select
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                            onChange={(e) => setFormData({ ...formData, tanggal_masuk: e.target.value })}
+                            value={formData.angkatan_id}
+                            required
+                          >
+                            {menuAngkatanSantri.map((santri, idx) => (
+                              <option key={idx} value={santri.value}>
+                                {santri.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>  
 
                         <div>
                           <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Mulai *</label>

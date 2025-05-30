@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalFormSantri";
 import { OrbitProgress } from "react-loading-indicators";
 import { useSantri } from "../../hooks/hooks_formulir/tabSantri";
+import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 
 const TabSantri = () => {
     const { biodata_id } = useParams();
+    const { menuAngkatanSantri } = DropdownAngkatan();
     const [showAddModal, setShowAddModal] = useState(false);
 
     const {
@@ -14,12 +16,16 @@ const TabSantri = () => {
         santriList,
         selectedSantriId,
         selectedSantriDetail,
+        angkatanId,
         endDate,
         startDate,
+        status,
         loadingSantri,
         loadingDetailSantri,
+        setAngkatanId,
         setEndDate,
         setStartDate,
+        setStatus,
         setSelectedSantriDetail,
         setSelectedSantriId,
         handleCardClick,
@@ -48,7 +54,7 @@ const TabSantri = () => {
             </h1>
 
             <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} refetchData={fetchSantri} />
-            
+
             <div className="mt-5 space-y-6">
                 {loadingSantri ? (
                     <div className="flex justify-center items-center">
@@ -82,8 +88,8 @@ const TabSantri = () => {
                             </div>
                             <span
                                 className={`text-sm font-semibold px-3 py-1 rounded-full ${santri.status === "aktif"
-                                        ? "bg-green-100 text-green-700"
-                                        : "bg-red-100 text-red-700"
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
                                     }`}
                             >
                                 {capitalizeFirst(santri.status)}
@@ -96,48 +102,100 @@ const TabSantri = () => {
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
                         ) : selectedSantriId === santri.id && selectedSantriDetail && (
-                            <form className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                                <div>
-                                    <label htmlFor="nis" className="block text-sm font-medium text-gray-700">
-                                        Nomor Induk Santri
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="nis"
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500"
-                                        value={selectedSantriDetail.nis}
-                                        disabled
-                                    />
+                            <form className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6">
+                                <div className="flex flex-col gap-4">
+
+                                    <div>
+                                        <label htmlFor="nis" className="block text-sm font-medium text-gray-700">
+                                            Nomor Induk Santri
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="nis"
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500"
+                                            value={selectedSantriDetail.nis}
+                                            disabled
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="angkatan_id" className="block text-sm font-medium text-gray-700">
+                                            Angkatan *
+                                        </label>
+                                        <select
+                                            id="angkatan_id"
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            onChange={(e) => setAngkatanId(e.target.value)}
+                                            value={angkatanId}
+                                            required
+                                        >
+                                            {menuAngkatanSantri.map((santri, idx) => (
+                                                <option key={idx} value={santri.value}>
+                                                    {santri.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+                                        <div className="flex items-center space-x-4 mt-3">
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="status"
+                                                    value="aktif"
+                                                    checked={status === "aktif"}
+                                                    onChange={(e) => setStatus( e.target.value )}
+                                                    className="text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="ml-2 text-gray-700">Aktif</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="status"
+                                                    value="alumni"
+                                                    checked={status === "alumni"}
+                                                    onChange={(e) => setStatus( e.target.value )}
+                                                    className="text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="ml-2 text-gray-700">Alumni</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-4">
+
+                                    <div>
+                                        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                                            Tanggal Mulai
+                                        </label>
+                                        <input
+                                            type="date"
+                                            id="startDate"
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            value={startDate}
+                                            onChange={(e) => setStartDate(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                                            Tanggal Akhir
+                                        </label>
+                                        <input
+                                            type="date"
+                                            id="endDate"
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            value={endDate}
+                                            onChange={(e) => setEndDate(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-                                        Tanggal Mulai
-                                    </label>
-                                    <input
-                                        type="date"
-                                        id="startDate"
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        value={startDate}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
-                                        Tanggal Akhir
-                                    </label>
-                                    <input
-                                        type="date"
-                                        id="endDate"
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        value={endDate}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
+                                    {/* <label className="block text-sm font-medium text-gray-700">&nbsp;</label> */}
                                     <div className="flex space-x-2 mt-1">
                                         <button
                                             type="button"
