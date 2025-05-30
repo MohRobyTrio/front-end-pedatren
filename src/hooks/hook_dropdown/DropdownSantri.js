@@ -23,6 +23,7 @@ const useDropdownSantri = () => {
             const formatted = [
               { label: "Pilih Santri", value: "", id: null },
               ...resData.data.map((item) => ({
+                bio_id: item.biodata_id,
                 id: item.id,
                 value: item.nama,
                 label: item.nama,

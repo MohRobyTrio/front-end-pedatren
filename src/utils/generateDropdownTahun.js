@@ -1,5 +1,5 @@
 export function generateDropdownTahun({
-	startYear = 1940,
+	startYear = 2000,
 	placeholder = "Pilih Tahun",
 	labelTemplate = "Tahun {year}",
 } = {}) {

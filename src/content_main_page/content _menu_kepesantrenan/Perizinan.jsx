@@ -9,6 +9,8 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
+import { FaPlus } from "react-icons/fa";
+import { ModalAddPerizinan } from "../../components/modal/ModalFormPerizinan";
 
 
 const DataPerizinan = () => {
@@ -87,7 +89,7 @@ const DataPerizinan = () => {
         searchTerm,
         setSearchTerm,
         fetchData,
-        filterOptions
+        // filterOptions
     } = useFetchPerizinan();
 
     const [showFilters, setShowFilters] = useState(false);
@@ -140,16 +142,18 @@ const DataPerizinan = () => {
         ]
     }
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
     return (
-        <div className="flex-1 p-6">
-            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Perizinan</h1>
-                <div className="space-x-2 flex flex-wrap">
-                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">
-                        Export Data
-                    </button>
+                <div className="flex items-center space-x-2">
+                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                 </div>
             </div>
+
+            <ModalAddPerizinan isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>

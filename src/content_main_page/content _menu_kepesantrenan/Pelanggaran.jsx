@@ -10,6 +10,8 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
+import { FaPlus } from "react-icons/fa";
+import { ModalAddPelanggaran } from "../../components/modal/ModalFormPelanggaran";
 
 const DataPelanggaran = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -59,7 +61,7 @@ const DataPelanggaran = () => {
         }), [blokTerpilih, filters, jurusanTerpilih, kamarTerpilih, kelasTerpilih, lembagaTerpilih, rombelTerpilih, wilayahTerpilih]);
     
 
-    const [page, setPage] = useState(1);
+    // const [page, setPage] = useState(1);
 
     const {
         data,
@@ -74,7 +76,7 @@ const DataPelanggaran = () => {
         searchTerm,
         setSearchTerm,
         fetchData,
-        filterOptions
+        // filterOptions
     } = useFetchPelanggaran(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
@@ -82,7 +84,7 @@ const DataPelanggaran = () => {
     // Fetch data saat filter/page berubah
     useEffect(() => {
         fetchData(updatedFilters, filters);
-    }, [updatedFilters, filters, page, fetchData]);
+    }, [updatedFilters, filters, fetchData]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -116,20 +118,18 @@ const DataPelanggaran = () => {
         ]
     }
 
+    const [showFormModal, setShowFormModal] = useState(false);
 
     return (
-        <div className="flex-1 p-6">
-            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pelanggaran</h1>
-                <div className="space-x-2 flex flex-wrap">
-                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">
-                        Export Data
-                    </button>
-                    <button className="border border-gray-400 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-100 cursor-pointer">
-                        Statistik
-                    </button>
+                <div className="flex items-center space-x-2">
+                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                 </div>
             </div>
+
+            <ModalAddPelanggaran isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {/* {showFilters && (
