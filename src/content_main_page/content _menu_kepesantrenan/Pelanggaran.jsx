@@ -15,13 +15,16 @@ import { ModalAddPelanggaran } from "../../components/modal/ModalFormPelanggaran
 
 const DataPelanggaran = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedName, setSelectedName] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+    const [feature, setFeature] = useState("");
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
@@ -48,18 +51,18 @@ const DataPelanggaran = () => {
     const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
     const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
     const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
-    
+
     const updatedFilters = useMemo(() => ({
-            ...filters,
-            wilayah: wilayahTerpilih,
-            blok: blokTerpilih,
-            kamar: kamarTerpilih,
-            lembaga: lembagaTerpilih,
-            jurusan: jurusanTerpilih,
-            kelas: kelasTerpilih,
-            rombel: rombelTerpilih
-        }), [blokTerpilih, filters, jurusanTerpilih, kamarTerpilih, kelasTerpilih, lembagaTerpilih, rombelTerpilih, wilayahTerpilih]);
-    
+        ...filters,
+        wilayah: wilayahTerpilih,
+        blok: blokTerpilih,
+        kamar: kamarTerpilih,
+        lembaga: lembagaTerpilih,
+        jurusan: jurusanTerpilih,
+        kelas: kelasTerpilih,
+        rombel: rombelTerpilih
+    }), [blokTerpilih, filters, jurusanTerpilih, kamarTerpilih, kelasTerpilih, lembagaTerpilih, rombelTerpilih, wilayahTerpilih]);
+
 
     // const [page, setPage] = useState(1);
 
@@ -125,11 +128,14 @@ const DataPelanggaran = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pelanggaran</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <button onClick={() => {
+                        setFeature(1);
+                        setShowFormModal(true);
+                    }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                 </div>
             </div>
 
-            <ModalAddPelanggaran isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
+            <ModalAddPelanggaran isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} nama={selectedName} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {/* {showFilters && (
@@ -174,7 +180,7 @@ const DataPelanggaran = () => {
                         ) : data.length > 0 ? (
                             <div className="">
                                 {data.map(pelanggaran => (
-                                    <PelanggaranCard key={pelanggaran.id} data={pelanggaran} openModal={openModal}/>
+                                    <PelanggaranCard key={pelanggaran.id} data={pelanggaran} openModal={openModal} setShowFormModal={setShowFormModal} setFeature={setFeature} setSelectedId={setSelectedId} setSelectedName={setSelectedName} />
                                 ))}
                             </div>
                         ) : (
@@ -204,124 +210,141 @@ const DataPelanggaran = () => {
 };
 
 // Komponen Card untuk Pelanggaran
-const PelanggaranCard = ({ data, openModal }) => {
+const PelanggaranCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName }) => {
     return (
-        <div key={data.id} className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4 cursor-pointer" onClick={() => openModal(data)}>
-            {/* Foto Santri */}
-            <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
-                {data.foto_profil ? (
-                    <img 
-                        src={data.foto_profil} 
-                        alt={data.nama_santri} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = blankProfile;
-                        }}
-                    />
-                ) : (
-                    <i className="fas fa-user text-gray-400 text-4xl"></i>
-                )}
+        <div key={data.id} className="relative w-full">
+            {/* Tombol Edit */}
+            <div className="absolute top-2 right-2 z-10">
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setFeature(2);
+                        setSelectedId(data.id);
+                        setSelectedName(data.nama_santri);
+                        setShowFormModal(true);
+                    }}
+                    className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                >
+                    <i className="fas fa-edit"></i>
+                    <span>Edit</span>
+                </button>
             </div>
+            <div className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4 cursor-pointer" onClick={() => openModal(data)}>
 
-            {/* Info Santri */}
-            <div className="flex-1 space-y-2 min-w-[200px]">
-                <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
-                <div className="flex">
-                    <div className="w-24 text-black-700">Domisili</div>
-                    <div className="flex-1">
-                        <span className="text-black-600">: {data.wilayah} - {data.blok} {data.kamar}</span>
-                    </div>
+                {/* Foto Santri */}
+                <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
+                    {data.foto_profil ? (
+                        <img
+                            src={data.foto_profil}
+                            alt={data.nama_santri}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = blankProfile;
+                            }}
+                        />
+                    ) : (
+                        <i className="fas fa-user text-gray-400 text-4xl"></i>
+                    )}
                 </div>
 
-                <div className="flex">
-                    <div className="w-24 text-black-700">Pendidikan</div>
-                    <div className="flex-1">
-                        <span className="text-black-600">: {data.lembaga}</span>
-                    </div>
-                </div>
-
-                <div className="flex">
-                    <div className="w-24 text-black-700">Alamat</div>
-                    <div className="flex-1">
-                        <span className="text-black-600">: {data.kabupaten}, {data.provinsi}</span>
-                    </div>
-                </div>
-
-                <br />
-
-                <div className="flex">
-                    <div className="w-24 text-black-700">Pencatat</div>
-                    <div className="flex-1">
-                        <span className="text-black-600">: ({data.pencatat})</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Detail Pelanggaran */}
-            <div className="mt-6 md:mt-0 md:pl-8 md:w-1/2">
-                <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
-
-                <div className="space-y-2">
+                {/* Info Santri */}
+                <div className="flex-1 space-y-2 min-w-[200px]">
+                    <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
                     <div className="flex">
-                        <div className="w-40 text-black-700">Kategori</div>
+                        <div className="w-24 text-black-700">Domisili</div>
                         <div className="flex-1">
-                            <span className={`text-black-600 ${data.jenis_pelanggaran === 'Berat'
+                            <span className="text-black-600">: {data.wilayah} - {data.blok} {data.kamar}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="w-24 text-black-700">Pendidikan</div>
+                        <div className="flex-1">
+                            <span className="text-black-600">: {data.lembaga}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex">
+                        <div className="w-24 text-black-700">Alamat</div>
+                        <div className="flex-1">
+                            <span className="text-black-600">: {data.kabupaten}, {data.provinsi}</span>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div className="flex">
+                        <div className="w-24 text-black-700">Pencatat</div>
+                        <div className="flex-1">
+                            <span className="text-black-600">: ({data.pencatat})</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Detail Pelanggaran */}
+                <div className="mt-6 md:mt-0 md:pl-8 md:w-1/2">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
+
+                    <div className="space-y-2">
+                        <div className="flex">
+                            <div className="w-40 text-black-700">Kategori</div>
+                            <div className="flex-1">
+                                <span className={`text-black-600 ${data.jenis_pelanggaran === 'Berat'
                                     ? 'text-red-600'
                                     : data.jenis_pelanggaran === 'Sedang'
                                         ? 'text-orange-600'
                                         : 'text-yellow-600'
-                                }`}>
-                                : {data.jenis_pelanggaran}
-                            </span>
+                                    }`}>
+                                    : {data.jenis_pelanggaran}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex">
+                            <div className="w-40 text-black-700">Diproses Mahkamah</div>
+                            <div className="flex-1 flex items-center">
+                                <span className="text-black-600">
+                                    : {data.diproses_mahkamah ? (
+                                        <>
+                                            Ya <FontAwesomeIcon icon={faCheck} className="text-green-600" size="md" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            Tidak <FontAwesomeIcon icon={faX} className="text-red-600" size="sm" />
+                                        </>
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex">
+                            <div className="w-40 text-black-700">Status</div>
+                            <div className="flex-1">
+                                <span className={`text-black-600 font-medium ${data.status_pelanggaran === 'Sudah diproses'
+                                        ? 'text-green-600'
+                                        : data.status_pelanggaran === 'Sedang diproses'
+                                            ? 'text-yellow-600'
+                                            : 'text-gray-600'
+                                    }`}>
+                                    : {data.status_pelanggaran}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex">
+                            <div className="w-40 text-black-700">Jenis</div>
+                            <div className="flex-1">
+                                <span className="text-black-600">: {data.keterangan}</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex">
-                        <div className="w-40 text-black-700">Diproses Mahkamah</div>
-                        <div className="flex-1 flex items-center">
-                            <span className="text-black-600">
-                                : {data.diproses_mahkamah ? (
-                                    <>
-                                        Ya <FontAwesomeIcon icon={faCheck} className="text-green-600" size="md"/>
-                                    </>
-                                ) : (
-                                    <>
-                                        Tidak <FontAwesomeIcon icon={faX} className="text-red-600" size="sm" />
-                                    </>
-                                )}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex">
-                        <div className="w-40 text-black-700">Status</div>
-                        <div className="flex-1">
-                        <span className={`text-black-600 font-medium ${
-                        data.status_pelanggaran === 'Sudah diproses' 
-                            ? 'text-green-600' 
-                            : data.status_pelanggaran === 'Sedang diproses'
-                            ? 'text-yellow-600'
-                            : 'text-gray-600'
-                    }`}>
-                        : {data.status_pelanggaran}
-                    </span>
-                        </div>
-                    </div>
-
-                    <div className="flex">
-                        <div className="w-40 text-black-700">Jenis</div>
-                        <div className="flex-1">
-                            <span className="text-black-600">: {data.keterangan}</span>
-                        </div>
+                    <div className="mt-4 text-right text-gray-500 text-sm">
+                        {data.tgl_input}
                     </div>
                 </div>
-
-                <div className="mt-4 text-right text-gray-500 text-sm">
-                    {data.tgl_input}
-                </div>
-            </div>
-            {/* <div className="flex-1 space-y-2 min-w-[200px]">
+                {/* <div className="flex-1 space-y-2 min-w-[200px]">
                 <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
                 <div className="flex gap-2 items-center">
                     <p className="font-semibold">Kategori: </p>
@@ -360,10 +383,11 @@ const PelanggaranCard = ({ data, openModal }) => {
                 
             </div> */}
 
-            {/* Pencatat */}
-            {/* <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
+                {/* Pencatat */}
+                {/* <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
                 <p className="text-xs text-gray-500">{data.tgl_input}</p>
             </div> */}
+            </div>
         </div>
     );
 };

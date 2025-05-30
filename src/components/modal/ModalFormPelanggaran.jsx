@@ -8,7 +8,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 
-export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
+export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
     const { clearAuthData } = useLogout();
     const [santriId, setSantriId] = useState("");
@@ -17,25 +17,80 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
         status_pelanggaran: "",
         jenis_putusan: "",
         jenis_pelanggaran: "",
-        diproses_mahkamah: "",
+        diproses_mahkamah: null,
         keterangan: "",
     });    
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && feature == 1) {
             setSantriId("");
             setFormData({
                 status_pelanggaran: "",
                 jenis_putusan: "",
                 jenis_pelanggaran: "",
-                diproses_mahkamah: "",
+                diproses_mahkamah: null,
                 keterangan: "",
             });
         }
-    }, [isOpen]);
+    }, [feature, isOpen]);
+
+    useEffect(() => {      
+        setSantriId("");  
+        if (feature === 2 && nama && menuSantri.length > 0) {
+            const matchedSantri = menuSantri.find((s) => s.label === nama);            
+            if (matchedSantri) {
+                setSantriId(matchedSantri.bio_id);
+            }
+        }
+    }, [feature, nama, menuSantri]);
+
+    useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const token = sessionStorage.getItem("token") || getCookie("token");
+                    const response = await fetch(`${API_BASE_URL}crud/${id}/pelanggaran/show`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        }
+                    });
+    
+                    if (!response.ok) throw new Error("Gagal mengambil data");
+    
+                    const result = await response.json();
+    
+                    if (result.data) {
+                        setFormData({
+                            status_pelanggaran: result.data.status_pelanggaran ?? "",
+                            jenis_putusan: result.data.jenis_putusan ?? "",
+                            jenis_pelanggaran: result.data.jenis_pelanggaran ?? "",
+                            diproses_mahkamah: result.data.diproses_mahkamah ?? "",
+                            keterangan: result.data.keterangan ?? "",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Gagal mengambil data perizinan:", error);
+                    Swal.fire("Error", "Gagal mengambil data perizinan", "error");
+                }
+            };
+    
+            if (isOpen && feature === 2) {
+                setFormData({
+                    status_pelanggaran: "",
+                    jenis_putusan: "",
+                    jenis_pelanggaran: "",
+                    diproses_mahkamah: null,
+                    keterangan: "",
+                });
+                fetchData();
+            }
+        }, [feature, id, isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const isTambah = feature == 1;
+        const metod = isTambah ? "POST" : "PUT";
+        const idSend = isTambah ? santriId : id;
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -61,8 +116,8 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
             
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}crud/${santriId}/pelanggaran`, {
-                method: "POST",
+            const response = await fetch(`${API_BASE_URL}crud/${idSend}/pelanggaran`, {
+                method: metod,
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`
@@ -161,7 +216,8 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
                                 as="h3"
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
-                                Tambah Data Baru
+                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
+                                
                             </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
@@ -174,10 +230,10 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
                                                 <div>
                                                     <label htmlFor="id_santri" className="block text-gray-700">Nama Santri *</label>
                                                     <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${feature === 2 ? 'bg-gray-200 text-gray-700' : ''}`}
                                                         onChange={(e) => setSantriId(e.target.value)}
                                                         value={santriId}
-                                                        disabled={menuSantri.length <= 1}
+                                                        disabled={feature === 2 || menuSantri.length <= 1}
                                                         required
                                                     >
                                                         {menuSantri.map((santri, idx) => (
@@ -241,7 +297,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
                                                                 type="radio"
                                                                 name="diproses_mahkamah"
                                                                 value="true"
-                                                                checked={formData.diproses_mahkamah === true}
+                                                                checked={formData.diproses_mahkamah === true || formData.diproses_mahkamah == 1}
                                                                 onChange={() => setFormData({ ...formData, diproses_mahkamah: true })}
                                                                 required
                                                                 className="form-radio text-blue-500"
@@ -253,7 +309,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData }) => {
                                                                 type="radio"
                                                                 name="diproses_mahkamah"
                                                                 value="false"
-                                                                checked={formData.diproses_mahkamah === false}
+                                                                checked={formData.diproses_mahkamah === false || formData.diproses_mahkamah == 0}
                                                                 onChange={() => setFormData({ ...formData, diproses_mahkamah: false })}
                                                                 required
                                                                 className="form-radio text-blue-500"

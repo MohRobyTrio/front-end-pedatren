@@ -15,7 +15,10 @@ import { ModalAddPerizinan } from "../../components/modal/ModalFormPerizinan";
 
 const DataPerizinan = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedName, setSelectedName] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [feature, setFeature] = useState("");
     
     const openModal = (item) => {
         setSelectedItem(item);
@@ -149,11 +152,14 @@ const DataPerizinan = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Perizinan</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <button onClick={() => {
+                        setFeature(1);
+                        setShowFormModal(true);
+                        }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                 </div>
             </div>
 
-            <ModalAddPerizinan isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
+            <ModalAddPerizinan isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} nama={selectedName} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -215,7 +221,7 @@ const DataPerizinan = () => {
                         ) : data.length > 0 ? (
                             <div className="">
                                 {data.map(perizinan => (
-                                    <PerizinanCard key={perizinan.id} data={perizinan} openModal={openModal} />
+                                    <PerizinanCard key={perizinan.id} data={perizinan} openModal={openModal} setShowFormModal={setShowFormModal} setFeature={setFeature} setSelectedId={setSelectedId} setSelectedName={setSelectedName} />
                                 ))}
                             </div>
                         ) : (
@@ -244,23 +250,25 @@ const DataPerizinan = () => {
 };
 
 // Komponen Card untuk Perizinan
-const PerizinanCard = ({ data, openModal }) => {
-    // const [checkedItems, setCheckedItems] = useState({
-    //   diterima: data.status === 'Diterima',
-    //   diluar: data.status === 'Sudah berada di luar pondok',
-    //   kembali: data.status === 'Kembali tepat waktu'
-    // });
-
-    // const handleCheckboxChange = (item) => {
-    //   setCheckedItems(prev => ({
-    //     ...prev,
-    //     [item]: !prev[item]
-    //   }));
-    // };
-
+const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName }) => {
     return (
         <div key={data.id} className="max-w-6xl mx-auto cursor-pointer" onClick={() => openModal(data)}>
             <div className="bg-white rounded border border-gray-200 p-6 shadow-sm mb-4">
+                <div className="flex justify-end">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setFeature(2);
+                            setSelectedId(data.id);
+                            setSelectedName(data.nama_santri);
+                            setShowFormModal(true);
+                        }}
+                        className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                    >
+                        <i className="fas fa-edit"></i>
+                        <span>Edit</span>
+                    </button>
+                </div>
                 <div className="flex flex-col md:flex-row">
                     {/* Left Section - Student Photo */}
                     <div className="md:w-1/5 mb-4 md:mb-0">

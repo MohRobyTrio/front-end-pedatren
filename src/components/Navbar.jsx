@@ -1,17 +1,17 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/Logout";
 import logo from "../assets/logo.png";
 
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
-    const navigate = useNavigate();
-    const { logout, isLoggingOut, logoutError } = useLogout();
+    // const navigate = useNavigate();
+    const { logout, isLoggingOut } = useLogout();
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
     const role = localStorage.getItem("role") || sessionStorage.getItem("role");
 
     const handleLogout = async () => {
         try {
             await logout();
-            navigate("/login");
+            // navigate("/login");
         } catch (error) {
             console.error("Logout gagal:", error.message);
         }
