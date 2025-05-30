@@ -10,7 +10,7 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
   useEffect(() => {
     if (initialData) {
       setKeterangan(initialData.keterangan || '');
-      setSelectedFile(null);
+      setSelectedFile(null); // Reset file untuk edit
     } else {
       setKeterangan('');
       setSelectedFile(null);
@@ -23,11 +23,22 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!selectedFile && !initialData) {
       alert('Pilih file terlebih dahulu');
       return;
     }
-    onSubmit({ file: selectedFile, keterangan, id: initialData?.id || null });
+
+    const formData = new FormData();
+    formData.append('keterangan', keterangan);
+
+    // Hanya append file jika ada file baru
+    if (selectedFile) {
+      formData.append('file', selectedFile);
+    }
+
+    // Kirim data lengkap (formData + id jika edit)
+    onSubmit({ formData, id: initialData?.id || null });
   };
 
   return (
@@ -71,31 +82,29 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
               </Dialog.Title>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {!initialData && (
-                  <div>
-                    <label className="block mb-1 text-gray-700">File</label>
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      accept="image/*,.pdf,.doc,.docx"
-                      className="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-blue-50 file:text-blue-700
-                        hover:file:bg-blue-100"
-                    />
-                  </div>
-                )}
+                {/* Input File */}
+                <div>
+                  <label className="block mb-1 text-gray-700">File</label>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    accept="image/*,.pdf,.doc,.docx"
+                    className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100"
+                  />
+                </div>
 
                 {initialData && (
-                  <div className="text-sm text-gray-500 italic mb-2">
-                    Upload file baru hanya jika ingin mengganti file lama.
-                    <br />
-                    Biarkan kosong jika tidak ingin mengganti.
+                  <div className="text-sm text-gray-500 italic -mt-3">
+                    *Kosongkan jika tidak ingin mengganti file.
                   </div>
                 )}
 
+                {/* Keterangan */}
                 <div>
                   <label className="block mb-1 text-gray-700">Keterangan</label>
                   <input
@@ -107,6 +116,7 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
                   />
                 </div>
 
+                {/* Aksi */}
                 <div className="flex justify-end space-x-2 pt-4">
                   <button
                     type="button"
