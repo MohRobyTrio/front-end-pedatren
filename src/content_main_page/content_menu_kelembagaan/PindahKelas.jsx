@@ -39,7 +39,7 @@ const PindahKelas = () => {
   };
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 pl-6 pt-6 pb-6">
       {/* LEFT SIDE - FILTER + TABLE */}
       <div className="flex-1 bg-white p-6 rounded-lg shadow-md overflow-x-auto">
         <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>

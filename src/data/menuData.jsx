@@ -97,9 +97,9 @@ export const menuRWSItems = [
 
 export const menuKelembagaanItems = [
     { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/lembaga", content: <Lembaga /> },
+    { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
-    { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
     { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
 ];
 

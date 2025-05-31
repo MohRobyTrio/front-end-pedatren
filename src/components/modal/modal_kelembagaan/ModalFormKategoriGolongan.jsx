@@ -1,20 +1,34 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
-import { API_BASE_URL } from "../../../hooks/config";
-import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
-import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
+import { Fragment, useEffect, useState } from "react";
+import { getCookie } from "../../../utils/cookieUtils";
+import { API_BASE_URL } from "../../../hooks/config";
+import { Dialog, Transition } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
+const ModalAddOrEditKategoriGolongan = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
-    const { menuAngkatanSantri } = DropdownAngkatan();
+    const id = data.id;
     const [formData, setFormData] = useState({
-        angkatan_id: "",
-        tanggal_masuk: ""
+        nama_kategori_golongan: "",
     });
+
+    useEffect(() => {
+        if (isOpen) {
+            if (feature === 2 && data) {
+                setFormData({
+                    nama_kategori_golongan: data.nama_kategori_golongan || "",
+                });
+            } else {
+                // Reset saat tambah (feature === 1)
+                setFormData({
+                    nama_kategori_golongan: "",
+                });
+            }
+        }
+    }, [isOpen, feature, data]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,19 +53,37 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                     Swal.showLoading();
                 }
             });
+
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/santri`, {
-                method: "POST",
+
+            // Tentukan URL dan method berdasarkan feature
+            const isEdit = feature === 2;
+            const url = isEdit
+                ? `${API_BASE_URL}crud/${id}/kategori-golongan`
+                : `${API_BASE_URL}crud/kategori-golongan`;
+
+            const method = isEdit ? "PUT" : "POST";
+
+            // Tentukan data yang dikirim
+            const payload = {
+                    nama_kategori_golongan: formData.nama_kategori_golongan,
+                };
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
+
+            const response = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
             });
 
-            
             const result = await response.json();
             await Swal.close();
+            console.log(result);
+            
+
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -62,22 +94,11 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                 clearAuthData();
                 return;
             }
-            // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
+
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
-            // ✅ Jika status dari backend false meskipun HTTP 200
-            if (!result.status) {
-                await Swal.fire({
-                    icon: "error",
-                    title: "Gagal",
-                    html: `<div style="text-align: center;">${result.message}</div>`,
-                });
-                return; // Jangan lempar error, cukup berhenti
-            }
-
-            // ✅ Sukses
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil!",
@@ -85,7 +106,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
             });
 
             refetchData?.();
-            onClose?.(); // tutup modal jika ada
+            onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
             await Swal.fire({
@@ -140,38 +161,26 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                Tambah Data Baru
+                                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">   
+                                            <div className="space-y-4"> 
                                                 <div>
-                                                    <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, angkatan_id: e.target.value })}
-                                                        value={formData.angkatan_id}
-                                                        required
-                                                    >
-                                                        {menuAngkatanSantri.map((santri, idx) => (
-                                                            <option key={idx} value={santri.value}>
-                                                                {santri.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>                                             
-                                                <div>
-                                                    <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Masuk *</label>
+                                                    <label htmlFor="nama_kategori_golongan" className="block text-gray-700">Nama Golongan *</label>
                                                     <input
-                                                        type="date"
-                                                        id="tanggal_masuk"
-                                                        name="tanggal_masuk"
-                                                        value={formData.tanggal_masuk}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_masuk: e.target.value })}
+                                                        type="text"
+                                                        id="nama_kategori_golongan"
+                                                        name="nama_kategori_golongan"
+                                                        value={formData.nama_kategori_golongan}
+                                                        onChange={(e) => setFormData({ ...formData, nama_kategori_golongan: e.target.value })}
+                                                        maxLength={255}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        placeholder="Masukkan Nama Kategori Golongan"
                                                     />
-                                                </div>                                            
+                                                </div>
+                                                 
                                             </div>
                                         </div>
                                     </div>
@@ -181,14 +190,14 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                     <button
                                         type="submit"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        className="w-full cursor-pointer inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                                     >
                                         Simpan
                                     </button>
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                        className="mt-3 cursor-pointer w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
                                     >
                                         Cancel
                                     </button>
@@ -202,4 +211,4 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
     );
 };
 
-export default ModalAddSantriFormulir;
+export default ModalAddOrEditKategoriGolongan;

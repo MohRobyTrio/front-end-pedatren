@@ -107,15 +107,6 @@ const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) 
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
-            // if (!result.status) {
-            //     await Swal.fire({
-            //         icon: "error",
-            //         title: "Gagal",
-            //         html: `<div style="text-align: center;">${result.message}</div>`,
-            //     });
-            //     return;
-            // }
-
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil!",
@@ -178,7 +169,7 @@ const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) 
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                Tambah Data Baru
+                                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}

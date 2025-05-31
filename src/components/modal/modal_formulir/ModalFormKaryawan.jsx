@@ -6,13 +6,23 @@ import { getCookie } from "../../../utils/cookieUtils";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
-import useDropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembagaDoang";
 import useLogout from "../../../hooks/Logout";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchData, feature, karyawanIdToPindah }) => {
     const { clearAuthData } = useLogout();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
-    const { menuLembaga: lembagaOptions } = useDropdownLembaga();
+    const { filterLembaga } = DropdownLembaga();
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga")
+    };
+    // const { menuLembaga: lembagaOptions } = useDropdownLembaga();
 
     const isTambah = feature === 1;
     const endpoint = isTambah ? "karyawan" : "karyawan/pindah";
@@ -120,7 +130,7 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
                                                 required
                                             >
                                                 {/* <option value="">Pilih Lembaga</option> */}
-                                                {lembagaOptions.map((opt) => (
+                                                {updatedFilterLembaga.lembaga.map((opt) => (
                                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                                 ))}
                                             </select>
