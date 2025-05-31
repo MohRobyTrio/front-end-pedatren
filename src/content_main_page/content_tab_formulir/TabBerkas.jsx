@@ -10,6 +10,7 @@ import {
 import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
+import Access from '../../components/Access';
 
 export default function TabBerkas() {
     const { biodata_id } = useParams();
@@ -79,12 +80,15 @@ export default function TabBerkas() {
         <div className="px-2 sm:px-4 w-full">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold">Berkas</h1>
-                <button
-                    onClick={handleOpenAdd}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center"
-                >
-                    Tambah Berkas
-                </button>
+                <Access action="tambah">
+                    <button
+                        onClick={handleOpenAdd}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                        >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Berkas</span>
+                    </button>
+                </Access>
             </div>
 
             {loading && <p>Loading...</p>}
@@ -100,13 +104,15 @@ export default function TabBerkas() {
                         className="relative bg-white shadow rounded-lg overflow-hidden border group"
                     >
                         {/* Tombol Edit */}
-                        <button
-                            onClick={() => handleOpenEdit(berkas)}
-                            className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
-                            title="Edit berkas"
-                        >
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
+                        <Access action="edit">
+                            <button
+                                onClick={() => handleOpenEdit(berkas)}
+                                className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
+                                title="Edit berkas"
+                            >
+                                <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                        </Access>
 
                         {/* Tombol Download */}
                         <a

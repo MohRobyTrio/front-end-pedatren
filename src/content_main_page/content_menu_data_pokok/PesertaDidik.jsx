@@ -18,6 +18,7 @@ import MultiStepModal from "../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
 import { jenisBerkasList } from "../../data/menuData";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
+import Access from "../../components/Access";
 
 const PesertaDidik = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -193,7 +194,9 @@ const PesertaDidik = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Peserta Didik</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <Access action="tambah">
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                     {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button> */}
                     <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`, setExportLoading)}

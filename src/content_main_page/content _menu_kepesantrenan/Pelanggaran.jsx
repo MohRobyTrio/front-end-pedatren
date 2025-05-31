@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FaPlus } from "react-icons/fa";
 import { ModalAddPelanggaran } from "../../components/modal/ModalFormPelanggaran";
+import Access from "../../components/Access";
 
 const DataPelanggaran = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -128,10 +129,12 @@ const DataPelanggaran = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pelanggaran</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => {
-                        setFeature(1);
-                        setShowFormModal(true);
-                    }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <Access action="tambah">
+                        <button onClick={() => {
+                            setFeature(1);
+                            setShowFormModal(true);
+                        }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                 </div>
             </div>
 
@@ -215,19 +218,21 @@ const PelanggaranCard = ({ data, openModal, setShowFormModal, setFeature, setSel
         <div key={data.id} className="relative w-full">
             {/* Tombol Edit */}
             <div className="absolute top-2 right-2 z-10">
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setFeature(2);
-                        setSelectedId(data.id);
-                        setSelectedName(data.nama_santri);
-                        setShowFormModal(true);
-                    }}
-                    className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
-                >
-                    <i className="fas fa-edit"></i>
-                    <span>Edit</span>
-                </button>
+                <Access action="edit">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setFeature(2);
+                            setSelectedId(data.id);
+                            setSelectedName(data.nama_santri);
+                            setShowFormModal(true);
+                        }}
+                        className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                    >
+                        <i className="fas fa-edit"></i>
+                        <span>Edit</span>
+                    </button>
+                </Access>
             </div>
             <div className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4 cursor-pointer" onClick={() => openModal(data)}>
 

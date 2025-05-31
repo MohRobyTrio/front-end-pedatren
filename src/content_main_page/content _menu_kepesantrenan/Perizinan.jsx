@@ -11,6 +11,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaPlus } from "react-icons/fa";
 import { ModalAddPerizinan } from "../../components/modal/ModalFormPerizinan";
+import Access from "../../components/Access";
 
 
 const DataPerizinan = () => {
@@ -152,10 +153,12 @@ const DataPerizinan = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Perizinan</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => {
-                        setFeature(1);
-                        setShowFormModal(true);
-                        }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <Access action="tambah">
+                        <button onClick={() => {
+                            setFeature(1);
+                            setShowFormModal(true);
+                            }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                 </div>
             </div>
 
@@ -255,19 +258,21 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
         <div key={data.id} className="max-w-6xl mx-auto cursor-pointer" onClick={() => openModal(data)}>
             <div className="bg-white rounded border border-gray-200 p-6 shadow-sm mb-4">
                 <div className="flex justify-end">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setFeature(2);
-                            setSelectedId(data.id);
-                            setSelectedName(data.nama_santri);
-                            setShowFormModal(true);
-                        }}
-                        className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
-                    >
-                        <i className="fas fa-edit"></i>
-                        <span>Edit</span>
-                    </button>
+                    <Access action="edit">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setFeature(2);
+                                setSelectedId(data.id);
+                                setSelectedName(data.nama_santri);
+                                setShowFormModal(true);
+                            }}
+                            className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                        >
+                            <i className="fas fa-edit"></i>
+                            <span>Edit</span>
+                        </button>
+                    </Access>
                 </div>
                 <div className="flex flex-col md:flex-row">
                     {/* Left Section - Student Photo */}

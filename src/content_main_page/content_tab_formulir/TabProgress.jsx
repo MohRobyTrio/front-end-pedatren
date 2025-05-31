@@ -9,10 +9,13 @@ import Swal from "sweetalert2";
 import blankProfile from "../../assets/blank_profile.png";
 import { ModalAddProgressAfektifFormulir, ModalAddProgressKognitifFormulir, ModalKeluarProgressFormulir } from "../../components/modal/modal_formulir/ModalFormProgress";
 import useLogout from "../../hooks/Logout";
+import { hasAccess } from "../../utils/hasAccess";
+import Access from "../../components/Access";
 
 const TabProgress = () => {
 	const { biodata_id } = useParams();
 	const { clearAuthData } = useLogout();
+	const canEdit = hasAccess("edit");
 	const [activeTab, setActiveTab] = useState("afektif");
 	const [showAddAfektifModal, setShowAddAfektifModal] = useState(false);
 	const [showAddKognitifModal, setShowAddKognitifModal] = useState(false);
@@ -284,18 +287,20 @@ const TabProgress = () => {
 		content: (
 			<>
 			<h1 className="text-xl font-bold flex items-center justify-between">Catatan Afektif
-				<button
-					onClick={() => 
-						{
-							openAddAfektifModal();
+				<Access action="tambah">
+					<button
+						onClick={() => 
+							{
+								openAddAfektifModal();
+							}
 						}
-					}
-					type="button"
-					className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-				>
-					<i className="fas fa-plus"></i>
-					<span>Tambah Data</span>
-				</button>
+						type="button"
+						className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+					>
+						<i className="fas fa-plus"></i>
+						<span>Tambah Data</span>
+					</button>
+				</Access>
 			</h1>
 			<div className="mt-5 space-y-6">
 				{loadingData ? (
@@ -364,17 +369,19 @@ const TabProgress = () => {
 								{/* Tombol keluar di pojok kanan bawah */}
 								{!afektif.tanggal_selesai && (
 									<div className="absolute bottom-5 right-5">
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												openOutModal(afektif.id);
-											}}
-											className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 text-sm cursor-pointer"
-											title="Keluar Afektif"
-										>
-											<FontAwesomeIcon icon={faRightFromBracket} /> Selesai
-										</button>
+										<Access action="keluar">
+											<button
+												type="button"
+												onClick={(e) => {
+													e.stopPropagation();
+													openOutModal(afektif.id);
+												}}
+												className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 text-sm cursor-pointer"
+												title="Keluar Afektif"
+											>
+												<FontAwesomeIcon icon={faRightFromBracket} /> Selesai
+											</button>
+										</Access>
 									</div>
 								)}	
 							</div>
@@ -399,8 +406,8 @@ const TabProgress = () => {
 											data-form="afektif"
 											value={formAfektif.kepedulian_nilai}
 											onChange={handleChange}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -416,8 +423,8 @@ const TabProgress = () => {
 											value={formAfektif.kepedulian_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -430,8 +437,8 @@ const TabProgress = () => {
 											data-form="afektif"
 											value={formAfektif.kebersihan_nilai}
 											onChange={handleChange}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -447,8 +454,8 @@ const TabProgress = () => {
 											value={formAfektif.kebersihan_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -464,8 +471,8 @@ const TabProgress = () => {
 											data-form="afektif"
 											value={formAfektif.akhlak_nilai}
 											onChange={handleChange}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -481,8 +488,8 @@ const TabProgress = () => {
 											value={formAfektif.akhlak_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
 
@@ -493,8 +500,8 @@ const TabProgress = () => {
 											type="date"
 											value={startDate}
 											onChange={(e) => setStartDate(e.target.value)}
-											disabled={!!selectedAfektifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										/>
 									</div>
 									<div>
@@ -523,13 +530,15 @@ const TabProgress = () => {
 										Batal
 									</button>
 									{!afektif.tanggal_selesai && (
-									<button
-										type="button"
-										onClick={() => handleUpdate("afektif")} 
-										className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
-									>
-										Update
-									</button>
+										<Access action="edit">
+											<button
+												type="button"
+												onClick={() => handleUpdate("afektif")} 
+												className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
+											>
+												Update
+											</button>
+										</Access>
 									)}
 								</div>
 							</form>
@@ -547,17 +556,19 @@ const TabProgress = () => {
 		content: (
 			<>
 			<h1 className="text-xl font-bold flex items-center justify-between">Catatan Kognitif
-				<button
-					onClick={() => {
-						openAddKognitifModal();
-					}
-					}
-					type="button"
-					className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-				>
-					<i className="fas fa-plus"></i>
-					<span>Tambah Data</span>
-				</button>
+				<Access action="tambah">
+					<button
+						onClick={() => {
+							openAddKognitifModal();
+						}
+						}
+						type="button"
+						className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+					>
+						<i className="fas fa-plus"></i>
+						<span>Tambah Data</span>
+					</button>
+				</Access>
 			</h1>
 			<div className="mt-5 space-y-6">
 				{loadingData ? (
@@ -626,17 +637,19 @@ const TabProgress = () => {
 								{/* Tombol keluar di pojok kanan bawah */}
 								{!kognitif.tanggal_selesai && (
 									<div className="absolute bottom-5 right-5">
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												openOutModal(kognitif.id);
-											}}
-											className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 text-sm cursor-pointer"
-											title="Keluar Kognitif"
-										>
-											<FontAwesomeIcon icon={faRightFromBracket} /> Selesai
-										</button>
+										<Access action="keluar">
+											<button
+												type="button"
+												onClick={(e) => {
+													e.stopPropagation();
+													openOutModal(kognitif.id);
+												}}
+												className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 text-sm cursor-pointer"
+												title="Keluar Kognitif"
+											>
+												<FontAwesomeIcon icon={faRightFromBracket} /> Selesai
+											</button>
+										</Access>
 									</div>
 								)}	
 							</div>
@@ -661,8 +674,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.kebahasaan_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -678,8 +691,8 @@ const TabProgress = () => {
 											value={formKognitif.kebahasaan_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -692,8 +705,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.hafalan_tahfidz_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -709,8 +722,8 @@ const TabProgress = () => {
 											value={formKognitif.hafalan_tahfidz_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
 
@@ -721,8 +734,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.tulis_alquran_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -738,8 +751,8 @@ const TabProgress = () => {
 											value={formKognitif.tulis_alquran_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
 									<div>
@@ -748,8 +761,8 @@ const TabProgress = () => {
 											type="date"
 											value={startDate}
 											onChange={(e) => setStartDate(e.target.value)}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										/>
 									</div>
 									<div>
@@ -773,8 +786,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.baca_kitab_kuning_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -790,8 +803,8 @@ const TabProgress = () => {
 											value={formKognitif.baca_kitab_kuning_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -803,8 +816,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.furudul_ainiyah_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -820,8 +833,8 @@ const TabProgress = () => {
 											value={formKognitif.furudul_ainiyah_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -833,8 +846,8 @@ const TabProgress = () => {
 											data-form="kognitif"
 											value={formKognitif.baca_alquran_nilai}
 											onChange={handleChange}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 										>
 											<option value="">Pilih Nilai</option>
 											{optionsNilai.map(n => (
@@ -850,8 +863,8 @@ const TabProgress = () => {
 											value={formKognitif.baca_alquran_tindak_lanjut}
 											onChange={handleChange}
 											rows={3}
-											disabled={!!selectedKognitifDetail.tanggal_selesai}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+											disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 											placeholder="Masukkan catatan atau tindak lanjut"
 										/>
 									</div>
@@ -872,19 +885,21 @@ const TabProgress = () => {
 										Batal
 									</button>
 									{!kognitif.tanggal_selesai && (
-										<button
-											type="button"
-											onClick={() => 
-												{
-													console.log("klik");
-													
-													handleUpdate("kognitif")
-												}
-											} // Fungsi untuk update data ke API
-											className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
-										>
-											Update
-										</button>
+										<Access action="edit">
+											<button
+												type="button"
+												onClick={() => 
+													{
+														console.log("klik");
+														
+														handleUpdate("kognitif")
+													}
+												} // Fungsi untuk update data ke API
+												className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
+											>
+												Update
+											</button>
+										</Access>
 									)}
 								</div>
 							</form>

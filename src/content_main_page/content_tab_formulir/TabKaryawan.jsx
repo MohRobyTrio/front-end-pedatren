@@ -10,10 +10,13 @@ import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolong
 import useDropdownLembaga from "../../hooks/hook_dropdown/DropdownLembagaDoang";
 import useLogout from "../../hooks/Logout";
 import Swal from "sweetalert2";
+import { hasAccess } from "../../utils/hasAccess";
+import Access from "../../components/Access";
 
 const TabKaryawan = () => {
 	const { biodata_id } = useParams();
 	const { clearAuthData } = useLogout();
+	const canEdit = hasAccess("edit");
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showOutModal, setShowOutModal] = useState(false);
 	const [karyawanList, setKaryawanList] = useState([]);
@@ -235,17 +238,19 @@ const TabKaryawan = () => {
 		<div className="block" id="Karyawan">
 			<h1 className="text-xl font-bold flex items-center justify-between">
 				Karyawan
-				<button
-					onClick={() => {
-						setFeature(1); // 1 = Tambah
-						openAddModal();
-					}}
-					type="button"
-					className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-				>
-					<i className="fas fa-plus"></i>
-					<span>Tambah Data</span>
-				</button>
+				<Access action="tambah">
+					<button
+						onClick={() => {
+							setFeature(1); // 1 = Tambah
+							openAddModal();
+						}}
+						type="button"
+						className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+					>
+						<i className="fas fa-plus"></i>
+						<span>Tambah Data</span>
+					</button>
+				</Access>
 			</h1>
 
 			{/* {showAddModal && ( */}
@@ -308,29 +313,33 @@ const TabKaryawan = () => {
 							</div>
 
 							{!karyawan.tanggal_keluar && karyawan.status === "aktif" && ( // Ditambahkan pengecekan status aktif juga, karena bisa jadi tanggal keluar null tapi status sudah nonaktif dari proses lain
-								<div className="flex flex-wrap gap-2 gap-x-4 mt-2">
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handlePindahJabatan(karyawan.id);
-										}}
-										className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
-										title="Pindah Jabatan"
-									>
-										<FontAwesomeIcon icon={faArrowRightArrowLeft} /> Pindah
-									</button>
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleKeluarJabatan(karyawan.id);
-										}}
-										className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
-										title="Keluar Jabatan"
-									>
-										<FontAwesomeIcon icon={faRightFromBracket} /> Keluar
-									</button>
+								                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
+									<Access action="pindah">
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												handlePindahJabatan(karyawan.id);
+											}}
+											className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+											title="Pindah Jabatan"
+										>
+											<FontAwesomeIcon icon={faArrowRightArrowLeft} /> Pindah
+										</button>
+									</Access>
+									<Access action="keluar">
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleKeluarJabatan(karyawan.id);
+											}}
+											className="text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+											title="Keluar Jabatan"
+										>
+											<FontAwesomeIcon icon={faRightFromBracket} /> Keluar
+										</button>
+									</Access>
 								</div>
 							)}
 						</div>
@@ -346,11 +355,11 @@ const TabKaryawan = () => {
 									<div>
 										<label className="block text-sm font-medium text-gray-700">Lembaga *</label>
 										<select
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={selectedLembagaId}
 											onChange={(e) => setSelectedLembagaId(e.target.value)}
-											disabled={selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
 										>
 											{/* <option value="">Pilih Lembaga</option> */}
 											{menuLembaga.map((opt) => ( // Gunakan menuLembaga dari state/hook
@@ -364,11 +373,11 @@ const TabKaryawan = () => {
 									<div>
 										<label className="block text-sm font-medium text-gray-700">Golongan Jabatan *</label>
 										<select
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={selectedGolonganJabatanId}
 											onChange={(e) => setSelectedGolonganJabatanId(e.target.value)}
-											disabled={selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
 										>
 											{/* <option value="">Pilih Golongan Jabatan</option> */}
 											{menuGolonganJabatan.map((opt) => ( // Gunakan menuGolonganJabatan dari state/hook
@@ -387,9 +396,9 @@ const TabKaryawan = () => {
 											id="keteranganJabatan"
 											value={keteranganJabatan}
 											onChange={(e) => setKeteranganJabatan(e.target.value)}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
-											disabled={selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
 										/>
 									</div>
 								</div>
@@ -402,11 +411,11 @@ const TabKaryawan = () => {
 										</label>
 										<select
 											id="jabatanKontrak"
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={jabatanKontrak}
 											onChange={(e) => setJabatanKontrak(e.target.value)}
-											disabled={selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
 										>
 											<option value="">Pilih Jenis Kontrak</option>
 											<option value="kultural">Kultural</option>
@@ -424,9 +433,9 @@ const TabKaryawan = () => {
 										<input
 											type="date"
 											id="startDate"
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
-											disabled={selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
 											value={startDate}
 											onChange={(e) => setStartDate(e.target.value)}
 										/>
@@ -450,19 +459,21 @@ const TabKaryawan = () => {
 								<div className="col-span-full">
 									<div className="flex space-x-2 mt-2">
 										{selectedKaryawanDetail?.status === "aktif" && (
-											<button
-												type="button"
-												disabled={loadingUpdateKaryawan}
-												className={`px-4 py-2 text-white rounded-lg ${loadingUpdateKaryawan
-														? "bg-blue-400 cursor-not-allowed"
-														: "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-													}`}
-												onClick={handleUpdate}
-											>
-												{loadingUpdateKaryawan ? (
-													<i className="fas fa-spinner fa-spin text-white"></i> // Ukuran icon disesuaikan
-												) : "Update"}
-											</button>
+											<Access action="edit">
+												<button
+													type="button"
+													disabled={loadingUpdateKaryawan}
+													className={`px-4 py-2 text-white rounded-lg ${loadingUpdateKaryawan
+															? "bg-blue-400 cursor-not-allowed"
+															: "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+														}`}
+													onClick={handleUpdate}
+												>
+													{loadingUpdateKaryawan ? (
+														<i className="fas fa-spinner fa-spin text-white"></i> // Ukuran icon disesuaikan
+													) : "Update"}
+												</button>
+											</Access>
 										)}
 										<button
 											type="button"

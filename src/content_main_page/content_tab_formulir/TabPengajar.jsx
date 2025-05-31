@@ -11,10 +11,15 @@ import { FaPlus } from "react-icons/fa";
 import { ModalAddPengajarFormulir, ModalKeluarPengajarFormulir } from "../../components/modal/modal_formulir/ModalFormPengajar";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
+import { hasAccess } from "../../utils/hasAccess";
+import Access from "../../components/Access";
 
 const TabPengajar = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const canEdit = hasAccess("edit");
+    const canPindah = hasAccess("pindah");
+    const canKeluar = hasAccess("keluar");
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [pengajarList, setPengajarList] = useState([]);
@@ -447,18 +452,20 @@ const TabPengajar = () => {
     return (
         <div className="block" id="Pengajar">
             <h1 className="text-xl font-bold flex items-center justify-between">Pengajar
-                <button
-                    onClick={() => {
-                        setFeature(1);
-                        openAddModal();
-                    }
-                    }
-                    type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                >
-                    <i className="fas fa-plus"></i>
-                    <span>Tambah Data</span>
-                </button>
+                <Access action="tambah">
+                    <button
+                        onClick={() => {
+                            setFeature(1);
+                            openAddModal();
+                        }
+                        }
+                        type="button"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                    >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Data</span>
+                    </button>
+                </Access>
             </h1>
             
             <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} handleAddAPI={handleAdd} />
@@ -508,29 +515,33 @@ const TabPengajar = () => {
                             </div>
 
                             {!pengajar.tanggal_keluar && (
-                                <div className="flex flex-wrap gap-2 gap-x-4 mt-2">
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleOpenAddModalWithDetail(pengajar.id, 2);
-                                        }}
-                                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
-                                        title="Pindah Khadam"
-                                    >
-                                        <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            openOutModal(pengajar.id);
-                                        }}
-                                        className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
-                                        title="Keluar Khadam"
-                                    >
-                                        <FontAwesomeIcon icon={faRightFromBracket} />Keluar
-                                    </button>
+                                                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
+                                    <Access action="pindah">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleOpenAddModalWithDetail(pengajar.id, 2);
+                                            }}
+                                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                            title="Pindah Khadam"
+                                        >
+                                            <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
+                                        </button>
+                                    </Access>
+                                    <Access action="keluar">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                openOutModal(pengajar.id);
+                                            }}
+                                            className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+                                            title="Keluar Khadam"
+                                        >
+                                            <FontAwesomeIcon icon={faRightFromBracket} />Keluar
+                                        </button>
+                                    </Access>
                                 </div>
                             )}
                         </div>
@@ -549,10 +560,10 @@ const TabPengajar = () => {
                                                 Lembaga
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${updatedFilterLembaga.lembaga.length <= 1 || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${updatedFilterLembaga.lembaga.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => handleFilterChangeLembaga({ lembaga: e.target.value })}
                                                 value={selectedLembaga.lembaga || ""}
-                                                disabled={updatedFilterLembaga.lembaga.length <= 1 || selectedPengajarDetail.status === "tidak aktif"}
+                                                disabled={updatedFilterLembaga.lembaga.length <= 1 || !canEdit || selectedPengajarDetail.status === "tidak aktif"}
                                             >
                                                 {updatedFilterLembaga.lembaga.map((lembaga, idx) => (
                                                     <option key={idx} value={lembaga.value}>
@@ -566,10 +577,10 @@ const TabPengajar = () => {
                                                 Golongan
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => setGolongan(e.target.value )}
                                                 value={golongan}
-                                                disabled={allGolonganList.length <= 1 || selectedPengajarDetail.status === "tidak aktif"}
+                                                disabled={allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status === "tidak aktif"}
                                             >
                                                 {allGolonganList.map((golongan, idx) => (
                                                     <option key={idx} value={golongan.id}>
@@ -584,10 +595,10 @@ const TabPengajar = () => {
                                                 Jabatan
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => setJabatan(e.target.value)}
                                                 value={jabatan}
-                                                disabled={selectedPengajarDetail.status === "tidak aktif"}
+                                                disabled={!canEdit || selectedPengajarDetail.status === "tidak aktif"}
                                             >
                                                 {jenisJabatan.map((item, idx) => (
                                                     <option key={idx} value={item.value}>
@@ -608,8 +619,8 @@ const TabPengajar = () => {
                                             <input
                                                 type="date"
                                                 id="startDate"
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedPengajarDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                                disabled={selectedPengajarDetail?.status === "tidak aktif"}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                                disabled={!canEdit || selectedPengajarDetail?.status === "tidak aktif"}
                                                 value={startDate}
                                                 onChange={(e) => setStartDate(e.target.value)}
                                             />
@@ -633,17 +644,19 @@ const TabPengajar = () => {
                                 <h1 className="text-black font-bold flex items-center justify-between w-full mb-2">
                                     Materi Ajar
                                     {pengajar.status === "aktif" && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setFeature(3);
-                                                openAddModal();
-                                                console.log("add");                                            
-                                            }}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
-                                        >
-                                            <FaPlus />
-                                        </button>
+                                        <Access action="tambah">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setFeature(3);
+                                                    openAddModal();
+                                                    console.log("add");                                            
+                                                }}
+                                                className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
+                                            >
+                                                <FaPlus />
+                                            </button>
+                                        </Access>
                                         )}
                                 </h1>
 
@@ -658,7 +671,9 @@ const TabPengajar = () => {
                                                 <th className="px-3 py-2 border-b">Tanggal Akhir</th>
                                                 <th className="px-3 py-2 border-b">Status</th>
                                                 {pengajar.status === "aktif" && !semuaNonaktif && (
-                                                    <th className="px-3 py-2 border-b">Aksi</th>
+                                                    <Access action="delete">
+                                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                                    </Access>
                                                 )}
                                             </tr>
                                         </thead>
@@ -679,16 +694,18 @@ const TabPengajar = () => {
                                                         {item.status === "aktif" ? "Aktif" : "Nonaktif"}
                                                     </span></td>
                                                     {pengajar.status === "aktif" && !semuaNonaktif && (
-                                                    <td className="px-3 py-2 border-b">
-                                                        {item.status === "aktif" && (
-                                                            <button
-                                                                onClick={(e) => handleRemove(index, e)}
-                                                                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                                            >
-                                                                <FontAwesomeIcon icon={faTrash} />
-                                                            </button>
-                                                        )}
-                                                    </td>
+                                                        <Access action="delete">
+                                                            <td className="px-3 py-2 border-b">
+                                                                {item.status === "aktif" && (
+                                                                    <button
+                                                                        onClick={(e) => handleRemove(index, e)}
+                                                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faTrash} />
+                                                                    </button>
+                                                                )}
+                                                            </td>
+                                                        </Access>
                                                     )}
                                                 </tr>
                                             ))}
@@ -705,13 +722,15 @@ const TabPengajar = () => {
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
                                         {pengajar.status === "aktif" && (
-                                            <button
-                                                type="button"
-                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
-                                                onClick={handleUpdate}
-                                            >
-                                                Update
-                                            </button>
+                                            <Access action="edit">
+                                                <button
+                                                    type="button"
+                                                    className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
+                                                    onClick={handleUpdate}
+                                                >
+                                                    Update
+                                                </button>
+                                            </Access>
                                         )}
                                         <button
                                             type="button"
