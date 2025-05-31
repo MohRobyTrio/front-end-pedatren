@@ -3,7 +3,7 @@ import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
-import { Dialog, Transition } from "@headlessui/react";
+import { Combobox, Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
@@ -25,7 +25,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
         akhlak_nilai: "",
         akhlak_tindak_lanjut: "",
         tanggal_buat: "",
-    });    
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -85,7 +85,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
             }
 
             // if ("status" in result && !result.status) {
-           if (!("data" in result)) {
+            if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
@@ -163,7 +163,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                         <div className="mt-2 sm:mt-0 text-left w-full">
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">                                                
+                                            <div className="space-y-4">
                                                 <div>
                                                     <label htmlFor="id_wali_asuh" className="block text-gray-700">Nama Pencatat *</label>
                                                     <select
@@ -219,7 +219,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="kepedulian_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Kepedulian *</label>
                                                     <textarea
@@ -249,7 +249,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="kebersihan_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Kebersihan *</label>
                                                     <textarea
@@ -261,7 +261,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                         required
                                                     />
                                                 </div>
-                                                
+
                                                 {/* Kebersihan */}
                                                 <div>
                                                     <label htmlFor="akhlak_nilai" className="block text-gray-700">Nilai Akhlak *</label>
@@ -279,7 +279,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="akhlak_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Akhlak *</label>
                                                     <textarea
@@ -303,7 +303,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>                                            
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -339,6 +339,15 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const { menuSantri } = useDropdownSantri();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
+    const [querySantri, setQuerySantri] = useState('');
+
+    const filteredSantri =
+        querySantri === ''
+            ? menuSantri
+            : menuSantri.filter((santri) =>
+                santri.label.toLowerCase().includes(querySantri.toLowerCase())
+            );
+
 
     const [formData, setFormData] = useState({
         id_santri: "",
@@ -356,7 +365,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
         baca_alquran_nilai: "",
         baca_alquran_tindak_lanjut: "",
         tanggal_buat: "",
-    });    
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -417,7 +426,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
             }
 
             // if ("status" in result && !result.status) {
-           if (!("data" in result)) {
+            if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
@@ -533,6 +542,48 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                     </select>
                                                 </div>
 
+                                                {/* <div>
+                                                    <label htmlFor="id_santri" className="block text-gray-700 mb-1">
+                                                        Nama Santri *
+                                                    </label>
+                                                    <Combobox
+                                                        value={menuSantri.find(s => s.id === formData.id_santri) || null}
+                                                        onChange={(value) => setFormData({ ...formData, id_santri: value.id })}
+                                                        disabled={menuSantri.length <= 1}
+                                                    >
+                                                        <div className="relative">
+                                                            <Combobox.Input
+                                                                className={`w-full border p-2 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuSantri.length <= 1 ? 'bg-gray-200 text-gray-500' : 'border-gray-300'
+                                                                    }`}
+                                                                displayValue={(santri) => santri?.label || ''}
+                                                                onChange={(event) => setQuerySantri(event.target.value)}
+                                                                placeholder="Pilih santri..."
+                                                                required
+                                                            />
+                                                            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                                                {filteredSantri.length === 0 && (
+                                                                    <div className="relative cursor-default select-none py-2 px-4 text-gray-500">
+                                                                        Tidak ditemukan
+                                                                    </div>
+                                                                )}
+                                                                {filteredSantri.map((santri, idx) => (
+                                                                    <Combobox.Option
+                                                                        key={idx}
+                                                                        value={santri}
+                                                                        className={({ active }) =>
+                                                                            `cursor-pointer select-none relative py-2 px-4 ${active ? 'bg-blue-600 text-white' : 'text-gray-900'
+                                                                            }`
+                                                                        }
+                                                                    >
+                                                                        {santri.label}
+                                                                    </Combobox.Option>
+                                                                ))}
+                                                            </Combobox.Options>
+                                                        </div>
+                                                    </Combobox>
+                                                </div> */}
+
+
                                                 {/* Kepedulian */}
                                                 <div>
                                                     <label htmlFor="kebahasaan_nilai" className="block text-gray-700">Nilai Kebahasaan *</label>
@@ -550,7 +601,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="kebahasaan_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Kebahasaan *</label>
                                                     <textarea
@@ -580,7 +631,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="baca_kitab_kuning_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Baca Kitab Kuning *</label>
                                                     <textarea
@@ -592,7 +643,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         required
                                                     />
                                                 </div>
-                                                
+
                                                 {/* Kebersihan */}
                                                 <div>
                                                     <label htmlFor="hafalan_tahfidz_nilai" className="block text-gray-700">Nilai Hafalan Tahfidz *</label>
@@ -610,7 +661,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="hafalan_tahfidz_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Hafalan Tahfidz *</label>
                                                     <textarea
@@ -640,7 +691,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="furudul_ainiyah_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Furudul Ainiyah *</label>
                                                     <textarea
@@ -670,7 +721,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="tulis_alquran_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Tulis Al-Quran *</label>
                                                     <textarea
@@ -700,7 +751,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
-                                                
+
                                                 <div>
                                                     <label htmlFor="baca_alquran_tindak_lanjut" className="block text-gray-700">Tindak Lanjut Baca Al-Quran *</label>
                                                     <textarea
@@ -724,7 +775,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>                                            
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
