@@ -3,9 +3,12 @@ import { useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { useWarPes } from "../../hooks/hooks_formulir/tabWarPes";
 import ModalAddWarPesFormulir from "../../components/modal/modal_formulir/ModalFormWarpes";
+import { hasAccess } from "../../utils/hasAccess";
+import Access from "../../components/Access";
 
 const TabWarPes = () => {
     const { biodata_id } = useParams();
+    const canEdit = hasAccess("edit");
     const [showAddModal, setShowAddModal] = useState(false);
 
     const {
@@ -39,14 +42,16 @@ const TabWarPes = () => {
     return (
         <div className="block" id="warPes">
             <h1 className="text-xl font-bold flex items-center justify-between">Warga Pesantren
-                <button
-                    onClick={openAddModal}
-                    type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                >
-                    <i className="fas fa-plus"></i>
-                    <span>Tambah Data</span>
-                </button>
+                <Access action="tambah">
+                    <button
+                        onClick={openAddModal}
+                        type="button"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                    >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Data</span>
+                    </button>
+                </Access>
             </h1>
 
             <ModalAddWarPesFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} refetchData={fetchWarPes} />
@@ -124,6 +129,7 @@ const TabWarPes = () => {
                                                 className="form-radio text-blue-500 focus:ring-blue-500"
                                                 checked={aktif === true}
                                                 onChange={() => setAktif(true)}
+                                                disabled={!canEdit}
                                             />
                                             <span className="ml-2 text-gray-700">Ya</span>
                                         </label>
@@ -135,6 +141,7 @@ const TabWarPes = () => {
                                                 checked={aktif === false}
                                                 onChange={() => setAktif(false)}
                                                 className="form-radio text-blue-500 focus:ring-blue-500"
+                                                disabled={!canEdit}
                                             />
                                             <span className="ml-2 text-gray-700">Tidak</span>
                                         </label>
@@ -144,13 +151,15 @@ const TabWarPes = () => {
                                 {/* Tombol */}
                                 <div className="flex items-center">
                                     <div className="w-2/3 flex space-x-2">
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none"
-                                            onClick={handleUpdate}
-                                        >
-                                            Update
-                                        </button>
+                                        <Access action="edit">
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none"
+                                                onClick={handleUpdate}
+                                            >
+                                                Update
+                                            </button>
+                                        </Access>
                                         <button
                                             type="button"
                                             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none"

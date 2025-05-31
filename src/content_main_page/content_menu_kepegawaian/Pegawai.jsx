@@ -16,6 +16,7 @@ import { API_BASE_URL } from '../../hooks/config';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
+import Access from '../../components/Access';
 
 const Pegawai = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -166,7 +167,9 @@ const Pegawai = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Pegawai</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <Access action="tambah">
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                     <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/pegawai`, setExportLoading)}
                         disabled={exportLoading}

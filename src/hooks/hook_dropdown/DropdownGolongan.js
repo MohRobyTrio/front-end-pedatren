@@ -15,7 +15,14 @@ const DropdownGolongan = () => {
         const localData = sessionStorage.getItem("menuGolongan");
 
     if (localData) {   
-      setGolonganData(JSON.parse(localData));
+      const parsedData = JSON.parse(localData);
+        setGolonganData(parsedData);
+
+        // ⬅️ Tambahkan ini
+        setKategoriGolongan([
+            { label: "Kategori Golongan", value: "" },
+            ...parsedData.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
+        ]);
     } else {
         fetch(`${API_BASE_URL}dropdown/golongan`)
             .then((res) => res.json())

@@ -12,6 +12,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { API_BASE_URL } from "../../hooks/config";
 import { FaPlus } from "react-icons/fa";
 import { ModalAddProgressKognitif } from "../../components/modal/ModalFormCatatan";
+import Access from "../../components/Access";
 
 
 const CatatanKognitif = () => {
@@ -175,7 +176,9 @@ const CatatanKognitif = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Catatan Kognitif</h1>
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    <Access action="tambah">
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                 </div>
             </div>
 

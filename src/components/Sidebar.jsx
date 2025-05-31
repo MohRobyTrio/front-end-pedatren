@@ -9,6 +9,7 @@ import {
     menuMahromItems,
     subPesertaDidik
 } from "../data/menuData";
+import Access from "./Access";
 
 const Sidebar = ({
     submenuPesertaDidik,
@@ -194,15 +195,17 @@ const Sidebar = ({
                         />
                         {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
                     </div>
-
-                    <div className="mt-4 px-3">
-                        <MenuHeader
-                            name="Kelembagaan"
-                            isOpen={dropdownDataKelembagaan}
-                            onClick={() => toggleDropdown(setDropdownDataKelembagaan)}
-                        />
-                        {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
-                    </div>
+                    
+                    <Access action="kelembagaan">
+                        <div className="mt-4 px-3">
+                            <MenuHeader
+                                name="Kelembagaan"
+                                isOpen={dropdownDataKelembagaan}
+                                onClick={() => toggleDropdown(setDropdownDataKelembagaan)}
+                            />
+                            {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
+                        </div>
+                    </Access>
                 </div>
             </div>
         </aside>

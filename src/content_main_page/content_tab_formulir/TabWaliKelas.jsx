@@ -9,10 +9,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
+import { hasAccess } from "../../utils/hasAccess";
+import Access from "../../components/Access";
 
 const TabWaliKelas = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const canEdit = hasAccess("edit");
+    const canPindah = hasAccess("pindah");
+    const canKeluar = hasAccess("keluar");
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [waliKelasList, setWaliKelasList] = useState([]);
@@ -233,10 +238,10 @@ const TabWaliKelas = () => {
                             {capitalizeFirst(label)} *
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || selectedWaliKelasDetail.status_aktif === "tidak aktif"}
+                            disabled={options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif"}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -251,18 +256,20 @@ const TabWaliKelas = () => {
     return (
         <div className="block" id="WaliKelas">
             <h1 className="text-xl font-bold flex items-center justify-between">Wali Kelas
-                <button
-                    onClick={() => {
-                        setFeature(1);
-                        openAddModal();
-                    }
-                    }
-                    type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                >
-                    <i className="fas fa-plus"></i>
-                    <span>Tambah Data</span>
-                </button>
+                <Access action="tambah">
+                    <button
+                        onClick={() => {
+                            setFeature(1);
+                            openAddModal();
+                        }
+                        }
+                        type="button"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                    >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Data</span>
+                    </button>
+                </Access>
             </h1>
 
             <ModalAddWaliKelasFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedWaliKelasId} refetchData={fetchWaliKelas} feature={feature} />
@@ -316,31 +323,35 @@ const TabWaliKelas = () => {
                             </div>
 
                             {!waliKelas.Periode_akhir && (
-                                <div className="flex flex-wrap gap-2 gap-x-4 mt-2">
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setFeature(2);
-                                            openAddModal();
-                                            // handleOpenAddModalWithDetail(khadam.id, 2);
-                                        }}
-                                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
-                                        title="Pindah Khadam"
-                                    >
-                                        <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            openOutModal(waliKelas.id);
-                                        }}
-                                        className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
-                                        title="Keluar Khadam"
-                                    >
-                                        <FontAwesomeIcon icon={faRightFromBracket} />Keluar
-                                    </button>
+                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
+                                    <Access action="pindah">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setFeature(2);
+                                                openAddModal();
+                                                // handleOpenAddModalWithDetail(khadam.id, 2);
+                                            }}
+                                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                            title="Pindah Khadam"
+                                        >
+                                            <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
+                                        </button>
+                                    </Access>
+                                    <Access action="keluar">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                openOutModal(waliKelas.id);
+                                            }}
+                                            className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+                                            title="Keluar Khadam"
+                                        >
+                                            <FontAwesomeIcon icon={faRightFromBracket} />Keluar
+                                        </button>
+                                    </Access>
                                 </div>
                             )}
                         </div>
@@ -373,8 +384,8 @@ const TabWaliKelas = () => {
                                             onChange={(e) => setJmlMurid(e.target.value)}
                                             maxLength={50}
                                             placeholder="Masukkan Jumlah Murid"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
                                         />
                                     </div>
 
@@ -385,8 +396,8 @@ const TabWaliKelas = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -411,13 +422,15 @@ const TabWaliKelas = () => {
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
                                         {waliKelas.status_aktif === "aktif" && (
-                                            <button
-                                                type="button"
-                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
-                                                onClick={handleUpdate}
-                                            >
-                                                Update
-                                            </button>
+                                            <Access action="edit">
+                                                <button
+                                                    type="button"
+                                                    className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
+                                                    onClick={handleUpdate}
+                                                >
+                                                    Update
+                                                </button>
+                                            </Access>
                                         )}
                                         <button
                                             type="button"

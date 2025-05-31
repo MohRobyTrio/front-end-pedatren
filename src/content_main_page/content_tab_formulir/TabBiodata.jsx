@@ -9,6 +9,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import Swal from "sweetalert2";
+import Access from "../../components/Access";
 
 
 // Skema validasi form
@@ -1053,15 +1054,17 @@ const TabBiodata = () => {
 
                 <br />
                 {/* Tombol Simpan */}
-                <div className="mt-4">
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Menyimpan...' : 'Simpan'}
-                    </button>
-                </div>
+                <Access action="edit">
+                    <div className="mt-4">
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Menyimpan...' : 'Simpan'}
+                        </button>
+                    </div>
+                </Access>
             </form>
         </div>
     );

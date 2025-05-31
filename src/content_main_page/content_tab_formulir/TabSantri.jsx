@@ -4,9 +4,12 @@ import ModalAddSantriFormulir from "../../components/modal/modal_formulir/ModalF
 import { OrbitProgress } from "react-loading-indicators";
 import { useSantri } from "../../hooks/hooks_formulir/tabSantri";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
+import Access from "../../components/Access";
+import { hasAccess } from "../../utils/hasAccess";
 
 const TabSantri = () => {
     const { biodata_id } = useParams();
+    const canEdit = hasAccess("edit");
     const { menuAngkatanSantri } = DropdownAngkatan();
     const [showAddModal, setShowAddModal] = useState(false);
 
@@ -43,14 +46,16 @@ const TabSantri = () => {
     return (
         <div className="block" id="santri">
             <h1 className="text-xl font-bold flex items-center justify-between">Status Santri
-                <button
-                    onClick={openAddModal}
-                    type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                >
-                    <i className="fas fa-plus"></i>
-                    <span>Tambah Data</span>
-                </button>
+                <Access action="tambah">
+                    <button
+                        onClick={openAddModal}
+                        type="button"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                    >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Data</span>
+                    </button>
+                </Access>
             </h1>
 
             <ModalAddSantriFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} refetchData={fetchSantri} />
@@ -124,9 +129,10 @@ const TabSantri = () => {
                                         </label>
                                         <select
                                             id="angkatan_id"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
                                             onChange={(e) => setAngkatanId(e.target.value)}
                                             value={angkatanId}
+                                            disabled={!canEdit}
                                             required
                                         >
                                             {menuAngkatanSantri.map((santri, idx) => (
@@ -148,6 +154,7 @@ const TabSantri = () => {
                                                     checked={status === "aktif"}
                                                     onChange={(e) => setStatus( e.target.value )}
                                                     className="text-blue-600 focus:ring-blue-500"
+                                                    disabled={!canEdit}
                                                 />
                                                 <span className="ml-2 text-gray-700">Aktif</span>
                                             </label>
@@ -159,6 +166,7 @@ const TabSantri = () => {
                                                     checked={status === "alumni"}
                                                     onChange={(e) => setStatus( e.target.value )}
                                                     className="text-blue-600 focus:ring-blue-500"
+                                                    disabled={!canEdit}
                                                 />
                                                 <span className="ml-2 text-gray-700">Alumni</span>
                                             </label>
@@ -174,9 +182,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
+                                            disabled={!canEdit}
                                         />
                                     </div>
 
@@ -187,9 +196,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
+                                            disabled={!canEdit}
                                         />
                                     </div>
                                 </div>
@@ -197,13 +207,15 @@ const TabSantri = () => {
                                 <div>
                                     {/* <label className="block text-sm font-medium text-gray-700">&nbsp;</label> */}
                                     <div className="flex space-x-2 mt-1">
-                                        <button
-                                            type="button"
-                                            className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
-                                            onClick={handleUpdate}
-                                        >
-                                            Update
-                                        </button>
+                                        <Access action="edit">
+                                            <button
+                                                type="button"
+                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
+                                                onClick={handleUpdate}
+                                            >
+                                                Update
+                                            </button>
+                                        </Access>
                                         <button
                                             type="button"
                                             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
