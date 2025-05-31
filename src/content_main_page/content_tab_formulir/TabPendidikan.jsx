@@ -31,7 +31,7 @@ const TabPendidikan = () => {
     const [loadingUpdatePendidikan, setLoadingUpdatePendidikan] = useState(false);
 
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, setSelectedLembaga } = DropdownLembaga();
-    const { menuAngkatanSantri } = DropdownAngkatan();
+    const { menuAngkatanPelajar } = DropdownAngkatan();
 
     // Ubah label index ke-0 menjadi "Pilih ..."
     const updateFirstOptionLabel = (list, label) =>
@@ -256,6 +256,16 @@ const TabPendidikan = () => {
         }
     };
 
+    const handleOpenAddModalWithDetail = async (id, featureNum) => {
+        try {
+            setSelectedPendidikanId(id);
+            setFeature(featureNum);
+            setShowAddModal(true);
+        } catch (error) {
+            console.error("Gagal mengambil detail Khadam:", error);
+        }
+    };
+
     const closeAddModal = () => {
         setShowAddModal(false);
     };
@@ -380,8 +390,7 @@ const TabPendidikan = () => {
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            setFeature(2);
-                                            openAddModal();
+                                            handleOpenAddModalWithDetail(pendidikan.id, 2);
                                         }}
                                         className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                                         title="Pindah Pendidikan"
@@ -429,9 +438,9 @@ const TabPendidikan = () => {
                                             value={angkatanId}
                                             required
                                         >
-                                            {menuAngkatanSantri.map((santri, idx) => (
-                                                <option key={idx} value={santri.value}>
-                                                    {santri.label}
+                                            {menuAngkatanPelajar.map((pelajar, idx) => (
+                                                <option key={idx} value={pelajar.value}>
+                                                    {pelajar.label}
                                                 </option>
                                             ))}
                                         </select>

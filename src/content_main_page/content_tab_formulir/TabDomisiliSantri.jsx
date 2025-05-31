@@ -322,6 +322,16 @@ const TabDomisiliSantri = () => {
   // Kapitalisasi huruf pertama
   const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
+  const handleOpenAddModalWithDetail = async (id, featureNum) => {
+    try {
+      setSelectedDomisiliId(id);
+      setFeature(featureNum);
+      setShowAddModal(true);
+    } catch (error) {
+      console.error("Gagal mengambil detail Khadam:", error);
+    }
+  };
+
   return (
     <div className="block" id="Domisili">
       <h1 className="text-xl font-bold flex items-center justify-between">Domisili Santri
@@ -403,8 +413,7 @@ const TabDomisiliSantri = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setFeature(2);
-                      openAddModal();
+                      handleOpenAddModalWithDetail(domisili.id, 2);
                     }}
                     className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                     title="Pindah Domisili"

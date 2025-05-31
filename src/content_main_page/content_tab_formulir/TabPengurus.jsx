@@ -187,6 +187,16 @@ const TabPengurus = () => {
     }
   };
 
+  const handleOpenAddModalWithDetail = async (id, featureNum) => {
+    try {
+      setSelectedPengurusId(id);
+      setFeature(featureNum);
+      setShowAddModal(true);
+    } catch (error) {
+      console.error("Gagal mengambil detail Khadam:", error);
+    }
+  };
+
   // debuging logs
   // console.log("menuGolonganJabatan", menuGolonganJabatan);
   // console.log("selectedGolonganJabatanId", selectedGolonganJabatanId);
@@ -285,8 +295,7 @@ const TabPengurus = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setFeature(2);
-                      openAddModal();
+                      handleOpenAddModalWithDetail(pengurus.id, 2);
                     }}
                     className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                     title="Pindah Jabatan"

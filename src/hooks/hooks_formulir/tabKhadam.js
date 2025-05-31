@@ -157,26 +157,7 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
         try {
-            // const response = await fetch(`${API_BASE_URL}formulir/${id}/khadam/show`, {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${token}`
-            //     }
-            // });
-            // if (response.status === 401) {
-            //   await Swal.fire({
-            //     title: "Sesi Berakhir",
-            //     text: "Sesi anda telah berakhir, silakan login kembali.",
-            //     icon: "warning",
-            //     confirmButtonText: "OK",
-            //   });
-            //   clearAuthData();
-            //   return;
-            // }
-            // const result = await response.json();
             setSelectedKhadamId(id);
-            // setSelectedKhadamData(result.data);
             setFeature(featureNum);
             setShowAddModal(true);
         } catch (error) {

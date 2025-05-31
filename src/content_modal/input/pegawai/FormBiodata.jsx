@@ -2,9 +2,16 @@ import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
+const FormBiodata = ({ register, watch, setValue, control, activeTab, exposeHandler }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+
+    useEffect(() => {
+        if (exposeHandler) {
+            exposeHandler({ handleFilterChangeNegara });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // kosong artinya hanya jalan sekali
 
     const kewarganegaraan = watch("modalPegawai.kewarganegaraan");
     const negara = watch("modalPegawai.negara_id");

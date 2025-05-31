@@ -1,7 +1,7 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from "react-icons/fa";
 import FormBiodata from "../../content_modal/input/pegawai/FormBiodata";
 import FormKaryawan from "../../content_modal/input/pegawai/FormKaryawan";
@@ -13,12 +13,20 @@ import { jenisBerkasList } from "../../data/menuData";
 
 const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
     const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = formState;
+    const [biodataHandlers, setBiodataHandlers] = useState({});
+
+    const handleReset = () => {
+        resetData();
+        if (activeTab === 0 && biodataHandlers?.handleFilterChangeNegara) {
+            biodataHandlers.handleFilterChangeNegara({ negara: null, provinsi: null, kabupaten: null, kecamatan: null });
+        }
+    };
 
     const tabs = [
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab}/>
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} exposeHandler={(handlers) => setBiodataHandlers(handlers)} />
         },
         {
             id: 1,
@@ -114,18 +122,6 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
 
                                 <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
 
-                                {/* <div className="pt-4">
-                                    {tabs.map((tab) => (
-                                        <div
-                                            key={tab.id}
-                                            style={{ display: activeTab === tab.id ? "block" : "none" }}
-                                            aria-hidden={activeTab !== tab.id}
-                                        >
-                                            {tab.content}
-                                        </div>
-                                    ))}
-                                </div> */}
-
                             </form>
 
                             <div className="mt-4 pt-4 flex justify-between">
@@ -142,7 +138,7 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
                                     {activeTab < tabs.length && (
                                         <button
                                             type="button"
-                                            onClick={resetData}
+                                            onClick={handleReset}
                                             className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
                                         >
                                             <FaUndo />

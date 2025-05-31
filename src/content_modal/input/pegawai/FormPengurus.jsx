@@ -105,15 +105,13 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
                 </label>
                 <div className="md:w-full md:max-w-md max-w-none">
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                        <select
-                            className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${menuSatuanKerja?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
-                            disabled={menuSatuanKerja?.length <= 1}
+                        <input
+                            type="text"
+                            id="satuan_kerja_pengurus"
+                            placeholder="Masukkan Satuan Kerja"
+                            className="w-full py-1.5 px-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             {...register('modalPegawai.satuan_kerja_pengurus')}
-                        >
-                            {menuSatuanKerja.map((option, idx) => (
-                                <option key={idx} value={option.value}>{option.label}</option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </div>
             </div>

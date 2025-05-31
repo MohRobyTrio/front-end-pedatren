@@ -35,7 +35,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 };
 
 export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
-  const { menuAngkatanSantri } = DropdownAngkatan();
+  const { menuAngkatanPelajar } = DropdownAngkatan();
   const { clearAuthData } = useLogout();
   const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
@@ -238,13 +238,13 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                           <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
                           <select
                             className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                            onChange={(e) => setFormData({ ...formData, tanggal_masuk: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, angkatan_id: e.target.value })}
                             value={formData.angkatan_id}
                             required
                           >
-                            {menuAngkatanSantri.map((santri, idx) => (
-                              <option key={idx} value={santri.value}>
-                                {santri.label}
+                            {menuAngkatanPelajar.map((pelajar, idx) => (
+                              <option key={idx} value={pelajar.value}>
+                                {pelajar.label}
                               </option>
                             ))}
                           </select>
