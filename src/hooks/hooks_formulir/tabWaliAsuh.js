@@ -3,9 +3,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [waliAsuhList, setWaliAsuhList] = useState([]);
     const [loadingWaliAsuh, setLoadingWaliAsuh] = useState(false);
     const [loadingDetailWaliAsuhId, setLoadingDetailWaliAsuhId] = useState(null);
@@ -48,7 +50,8 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     icon: "warning",
                     confirmButtonText: "OK",
                 });
-                useLogout().clearAuthData();
+                clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -62,6 +65,7 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
         } finally {
             setLoadingGrupWaliAsuh(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     // useEffect(() => {
@@ -86,16 +90,25 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
             // Ambil ID santri dari data paling baru
+            // if (result.data && result.data.length > 0) {
+            //     setSantriId(result.data[0].id);
+            // }
+            // Ambil ID santri dari data yang statusnya "aktif"
             if (result.data && result.data.length > 0) {
-                setSantriId(result.data[0].id);
+                const santriAktif = result.data.find(item => item.status === "aktif");
+                if (santriAktif) {
+                    setSantriId(santriAktif.id);
+                }
             }
         } catch (error) {
             console.error("Gagal mengambil data Santri:", error);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [biodata_id, token]);
 
     const fetchWaliAsuh = useCallback(async () => {
@@ -118,8 +131,15 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
+
+            if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
+            
             const result = await response.json();
             setWaliAsuhList(result.data || []);
         } catch (error) {
@@ -128,6 +148,7 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
         } finally {
             setLoadingWaliAsuh(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [biodata_id, token]);
 
     useEffect(() => {
@@ -154,6 +175,7 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -208,6 +230,7 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();

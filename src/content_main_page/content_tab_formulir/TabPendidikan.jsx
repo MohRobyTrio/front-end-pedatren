@@ -76,6 +76,10 @@ const TabPendidikan = () => {
                 navigate("/login");
                 return;
             }
+            if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
             const result = await response.json();
             setPendidikanList(result.data || []);
         } catch (error) {
