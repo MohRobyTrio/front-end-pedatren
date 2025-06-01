@@ -26,32 +26,46 @@ const useFetchPelajar = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async () => {
-        let url = `${API_BASE_URL}data-pokok/pelajar?limit=${limit}`;
-        if (currentPage > 1) {
-            url += `&page=${currentPage}`;
+        let url = `${API_BASE_URL}data-pokok/pelajar`;
+        const params = [];
+        if (limit !== null && limit !== undefined) {
+            params.push(`limit=${limit}`);
         }
-        if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+        // if (currentPage > 1) {
+        //     url += `&page=${currentPage}`;
+        // }
+        // if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+        if (currentPage > 1) {
+            params.push(`page=${currentPage}`);
+        }
+        if (debouncedSearchTerm) {
+            params.push(`nama=${encodeURIComponent(debouncedSearchTerm)}`);
+        }
 
-        if (filters?.negara && filters.negara !== "Semua Negara") url += `&negara=${encodeURIComponent(filters.negara)}`;
-        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
-        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
-        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
-        if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
-        if (filters?.blok && filters.blok !== "Semua Blok") url += `&blok=${encodeURIComponent(filters.blok)}`;
-        if (filters?.kamar && filters.kamar !== "Semua Kamar") url += `&kamar=${encodeURIComponent(filters.kamar)}`;
-        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
-        if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
-        if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
-        if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
-        if (filters?.jenisKelamin) url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
-        if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
-        if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
-        if (filters?.angkatanPelajar) url += `&angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`;
-        if (filters?.wargaPesantren) url += `&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`;
-        if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
-        if (filters?.urutBerdasarkan) url += `&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`;
-        if (filters?.urutSecara) url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`;
-        if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
+        if (filters?.negara && filters.negara !== "Semua Negara") params.push(`&negara=${encodeURIComponent(filters.negara)}`);
+        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") params.push(`&provinsi=${encodeURIComponent(filters.provinsi)}`);
+        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") params.push(`&kabupaten=${encodeURIComponent(filters.kabupaten)}`);
+        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") params.push(`&kecamatan=${encodeURIComponent(filters.kecamatan)}`);
+        if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") params.push(`&wilayah=${encodeURIComponent(filters.wilayah)}`);
+        if (filters?.blok && filters.blok !== "Semua Blok") params.push(`&blok=${encodeURIComponent(filters.blok)}`);
+        if (filters?.kamar && filters.kamar !== "Semua Kamar") params.push(`&kamar=${encodeURIComponent(filters.kamar)}`);
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") params.push(`&lembaga=${encodeURIComponent(filters.lembaga)}`);
+        if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") params.push(`&jurusan=${encodeURIComponent(filters.jurusan)}`);
+        if (filters?.kelas && filters.kelas !== "Semua Kelas") params.push(`&kelas=${encodeURIComponent(filters.kelas)}`);
+        if (filters?.rombel && filters.rombel !== "Semua Rombel") params.push(`&rombel=${encodeURIComponent(filters.rombel)}`);
+        if (filters?.jenisKelamin) params.push(`&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`);
+        if (filters?.smartcard) params.push(`&smartcard=${encodeURIComponent(filters.smartcard)}`);
+        if (filters?.status) params.push(`&status=${encodeURIComponent(filters.status)}`);
+        if (filters?.angkatanPelajar) params.push(`&angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`);
+        if (filters?.wargaPesantren) params.push(`&warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`);
+        if (filters?.pemberkasan) params.push(`&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`);
+        if (filters?.urutBerdasarkan) params.push(`&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`);
+        if (filters?.urutSecara) params.push(`&sort_order=${encodeURIComponent(filters.urutSecara)}`);
+        if (filters?.phoneNumber) params.push(`&phone_number=${encodeURIComponent(filters.phoneNumber)}`);
+
+        if (params.length > 0) {
+            url += `?${params.join("&")}`;
+        }
 
         if (lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
