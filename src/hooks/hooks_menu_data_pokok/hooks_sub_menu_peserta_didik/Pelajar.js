@@ -25,7 +25,7 @@ const useFetchPelajar = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/pelajar`;
         const params = [];
         if (limit !== null && limit !== undefined) {
@@ -67,7 +67,7 @@ const useFetchPelajar = (filters) => {
             url += `?${params.join("&")}`;
         }
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -118,6 +118,7 @@ const useFetchPelajar = (filters) => {
         limit,
         setLimit,
         totalDataPelajar,
+        fetchData,
         totalPages,
         currentPage,
         setCurrentPage
