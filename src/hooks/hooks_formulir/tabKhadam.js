@@ -3,9 +3,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [khadamList, setKhadamList] = useState([]);
     const [loadingKhadam, setLoadingKhadam] = useState(false);
     const [loadingDetailKhadamId, setLoadingDetailKhadamId] = useState(null);
@@ -39,6 +41,7 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();
@@ -74,6 +77,7 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();
@@ -125,6 +129,7 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();

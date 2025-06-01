@@ -8,9 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { menuSatuanKerja } = useDropdownSatuanKerja();
 
@@ -69,6 +71,9 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 body: JSON.stringify(formData),
             });
 
+            
+            const result = await response.json();
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -77,11 +82,9 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-            Swal.close();
             if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data pengurus berhasil disimpan." });
@@ -203,6 +206,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
 export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         tanggal_akhir: "",
     });
@@ -231,6 +235,14 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/pengurus/keluar`, {
                 method: "PUT",
@@ -241,6 +253,8 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
                 body: JSON.stringify(formData),
             });
 
+            Swal.close();
+
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -249,6 +263,7 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

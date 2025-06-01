@@ -2,16 +2,17 @@
 import useLogout from "../hooks/Logout";
 import logo from "../assets/logo.png";
 import { getRolesString } from "../utils/getRolesString";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const { logout, isLoggingOut } = useLogout();
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
 
     const handleLogout = async () => {
         try {
             await logout();
-            // navigate("/login");
+            navigate("/login");
         } catch (error) {
             console.error("Logout gagal:", error.message);
         }
@@ -55,7 +56,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
                             >
                                 <div className="px-4 py-3">
                                     <p className="text-sm text-white">{userName}</p>
-                                    <p className="text-sm font-medium text-gray-300 truncate">({getRolesString})</p>
+                                    <p className="text-sm font-medium text-gray-300 truncate">({getRolesString()})</p>
                                 </div>
                                 <ul className="py-1">
                                     <li>

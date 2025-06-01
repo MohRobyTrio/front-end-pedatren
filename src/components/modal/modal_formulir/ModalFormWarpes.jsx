@@ -6,9 +6,11 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 const ModalAddWarPesFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         niup: "",
         status: ""
@@ -49,7 +51,7 @@ const ModalAddWarPesFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
 
             
             const result = await response.json();
-            await Swal.close();
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -58,6 +60,7 @@ const ModalAddWarPesFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch

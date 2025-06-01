@@ -8,9 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useLogout from "../../../hooks/Logout";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchData, feature, karyawanIdToPindah }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { filterLembaga } = DropdownLembaga();
 
@@ -62,6 +64,14 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             console.log("ID:", id); //cek id
             console.log("Data:", formData);
 
@@ -74,6 +84,7 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
                 },
                 body: JSON.stringify(formData),
             });
+            Swal.close();
             console.log("token:", token)
             console.log("formData:", formData);
             console.log("response:", response);
@@ -85,6 +96,7 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -209,6 +221,7 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
 
 export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         tanggal_selesai: "",
     });
@@ -237,6 +250,14 @@ export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }
         if (!confirmResult.isConfirmed) return;
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/karyawan/keluar`, {
                 method: "PUT",
@@ -247,6 +268,8 @@ export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }
                 body: JSON.stringify(formData),
             });
 
+            Swal.close();
+
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -255,6 +278,7 @@ export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

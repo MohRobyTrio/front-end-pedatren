@@ -5,11 +5,13 @@ import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
 import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 const useMultiStepFormPegawai = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const { clearAuthData } = useLogout();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -129,6 +131,7 @@ const useMultiStepFormPegawai = ({ onClose }) => {
           confirmButtonText: "OK",
         });
         clearAuthData();
+        navigate("/login");
         return;
       }
       if (!response.ok) {

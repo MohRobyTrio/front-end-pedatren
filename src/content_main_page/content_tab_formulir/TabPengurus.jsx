@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
@@ -16,6 +16,7 @@ import Access from "../../components/Access";
 const TabPengurus = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const canEdit = hasAccess("edit");
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
@@ -76,6 +77,7 @@ const TabPengurus = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -111,6 +113,7 @@ const TabPengurus = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -175,6 +178,7 @@ const TabPengurus = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();

@@ -7,9 +7,11 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
+import { useNavigate } from "react-router-dom";
 
 const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuAngkatanSantri } = DropdownAngkatan();
     const [formData, setFormData] = useState({
         angkatan_id: "",
@@ -51,7 +53,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
 
             
             const result = await response.json();
-            await Swal.close();
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -60,6 +62,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch

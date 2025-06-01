@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
@@ -17,6 +17,7 @@ import Access from "../../components/Access";
 const TabPengajar = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const canEdit = hasAccess("edit");
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
@@ -68,6 +69,7 @@ const TabPengajar = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -129,6 +131,7 @@ const TabPengajar = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -217,6 +220,7 @@ const TabPengajar = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             console.log(`${API_BASE_URL}formulir/${selectedPengajarId}/pengajar`);
@@ -291,6 +295,7 @@ const TabPengajar = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -369,6 +374,7 @@ const TabPengajar = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

@@ -4,11 +4,13 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -145,6 +147,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
                     confirmButtonText: 'OK'
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

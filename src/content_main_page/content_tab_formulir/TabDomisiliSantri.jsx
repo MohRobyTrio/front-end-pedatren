@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
@@ -18,6 +18,7 @@ const TabDomisiliSantri = () => {
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [domisiliList, setDomisiliList] = useState([]);
@@ -84,6 +85,7 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -119,6 +121,7 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -248,6 +251,7 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

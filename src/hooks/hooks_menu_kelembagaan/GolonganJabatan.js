@@ -3,9 +3,11 @@ import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 const useFetchGolonganJabatan = () => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [golonganJabatan, setGolonganJabatan] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,6 +25,18 @@ const useFetchGolonganJabatan = () => {
                 },
             });
 
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const result = await response.json();
 
@@ -34,6 +48,7 @@ const useFetchGolonganJabatan = () => {
         } finally {
             setLoading(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     useEffect(() => {
@@ -78,6 +93,7 @@ const useFetchGolonganJabatan = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

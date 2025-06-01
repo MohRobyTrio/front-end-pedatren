@@ -7,9 +7,11 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useDropdownWaliAsuh from "../../../hooks/hook_dropdown/DropdownWaliAsuh";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
@@ -58,6 +60,16 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                 body: JSON.stringify(formData),
             });
 
+            
+            // console.log({ id, endpoint, metod, formData });
+            
+            console.log(`Mengirim ke: ${API_BASE_URL}formulir/${biodataId}/catatan-afektif`);
+            
+            // if (!response) throw new Error("Tidak ada response dari server.");
+            
+            const result = await response.json();
+            
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -66,18 +78,9 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            // console.log({ id, endpoint, metod, formData });
-
-            console.log(`Mengirim ke: ${API_BASE_URL}formulir/${biodataId}/catatan-afektif`);
-
-            // if (!response) throw new Error("Tidak ada response dari server.");
-
-            const result = await response.json();
-
-            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -319,6 +322,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
 
 export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
@@ -372,6 +376,16 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                 },
                 body: JSON.stringify(formData),
             });
+            
+            // console.log({ id, endpoint, metod, formData });
+            
+            console.log(`Mengirim ke: ${API_BASE_URL}formulir/${biodataId}/catatan-kognitif`);
+            
+            // if (!response) throw new Error("Tidak ada response dari server.");
+            
+            const result = await response.json();
+            
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -380,18 +394,9 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            // console.log({ id, endpoint, metod, formData });
-
-            console.log(`Mengirim ke: ${API_BASE_URL}formulir/${biodataId}/catatan-kognitif`);
-
-            // if (!response) throw new Error("Tidak ada response dari server.");
-
-            const result = await response.json();
-
-            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -720,6 +725,7 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
 
 export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, endpoint }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     // console.log(endpoint);
     
     const [formData, setFormData] = useState({
@@ -758,6 +764,9 @@ export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, 
                 },
                 body: JSON.stringify(formData),
             });
+            
+            const result = await response.json();
+            Swal.close();
 
             if (response.status === 401) {
                 await Swal.fire({
@@ -767,11 +776,9 @@ export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");

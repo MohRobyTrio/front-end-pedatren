@@ -3,9 +3,11 @@ import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export const useWarPes = (biodata_id) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [warPesList, setWarPesList] = useState([]);
     const [selectedWarPesId, setSelectedWarPesId] = useState(null);
     const [selectedWarPesDetail, setSelectedWarPesDetail] = useState(null);
@@ -38,6 +40,7 @@ export const useWarPes = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();
@@ -76,6 +79,7 @@ export const useWarPes = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();
@@ -127,6 +131,7 @@ export const useWarPes = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();

@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -35,6 +36,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 
 export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
     // Ubah label index ke-0 menjadi "Pilih ..."
@@ -108,6 +110,10 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
                 body: JSON.stringify(formData),
             });
 
+            
+            const result = await response.json();
+            
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -116,12 +122,9 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-
-            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -271,6 +274,7 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
 
 export const ModalKeluarWaliKelasFormulir = ({ isOpen, onClose, id, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         periode_akhir: ""
     });    
@@ -308,6 +312,9 @@ export const ModalKeluarWaliKelasFormulir = ({ isOpen, onClose, id, refetchData 
                 body: JSON.stringify(formData),
             });
 
+            
+            const result = await response.json();
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -316,11 +323,9 @@ export const ModalKeluarWaliKelasFormulir = ({ isOpen, onClose, id, refetchData 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");

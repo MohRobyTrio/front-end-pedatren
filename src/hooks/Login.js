@@ -31,6 +31,9 @@ const useLogin = () => {
             if (data.token) {
                 // const role = data.user.roles[0] || "";
                 const roles = data.user.roles || [];
+                console.log(roles);
+                console.log(JSON.stringify(roles));
+                
                 if (rememberMe) {
                     setTokenCookie(data.token);
                     localStorage.setItem("name", data.user.name);

@@ -7,10 +7,12 @@ import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [santriId, setSantriId] = useState("");
 
     const [formData, setFormData] = useState({
@@ -137,6 +139,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -362,6 +365,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
 
 export const ModalAddBerkasPelanggaran = ({ isOpen, onClose, id, close }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (e) => {
@@ -438,6 +442,7 @@ export const ModalAddBerkasPelanggaran = ({ isOpen, onClose, id, close }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

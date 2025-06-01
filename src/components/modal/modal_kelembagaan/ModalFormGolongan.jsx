@@ -7,9 +7,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
+import { useNavigate } from "react-router-dom";
 
 const ModalAddOrEditGolongan = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { kategoriGolongan } = DropdownGolongan();
     const id = data.id;
     const [formData, setFormData] = useState({
@@ -86,7 +88,7 @@ const ModalAddOrEditGolongan = ({ isOpen, onClose, data, refetchData, feature })
             });
 
             const result = await response.json();
-            await Swal.close();
+            Swal.close();
             console.log(result);
             
 
@@ -98,6 +100,7 @@ const ModalAddOrEditGolongan = ({ isOpen, onClose, data, refetchData, feature })
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

@@ -6,9 +6,11 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const id = data.id;
     const [formData, setFormData] = useState({
         nama_lembaga: "",
@@ -88,7 +90,7 @@ const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) 
             });
 
             const result = await response.json();
-            await Swal.close();
+            Swal.close();
             console.log(result);
             
 
@@ -100,6 +102,7 @@ const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

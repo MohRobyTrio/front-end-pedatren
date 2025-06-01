@@ -3,17 +3,19 @@ import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
-import { Combobox, Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import useLogout from "../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const { menuSantri } = useDropdownSantri();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         id_santri: "",
@@ -65,6 +67,10 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
 
             console.log(`Mengirim ke: ${API_BASE_URL}crud/catatan-afektif`);
 
+            
+            const result = await response.json();
+            
+            Swal.close();
             // if (!response) throw new Error("Tidak ada response dari server.");
             if (response.status === 401) {
                 await Swal.fire({
@@ -74,12 +80,9 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-
-            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -336,17 +339,18 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
 
 export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
     const { menuSantri } = useDropdownSantri();
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
-    const [querySantri, setQuerySantri] = useState('');
+    // const [querySantri, setQuerySantri] = useState('');
 
-    const filteredSantri =
-        querySantri === ''
-            ? menuSantri
-            : menuSantri.filter((santri) =>
-                santri.label.toLowerCase().includes(querySantri.toLowerCase())
-            );
+    // const filteredSantri =
+    //     querySantri === ''
+    //         ? menuSantri
+    //         : menuSantri.filter((santri) =>
+    //             santri.label.toLowerCase().includes(querySantri.toLowerCase())
+    //         );
 
 
     const [formData, setFormData] = useState({
@@ -407,6 +411,10 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
 
             // if (!response) throw new Error("Tidak ada response dari server.");
 
+            
+            const result = await response.json();
+            
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -415,12 +423,9 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-
-            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
