@@ -5,99 +5,23 @@ import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../hooks/config";
-import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
+import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 
-const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
-    return (
-        <>
-            {Object.entries(filterOptions).map(([label, options], index) => (
-                <div
-                    key={`${label}-${index}`}
-                    className={`mb-4 ${vertical ? "w-full" : "w-full px-2 sm:w-1/2 md:w-1/3"}`}
-                >
-                    {vertical && (
-                        <label className="block text-gray-700 mb-1 capitalize">{label} Tujuan</label>
-                    )}
-                    <select
-                        className={`w-full border border-gray-300 rounded p-2 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
-                            }`}
-                        onChange={(e) => onChange({ [label]: e.target.value })}
-                        value={selectedFilters[label] || ""}
-                        disabled={options.length <= 1}
-                        required={vertical}
-                    >
-                        {options.map((option, idx) => (
-                            <option key={idx} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            ))}
-        </>
-    );
-};
-
-const PindahKamar = () => {
+const HubungkanWaliAsuh = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [selectedSantriIds, setSelectedSantriIds] = useState([]);
+    const [selectedWaliAsuh, setSelectedWaliAsuh] = useState(null);
     const [isAllSelected, setIsAllSelected] = useState(false);
-    const [filters, setFilters] = useState({
-        wilayah: "",
-        blok: "",
-        kamar: "",
-    })
 
     useEffect(() => {
         console.log(selectedSantriIds);
-    }, [selectedSantriIds])
+    }, [selectedSantriIds]);
 
-    const {
-        filterWilayah: filterWilayahFilter,
-        handleFilterChangeWilayah: handleFilterChangeWilayahFilter,
-        selectedWilayah: selectedWilayahFilter,
-    } = DropdownWilayah();
+    const { menuWaliAsuh2 } = useDropdownWaliAsuh();
 
-    // untuk form tujuan
-    const {
-        filterWilayah: filterWilayahTujuan,
-        handleFilterChangeWilayah: handleFilterChangeWilayahTujuan,
-        selectedWilayah: selectedWilayahTujuan,
-    } = DropdownWilayah();
-    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData } = useFetchSantri(filters);
-
-    const updateFirstOptionLabel = (list, label) =>
-        list.length > 0
-            ? [{ ...list[0], label }, ...list.slice(1)]
-            : list;
-
-    const updatedFilterWilayahFilter = {
-        wilayah: updateFirstOptionLabel(filterWilayahFilter.wilayah, "Pilih Wilayah"),
-        blok: updateFirstOptionLabel(filterWilayahFilter.blok, "Pilih Blok"),
-        kamar: updateFirstOptionLabel(filterWilayahFilter.kamar, "Pilih Kamar"),
-    };
-
-    const updatedFilterWilayahTujuan = {
-        wilayah: updateFirstOptionLabel(filterWilayahTujuan.wilayah, "-- Pilih Wilayah --"),
-        blok: updateFirstOptionLabel(filterWilayahTujuan.blok, "-- Pilih Blok --"),
-        kamar: updateFirstOptionLabel(filterWilayahTujuan.kamar, "-- Pilih Kamar --"),
-    };
-
-    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.label || "";
-    const blokTerpilih = filterWilayahFilter.blok.find((n) => n.value == selectedWilayahFilter.blok)?.label || "";
-    const kamarTerpilih = filterWilayahFilter.kamar.find((n) => n.value == selectedWilayahFilter.kamar)?.label || "";
-
-    useEffect(() => {
-        if (wilayahTerpilih || blokTerpilih || kamarTerpilih) {
-            setFilters({
-                wilayah: wilayahTerpilih,
-                blok: blokTerpilih,
-                kamar: kamarTerpilih,
-            });
-        }
-    }, [wilayahTerpilih, blokTerpilih, kamarTerpilih]);
+    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm } = useFetchSantri();
 
     useEffect(() => {
         if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
@@ -127,24 +51,23 @@ const PindahKamar = () => {
         if (!confirmResult.isConfirmed) return;
 
         const payload = {
+            id_wali_asuh: selectedWaliAsuh,
             santri_id: selectedSantriIds,
-            wilayah_id: selectedWilayahTujuan.wilayah,
-            blok_id: selectedWilayahTujuan.blok,
-            kamar_id: selectedWilayahTujuan.kamar,
         };
 
         try {
             Swal.fire({
                 title: 'Mohon tunggu...',
-                html: 'Sedang memproses perpindahan.',
+                html: 'Sedang memproses.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}fitur/pindah-kamar`, {
+            const response = await fetch(`${API_BASE_URL}fitur/anakasuh`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -154,6 +77,8 @@ const PindahKamar = () => {
             });
 
             const result = await response.json();
+            console.log(result);
+            
             Swal.close();
 
             if (response.status === 401) {
@@ -180,7 +105,7 @@ const PindahKamar = () => {
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: "Pindah kamar berhasil diproses!",
+                text: result.message || "Berhasil ditambahkan sebagai anak asuh dan dikaitkan dengan wali asuh.",
             });
 
             // Reset form jika diperlukan
@@ -203,12 +128,17 @@ const PindahKamar = () => {
             <div className="flex-1 bg-white p-6 rounded-lg shadow-md overflow-x-auto">
                 <h2 className="text-xl font-semibold mb-4">Daftar Santri</h2>
 
-                <div className="flex flex-wrap w-full mb-4">
-                    <Filters
-                        filterOptions={updatedFilterWilayahFilter}
-                        onChange={handleFilterChangeWilayahFilter}
-                        selectedFilters={selectedWilayahFilter}
+                <div className="relative mb-4 w-full max-w-64">
+                    <input
+                        type="text"
+                        placeholder="Cari nama santri..."
+                        className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i className="fas fa-search"></i>
+                    </div>
                 </div>
 
                 {/* TABLE */}
@@ -246,7 +176,6 @@ const PindahKamar = () => {
                                 <th className="px-3 py-2 border-b text-center w-10">No</th>
                                 <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                 <th className="px-3 py-2 border-b">Nama</th>
-                                <th className="px-3 py-2 border-b">Kamar</th>
                             </tr>
                         </thead>
                         <tbody className="text-gray-800">
@@ -290,7 +219,6 @@ const PindahKamar = () => {
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
                                         <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.nama}</td>
-                                        <td className="px-3 py-2 border-b">{item.kamar}</td>
                                     </tr>
                                 ))
                             )}
@@ -303,20 +231,30 @@ const PindahKamar = () => {
             <form onSubmit={handleSubmit}>
                 <div className="w-full lg:w-[350px] bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start">
                     <div>
-                        <h2 className="text-xl font-semibold mb-4">Pindahkan ke</h2>
+                        <h2 className="text-xl font-semibold mb-4">Tambahkan ke</h2>
 
                         <div className="flex flex-wrap w-full mb-4">
-                            <Filters
-                                filterOptions={updatedFilterWilayahTujuan}
-                                onChange={handleFilterChangeWilayahTujuan}
-                                selectedFilters={selectedWilayahTujuan}
-                                vertical={true}
-                            />
+                            <div>
+                                <label htmlFor="id_wali_asuh" className="block text-gray-700">Wali Asuh *</label>
+                                <select
+                                    className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh2.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                    onChange={(e) => setSelectedWaliAsuh(e.target.value )}
+                                    value={selectedWaliAsuh}
+                                    disabled={menuWaliAsuh2.length <= 1}
+                                    required
+                                >
+                                    {menuWaliAsuh2.map((waliAsuh, idx) => (
+                                        <option key={idx} value={waliAsuh.id}>
+                                            {waliAsuh.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <button type="submit" className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded transition duration-200">
-                        Proses Pindah
+                        Proses
                     </button>
                 </div>
             </form>
@@ -324,4 +262,4 @@ const PindahKamar = () => {
     );
 };
 
-export default PindahKamar;
+export default HubungkanWaliAsuh;

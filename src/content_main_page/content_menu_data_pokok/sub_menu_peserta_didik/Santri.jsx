@@ -44,7 +44,8 @@ const Santri = () => {
         blok: "",
         kamar: "",
         angkatanPelajar: "",
-        angkatanSantri: ""
+        angkatanSantri: "",
+        // kewaliasuhan: ""
     })
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
@@ -168,7 +169,7 @@ const Santri = () => {
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        ]
+        ],
         // kewaliasuhan: [
         //     { label: "Kewaliasuhan", value: "" },
         //     { label: "Wali Asuh / Anak Asuh", value: "waliasuh or anakasuh" },

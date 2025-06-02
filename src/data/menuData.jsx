@@ -47,6 +47,7 @@ import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPes";
 import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
 import PindahKamar from "../content_main_page/content_menu_kelembagaan/PindahKamar";
+import HubungkanWaliAsuh from "../content_main_page/content_menu_kelembagaan/HubungkanWaliAsuh";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -102,7 +103,9 @@ export const menuKelembagaanItems = [
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
     { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
-    { id: "pindahkamar", icon: "fa-repeat", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
+    { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
+    { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh />
+}
 ];
 
 // export const tabsFormulir = [

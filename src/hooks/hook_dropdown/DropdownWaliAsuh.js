@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../config";
 
 const useDropdownWaliAsuh = () => {
   const [menuWaliAsuh, setMenuWaliAsuh] = useState([]);
+  const [menuWaliAsuh2, setMenuWaliAsuh2] = useState([]);
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuWaliAsuh");
@@ -44,7 +45,40 @@ const useDropdownWaliAsuh = () => {
     }
   }, []);
 
-  return { menuWaliAsuh };
+  // Fetch untuk /dropdown/waliasuh
+  useEffect(() => {
+    const local2 = sessionStorage.getItem("menuWaliAsuh2");
+
+    if (local2) {
+      try {
+        setMenuWaliAsuh2(JSON.parse(local2));
+      } catch {
+        sessionStorage.removeItem("menuWaliAsuh2");
+      }
+    } else {
+      fetch(`${API_BASE_URL}dropdown/waliasuh`)
+        .then((res) => res.json())
+        .then((resData) => {
+          if (Array.isArray(resData)) {
+            const formatted = [
+              { label: "Pilih Wali Asuh", value: "", id: "" },
+              ...resData.map((item) => ({
+                id: item.id,
+                value: item.nama,
+                label: `${item.nama} (${item.nama_grup})`,
+              })),
+            ];
+            sessionStorage.setItem("menuWaliAsuh2", JSON.stringify(formatted));
+            setMenuWaliAsuh2(formatted);
+          }
+        })
+        .catch(() =>
+          setMenuWaliAsuh2([{ label: "Pilih Wali Asuh", value: "", id: "" }])
+        );
+    }
+  }, []);
+
+  return { menuWaliAsuh, menuWaliAsuh2 };
 };
 
 export default useDropdownWaliAsuh;
