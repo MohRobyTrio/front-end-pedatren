@@ -32,7 +32,7 @@ export const useWaliAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
             setLoadingGrupWaliAsuh(true);
             setErrorGrupWaliAsuh(false);
 
-            const response = await fetch(`${API_BASE_URL}dropdown/grup/kewaliasuhan`, {
+            const response = await fetch(`${API_BASE_URL}dropdown/grup`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

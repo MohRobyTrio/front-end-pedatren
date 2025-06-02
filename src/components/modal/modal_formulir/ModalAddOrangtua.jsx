@@ -79,7 +79,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         if (isOpen) {
             fetchHubunganKeluarga();
         }
-    }, [isOpen, clearAuthData]); 
+    }, [isOpen]); 
 
     // Update formData untuk alamat ketika selectedNegara berubah
     useEffect(() => {
