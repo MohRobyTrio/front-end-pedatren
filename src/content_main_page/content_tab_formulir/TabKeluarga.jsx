@@ -5,6 +5,7 @@ import { useTabKeluarga } from "../../hooks/hooks_formulir/tabKeluarga";
 // import Access from "../../components/Access";
 import { hasAccess } from "../../utils/hasAccess";
 import { Link } from "react-router-dom";
+import { ModalAddOrangtuaFormulir } from "../../components/modal/modal_formulir/ModalAddOrangtua";
 
 const TabKeluarga = () => {
     const { biodata_id } = useParams();
@@ -30,17 +31,18 @@ const TabKeluarga = () => {
         handleUpdate,
         setShowAddModal: setShowAddModalHook,
         setFeature
-    } = useTabKeluarga({ biodata_id, setShowAddModal });
+    } = useTabKeluarga({ biodata_id});
 
-    const closeAddModal = () => {
-        setShowAddModal(false);
-    };
+    // const closeAddModal = () => {
+    //     setShowAddModal(false);
+    // };
 
     const openAddModal = () => {
         setShowAddModal(true);
     };
 
-
+    
+    
     return (
         <div className="block" id="keluarga">
             <h1 className="text-xl font-bold flex items-center justify-between">
@@ -51,10 +53,15 @@ const TabKeluarga = () => {
                     className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
                 >
                     <i className="fas fa-plus"></i>
-                    <span>Tambah Data</span>
+                    <span>Tambah Data Orangtua</span>
                 </button>
             </h1>
 
+            <ModalAddOrangtuaFormulir
+                isOpen={showAddModal}
+                onClose={() => setShowAddModal(false)}
+                refetchData={selectedKeluargaDetail}
+            />
             <br />
             <div className="bg-white shadow-md drop-shadow rounded-lg p-4 w-75 flex justify-between items-center">
                 <h2 className="text-md font-bold">
