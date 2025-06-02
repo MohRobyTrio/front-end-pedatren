@@ -57,11 +57,11 @@ const useFetchSantri = (filters) => {
         if (filters?.urutSecara) params.push(`&sort_order=${encodeURIComponent(filters.urutSecara)}`);
         if (filters?.phoneNumber) params.push(`&phone_number=${encodeURIComponent(filters.phoneNumber)}`);
 
+        if (filters?.kewaliasuhan) params.push(`&kewaliasuhan=${encodeURIComponent(filters.kewaliasuhan)}`);
         if (params.length > 0) {
             url += `?${params.join("&")}`;
         }
 
-        // if (filters?.kewaliasuhan) url += `&kewaliasuhan=${encodeURIComponent(filters.kewaliasuhan)}`;
 
         if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
