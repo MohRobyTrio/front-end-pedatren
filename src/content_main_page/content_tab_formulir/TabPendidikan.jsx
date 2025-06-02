@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
@@ -16,6 +16,7 @@ import { hasAccess } from "../../utils/hasAccess";
 const TabPendidikan = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const canEdit = hasAccess("edit");
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
@@ -72,7 +73,12 @@ const TabPendidikan = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
+            }
+            if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
             }
             const result = await response.json();
             setPendidikanList(result.data || []);
@@ -107,6 +113,7 @@ const TabPendidikan = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -244,6 +251,7 @@ const TabPendidikan = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();

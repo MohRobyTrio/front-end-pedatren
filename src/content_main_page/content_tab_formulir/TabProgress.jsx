@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
@@ -15,6 +15,7 @@ import Access from "../../components/Access";
 const TabProgress = () => {
 	const { biodata_id } = useParams();
 	const { clearAuthData } = useLogout();
+	const navigate = useNavigate();
 	const canEdit = hasAccess("edit");
 	const [activeTab, setActiveTab] = useState("afektif");
 	const [showAddAfektifModal, setShowAddAfektifModal] = useState(false);
@@ -76,8 +77,13 @@ const TabProgress = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
+			if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
 			const result = await response.json();
 			console.log(result);
 
@@ -119,6 +125,7 @@ const TabProgress = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
 			const result = await response.json();
@@ -202,6 +209,7 @@ const TabProgress = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
 			console.log(`${API_BASE_URL}formulir/${selectedDataId}/catatan-${endpoint}`);

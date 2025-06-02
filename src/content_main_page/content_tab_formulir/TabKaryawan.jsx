@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ import Access from "../../components/Access";
 const TabKaryawan = () => {
 	const { biodata_id } = useParams();
 	const { clearAuthData } = useLogout();
+	const navigate = useNavigate();
 	const canEdit = hasAccess("edit");
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showOutModal, setShowOutModal] = useState(false);
@@ -62,8 +63,13 @@ const TabKaryawan = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
+			if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
 			const result = await response.json();
 			setKaryawanList(result.data || []);
 		} catch (error) {
@@ -98,6 +104,7 @@ const TabKaryawan = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
 			const result = await response.json();
@@ -170,6 +177,7 @@ const TabKaryawan = () => {
 					confirmButtonText: "OK",
 				});
 				clearAuthData();
+				navigate("/login");
 				return;
 			}
 			const result = await response.json();

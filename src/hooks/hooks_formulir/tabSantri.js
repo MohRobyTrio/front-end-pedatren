@@ -3,9 +3,11 @@ import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export const useSantri = (biodata_id) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [santriList, setSantriList] = useState([]);
     const [selectedSantriId, setSelectedSantriId] = useState(null);
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
@@ -40,8 +42,14 @@ export const useSantri = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
+            if (!response.ok) {
+            // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
+
             const result = await response.json();
             setSantriList(result.data || []);
         } catch (error) {
@@ -78,6 +86,7 @@ export const useSantri = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             const result = await response.json();
@@ -136,6 +145,7 @@ export const useSantri = (biodata_id) => {
                 confirmButtonText: "OK",
               });
               clearAuthData();
+              navigate("/login");
               return;
             }
             if (!("data" in result)) {

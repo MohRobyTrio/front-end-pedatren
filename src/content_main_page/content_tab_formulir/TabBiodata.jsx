@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -58,6 +58,7 @@ const schema = yup.object({
 const TabBiodata = () => {
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [photo, setPhoto] = useState(null);
@@ -141,6 +142,7 @@ const TabBiodata = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -393,6 +395,7 @@ const TabBiodata = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { API_BASE_URL } from "./config";
 import { getCookie, removeTokenCookie } from "../utils/cookieUtils";
-import { Navigate } from "react-router-dom";
 
 const useLogout = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -10,8 +9,7 @@ const useLogout = () => {
   const clearAuthData = () => {
     removeTokenCookie();
     localStorage.clear();
-    sessionStorage.clear();
-    Navigate("/login");
+    sessionStorage.clear();    
   };
 
   const logout = useCallback(async () => {

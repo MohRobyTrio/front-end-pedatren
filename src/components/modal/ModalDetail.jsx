@@ -90,7 +90,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 console.log(menu);
             } catch (err) {
                 console.error(err);
-                setError(err.message || `Gagal memuat data.`);
+                // setError(err.message || `Gagal memuat data.`);
+                setError(`Gagal memuat data.`);
             } finally {
                 setLoading(false);
             }

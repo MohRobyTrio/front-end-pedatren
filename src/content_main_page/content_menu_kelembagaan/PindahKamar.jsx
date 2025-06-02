@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import useFetchPelajar from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Pelajar";
 import { OrbitProgress } from "react-loading-indicators";
-import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../hooks/config";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -39,16 +39,15 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
     );
 };
 
-const PindahKelas = () => {
+const PindahKamar = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [selectedSantriIds, setSelectedSantriIds] = useState([]);
     const [isAllSelected, setIsAllSelected] = useState(false);
     const [filters, setFilters] = useState({
-        lembaga: "",
-        jurusan: "",
-        kelas: "",
-        rombel: "",
+        wilayah: "",
+        blok: "",
+        kamar: "",
     })
 
     useEffect(() => {
@@ -56,57 +55,53 @@ const PindahKelas = () => {
     }, [selectedSantriIds])
 
     const {
-        filterLembaga: filterLembagaFilter,
-        handleFilterChangeLembaga: handleFilterChangeLembagaFilter,
-        selectedLembaga: selectedLembagaFilter,
-    } = DropdownLembaga();
+        filterWilayah: filterWilayahFilter,
+        handleFilterChangeWilayah: handleFilterChangeWilayahFilter,
+        selectedWilayah: selectedWilayahFilter,
+    } = DropdownWilayah();
 
     // untuk form tujuan
     const {
-        filterLembaga: filterLembagaTujuan,
-        handleFilterChangeLembaga: handleFilterChangeLembagaTujuan,
-        selectedLembaga: selectedLembagaTujuan,
-    } = DropdownLembaga();
-    const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData } = useFetchPelajar(filters);
+        filterWilayah: filterWilayahTujuan,
+        handleFilterChangeWilayah: handleFilterChangeWilayahTujuan,
+        selectedWilayah: selectedWilayahTujuan,
+    } = DropdownWilayah();
+    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData } = useFetchSantri(filters);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
             ? [{ ...list[0], label }, ...list.slice(1)]
             : list;
 
-    const updatedFilterLembagaFilter = {
-        lembaga: updateFirstOptionLabel(filterLembagaFilter.lembaga, "Pilih Lembaga"),
-        jurusan: updateFirstOptionLabel(filterLembagaFilter.jurusan, "Pilih Jurusan"),
-        kelas: updateFirstOptionLabel(filterLembagaFilter.kelas, "Pilih Kelas"),
-        rombel: updateFirstOptionLabel(filterLembagaFilter.rombel, "Pilih rombel"),
+    const updatedFilterWilayahFilter = {
+        wilayah: updateFirstOptionLabel(filterWilayahFilter.wilayah, "Pilih Wilayah"),
+        blok: updateFirstOptionLabel(filterWilayahFilter.blok, "Pilih Blok"),
+        kamar: updateFirstOptionLabel(filterWilayahFilter.kamar, "Pilih Kamar"),
     };
 
-    const updatedFilterLembagaTujuan = {
-        lembaga: updateFirstOptionLabel(filterLembagaTujuan.lembaga, "-- Pilih Lembaga --"),
-        jurusan: updateFirstOptionLabel(filterLembagaTujuan.jurusan, "-- Pilih Jurusan --"),
-        kelas: updateFirstOptionLabel(filterLembagaTujuan.kelas, "-- Pilih Kelas --"),
-        rombel: updateFirstOptionLabel(filterLembagaTujuan.rombel, "-- Pilih rombel --"),
+    const updatedFilterWilayahTujuan = {
+        wilayah: updateFirstOptionLabel(filterWilayahTujuan.wilayah, "-- Pilih Wilayah --"),
+        blok: updateFirstOptionLabel(filterWilayahTujuan.blok, "-- Pilih Blok --"),
+        kamar: updateFirstOptionLabel(filterWilayahTujuan.kamar, "-- Pilih Kamar --"),
     };
 
-    const lembagaTerpilih = filterLembagaFilter.lembaga.find((n) => n.value == selectedLembagaFilter.lembaga)?.label || "";
-    const jurusanTerpilih = filterLembagaFilter.jurusan.find((n) => n.value == selectedLembagaFilter.jurusan)?.label || "";
-    const kelasTerpilih = filterLembagaFilter.kelas.find((n) => n.value == selectedLembagaFilter.kelas)?.label || "";
-    const rombelTerpilih = filterLembagaFilter.rombel.find((n) => n.value == selectedLembagaFilter.rombel)?.label || "";
+    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.label || "";
+    const blokTerpilih = filterWilayahFilter.blok.find((n) => n.value == selectedWilayahFilter.blok)?.label || "";
+    const kamarTerpilih = filterWilayahFilter.kamar.find((n) => n.value == selectedWilayahFilter.kamar)?.label || "";
 
     useEffect(() => {
-        if (lembagaTerpilih || jurusanTerpilih || kelasTerpilih || rombelTerpilih) {
+        if (wilayahTerpilih || blokTerpilih || kamarTerpilih) {
             setFilters({
-                lembaga: lembagaTerpilih,
-                jurusan: jurusanTerpilih,
-                kelas: kelasTerpilih,
-                rombel: rombelTerpilih,
+                wilayah: wilayahTerpilih,
+                blok: blokTerpilih,
+                kamar: kamarTerpilih,
             });
         }
-    }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih]);
+    }, [wilayahTerpilih, blokTerpilih, kamarTerpilih]);
 
     useEffect(() => {
-        if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
-    }, [setLimit, totalDataPelajar]);
+        if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
+    }, [setLimit, totalDataSantri]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -133,10 +128,9 @@ const PindahKelas = () => {
 
         const payload = {
             santri_id: selectedSantriIds,
-            lembaga_id: selectedLembagaTujuan.lembaga,
-            jurusan_id: selectedLembagaTujuan.jurusan,
-            kelas_id: selectedLembagaTujuan.kelas,
-            rombel_id: selectedLembagaTujuan.rombel,
+            wilayah_id: selectedWilayahTujuan.wilayah,
+            blok_id: selectedWilayahTujuan.blok,
+            kamar_id: selectedWilayahTujuan.kamar,
         };
 
         try {
@@ -150,7 +144,7 @@ const PindahKelas = () => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}fitur/pindah-naik-jenjang`, {
+            const response = await fetch(`${API_BASE_URL}fitur/pindah-kamar`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -186,7 +180,7 @@ const PindahKelas = () => {
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: "Pindah kelas berhasil diproses!",
+                text: "Pindah kamar berhasil diproses!",
             });
 
             // Reset form jika diperlukan
@@ -207,13 +201,13 @@ const PindahKelas = () => {
         <div className="flex flex-col lg:flex-row gap-6 pl-6 pt-6 pb-6">
             {/* LEFT SIDE - FILTER + TABLE */}
             <div className="flex-1 bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-                <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>
+                <h2 className="text-xl font-semibold mb-4">Daftar Santri</h2>
 
                 <div className="flex flex-wrap w-full mb-4">
                     <Filters
-                        filterOptions={updatedFilterLembagaFilter}
-                        onChange={handleFilterChangeLembagaFilter}
-                        selectedFilters={selectedLembagaFilter}
+                        filterOptions={updatedFilterWilayahFilter}
+                        onChange={handleFilterChangeWilayahFilter}
+                        selectedFilters={selectedWilayahFilter}
                     />
                 </div>
 
@@ -241,7 +235,7 @@ const PindahKelas = () => {
                                             setIsAllSelected(checked);
                                             if (checked) {
                                                 // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                setSelectedSantriIds(pelajar.map((item) => item.id));
+                                                setSelectedSantriIds(santri.map((item) => item.id));
                                             } else {
                                                 // Hilangkan semua centang
                                                 setSelectedSantriIds([]);
@@ -250,24 +244,24 @@ const PindahKelas = () => {
                                     />
                                 </th>
                                 <th className="px-3 py-2 border-b text-center w-10">No</th>
-                                <th className="px-3 py-2 border-b">No. Induk (Siswa/Mahasiswa)</th>
+                                <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                 <th className="px-3 py-2 border-b">Nama</th>
-                                <th className="px-3 py-2 border-b">Kelas</th>
+                                <th className="px-3 py-2 border-b">Kamar</th>
                             </tr>
                         </thead>
                         <tbody className="text-gray-800">
-                            {loadingPelajar ? (
+                            {loadingSantri ? (
                                 <tr>
                                     <td colSpan="5" className="text-center py-6">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </td>
                                 </tr>
-                            ) : pelajar.length === 0 ? (
+                            ) : santri.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="text-center py-6">Tidak ada data</td>
                                 </tr>
                             ) : (
-                                pelajar.map((item, index) => (
+                                santri.map((item, index) => (
                                     <tr key={item.id} className="hover:bg-gray-50 text-center">
                                         <td className="px-3 py-2 border-b">
                                             <input
@@ -278,7 +272,7 @@ const PindahKelas = () => {
                                                     if (checked) {
                                                         setSelectedSantriIds((prev) => {
                                                             const newSelected = [...prev, item.id];
-                                                            if (newSelected.length === pelajar.length) {
+                                                            if (newSelected.length === santri.length) {
                                                                 setIsAllSelected(true);
                                                             }
                                                             return newSelected;
@@ -294,9 +288,9 @@ const PindahKelas = () => {
                                             />
                                         </td>
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.no_induk}</td>
+                                        <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.nama}</td>
-                                        <td className="px-3 py-2 border-b">{item.kelas}</td>
+                                        <td className="px-3 py-2 border-b">{item.kamar}</td>
                                     </tr>
                                 ))
                             )}
@@ -313,9 +307,9 @@ const PindahKelas = () => {
 
                         <div className="flex flex-wrap w-full mb-4">
                             <Filters
-                                filterOptions={updatedFilterLembagaTujuan}
-                                onChange={handleFilterChangeLembagaTujuan}
-                                selectedFilters={selectedLembagaTujuan}
+                                filterOptions={updatedFilterWilayahTujuan}
+                                onChange={handleFilterChangeWilayahTujuan}
+                                selectedFilters={selectedWilayahTujuan}
                                 vertical={true}
                             />
                         </div>
@@ -330,4 +324,4 @@ const PindahKelas = () => {
     );
 };
 
-export default PindahKelas;
+export default PindahKamar;

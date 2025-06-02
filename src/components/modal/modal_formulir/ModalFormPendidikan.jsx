@@ -8,6 +8,7 @@ import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useLogout from "../../../hooks/Logout";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
+import { useNavigate } from "react-router-dom";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
   const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -37,6 +38,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
   const { menuAngkatanPelajar } = DropdownAngkatan();
   const { clearAuthData } = useLogout();
+  const navigate = useNavigate();
   const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
   // Ubah label index ke-0 menjadi "Pilih ..."
@@ -105,6 +107,14 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
     if (!confirmResult.isConfirmed) return;
 
     try {
+      Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang proses.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
 
       console.log("formData:", formData);
       console.log("id:", id);
@@ -120,6 +130,8 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
         body: JSON.stringify(formData),
       });
 
+      Swal.close();
+
       if (response.status === 401) {
         await Swal.fire({
           title: "Sesi Berakhir",
@@ -128,6 +140,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
           confirmButtonText: "OK",
         });
         clearAuthData();
+        navigate("/login");
         return;
       }
 
@@ -323,6 +336,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
 
 export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData }) => {
   const { clearAuthData } = useLogout();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     tanggal_keluar: "",
     status: "" // Tambahkan field status
@@ -352,6 +366,14 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
     if (!confirmResult.isConfirmed) return;
 
     try {
+      Swal.fire({
+        title: 'Mohon tunggu...',
+        html: 'Sedang proses.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
 
       console.log("formData:", formData);
 
@@ -365,6 +387,8 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
         body: JSON.stringify(formData),
       });
 
+      Swal.close();
+
       if (response.status === 401) {
         await Swal.fire({
           title: "Sesi Berakhir",
@@ -373,6 +397,7 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
           confirmButtonText: "OK",
         });
         clearAuthData();
+        navigate("/login");
         return;
       }
 

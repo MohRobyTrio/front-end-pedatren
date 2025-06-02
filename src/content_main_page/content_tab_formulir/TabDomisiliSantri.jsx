@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
@@ -18,6 +18,7 @@ const TabDomisiliSantri = () => {
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [showAddModal, setShowAddModal] = useState(false);
     const [showOutModal, setShowOutModal] = useState(false);
     const [domisiliList, setDomisiliList] = useState([]);
@@ -84,8 +85,14 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
+            if (!response.ok) {
+                // Misalnya response.status === 500
+                throw new Error(`Gagal fetch: ${response.status}`);
+            }
+
             const result = await response.json();
             setDomisiliList(result.data || []);
         } catch (error) {
@@ -119,6 +126,7 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
             const result = await response.json();
@@ -248,6 +256,7 @@ const TabDomisiliSantri = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

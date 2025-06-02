@@ -6,9 +6,11 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dataId, feature, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const isTambah = feature == 1;
     const endpoint = isTambah ? "khadam" : "khadam/pindah";
     const metod = isTambah ? "POST" : "PUT";
@@ -58,6 +60,9 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
 
             // if (!response) throw new Error("Tidak ada response dari server.");
 
+            
+            
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -66,12 +71,10 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
             const result = await response.json();
-
-            Swal.close();
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -218,6 +221,7 @@ export const ModalAddOrPindahKhadamFormulir = ({ isOpen, onClose, biodataId, dat
 
 export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         tanggal_akhir: ""
     });    
@@ -255,6 +259,9 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                 body: JSON.stringify(formData),
             });
 
+            
+            const result = await response.json();
+            Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -263,11 +270,9 @@ export const ModalKeluarKhadamFormulir = ({ isOpen, onClose, id, refetchData }) 
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
-
-            const result = await response.json();
-            Swal.close();
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
