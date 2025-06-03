@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faFileImage,
-    faFileAlt,
-    faFilePdf,
-    faEdit,
-    faDownload
-} from '@fortawesome/free-solid-svg-icons';
+import {faFileImage, faFileAlt, faFilePdf, faEdit, faDownload} from '@fortawesome/free-solid-svg-icons';
 import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
-import Access from '../../components/Access';
 
 export default function TabBerkas() {
     const { biodata_id } = useParams();
@@ -38,7 +31,7 @@ export default function TabBerkas() {
         setEditData(null);
         setModalOpen(true);
     };
-    
+
     const handleCloseModal = () => {
         setModalOpen(false);
     };
@@ -61,7 +54,7 @@ export default function TabBerkas() {
                 await updateBerkas(id, formData);
                 alert('Berkas berhasil diperbarui');
             } else {
-            console.log("Isi formData sebelum submit:", formData);
+                console.log("Isi formData sebelum submit:", formData);
 
                 await createBerkas(bioId, formData);
                 alert('Berkas berhasil ditambahkan');
@@ -71,7 +64,7 @@ export default function TabBerkas() {
             fetchBerkas();
         } catch (err) {
             console.log(err.message);
-            
+
             alert(err.message || 'Terjadi kesalahan');
         }
     };
@@ -80,39 +73,35 @@ export default function TabBerkas() {
         <div className="px-2 sm:px-4 w-full">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold">Berkas</h1>
-                <Access action="tambah">
-                    <button
-                        onClick={handleOpenAdd}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                        >
-                        <i className="fas fa-plus"></i>
-                        <span>Tambah Berkas</span>
-                    </button>
-                </Access>
+                <button
+                    onClick={handleOpenAdd}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center"
+                >
+                    Tambah Berkas
+                </button>
             </div>
 
             {loading && <p>Loading...</p>}
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {berkasList.length === 0 && !loading && (
-                    <p className="col-span-full text-center">Belum ada berkas.</p>
+                {(berkasList ?? []).length === 0 && !loading && (
+                    <p className="col-span-full text-center">Tidak ada berkas.</p>
                 )}
-                {berkasList.map((berkas) => (
+
+                {(berkasList ?? []).map((berkas) => (
                     <div
                         key={berkas.id}
                         className="relative bg-white shadow rounded-lg overflow-hidden border group"
                     >
                         {/* Tombol Edit */}
-                        <Access action="edit">
-                            <button
-                                onClick={() => handleOpenEdit(berkas)}
-                                className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
-                                title="Edit berkas"
-                            >
-                                <FontAwesomeIcon icon={faEdit} />
-                            </button>
-                        </Access>
+                        <button
+                            onClick={() => handleOpenEdit(berkas)}
+                            className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
+                            title="Edit berkas"
+                        >
+                            <FontAwesomeIcon icon={faEdit} />
+                        </button>
 
                         {/* Tombol Download */}
                         <a
