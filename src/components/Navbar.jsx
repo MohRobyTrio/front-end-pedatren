@@ -3,10 +3,16 @@ import useLogout from "../hooks/Logout";
 import logo from "../assets/logo.png";
 import { getRolesString } from "../utils/getRolesString";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil";
 
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
     const navigate = useNavigate();
     const { logout, isLoggingOut } = useLogout();
+    const [openModalUpdateNameEmail, setOpenModalUpdateNameEmail] = useState(false);
+    const [openModalUpdatePass, setOpenModalUpdatePass] = useState(false);
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
 
     const handleLogout = async () => {
@@ -50,27 +56,49 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef }) => {
                                 alt="user photo" />
                         </button>
 
+                        <ModalUpdateProfil isOpen={openModalUpdateNameEmail} onClose={() => setOpenModalUpdateNameEmail(false)} />
+
+                        <ModalUpdatePassword isOpen={openModalUpdatePass} onClose={() => setOpenModalUpdatePass(false)} />
+
                         {isOpen && (
-                            <div
-                                className="absolute right-0 z-50 mt-3 w-48 text-base list-none bg-gray-700 divide-y divide-gray-600 rounded shadow"
-                            >
+                            <div className="absolute right-0 z-50 mt-3 w-56 text-base list-none bg-gray-700 divide-y divide-gray-400 rounded-xl shadow-lg overflow-hidden">
                                 <div className="px-4 py-3">
-                                    <p className="text-sm text-white">{userName}</p>
-                                    <p className="text-sm font-medium text-gray-300 truncate">({getRolesString()})</p>
+                                    <p className="text-sm font-semibold text-white">{userName}</p>
+                                    <p className="text-sm text-gray-400 truncate">({getRolesString()})</p>
                                 </div>
-                                <ul className="py-1">
+                                <ul className="p-1 space-y-1">
+                                    <li>
+                                        <button
+                                            onClick={() => setOpenModalUpdateNameEmail(true)}
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-500 hover:text-white transition duration-200 ease-in-out rounded-md cursor-pointer"
+                                        >
+                                            <FontAwesomeIcon icon={faUser} />
+                                            Edit Nama & Email
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setOpenModalUpdatePass(true)}
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-500 hover:text-white transition duration-200 ease-in-out rounded-md cursor-pointer"
+                                        >
+                                            <FontAwesomeIcon icon={faLock} />
+                                            Edit Password
+                                        </button>
+                                    </li>
                                     <li>
                                         <button
                                             onClick={handleLogout}
                                             disabled={isLoggingOut}
-                                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white"
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-600 hover:text-white disabled:opacity-50 transition duration-200 ease-in-out rounded-md cursor-pointer"
                                         >
-                                            {isLoggingOut ? "Logging out..." : "Sign out"}
+                                            <FontAwesomeIcon icon={faRightFromBracket} />
+                                            {isLoggingOut ? "Logging out..." : "Log out"}
                                         </button>
                                     </li>
                                 </ul>
                             </div>
                         )}
+
                     </div>
                 </div>
             </div>
