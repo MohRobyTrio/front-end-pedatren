@@ -86,6 +86,7 @@ const useFetchPengunjung = (filters) => {
         totalPages,
         currentPage,
         setCurrentPage,
+        fetchData
     };
 };
 

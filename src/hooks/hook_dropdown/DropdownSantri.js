@@ -18,6 +18,15 @@ const useDropdownSantri = () => {
     } else {
       fetch(`${API_BASE_URL}data-pokok/santri`)
         .then((res) => res.json())
+        .then((resMeta) => {
+          const total = resMeta.total_data;
+          if (!total || isNaN(total))
+            throw new Error("Gagal mendapatkan total_data");
+
+          // Tahap 2: Ambil ulang semua data dengan limit = total_data
+          return fetch(`${API_BASE_URL}data-pokok/santri?limit=${total}`);
+        })
+        .then((res) => res.json())
         .then((resData) => {
           if (Array.isArray(resData.data)) {
             const formatted = [
@@ -29,6 +38,8 @@ const useDropdownSantri = () => {
                 label: item.nama,
               })),
             ];
+
+            console.log("Jumlah data santri:", formatted.length - 1);
 
             sessionStorage.setItem("menuSantri", JSON.stringify(formatted));
             setMenuSantri(formatted);
