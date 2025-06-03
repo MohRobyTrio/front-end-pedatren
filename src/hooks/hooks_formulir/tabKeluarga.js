@@ -8,6 +8,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
     const { clearAuthData } = useLogout();
     const [nokk, setNokk] = useState([]);
     const [keluargaList, setKeluargaList] = useState([]);
+    const [id1, setId1] = useState([]);
     const [loadingKeluarga, setLoadingKeluarga] = useState(false);
     const [loadingDetailKeluargaId, setLoadingDetailKeluargaId] = useState(null);
     // const [santriId, setSantriId] = useState(null);
@@ -51,6 +52,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
             const result = await response.json();
             setNokk(result.data.no_kk || []);
             setKeluargaList(result.data.relasi_keluarga || []);
+            setId1(result.data.relasi_keluarga[0].id_keluarga || []);
         } catch (error) {
             console.error("Gagal memuat data keluarga:", error);
             setError(true);
@@ -62,11 +64,14 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
         } finally {
             setLoadingKeluarga(false);
         }
-        console.log("Keluarga List:", keluargaList);
-        console.log("keluarga:", nokk);
-
-
+        
+        
     }, [biodata_id, token]);
+    
+    //debunging
+    // console.log("Keluarga List:", keluargaList);
+    // console.log("keluarga:", nokk);
+    // console.log("ID1:", id1);
 
     useEffect(() => {
         fetchKeluargaList();
@@ -196,6 +201,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
         error,
         nokk,
         keluargaList,
+        id1,
         loadingKeluarga,
         selectedKeluargaId,
         selectedKeluargaDetail,
