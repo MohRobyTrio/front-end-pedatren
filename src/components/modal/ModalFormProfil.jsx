@@ -267,6 +267,7 @@ export const ModalUpdatePassword = ({ isOpen, onClose }) => {
             const payload = {
                 current_password: formData.current_password,
                 new_password: formData.new_password,
+                new_password_confirmation: formData.confirm_password,
             };
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 

@@ -11,6 +11,11 @@ import DropdownWilayah from '../../hooks/hook_dropdown/DropdownWilayah';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import ModalDetail from '../../components/modal/ModalDetail';
 import { generateDropdownTahun } from '../../utils/generateDropdownTahun';
+import Access from '../../components/Access';
+import { FaPlus } from 'react-icons/fa';
+import MultiStepModalAnakPegawai from '../../components/modal/ModalFormAnakPegawai';
+import { useMultiStepFormAnakPegawai } from '../../hooks/hooks_modal/useMultiStepFormAnakPegawai';
+import { jenisBerkasList } from '../../data/menuData';
 
 const AnakPegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -175,11 +180,18 @@ const AnakPegawai = () => {
         ]
     };
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormAnakPegawai(() => setShowFormModal(false), jenisBerkasList);
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Anak Pegawai</h1>
                 <div className="flex items-center">
+                    <Access action="tambah">
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                    </Access>
                     {/* <div className="flex items-center space-x-2">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
                             Export
@@ -319,6 +331,7 @@ const AnakPegawai = () => {
                     />
                 )}
 
+                <MultiStepModalAnakPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />

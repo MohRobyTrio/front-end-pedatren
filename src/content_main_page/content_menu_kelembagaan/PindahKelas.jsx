@@ -241,7 +241,7 @@ const PindahKelas = () => {
                                             setIsAllSelected(checked);
                                             if (checked) {
                                                 // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                setSelectedSantriIds(pelajar.map((item) => item.id));
+                                                setSelectedSantriIds(pelajar.map((item) => item.biodata_id));
                                             } else {
                                                 // Hilangkan semua centang
                                                 setSelectedSantriIds([]);
@@ -272,12 +272,12 @@ const PindahKelas = () => {
                                         <td className="px-3 py-2 border-b">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedSantriIds.includes(item.id)}
+                                                checked={selectedSantriIds.includes(item.biodata_id)}
                                                 onChange={(e) => {
                                                     const checked = e.target.checked;
                                                     if (checked) {
                                                         setSelectedSantriIds((prev) => {
-                                                            const newSelected = [...prev, item.id];
+                                                            const newSelected = [...prev, item.biodata_id];
                                                             if (newSelected.length === pelajar.length) {
                                                                 setIsAllSelected(true);
                                                             }
@@ -285,7 +285,7 @@ const PindahKelas = () => {
                                                         });
                                                     } else {
                                                         setSelectedSantriIds((prev) => {
-                                                            const newSelected = prev.filter((id) => id !== item.id);
+                                                            const newSelected = prev.filter((biodata_id) => biodata_id !== item.biodata_id);
                                                             setIsAllSelected(false);
                                                             return newSelected;
                                                         });
