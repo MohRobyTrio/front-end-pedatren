@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
@@ -10,7 +10,7 @@ import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import DropdownHubungan from "../../hooks/hook_dropdown/DropdownHubungan";
 
-export const ModalAddPengunjung = ({ isOpen, onClose, refetchData }) => {
+export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }) => {
     const { menuSantri } = useDropdownSantri();
     const { menuHubungan } = DropdownHubungan();
     const { clearAuthData } = useLogout();
@@ -29,18 +29,90 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData }) => {
         status: "",
     });
 
+    useEffect(() => {
+        if (isOpen && feature == 1) {
+            setFormData({
+                nik: "",
+                nama: "",
+                tempat_lahir: "",
+                tanggal_lahir: "",
+                jenis_kelamin: "",
+                santri_id: "",
+                hubungan_id: "",
+                jumlah_rombongan: "",
+                tanggal_kunjungan: "",
+                status: "",
+            });
+        }
+    }, [feature, isOpen]);
+
+    useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const token = sessionStorage.getItem("token") || getCookie("token");
+                    const response = await fetch(`${API_BASE_URL}crud/${id}/pengunjung/show`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        }
+                    });
+    
+                    if (!response.ok) throw new Error("Gagal mengambil data");
+    
+                    const result = await response.json();
+    
+                    if (result.data) {
+                        setFormData({
+                            nik: result.data.nik ?? "",
+                            nama: result.data.nama ?? "",
+                            tempat_lahir: result.data.tempat_lahir ?? "",
+                            tanggal_lahir: result.data.tanggal_lahir ?? "",
+                            jenis_kelamin: result.data.jenis_kelamin ?? "",
+                            santri_id: result.data.santri_id ?? "",
+                            hubungan_id: result.data.hubungan ?? "",
+                            jumlah_rombongan: result.data.jumlah_rombongan ?? "",
+                            tanggal_kunjungan: result.data.tanggal_kunjungan ?? "",
+                            status: result.data.status ?? "",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Gagal mengambil data perizinan:", error);
+                    Swal.fire("Error", "Gagal mengambil data pengunjung", "error");
+                }
+            };
+    
+            if (isOpen && feature === 2) {
+                setFormData({
+                    nik: "",
+                    nama: "",
+                    tempat_lahir: "",
+                    tanggal_lahir: "",
+                    jenis_kelamin: "",
+                    santri_id: "",
+                    hubungan_id: "",
+                    jumlah_rombongan: "",
+                    tanggal_kunjungan: "",
+                    status: "",
+                });
+                fetchData();
+            }
+        }, [feature, id, isOpen]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (formData.nik.length < 16) {
-                    await Swal.fire({
-                        title: "Oops!",
-                        text: "NIK minimal 16 karakter",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    return;
-                }
+            await Swal.fire({
+                title: "Oops!",
+                text: "NIK minimal 16 karakter",
+                icon: "warning",
+                confirmButtonText: "OK",
+            });
+            return;
+        }
+
+        const isTambah = feature == 1;
+        const metod = isTambah ? "POST" : "PUT";
+        const endpoint = isTambah ? "pengunjung" : `pengunjung/${id}`;
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -64,8 +136,8 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData }) => {
             });
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}crud/pengunjung`, {
-                method: "POST",
+            const response = await fetch(`${API_BASE_URL}crud/${endpoint}`, {
+                method: metod,
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`
@@ -167,7 +239,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData }) => {
                                 as="h3"
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
-                                Tambah Data Baru
+                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
                             </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}

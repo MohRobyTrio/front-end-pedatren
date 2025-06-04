@@ -8,12 +8,14 @@ import useFetchPengunjung from "../../hooks/hooks_menu_mahrom/Pengunjung";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import ModalDetail from "../../components/modal/ModalDetail";
 import Access from "../../components/Access";
-import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { ModalAddPengunjung } from "../../components/modal/ModalFormPengunjung";
 
 const Pengunjung = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [feature, setFeature] = useState(null);
     
     const openModal = (item) => {
         setSelectedItem(item);
@@ -81,12 +83,15 @@ const Pengunjung = () => {
                 <h1 className="text-2xl font-bold">Data Pengunjung</h1>
                 <div className="flex items-center space-x-2">
                     <Access action="tambah">
-                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                        <button onClick={() => {
+                            setFeature(1);
+                            setShowFormModal(true);
+                            }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
                     </Access>
                 </div>
             </div>
 
-            <ModalAddPengunjung isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
+            <ModalAddPengunjung isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -122,6 +127,7 @@ const Pengunjung = () => {
                                     <th className="px-3 py-2 border-b">Santri Dikunjungi</th>
                                     <th className="px-3 py-2 border-b">Jumlah Rombongan</th>
                                     <th className="px-3 py-2 border-b">Tanggal Kunjungan</th>
+                                    <th className="px-3 py-2 border-b">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800 text-center">
@@ -146,6 +152,19 @@ const Pengunjung = () => {
                                             </td>
                                             <td className="px-3 py-2 border-b">{item.jumlah_rombongan || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tanggal_kunjungan || "-"}</td>
+                                            <td className="px-3 py-2 border-b text-center space-x-2">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedId(item.id);
+                                                        setFeature(2);
+                                                        setShowFormModal(true);
+                                                    }}
+                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))
                                 )}
