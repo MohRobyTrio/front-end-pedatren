@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faFileImage, faFileAlt, faFilePdf, faEdit, faDownload} from '@fortawesome/free-solid-svg-icons';
+import { faFileImage, faFileAlt, faFilePdf, faEdit, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function TabBerkas() {
     const { biodata_id } = useParams();
@@ -46,26 +47,59 @@ export default function TabBerkas() {
     };
 
     const handleSubmit = async ({ formData, id }) => {
+
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             if (id) {
                 for (const pair of formData.entries()) {
                     console.log(`${pair[0]}:`, pair[1]);
                 }
                 await updateBerkas(id, formData);
-                alert('Berkas berhasil diperbarui');
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: "Berkas berhasil diperbarui",
+                });
             } else {
                 console.log("Isi formData sebelum submit:", formData);
 
                 await createBerkas(bioId, formData);
-                alert('Berkas berhasil ditambahkan');
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: "Berkas berhasil ditambahkan",
+                });
             }
-
+            Swal.close();
             setModalOpen(false);
             fetchBerkas();
         } catch (err) {
             console.log(err.message);
 
-            alert(err.message || 'Terjadi kesalahan');
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: err.message || "Terjadi kesalahan",
+            });
+
         }
     };
 
@@ -75,7 +109,7 @@ export default function TabBerkas() {
                 <h1 className="text-xl font-bold">Berkas</h1>
                 <button
                     onClick={handleOpenAdd}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center"
+                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
                 >
                     Tambah Berkas
                 </button>
