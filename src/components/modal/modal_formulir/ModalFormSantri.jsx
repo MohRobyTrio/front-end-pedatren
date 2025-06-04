@@ -53,6 +53,8 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
 
             
             const result = await response.json();
+            console.log(result);
+            
             Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
@@ -71,7 +73,7 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
             }
 
             // ✅ Jika status dari backend false meskipun HTTP 200
-            if (!result.status) {
+            if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
