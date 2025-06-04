@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { API_BASE_URL } from "./config";
 import { getCookie, removeTokenCookie } from "../utils/cookieUtils";
+import { useNavigate } from "react-router-dom";
 
 const useLogout = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -12,6 +13,7 @@ const useLogout = () => {
     sessionStorage.clear();    
   };
 
+  const navigate = useNavigate();
   const logout = useCallback(async () => {
     const url = `${API_BASE_URL}logout`;
     const token = sessionStorage.getItem("token") || getCookie("token");
@@ -39,16 +41,23 @@ const useLogout = () => {
       //   throw new Error("Unauthorized. Logging out.");
       // }
 
+      if (response.status === 401) {
+        clearAuthData();
+        navigate("/login");
+        throw new Error("Unauthorized. Logging out.");
+      }
+
       if (!response.ok) {
         let errorMessage = "Logout gagal";
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } catch (jsonError) {
-          if (response.status === 401) {
-            clearAuthData();
-            errorMessage = "Unauthenticated.";
-          }
+          // if (response.status === 401) {
+          //   clearAuthData();
+          //   errorMessage = "Unauthenticated.";
+          //   navigate("/login")
+          // }
           console.log(jsonError);
         }
         throw new Error(errorMessage);

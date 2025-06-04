@@ -16,6 +16,8 @@ import {
 import { useEffect, useRef } from 'react';
 import { getCookie, removeTokenCookie } from './utils/cookieUtils';
 import Swal from 'sweetalert2';
+import ForgotPasswordPage from './page/ForgotPasswordPage';
+import ResetPasswordPage from './page/ResetPasswordPage';
 
 
 // const isTokenExpired = () => {
@@ -109,6 +111,9 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot" element={<ForgotPasswordPage />} />
+<Route path="/reset-password" element={<ResetPasswordPage />} />
+
         </Route>
 
         {/* Private Route: Semua halaman ini butuh login */}
@@ -116,13 +121,6 @@ function App() {
           <Route path="/" element={<MainPage />}>
             {/* Default redirect ke dashboard */}
             <Route index element={<RedirectToDashboard />} />
-
-            {/* <Route path="formulir" element={<Formulir />}>
-              <Route index element={<RedirectToBiodata />} />
-              {tabsFormulir.map((tab) => (
-                <Route key={tab.id} path={tab.link} element={tab.content} />
-              ))}
-            </Route> */}
 
             <Route path="formulir/:biodata_id" element={<Formulir />}>
               <Route index element={<RedirectToBiodata />} />

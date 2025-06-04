@@ -119,9 +119,9 @@ const LoginPage = () => {
             </label>
 
 
-            {/* <a href="#" className="text-sm text-blue-600 hover:underline">
+            <Link to="/forgot" className="text-sm text-blue-600 hover:underline">
               Lupa kata sandi?
-            </a> */}
+            </Link>
           </div>
           <button
             type="submit"
