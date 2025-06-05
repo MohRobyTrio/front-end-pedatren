@@ -11,6 +11,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useFetchSantriNonDomisili from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonDomisili";
 import ModalDetail from "../../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
+import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
 
 const SantriNonDomisili = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -219,7 +220,7 @@ const SantriNonDomisili = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -258,7 +259,7 @@ const SantriNonDomisili = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

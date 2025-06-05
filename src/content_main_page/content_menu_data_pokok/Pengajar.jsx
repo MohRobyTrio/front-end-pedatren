@@ -13,6 +13,7 @@ import ModalDetail from '../../components/modal/ModalDetail';
 import { downloadFile } from '../../utils/downloadFile';
 import { FaFileExport } from 'react-icons/fa';
 import { API_BASE_URL } from '../../hooks/config';
+import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 
 
 const Pengajar = () => {
@@ -296,7 +297,7 @@ const Pengajar = () => {
                                 )}
                             </div>
                         ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -346,7 +347,7 @@ const Pengajar = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
                     )
                 )}
 

@@ -12,6 +12,7 @@ import ModalDetail from "../../components/modal/ModalDetail";
 import { downloadFile } from "../../utils/downloadFile";
 import { API_BASE_URL } from "../../hooks/config";
 import { FaFileExport } from "react-icons/fa";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const WaliKelas = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -190,7 +191,7 @@ const WaliKelas = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -237,7 +238,7 @@ const WaliKelas = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

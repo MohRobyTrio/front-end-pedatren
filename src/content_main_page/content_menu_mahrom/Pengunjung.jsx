@@ -10,6 +10,7 @@ import ModalDetail from "../../components/modal/ModalDetail";
 import Access from "../../components/Access";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { ModalAddPengunjung } from "../../components/modal/ModalFormPengunjung";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const Pengunjung = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -117,7 +118,7 @@ const Pengunjung = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
                                 <tr>
@@ -127,7 +128,9 @@ const Pengunjung = () => {
                                     <th className="px-3 py-2 border-b">Santri Dikunjungi</th>
                                     <th className="px-3 py-2 border-b">Jumlah Rombongan</th>
                                     <th className="px-3 py-2 border-b">Tanggal Kunjungan</th>
-                                    <th className="px-3 py-2 border-b">Aksi</th>
+                                    <Access action="edit">
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                    </Access>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800 text-center">
@@ -152,25 +155,27 @@ const Pengunjung = () => {
                                             </td>
                                             <td className="px-3 py-2 border-b">{item.jumlah_rombongan || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tanggal_kunjungan || "-"}</td>
-                                            <td className="px-3 py-2 border-b text-center space-x-2">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSelectedId(item.id);
-                                                        setFeature(2);
-                                                        setShowFormModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                            </td>
+                                            <Access action="edit">
+                                                <td className="px-3 py-2 border-b text-center space-x-2">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedId(item.id);
+                                                            setFeature(2);
+                                                            setShowFormModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                </td>
+                                            </Access>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                        </DoubleScrollbarTable>
                 )}
 
                 {isModalOpen && (

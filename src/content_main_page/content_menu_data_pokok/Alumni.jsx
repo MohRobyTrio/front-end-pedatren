@@ -13,6 +13,7 @@ import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const Alumni = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -225,7 +226,7 @@ const Alumni = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -270,7 +271,7 @@ const Alumni = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

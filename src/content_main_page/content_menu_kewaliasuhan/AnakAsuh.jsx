@@ -10,6 +10,7 @@ import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const AnakAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -228,7 +229,7 @@ const AnakAsuh = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
                                 <tr>
@@ -265,7 +266,7 @@ const AnakAsuh = () => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </DoubleScrollbarTable>
                 )}
 
                 {isModalOpen && (

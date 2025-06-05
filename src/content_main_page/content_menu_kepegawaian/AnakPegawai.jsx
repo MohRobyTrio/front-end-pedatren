@@ -16,6 +16,7 @@ import { FaPlus } from 'react-icons/fa';
 import MultiStepModalAnakPegawai from '../../components/modal/ModalFormAnakPegawai';
 import { useMultiStepFormAnakPegawai } from '../../hooks/hooks_modal/useMultiStepFormAnakPegawai';
 import { jenisBerkasList } from '../../data/menuData';
+import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 
 const AnakPegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -262,7 +263,7 @@ const AnakPegawai = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -317,7 +318,7 @@ const AnakPegawai = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

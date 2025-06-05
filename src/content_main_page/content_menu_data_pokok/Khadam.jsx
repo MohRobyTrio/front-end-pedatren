@@ -12,6 +12,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const Khadam = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -216,7 +217,7 @@ const Khadam = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -255,7 +256,7 @@ const Khadam = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

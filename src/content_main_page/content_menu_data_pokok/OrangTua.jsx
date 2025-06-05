@@ -7,6 +7,7 @@ import Pagination from "../../components/Pagination";
 import useFetchOrangTua from "../../hooks/hooks_menu_data_pokok/Orangtua";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import ModalDetail from "../../components/modal/ModalDetail";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const OrangTua = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -168,7 +169,7 @@ const OrangTua = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
@@ -210,7 +211,7 @@ const OrangTua = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
                     ))}
 
                 {isModalOpen && (

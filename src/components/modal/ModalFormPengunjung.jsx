@@ -68,7 +68,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                             tanggal_lahir: result.data.tanggal_lahir ?? "",
                             jenis_kelamin: result.data.jenis_kelamin ?? "",
                             santri_id: result.data.santri_id ?? "",
-                            hubungan_id: result.data.hubungan ?? "",
+                            hubungan_id: result.data.hubungan_id ?? "",
                             jumlah_rombongan: result.data.jumlah_rombongan ?? "",
                             tanggal_kunjungan: result.data.tanggal_kunjungan ?? "",
                             status: result.data.status ?? "",
@@ -344,7 +344,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                 <div>
                                                     <label htmlFor="hubungan_id" className="block text-gray-700">Hubungan *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuHubungan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize ${menuHubungan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                                                         onChange={(e) => setFormData({ ...formData, hubungan_id: e.target.value })}
                                                         value={formData.hubungan_id}
                                                         disabled={menuHubungan.length <= 1}

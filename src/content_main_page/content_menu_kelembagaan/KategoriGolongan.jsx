@@ -3,6 +3,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import useFetchKategoriGolongan from "../../hooks/hooks_menu_kelembagaan/KategoriGolongan";
 import ModalAddOrEditKategoriGolongan from "../../components/modal/modal_kelembagaan/ModalFormKategoriGolongan";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const KategoriGolongan = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -36,7 +37,7 @@ const KategoriGolongan = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
@@ -95,7 +96,7 @@ const KategoriGolongan = () => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </DoubleScrollbarTable>
                 )}
             </div>
         </div>

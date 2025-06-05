@@ -17,6 +17,7 @@ import { FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import Access from '../../components/Access';
+import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 
 const Pegawai = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -247,7 +248,7 @@ const Pegawai = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -288,7 +289,7 @@ const Pegawai = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

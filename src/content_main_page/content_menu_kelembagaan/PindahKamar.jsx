@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../hooks/config";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -200,7 +201,7 @@ const PindahKamar = () => {
     return (
         <div className="flex flex-col lg:flex-row gap-6 pl-6 pt-6 pb-6">
             {/* LEFT SIDE - FILTER + TABLE */}
-            <div className="flex-1 bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+            <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">Daftar Santri</h2>
 
                 <div className="flex flex-wrap w-full mb-4">
@@ -223,6 +224,7 @@ const PindahKamar = () => {
                         </button>
                     </div>
                 ) : (
+                    <DoubleScrollbarTable>
                     <table className="min-w-full text-sm text-left">
                         <thead className="bg-gray-100 text-gray-700">
                             <tr>
@@ -296,6 +298,7 @@ const PindahKamar = () => {
                             )}
                         </tbody>
                     </table>
+                    </DoubleScrollbarTable>
                 )}
             </div>
 

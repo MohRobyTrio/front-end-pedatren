@@ -10,6 +10,7 @@ import blankProfile from "../../assets/blank_profile.png";
 import Pagination from "../../components/Pagination";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const WaliAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -257,7 +258,7 @@ const WaliAsuh = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -302,7 +303,7 @@ const WaliAsuh = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
                     )
                 )}
 

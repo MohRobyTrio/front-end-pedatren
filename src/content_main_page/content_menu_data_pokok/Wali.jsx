@@ -8,6 +8,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
 import { useEffect, useMemo, useState } from 'react';
 import ModalDetail from '../../components/modal/ModalDetail';
+import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 
 const Wali = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -182,7 +183,7 @@ const Wali = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
@@ -221,7 +222,7 @@ const Wali = () => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </DoubleScrollbarTable>
                 )}
 
                 {isModalOpen && (

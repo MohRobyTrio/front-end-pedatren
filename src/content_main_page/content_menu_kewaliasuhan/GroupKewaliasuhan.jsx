@@ -5,6 +5,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchGroupKewaliasuhan from "../../hooks/hooks_menu_kewaliasuhan/GroupKewaliasuhan"; // Buat sesuai
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const GroupKewaliasuhan = () => {
     const [filters, setFilters] = useState({
@@ -97,7 +98,7 @@ const GroupKewaliasuhan = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
                                 <tr>
@@ -133,7 +134,7 @@ const GroupKewaliasuhan = () => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </DoubleScrollbarTable>
                 )}
 
                 {totalPages > 1 && (

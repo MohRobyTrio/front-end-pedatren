@@ -19,6 +19,7 @@ import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiSt
 import { jenisBerkasList } from "../../data/menuData";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import Access from "../../components/Access";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const PesertaDidik = () => {
     const [exportLoading, setExportLoading] = useState(false);
@@ -258,7 +259,7 @@ const PesertaDidik = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -301,7 +302,7 @@ const PesertaDidik = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}

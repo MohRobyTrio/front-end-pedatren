@@ -3,6 +3,7 @@ import useFetchLembaga from "../../hooks/hooks_menu_kelembagaan/Lembaga";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import ModalAddOrEditLembaga from "../../components/modal/modal_kelembagaan/ModalFormLembaga";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const Lembaga = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -39,7 +40,7 @@ const Lembaga = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
@@ -102,7 +103,7 @@ const Lembaga = () => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </DoubleScrollbarTable>
                 )}
             </div>
         </div>

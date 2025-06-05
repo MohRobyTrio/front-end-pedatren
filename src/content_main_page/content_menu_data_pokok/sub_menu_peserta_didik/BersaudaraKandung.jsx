@@ -11,6 +11,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useFetchPesertaDidikBersaudara from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/BersaudaraKandung";
 import ModalDetail from "../../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
+import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
 
 const BersaudaraKandung = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -236,7 +237,7 @@ const BersaudaraKandung = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
@@ -285,7 +286,7 @@ const BersaudaraKandung = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </DoubleScrollbarTable>
 
                     )
                 )}
