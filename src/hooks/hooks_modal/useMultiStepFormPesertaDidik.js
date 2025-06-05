@@ -172,6 +172,9 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
                 throw new Error(result.message);
             }
 
+            
+            
+
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil!",

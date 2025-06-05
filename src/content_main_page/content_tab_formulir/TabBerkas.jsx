@@ -5,6 +5,7 @@ import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { jenisBerkasList } from '../../data/menuData';
 
 export default function TabBerkas() {
     const { biodata_id } = useParams();
@@ -12,6 +13,10 @@ export default function TabBerkas() {
     const { berkasList, loading, error, fetchBerkas, createBerkas, updateBerkas } = useBerkas(bioId);
     const [modalOpen, setModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
+
+    const [imgError, setImgError] = useState(false);
+
+
 
     useEffect(() => {
         fetchBerkas();
@@ -155,11 +160,12 @@ export default function TabBerkas() {
 
                         {/* Preview Gambar atau Ikon */}
                         <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                            {berkas.file_path && isImage(berkas.file_path) ? (
+                            {berkas.file_path && isImage(berkas.file_path)  && !imgError  ? (
                                 <img
                                     src={berkas.file_path}
                                     alt={berkas.nama_jenis_berkas || 'berkas'}
                                     className="object-cover h-full w-full"
+                                    onError={() => setImgError(true)}
                                 />
                             ) : (
                                 <FontAwesomeIcon
@@ -173,13 +179,18 @@ export default function TabBerkas() {
                         {/* Deskripsi */}
                         <div className="p-3 text-center">
                             <p className="text-sm font-medium text-gray-700">
-                                {berkas.nama_jenis_berkas || <span className="italic text-gray-400">*tanpa deskripsi</span>}
+                                {
+                                    jenisBerkasList.find(j => j.id === berkas.jenis_berkas_id)?.label || (
+                                        <span className="italic text-gray-400">*tanpa deskripsi</span>
+                                    )
+                                }
                             </p>
-                            <div className="mt-2">
+
+                            {/* <div className="mt-2">
                                 <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
-                                    {berkas.nama_jenis_berkas || 'Berkas'}
+                                    {jenisBerkasList.find(j => j.id === berkas.jenis_berkas_id)?.label || 'Berkas'}
                                 </span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 ))}

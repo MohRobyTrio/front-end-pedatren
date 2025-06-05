@@ -97,6 +97,74 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     return (
     <>
         <div className="space-y-2">
+            <p className="font-bold text-xl">Mondok </p>
+                <hr className="border-t border-gray-500 mb-4 mt-2" />
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="mondok" className="md:w-1/4 text-black">
+                        Mondok
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="mondok" value="1" className="w-4 h-4" {...register("modalAnakPegawai.mondok", { required: true })}
+                                required />
+                        <span>Ya</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                        <input type="radio" name="mondok" value="0" className="w-4 h-4" {...register("modalAnakPegawai.mondok", { required: true })}
+                                required />
+                        <span>Tidak</span>
+                    </label>
+                </div>
+                {/* Nama Lengkap */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="nis" className="md:w-1/4 text-black">
+                        NIS 
+                    </label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                            <input
+                                id="nis"
+                                name="nis"
+                                type="text"
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
+                                placeholder="Masukkan NIS"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                 {...register('modalAnakPegawai.nis', { required: true })}
+                                 required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <hr className="border-t border-gray-500 mb-2 mt-8" />
+                <p className="font-bold text-xl">Domisili</p>
+                <hr className="border-t border-gray-500 mb-4 mt-2" />
+
+                <Filters filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} control={control} />
+
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="tanggal_masuk_domisili" className="md:w-1/4 text-black">
+                        Tanggal Masuk Domisili *
+                    </label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_masuk_domisili"
+                                name="tanggal_masuk_domisili"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("modalAnakPegawai.tanggal_masuk_domisili", { required: true })}
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <hr className="border-t border-gray-500 mb-2 mt-8" />
+                <p className="font-bold text-xl">Pendidikan</p>
+                <hr className="border-t border-gray-500 mb-4 mt-2" />
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="no_induk" className="md:w-1/4 text-black">
@@ -137,25 +205,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     </div>
                 </div>
 
-                <Filters filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} control={control} />
-
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="tanggal_masuk_domisili" className="md:w-1/4 text-black">
-                        Tanggal Masuk Domisili *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                type="date"
-                                id="tanggal_masuk_domisili"
-                                name="tanggal_masuk_domisili"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.tanggal_masuk_domisili", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div>
+                
             </div>
     </>
 )
