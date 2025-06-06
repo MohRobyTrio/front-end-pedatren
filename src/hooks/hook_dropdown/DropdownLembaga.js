@@ -95,28 +95,3 @@ const DropdownLembaga = () => {
 };
 
 export default DropdownLembaga;
-
-
-// import { useEffect } from 'react';
-// import useDropdownLembagaStore from '../../stores/dropdownLembagaStore';
-
-// const DropdownLembaga = () => {
-//   const {
-//     filterLembaga,
-//     selectedLembaga,
-//     fetchDropdownData,
-//     setSelectedLembaga
-//   } = useDropdownLembagaStore();
-
-//   useEffect(() => {
-//     fetchDropdownData();
-//   }, [fetchDropdownData]);
-
-//   return {
-//     filterLembaga,
-//     selectedLembaga,
-//     handleFilterChangeLembaga: setSelectedLembaga
-//   };
-// };
-
-// export default DropdownLembaga;

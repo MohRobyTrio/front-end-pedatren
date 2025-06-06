@@ -10,35 +10,39 @@ import { API_BASE_URL } from "../../hooks/config";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import useFetchAlumni from "../../hooks/hooks_menu_data_pokok/Alumni";
+import useFetchLulus from "../../hooks/hooks_menu_kelembagaan/Kelulusan";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
         <>
-            {Object.entries(filterOptions).map(([label, options], index) => (
+            <div className={`${vertical ? "space-y-4" : "grid grid-cols-1 md:grid-cols-2 gap-4"}`}>
+                {Object.entries(filterOptions).map(([label, options], index) => (
+                    <div key={`${label}-${index}`} className="w-full">
+                        {/* {Object.entries(filterOptions).map(([label, options], index) => (
                 <div
                     key={`${label}-${index}`}
                     className={`mb-4 ${vertical ? "w-full" : "w-full px-2  md:w-1/2 "}`}
-                >
-                    {vertical && (
-                        <label className="block text-gray-700 mb-1 capitalize">{label} Tujuan</label>
-                    )}
-                    <select
-                        className={`w-full border border-gray-300 rounded p-2 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
-                            }`}
-                        onChange={(e) => onChange({ [label]: e.target.value })}
-                        value={selectedFilters[label] || ""}
-                        disabled={options.length <= 1}
-                        required={vertical}
-                    >
-                        {options.map((option, idx) => (
-                            <option key={idx} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            ))}
+                > */}
+                        {vertical && (
+                            <label className="block text-gray-700 mb-1 capitalize">{label} Tujuan</label>
+                        )}
+                        <select
+                            className={`w-full border border-gray-300 rounded p-2 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
+                                }`}
+                            onChange={(e) => onChange({ [label]: e.target.value })}
+                            value={selectedFilters[label] || ""}
+                            disabled={options.length <= 1}
+                            required={vertical}
+                        >
+                            {options.map((option, idx) => (
+                                <option key={idx} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
+            </div>
         </>
     );
 };
@@ -47,24 +51,40 @@ const Kelulusan = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [selectedPelajarBiodataIds, setSelectedPelajarBiodataIds] = useState([]);
-    const [selectedAlumniBiodataIds, setSelectedAlumniBiodataIds] = useState([]);
+    const [selectedLulusBiodataIds, setSelectedLulusBiodataIds] = useState([]);
     const [isAllSelectedPelajar, setIsAllSelectedPelajar] = useState(false);
-    const [isAllSelectedAlumni, setIsAllSelectedAlumni] = useState(false);
+    const [isAllSelectedLulus, setIsAllSelectedLulus] = useState(false);
     const [submitAction, setSubmitAction] = useState(null);
     const [filters, setFilters] = useState({
         lembaga: "",
         jurusan: "",
         kelas: "",
         rombel: "",
+        urutBerdasarkan: ""
     })
+
+    const [filtersLulus, setFiltersLulus] = useState({
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+        urutBerdasarkan: ""
+    })
+
+    const urutBerdasarkan = [
+        { label: "Urut Berdasarkan", value: "" },
+        { label: "Nama", value: "nama" },
+        { label: "NIUP", value: "niup" },
+        { label: "Jenis Kelamin", value: "jenis_kelamin" }
+    ]
 
     useEffect(() => {
         console.log(selectedPelajarBiodataIds);
     }, [selectedPelajarBiodataIds])
 
     useEffect(() => {
-        console.log(selectedAlumniBiodataIds);
-    }, [selectedAlumniBiodataIds])
+        console.log(selectedLulusBiodataIds);
+    }, [selectedLulusBiodataIds])
 
     const {
         filterLembaga: filterLembagaFilter,
@@ -72,8 +92,17 @@ const Kelulusan = () => {
         selectedLembaga: selectedLembagaFilter,
     } = DropdownLembaga();
 
+    const {
+        filterLembaga: filterLembagaFilterLulus,
+        handleFilterChangeLembaga: handleFilterChangeLembagaFilterLulus,
+        selectedLembaga: selectedLembagaFilterLulus,
+    } = DropdownLembaga();
+    
+
+    const shouldFetch = selectedLembagaFilter.lembaga !== "";
+
     const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData, searchTerm: searchTermPelajar, setSearchTerm: setSearchTermPelajar } = useFetchPelajar(filters);
-    const { alumni, loadingAlumni, error: errorAlumni, setLimit: setLimitAlumni, totalDataAlumni, fetchData: fetchDataAlumni, searchTerm, setSearchTerm } = useFetchAlumni({ status: "alumni pelajar" });
+    const { dataLulus, loadingLulus, error: errorLulus, setLimit: setLimitLulus, totalDataLulus, fetchData: fetchDataLulus, searchTerm: searchTermLulus, setSearchTerm: setSearchTermLulus } = useFetchLulus(filtersLulus);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -87,10 +116,22 @@ const Kelulusan = () => {
         rombel: updateFirstOptionLabel(filterLembagaFilter.rombel, "Pilih rombel"),
     };
 
+    const updatedFilterLembagaFilterLulus = {
+        lembaga: updateFirstOptionLabel(filterLembagaFilterLulus.lembaga, "Pilih Lembaga"),
+        jurusan: updateFirstOptionLabel(filterLembagaFilterLulus.jurusan, "Pilih Jurusan"),
+        kelas: updateFirstOptionLabel(filterLembagaFilterLulus.kelas, "Pilih Kelas"),
+        rombel: updateFirstOptionLabel(filterLembagaFilterLulus.rombel, "Pilih rombel"),
+    };
+
     const lembagaTerpilih = filterLembagaFilter.lembaga.find((n) => n.value == selectedLembagaFilter.lembaga)?.label || "";
     const jurusanTerpilih = filterLembagaFilter.jurusan.find((n) => n.value == selectedLembagaFilter.jurusan)?.label || "";
     const kelasTerpilih = filterLembagaFilter.kelas.find((n) => n.value == selectedLembagaFilter.kelas)?.label || "";
     const rombelTerpilih = filterLembagaFilter.rombel.find((n) => n.value == selectedLembagaFilter.rombel)?.label || "";
+
+    const lembagaTerpilihLulus = filterLembagaFilterLulus.lembaga.find((n) => n.value == selectedLembagaFilterLulus.lembaga)?.label || "";
+    const jurusanTerpilihLulus = filterLembagaFilterLulus.jurusan.find((n) => n.value == selectedLembagaFilterLulus.jurusan)?.label || "";
+    const kelasTerpilihLulus = filterLembagaFilterLulus.kelas.find((n) => n.value == selectedLembagaFilterLulus.kelas)?.label || "";
+    const rombelTerpilihLulus = filterLembagaFilterLulus.rombel.find((n) => n.value == selectedLembagaFilterLulus.rombel)?.label || "";
 
     useEffect(() => {
         if (lembagaTerpilih || jurusanTerpilih || kelasTerpilih || rombelTerpilih) {
@@ -99,23 +140,33 @@ const Kelulusan = () => {
                 jurusan: jurusanTerpilih,
                 kelas: kelasTerpilih,
                 rombel: rombelTerpilih,
+            });            
+        }
+        if (lembagaTerpilihLulus || jurusanTerpilihLulus || kelasTerpilihLulus || rombelTerpilihLulus) {
+            setFiltersLulus({
+                lembaga: lembagaTerpilihLulus,
+                jurusan: jurusanTerpilihLulus,
+                kelas: kelasTerpilihLulus,
+                rombel: rombelTerpilihLulus,
             });
         }
-    }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih]);
+    }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih, lembagaTerpilihLulus, jurusanTerpilihLulus, kelasTerpilihLulus, rombelTerpilihLulus]);
 
     useEffect(() => {
         if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
     }, [setLimit, totalDataPelajar]);
 
     useEffect(() => {
-        if (totalDataAlumni && totalDataAlumni != 0) setLimitAlumni(totalDataAlumni);
-    }, [setLimitAlumni, totalDataAlumni]);
+        console.log(totalDataLulus);
+        
+        if (totalDataLulus && totalDataLulus != 0) setLimitLulus(totalDataLulus);
+    }, [setLimitLulus, totalDataLulus]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const isProses = submitAction === "proses";
-        const selectedIds = isProses ? selectedPelajarBiodataIds : selectedAlumniBiodataIds;
+        const selectedIds = isProses ? selectedPelajarBiodataIds : selectedLulusBiodataIds;
 
         if (selectedIds.length === 0) {
             await Swal.fire({
@@ -167,7 +218,7 @@ const Kelulusan = () => {
             Swal.close();
             const result = await response.json();
             console.log(result);
-            
+
 
             if (response.status === 401) {
                 await Swal.fire({
@@ -190,17 +241,36 @@ const Kelulusan = () => {
                 return;
             }
 
-            await Swal.fire({
-                icon: "success",
-                title: "Berhasil",
-                text: `${submitAction} lulus berhasil diproses!`,
-            });
+            if (result.data?.gagal?.length > 0) {
+                const gagalList = result.data.gagal
+                    .map((item, index) => `<b>${index + 1}. ${item.nama}</b>`)
+                    .join("<br><br>");
+
+                await Swal.fire({
+                    icon: "warning",
+                    title: "Sebagian Gagal Diproses",
+                    html: `
+                    <div style="text-align: left;">
+                        ${result.message}<br><br>
+                        <b>Daftar siswa yang gagal diproses:</b><br><br>
+                        ${gagalList}
+                    </div>`,
+                });
+            } else {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: result.message || `${submitAction} lulus berhasil diproses!`,
+                });
+            }
 
             // Reset form jika diperlukan
+            setIsAllSelectedLulus(false);
+            setIsAllSelectedPelajar(false);
             setSelectedPelajarBiodataIds([]);
-            setSelectedAlumniBiodataIds([]);
+            setSelectedLulusBiodataIds([]);
             fetchData(true);
-            fetchDataAlumni(true);
+            fetchDataLulus(true);
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
             Swal.close();
@@ -242,16 +312,47 @@ const Kelulusan = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-wrap w-full mb-4">
-                    <Filters
-                        filterOptions={updatedFilterLembagaFilter}
-                        onChange={handleFilterChangeLembagaFilter}
-                        selectedFilters={selectedLembagaFilter}
-                    />
+                <div className="w-full mb-4">
+                    {/* Bungkus pakai grid 2 kolom saat lg, stacked saat <lg */}
+                    <div className="grid grid-cols-1 gap-4">
+
+                        {/* Filters */}
+                        <div className="w-full">
+                            <Filters
+                                filterOptions={updatedFilterLembagaFilter}
+                                onChange={handleFilterChangeLembagaFilter}
+                                selectedFilters={selectedLembagaFilter}
+                            />
+                        </div>
+
+                        {/* Sort */}
+                        <div className="w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="w-full">
+                                    <select
+                                        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize"
+                                        value={filters.urutBerdasarkan}
+                                        onChange={(e) => setFilters({ ...filters, urutBerdasarkan: e.target.value })}
+                                        required
+                                    >
+                                        {urutBerdasarkan.map((urut, idx) => (
+                                            <option key={idx} value={urut.value}>
+                                                {urut.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
+
                 {/* TABLE */}
-                {error ? (
+                {!shouldFetch ? (
+                    <div className="text-center py-6 text-gray-500 italic">Silakan pilih lembaga terlebih dahulu.</div>
+                ) : error ? (
                     <div className="col-span-3 text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
                         <button
@@ -333,8 +434,8 @@ const Kelulusan = () => {
                                             <td className="px-3 py-2 border-b">
                                                 <span
                                                     className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "aktif"
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-red-100 text-red-700"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
                                                         }`}
                                                 >
                                                     {item.status === "aktif" ? "Aktif" : "Nonaktif"}
@@ -383,15 +484,50 @@ const Kelulusan = () => {
                             type="text"
                             placeholder="Cari nama alumni..."
                             className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            value={searchTermLulus}
+                            onChange={(e) => setSearchTermLulus(e.target.value)}
                         />
                         <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                             <i className="fas fa-search"></i>
                         </div>
                     </div>
                 </div>
-                {errorAlumni ? (
+
+                
+                <div className="w-full mb-4">
+                    {/* Bungkus pakai grid 2 kolom saat lg, stacked saat <lg */}
+                    <div className="grid grid-cols-1 gap-4">
+
+                        {/* Filters */}
+                        <div className="w-full">
+                    <Filters
+                        filterOptions={updatedFilterLembagaFilterLulus}
+                        onChange={handleFilterChangeLembagaFilterLulus}
+                        selectedFilters={selectedLembagaFilterLulus}
+                    />
+                </div>
+                <div className="w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="w-full">
+                                    <select
+                                        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize"
+                                        value={filtersLulus.urutBerdasarkan}
+                                        onChange={(e) => setFiltersLulus({ ...filtersLulus, urutBerdasarkan: e.target.value })}
+                                        required
+                                    >
+                                        {urutBerdasarkan.map((urut, idx) => (
+                                            <option key={idx} value={urut.value}>
+                                                {urut.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </div>
+
+                {errorLulus ? (
                     <div className="col-span-3 text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
                         <button
@@ -409,58 +545,58 @@ const Kelulusan = () => {
                                     <th className="px-3 py-2 border-b text-center w-10">
                                         <input
                                             type="checkbox"
-                                            checked={isAllSelectedAlumni}
+                                            checked={isAllSelectedLulus}
                                             onChange={(e) => {
                                                 const checked = e.target.checked;
-                                                setIsAllSelectedAlumni(checked);
+                                                setIsAllSelectedLulus(checked);
                                                 if (checked) {
                                                     // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                    setSelectedAlumniBiodataIds(alumni.map((item) => item.biodata_id));
+                                                    setSelectedLulusBiodataIds(dataLulus.map((item) => item.biodata_id));
                                                 } else {
                                                     // Hilangkan semua centang
-                                                    setSelectedAlumniBiodataIds([]);
+                                                    setSelectedLulusBiodataIds([]);
                                                 }
                                             }}
                                         />
                                     </th>
                                     <th className="px-3 py-2 border-b text-center w-10">No</th>
+                                    <th className="px-3 py-2 border-b">No. Induk</th>
                                     <th className="px-3 py-2 border-b">Nama</th>
-                                    <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
                                     <th className="px-3 py-2 border-b">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800">
-                                {loadingAlumni ? (
+                                {loadingLulus ? (
                                     <tr>
                                         <td colSpan="5" className="text-center py-6">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
                                     </tr>
-                                ) : alumni.length === 0 ? (
+                                ) : dataLulus.length === 0 ? (
                                     <tr>
                                         <td colSpan="5" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
-                                    alumni.map((item, index) => (
+                                    dataLulus.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 text-center">
                                             <td className="px-3 py-2 border-b">
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedAlumniBiodataIds.includes(item.biodata_id)}
+                                                    checked={selectedLulusBiodataIds.includes(item.biodata_id)}
                                                     onChange={(e) => {
                                                         const checked = e.target.checked;
                                                         if (checked) {
-                                                            setSelectedAlumniBiodataIds((prev) => {
+                                                            setSelectedLulusBiodataIds((prev) => {
                                                                 const newSelected = [...prev, item.biodata_id];
                                                                 if (newSelected.length === pelajar.length) {
-                                                                    setIsAllSelectedAlumni(true);
+                                                                    setIsAllSelectedLulus(true);
                                                                 }
                                                                 return newSelected;
                                                             });
                                                         } else {
-                                                            setSelectedAlumniBiodataIds((prev) => {
+                                                            setSelectedLulusBiodataIds((prev) => {
                                                                 const newSelected = prev.filter((biodata_id) => biodata_id !== item.biodata_id);
-                                                                setIsAllSelectedAlumni(false);
+                                                                setIsAllSelectedLulus(false);
                                                                 return newSelected;
                                                             });
                                                         }
@@ -468,16 +604,13 @@ const Kelulusan = () => {
                                                 />
                                             </td>
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b text-left">{item.no_induk}</td>
                                             <td className="px-3 py-2 border-b text-left">{item.nama}</td>
-                                            <td className="px-3 py-2 border-b">
-                                                {item.lembaga || "-"}<br />
-                                                <span className="italic">Lulus: {item.tahun_keluar_santri || "-"}</span>
-                                            </td>
                                             <td className="px-3 py-2 border-b">
                                                 <span
                                                     className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "lulus"
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-red-100 text-red-700"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
                                                         }`}
                                                 >
                                                     {item.status === "lulus" ? "Lulus" : "-"}
