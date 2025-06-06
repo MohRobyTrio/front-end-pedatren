@@ -76,7 +76,7 @@ const Pegawai = () => {
         rombel: rombelTerpilih
     }), [filters, jurusanTerpilih, kabupatenTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih]);
 
-    const { pegawai, loadingPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPegawai, totalPages, currentPage, setCurrentPage } = useFetchPegawai(updatedFilters);
+    const { pegawai, loadingPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPegawai, totalPages, currentPage, setCurrentPage, fetchData } = useFetchPegawai(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -161,7 +161,7 @@ const Pegawai = () => {
       
     const [showFormModal, setShowFormModal] = useState(false);
 
-    const formState = useMultiStepFormPegawai(() => setShowFormModal(false));
+    const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

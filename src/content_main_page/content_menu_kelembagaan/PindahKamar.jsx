@@ -199,9 +199,8 @@ const PindahKamar = () => {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 pl-6 pt-6 pb-6">
-            {/* LEFT SIDE - FILTER + TABLE */}
-            <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
+        <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
+            <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">Daftar Santri</h2>
 
                 <div className="flex flex-wrap w-full mb-4">
@@ -303,8 +302,8 @@ const PindahKamar = () => {
             </div>
 
             {/* RIGHT SIDE - FORM TUJUAN */}
-            <form onSubmit={handleSubmit}>
-                <div className="w-full lg:w-[350px] bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start">
+            <form onSubmit={handleSubmit} className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start">
+                {/* <div className="w-full lg:w-[350px] bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start"> */}
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Pindahkan ke</h2>
 
@@ -321,7 +320,7 @@ const PindahKamar = () => {
                     <button type="submit" className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded transition duration-200">
                         Proses Pindah
                     </button>
-                </div>
+                {/* </div> */}
             </form>
         </div>
     );

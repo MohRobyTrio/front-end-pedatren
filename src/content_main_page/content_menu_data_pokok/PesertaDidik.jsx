@@ -90,7 +90,7 @@ const PesertaDidik = () => {
         rombel: rombelTerpilih
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
 
-    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
+    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage, fetchData } = useFetchPeserta(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("table");
 
@@ -188,7 +188,7 @@ const PesertaDidik = () => {
 
     const [showFormModal, setShowFormModal] = useState(false);
 
-    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList);
+    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">

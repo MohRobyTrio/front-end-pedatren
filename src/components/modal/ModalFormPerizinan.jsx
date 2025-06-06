@@ -179,6 +179,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             // }
 
             // if ("status" in result && !result.status) {
+                console.log(result);
             if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
@@ -188,7 +189,6 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 return; // Jangan lempar error, cukup berhenti
             }
 
-            console.log(result);
 
             // ✅ Sukses
             await Swal.fire({
@@ -197,7 +197,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 text: `Data berhasil dikirim.`,
             });
 
-            refetchData?.();
+            refetchData?.(true);
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

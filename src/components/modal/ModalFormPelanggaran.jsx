@@ -168,7 +168,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                 text: `Data berhasil dikirim.`,
             });
 
-            refetchData?.();
+            refetchData?.(true);
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

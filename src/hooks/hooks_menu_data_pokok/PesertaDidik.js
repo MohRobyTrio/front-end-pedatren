@@ -22,7 +22,7 @@ const useFetchPeserta = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/pesertadidik?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -55,7 +55,7 @@ const useFetchPeserta = (filters) => {
         if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
         if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
         
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -108,7 +108,8 @@ const useFetchPeserta = (filters) => {
         totalDataPesertaDidik,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

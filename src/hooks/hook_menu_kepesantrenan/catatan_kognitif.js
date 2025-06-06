@@ -23,7 +23,7 @@ const useFetchKognitif = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/catatan-kognitif?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
@@ -48,7 +48,7 @@ const useFetchKognitif = (filters) => {
 
 
         // Skip request duplikat
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip duplicate request");
             return;
         }

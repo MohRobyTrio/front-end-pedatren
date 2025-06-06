@@ -24,7 +24,7 @@ const useFetchAfektif = (filters) => {
     };
   }, [searchTerm]);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (force = false) => {
     let url = `${API_BASE_URL}data-pokok/catatan-afektif?limit=${limit}&page=${currentPage}`;
 
     // Handle search
@@ -50,7 +50,7 @@ const useFetchAfektif = (filters) => {
     if (filters?.periode && filters.periode !== "") {url += `&periode=${encodeURIComponent(filters.periode)}`;}
 
     // Skip duplicate requests
-    if (lastRequest.current === url) {
+    if (!force && lastRequest.current === url) {
       console.log('Skip duplicate request');
       return;
     }

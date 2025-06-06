@@ -106,7 +106,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                 text: `Data berhasil dikirim.`,
             });
 
-            refetchData?.("afektif");
+            refetchData?.(true);
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -449,7 +449,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                 text: `Data berhasil dikirim.`,
             });
 
-            refetchData?.("kognitif");
+            refetchData?.(true);
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

@@ -15,6 +15,7 @@ import useFetchPengurus from "../hooks/hooks_menu_data_pokok/Pengurus";
 import useFetchKaryawan from "../hooks/hooks_menu_data_pokok/Kayawan";
 import useFetchPegawai from "../hooks/hooks_menu_kepegawaian/Pegawai";
 import useFetchWali from "../hooks/hooks_menu_data_pokok/Wali";
+import useFetchPerizinan from "../hooks/hook_menu_kepesantrenan/Perizinan";
 
 const Dashboard = () => {
     const { loadingPesertaDidik, totalDataPesertaDidik } = useFetchPeserta();
@@ -29,6 +30,8 @@ const Dashboard = () => {
     const { loadingKaryawan, totalDataKaryawan } = useFetchKaryawan();
     const { loadingPegawai, totalDataPegawai } = useFetchPegawai();
     const { loadingWali, totalDataWali } = useFetchWali();
+    const { loading: loadingPerizinanDMI, totalData: totalDataPerizinanDMI } = useFetchPerizinan({ status: "sudah berada diluar pondok" });
+    const { loading: loadingPerizinanTBK, totalData: totalDataPerizinanTBK } = useFetchPerizinan({ status: "telat(belum kembali)" });
 
     const Load = () => {
         return (
@@ -51,8 +54,8 @@ const Dashboard = () => {
         { label: "Total Alumni", value: loadingAlumni ? <Load /> : totalDataAlumni, color: "bg-blue-700", icon: "🎓", link: "/alumni" },
         { label: "Total Orang Tua", value: loadingOrangtua ? <Load /> : totalDataOrangtua, color: "bg-purple-500", icon: "👨‍👨‍👦", link: "/orang-tua" },
         { label: "Total Wali", value: loadingWali? <Load /> : totalDataWali, color: "bg-indigo-500", icon: "🔢", link: "/wali" },
-        { label: "Dalam Masa Izin", value: 0, color: "bg-orange-500", icon: "⏳", link: "/perizinan" },
-        { label: "Telat Belum Kembali", value: 0, color: "bg-red-400", icon: "🚨", link: "/pelanggaran" },
+        // { label: "Dalam Masa Izin", value: loadingPerizinanDMI ? <Load /> : totalDataPerizinanDMI, color: "bg-orange-500", icon: "⏳", link: "/perizinan" },
+        // { label: "Telat Belum Kembali", value: loadingPerizinanTBK ? <Load /> : totalDataPerizinanTBK, color: "bg-red-400", icon: "🚨", link: "/pelanggaran" },
     ];
 
     const [birthdays, setBirthdays] = useState([]);

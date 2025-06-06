@@ -25,7 +25,7 @@ const useFetchAlumni = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/alumni?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -50,7 +50,7 @@ const useFetchAlumni = (filters) => {
         if (filters?.wafathidup) url += `&wafat=${encodeURIComponent(filters.wafathidup)}`;
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -101,7 +101,8 @@ const useFetchAlumni = (filters) => {
         totalDataAlumni,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 
