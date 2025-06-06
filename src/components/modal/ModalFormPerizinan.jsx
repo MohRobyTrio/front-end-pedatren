@@ -8,12 +8,16 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import { useNavigate } from "react-router-dom";
+import { ModalSelectSantri } from "../ModalSelectSantri";
 
 export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [santriId, setSantriId] = useState("");    
+    const [santriId, setSantriId] = useState("");
+
+    // const [santriId, setSantriId] = useState(null);
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
 
     const [formData, setFormData] = useState({
         pengasuh_id: "",
@@ -31,8 +35,8 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
     });
 
     useEffect(() => {
-        if (isOpen && feature == 1) {
-            setSantriId("");
+        if (isOpen && feature === 1) {
+            setSantriId(null);
             setFormData({
                 pengasuh_id: "",
                 biktren_id: "",
@@ -48,17 +52,13 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 keterangan: "",
             });
         }
-    }, [feature, isOpen]);
-
-    useEffect(() => {      
-        setSantriId("");  
-        if (feature === 2 && nama && menuSantri.length > 0) {
-            const matchedSantri = menuSantri.find((s) => s.label === nama);            
-            if (matchedSantri) {
-                setSantriId(matchedSantri.bio_id);
-            }
+        if (isOpen && feature === 2 && nama && menuSantri.length > 0) {
+            const s = menuSantri.find((s) => s.label === nama);
+            if (s) setSantriId(s);
         }
-    }, [feature, nama, menuSantri]);
+    }, [isOpen, feature, nama, menuSantri]);
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -121,7 +121,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
 
         const isTambah = feature == 1;
         const metod = isTambah ? "POST" : "PUT";
-        const idSend = isTambah ? santriId : id;
+        const idSend = isTambah ? santriId.bio_id : id;
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -143,7 +143,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                     Swal.showLoading();
                 }
             });
-            console.log(santriId);
+            console.log(santriId.bio_id);
 
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
@@ -156,7 +156,9 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 body: JSON.stringify(formData),
             });
 
-            console.log(`Mengirim ke: ${API_BASE_URL}crud/${santriId}/perizinan`);
+            console.log("Response dari API:", response);
+            
+            // console.log(`Mengirim ke: ${API_BASE_URL}crud/${santriId}/perizinan`);
 
             Swal.close();
             if (!response) throw new Error("Tidak ada response dari server.");
@@ -236,7 +238,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="w-full max-w-3xl bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -255,10 +257,34 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
+                                            {/* Pilih Santri Button */}
+                                            {feature === 1 && (
+                                                <div className={`mb-4 flex ${santriId ? 'justify-end' : 'justify-center'}`}>
+                                                    <div className="flex-1 flex justify-between items-center max-w-2xl mx-auto">
+                                                        {!santriId && (
+                                                            <h2 className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
+                                                                Pilih Data Santri Terlebih Dahulu
+                                                            </h2>
+                                                        )}
+                                                        <div className={`ml-auto ${!santriId ? 'relative' : ''}`}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowSelectSantri(true)}
+                                                                className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                            >
+                                                                {santriId ? "Ganti Santri" : "Pilih Santri"}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {/* Kartu Info Santri */}
+                                            {santriId && <SantriInfoCard santri={santriId} />}
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">
-                                                <div>
+                                            {(santriId || feature === 2) && (
+                                                <div className="space-y-4">
+                                                    {/* <div>
                                                     <label htmlFor="id_santri" className="block text-gray-700">Nama Santri *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${feature === 2 ? 'bg-gray-200 text-gray-700' : ''}`}
@@ -273,117 +299,118 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                             </option>
                                                         ))}
                                                     </select>
-                                                </div>
+                                                </div> */}
 
-                                                <div>
-                                                    <label htmlFor="alasan_izin" className="block text-gray-700">Alasan Izin *</label>
-                                                    <textarea
-                                                        name="alasan_izin"
-                                                        onChange={(e) => setFormData({ ...formData, alasan_izin: e.target.value })}
-                                                        value={formData.alasan_izin}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        placeholder="Masukkan catatan atau tindak lanjut"
-                                                        required
-                                                    />
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="alasan_izin" className="block text-gray-700">Alasan Izin *</label>
+                                                        <textarea
+                                                            name="alasan_izin"
+                                                            onChange={(e) => setFormData({ ...formData, alasan_izin: e.target.value })}
+                                                            value={formData.alasan_izin}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            placeholder="Masukkan catatan atau tindak lanjut"
+                                                            required
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="alamat_tujuan" className="block text-gray-700">Alamat Tujuan *</label>
-                                                    <textarea
-                                                        name="alamat_tujuan"
-                                                        onChange={(e) => setFormData({ ...formData, alamat_tujuan: e.target.value })}
-                                                        value={formData.alamat_tujuan}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        placeholder="Masukkan catatan atau tindak lanjut"
-                                                        required
-                                                    />
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="alamat_tujuan" className="block text-gray-700">Alamat Tujuan *</label>
+                                                        <textarea
+                                                            name="alamat_tujuan"
+                                                            onChange={(e) => setFormData({ ...formData, alamat_tujuan: e.target.value })}
+                                                            value={formData.alamat_tujuan}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            placeholder="Masukkan catatan atau tindak lanjut"
+                                                            required
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="tanggal_mulai" className="block text-gray-700">Tanggal Mulai *</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        id="tanggal_mulai"
-                                                        name="tanggal_mulai"
-                                                        value={formData.tanggal_mulai}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_mulai: e.target.value })}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="tanggal_mulai" className="block text-gray-700">Tanggal Mulai *</label>
+                                                        <input
+                                                            type="datetime-local"
+                                                            id="tanggal_mulai"
+                                                            name="tanggal_mulai"
+                                                            value={formData.tanggal_mulai}
+                                                            onChange={(e) => setFormData({ ...formData, tanggal_mulai: e.target.value })}
+                                                            required
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="tanggal_akhir" className="block text-gray-700">Tanggal Akhir *</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        id="tanggal_akhir"
-                                                        name="tanggal_akhir"
-                                                        value={formData.tanggal_akhir}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_akhir: e.target.value })}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="tanggal_akhir" className="block text-gray-700">Tanggal Akhir *</label>
+                                                        <input
+                                                            type="datetime-local"
+                                                            id="tanggal_akhir"
+                                                            name="tanggal_akhir"
+                                                            value={formData.tanggal_akhir}
+                                                            onChange={(e) => setFormData({ ...formData, tanggal_akhir: e.target.value })}
+                                                            required
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="tanggal_kembali" className="block text-gray-700">Tanggal Kembali *</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        id="tanggal_kembali"
-                                                        name="tanggal_kembali"
-                                                        value={formData.tanggal_kembali}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="tanggal_kembali" className="block text-gray-700">Tanggal Kembali *</label>
+                                                        <input
+                                                            type="datetime-local"
+                                                            id="tanggal_kembali"
+                                                            name="tanggal_kembali"
+                                                            value={formData.tanggal_kembali}
+                                                            onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
+                                                            required
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        />
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="jenis_izin" className="block text-gray-700">Jenis Izin *</label>
-                                                    <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        onChange={(e) => setFormData({ ...formData, jenis_izin: e.target.value })}
-                                                        value={formData.jenis_izin}
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Jenis Izin</option>
-                                                        <option value="Personal">Personal</option>
-                                                        <option value="Rombongan">Rombongan</option>
-                                                    </select>
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="jenis_izin" className="block text-gray-700">Jenis Izin *</label>
+                                                        <select
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            onChange={(e) => setFormData({ ...formData, jenis_izin: e.target.value })}
+                                                            value={formData.jenis_izin}
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Jenis Izin</option>
+                                                            <option value="Personal">Personal</option>
+                                                            <option value="Rombongan">Rombongan</option>
+                                                        </select>
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="status" className="block text-gray-700">Status *</label>
-                                                    <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                                        value={formData.status}
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Status</option>
-                                                        <option value="sedang proses izin">Sedang proses izin</option>
-                                                        <option value="perizinan diterima">Perizinan diterima</option>
-                                                        <option value="sudah berada diluar pondok">Sudah berada diluar pondok</option>
-                                                        <option value="perizinan ditolak">Perizinan ditolak</option>
-                                                        <option value="dibatalkan">Dibatalkan</option>
-                                                        <option value="telat(sudah kembali)">Telat(sudah kembali)</option>
-                                                        <option value="telat(belum kembali)">Telat(belum kembali)</option>
-                                                        <option value="kembali tepat waktu">Kembali tepat waktu</option>
-                                                    </select>
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="status" className="block text-gray-700">Status *</label>
+                                                        <select
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                            value={formData.status}
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Status</option>
+                                                            <option value="sedang proses izin">Sedang proses izin</option>
+                                                            <option value="perizinan diterima">Perizinan diterima</option>
+                                                            <option value="sudah berada diluar pondok">Sudah berada diluar pondok</option>
+                                                            <option value="perizinan ditolak">Perizinan ditolak</option>
+                                                            <option value="dibatalkan">Dibatalkan</option>
+                                                            <option value="telat(sudah kembali)">Telat(sudah kembali)</option>
+                                                            <option value="telat(belum kembali)">Telat(belum kembali)</option>
+                                                            <option value="kembali tepat waktu">Kembali tepat waktu</option>
+                                                        </select>
+                                                    </div>
 
-                                                <div>
-                                                    <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>
-                                                    <textarea
-                                                        name="keterangan"
-                                                        onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                                                        value={formData.keterangan}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        placeholder="Masukkan catatan atau tindak lanjut"
-                                                        required
-                                                    />
+                                                    <div>
+                                                        <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>
+                                                        <textarea
+                                                            name="keterangan"
+                                                            onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
+                                                            value={formData.keterangan}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            placeholder="Masukkan catatan atau tindak lanjut"
+                                                            required
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -409,6 +436,11 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                     </Transition.Child>
                 </div>
             </Dialog>
+            <ModalSelectSantri
+                isOpen={showSelectSantri}
+                onClose={() => setShowSelectSantri(false)}
+                onSantriSelected={(santri) => setSantriId(santri)}
+            />
         </Transition>
     );
 };
@@ -670,5 +702,44 @@ export const ModalAddBerkasPerizinan = ({ isOpen, onClose, id, close }) => {
                 </div>
             </Dialog>
         </Transition>
+    );
+};
+
+const SantriInfoCard = ({ santri }) => {
+    if (!santri) return null;
+
+    return (
+        <div className=" p-4 rounded-md bg-gray-50 shadow-sm mb-6">
+            <div className="flex items-start space-x-12">
+                {/* <img src={santri.foto_profil} alt="Foto Santri" className="w-24 h-24 rounded object-cover" /> */}
+                {santri.foto_profil ? (
+                    <img src={santri.foto_profil}
+                        alt={santri.value}
+                        className="w-24 h-24 rounded object-cover" />
+                ) : (
+                    <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
+                        <i className="fas fa-user text-gray-400 text-4xl"></i>
+                    </div>
+                )}
+                <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+                    {/* Kolom Pertama */}
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
+                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
+                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
+                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
+                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+                    </div>
+
+                    {/* Kolom Kedua */}
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
+                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
+                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
+                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
