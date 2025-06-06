@@ -28,7 +28,7 @@ const TabWaliKelas = () => {
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const [feature, setFeature] = useState(null);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
 
     const [loadingWaliKelas, setLoadingWaliKelas] = useState(true);
     const [loadingDetailWaliKelas, setLoadingDetailWaliKelas] = useState(null);
@@ -53,7 +53,7 @@ const TabWaliKelas = () => {
         const token = sessionStorage.getItem("token") || getCookie("token");
         if (!biodata_id || !token) return;
         try {
-            setError(false);
+            setError(null);
             setLoadingWaliKelas(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/walikelas`, {
                 method: 'GET',
@@ -81,9 +81,14 @@ const TabWaliKelas = () => {
             console.log(result);
 
             setWaliKelasList(result.data || []);
-        } catch (error) {
+            setError(null);
+        } catch (err) {
+            if (err.response && err.response.status === 403) {
+                setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
+            } else {
+                setError("Terjadi kesalahan saat mengambil data.");
+            }
             console.error("Gagal mengambil data WaliKelas:", error);
-            setError(true);
         } finally {
             setLoadingWaliKelas(false);
         }
@@ -291,13 +296,15 @@ const TabWaliKelas = () => {
                     </div>
                 ) : error ? (
                     <div className="col-span-3 text-center py-10">
-                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
-                        <button
-                            onClick={fetchWaliKelas}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Coba Lagi
-                        </button>
+                        <p className="text-red-600 font-semibold mb-4">{error}</p>
+                            {error.includes("Akses ditolak") ? null : (
+                                <button
+                                    onClick={fetchWaliKelas}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Coba Lagi
+                                </button>
+                            )}
                     </div>
                 ) : waliKelasList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>

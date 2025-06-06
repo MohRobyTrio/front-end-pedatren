@@ -138,7 +138,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
             const result = await response.json();
 
-            // console.log(result);
+            console.log(result);
             if (response.status === 401) {
                 await Swal.fire({
                     title: 'Sesi Berakhir',

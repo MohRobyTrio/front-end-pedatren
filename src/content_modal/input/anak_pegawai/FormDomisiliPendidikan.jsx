@@ -2,6 +2,7 @@ import { Controller } from "react-hook-form";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 import { useEffect } from "react";
+import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
 const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab }) => {
     const lembaga = watch("modalAnakPegawai.lembaga");
@@ -12,7 +13,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     const blok = watch("modalAnakPegawai.blok");
     const kamar = watch("modalAnakPegawai.kamar");
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
-
+    const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
 
     useEffect(() => {
@@ -138,6 +139,28 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     </div>
                 </div>
 
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="angkatan_santri_id" className="md:w-1/4 text-black">
+                        Angkatan Santri *
+                    </label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="angkatan_santri_id"
+                                name="angkatan_santri_id"
+                                {...register("modalAnakPegawai.angkatan_santri_id")}
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                            >
+                                {menuAngkatanSantri.map((santri, idx) => (
+                                    <option key={idx} value={santri.value}>
+                                        {santri.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <hr className="border-t border-gray-500 mb-2 mt-8" />
                 <p className="font-bold text-xl">Domisili</p>
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
@@ -186,6 +209,29 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                 </div>
 
                 <Filters filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} control={control} />
+
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="angkatan_pelajar_id" className="md:w-1/4 text-black">
+                        Angkatan Pelajar *
+                    </label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="angkatan_pelajar_id"
+                                name="angkatan_pelajar_id"
+                                {...register("modalAnakPegawai.angkatan_pelajar_id")}
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                required
+                            >
+                                {menuAngkatanPelajar.map((pelajar, idx) => (
+                                    <option key={idx} value={pelajar.value}>
+                                        {pelajar.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggal_masuk_pendidikan" className="md:w-1/4 text-black">
