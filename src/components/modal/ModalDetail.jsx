@@ -63,6 +63,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 else if (menu === 17) endpoint = `perizinan/${item.id}`;
                 else if (menu === 18) endpoint = `pelanggaran/${item.id}`;
+                else if (menu === 19) endpoint = `catatan-afektif/${item}`;
+                else if (menu === 20) endpoint = `catatan-kognitif/${item}`;
 
                 else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
                 else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
@@ -82,12 +84,12 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 setData(json.data);
 
-                if (menu === 12) console.log(item.id_khadam);
-                if (menu === 13) console.log(item.biodata_id);
+                // if (menu === 12) console.log(item.id_khadam);
+                // if (menu === 13) console.log(item.biodata_id);
 
-                console.log(item.biodata_id);
-                console.log(item.id);
-                console.log(menu);
+                // console.log(item.biodata_id);
+                // console.log(item.id);
+                // console.log(menu);
             } catch (err) {
                 console.error(err);
                 // setError(err.message || `Gagal memuat data.`);
@@ -97,10 +99,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             }
         };
 
-        if (item?.biodata_id || item?.id_khadam || item?.id) {
+        if (item?.biodata_id || item?.id_khadam || item?.id || item) {
             fetchData();
         }
-    }, [item.biodata_id, item.id, item.id_khadam, menu]);
+    }, [item, item.biodata_id, item.id, item.id_khadam, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
 

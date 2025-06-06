@@ -233,7 +233,7 @@ const CatatanAfektif = () => {
                             </div>
                         ) : Object.values(groupedData).length > 0 ? (
                             Object.values(groupedData).map(santri => (
-                                <SantriAfektifCard key={santri.id_santri} santri={santri} />
+                                <SantriAfektifCard key={santri.id_santri} santri={santri} menu={19} />
                             ))
                         ) : (
                             <p className="text-center py-8 text-gray-500">Tidak ada data</p>
