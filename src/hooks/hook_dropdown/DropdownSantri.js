@@ -6,39 +6,60 @@ const useDropdownSantri = () => {
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuSantri");
+    // console.log("Data dari sessionStorage:", localData);
 
     if (localData) {
       try {
         const parsedData = JSON.parse(localData);
+        console.log("Parsed sessionStorage data:", parsedData);
         setMenuSantri(parsedData);
       } catch (error) {
         console.error("Gagal parsing data dari sessionStorage:", error);
         sessionStorage.removeItem("menuSantri");
       }
     } else {
+      console.log("Mengambil data dari API...");
       fetch(`${API_BASE_URL}data-pokok/santri`)
         .then((res) => res.json())
         .then((resMeta) => {
+          console.log("Meta response:", resMeta);
           const total = resMeta.total_data;
           if (!total || isNaN(total))
             throw new Error("Gagal mendapatkan total_data");
 
-          // Tahap 2: Ambil ulang semua data dengan limit = total_data
           return fetch(`${API_BASE_URL}data-pokok/santri?limit=${total}`);
         })
         .then((res) => res.json())
         .then((resData) => {
+          // console.log("Full API Response:", resData);
+          // console.log("First item detail:", resData.data[0]);
+          
           if (Array.isArray(resData.data)) {
             const formatted = [
               { label: "Pilih Santri", value: "", id: null },
-              ...resData.data.map((item) => ({
-                bio_id: item.biodata_id,
-                id: item.id,
-                value: item.nama,
-                label: item.nama,
-              })),
+              ...resData.data.map((item) => {
+                const formattedItem = {
+                  bio_id: item.biodata_id,
+                  id: item.id,
+                  value: item.nama,
+                  label: item.nama,
+                  //list tambahan :3
+                  nis: item.nis || '-',
+                  niup: item.niup || '-',
+                  lembaga: item.lembaga || '-',
+                  wilayah: item.wilayah || '-',
+                  kamar: item.kamar || '-',
+                  blok: item.blok || '-',
+                  angkatan: item.angkatan || '-',
+                  kota_asal: item.kota_asal || '-',
+                  foto_profil: item.foto_profil || '-'
+                };
+                console.log("Formatted item:", formattedItem);
+                return formattedItem;
+              }),
             ];
 
+            console.log("Final formatted data:", formatted);
             console.log("Jumlah data santri:", formatted.length - 1);
 
             sessionStorage.setItem("menuSantri", JSON.stringify(formatted));
@@ -53,6 +74,8 @@ const useDropdownSantri = () => {
         });
     }
   }, []);
+
+  // console.log("Current menuSantri state:", menuSantri);
 
   return { menuSantri };
 };
