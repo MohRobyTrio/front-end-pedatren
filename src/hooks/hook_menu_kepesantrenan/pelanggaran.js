@@ -25,7 +25,7 @@ const useFetchPelanggaran = (filters) => {
     };
 }, [searchTerm]);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (force = false) => {
     let url = `${API_BASE_URL}data-pokok/pelanggaran?limit=${limit}&page=${currentPage}`;
     
     // Handle search
@@ -60,7 +60,7 @@ const useFetchPelanggaran = (filters) => {
     // });
 
     // Skip duplicate requests
-    if (lastRequest.current === url) {
+    if (!force && lastRequest.current === url) {
       console.log('Skip duplicate request');
       return;
     }

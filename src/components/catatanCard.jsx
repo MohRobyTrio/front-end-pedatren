@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import ModalDetail from './modal/ModalDetail';
 
-const SantriAfektifCard = ({ santri }) => {
-    const [showDetails, setShowDetails] = useState(false);
+const SantriAfektifCard = ({ santri, menu }) => {
+    // const [showDetails, setShowDetails] = useState(false);
 
     // Config nilai
     const nilaiConfig = {
@@ -10,7 +11,21 @@ const SantriAfektifCard = ({ santri }) => {
         'C': { label: 'cukup', color: ' text-yellow-800' },
         'D': { label: 'kurang', color: ' text-red-800' },
         'E': { label: 'sangat kurang', color: ' text-pink-800' },
-        
+
+    };
+
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [titleModal, setTitleModal] = useState("");
+
+    const openModal = (item) => {
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedItem(null);
+        setIsModalOpen(false);
     };
 
     return (
@@ -21,11 +36,16 @@ const SantriAfektifCard = ({ santri }) => {
                     className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4"
                 >
                     {/* Foto Santri*/}
-                    <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 rounded-md bg-gray-200 overflow-hidden">
+                    <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 rounded-md bg-gray-200 overflow-hidden cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setTitleModal("Peserta Didik");
+                            openModal(catatan.Biodata_uuid)
+                        }}>
                         {santri.foto ? (
-                            <img src={santri.foto} 
-                            alt={santri.nama_santri} 
-                            className="w-full h-full object-cover" />
+                            <img src={santri.foto}
+                                alt={santri.nama_santri}
+                                className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
                                 <i className="fas fa-user text-gray-400 text-4xl"></i>
@@ -34,7 +54,12 @@ const SantriAfektifCard = ({ santri }) => {
                     </div>
 
                     {/* Info Santri */}
-                    <div className="col-span-12 md:col-span-3 lg:col-span-3 space-y-2">
+                    <div className="col-span-12 md:col-span-3 lg:col-span-3 space-y-2 cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setTitleModal("Peserta Didik");
+                            openModal(catatan.Biodata_uuid)
+                        }}>
                         <h2 className="text-lg font-semibold">{santri.nama_santri}</h2>
                         <p className="text-sm text-gray-800">
                             Domisili: {santri.blok} - {santri.wilayah}
@@ -45,7 +70,12 @@ const SantriAfektifCard = ({ santri }) => {
                     </div>
 
                     {/* Detail Catatan */}
-                    <div className="col-span-12 md:col-span-5 lg:col-span-5 space-y-1">
+                    <div className="col-span-12 md:col-span-5 lg:col-span-5 space-y-1 cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setTitleModal("Peserta Didik");
+                            openModal(catatan.Biodata_uuid)
+                        }}>
                         <h2 className='text-lg font-semibold'>
                             {catatan.kategori}:{' '}
                             <span className={`${nilaiConfig[catatan.nilai]?.color || 'text-gray-600'}`}>
@@ -58,7 +88,13 @@ const SantriAfektifCard = ({ santri }) => {
                     </div>
 
                     {/* Pencatat  */}
-                    <div className="col-span-12 md:col-span-2 lg:col-span-2 space-y-2">
+                    <div className="col-span-12 md:col-span-2 lg:col-span-2 space-y-2 cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setTitleModal("Pencatat");
+                            openModal(catatan.Pencatat_uuid)
+                        }}
+                    >
                         <div className="flex items-start gap-3">
                             <div className="p-1 flex items-center justify-center flex-shrink-0">
                                 <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
@@ -84,6 +120,15 @@ const SantriAfektifCard = ({ santri }) => {
                     </div>
                 </div>
             ))}
+
+            {isModalOpen && (
+                <ModalDetail
+                    title={titleModal}
+                    menu={menu}
+                    item={selectedItem}
+                    onClose={closeModal}
+                />
+            )}
         </div>
     );
 };

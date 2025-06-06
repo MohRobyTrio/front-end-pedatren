@@ -22,7 +22,7 @@ const useFetchPegawai = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/pegawai?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
@@ -43,7 +43,7 @@ const useFetchPegawai = (filters) => {
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
         if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama");
             return;
         }
@@ -92,7 +92,8 @@ const useFetchPegawai = (filters) => {
         totalDataPegawai,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

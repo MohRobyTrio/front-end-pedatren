@@ -6,7 +6,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-export function useMultiStepFormAnakPegawai(onClose, jenisBerkasList) {
+export function useMultiStepFormAnakPegawai(onClose, jenisBerkasList, refetchData) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
     const { clearAuthData } = useLogout();
@@ -186,6 +186,7 @@ console.log(result);
             reset({ modalAnakPegawai: allFields });
             setActiveTab(0);               // kembali ke tab pertama
             setUnlockedTabs([0]); 
+            refetchData?.(true);
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

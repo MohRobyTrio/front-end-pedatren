@@ -45,6 +45,7 @@ const PindahKelas = () => {
     const navigate = useNavigate();
     const [selectedSantriIds, setSelectedSantriIds] = useState([]);
     const [isAllSelected, setIsAllSelected] = useState(false);
+    const [submitAction, setSubmitAction] = useState(null);
     const [filters, setFilters] = useState({
         lembaga: "",
         jurusan: "",
@@ -112,17 +113,24 @@ const PindahKelas = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let endpoint = '';
+        if (submitAction == "Naik") {
+            endpoint = 'naik-jenjang';
+        } else {
+            endpoint = 'pindah-jenjang';
+        }
+
         if (selectedSantriIds.length === 0) {
             await Swal.fire({
                 icon: "warning",
                 title: "Peringatan",
-                text: "Pilih minimal satu santri untuk dipindah.",
+                text: "Pilih minimal satu santri untuk diproses.",
             });
             return;
         }
 
         const confirmResult = await Swal.fire({
-            title: "Yakin ingin memproses perpindahan?",
+            title: "Yakin ingin memproses data ini?",
             text: "Pastikan data tujuan sudah sesuai.",
             icon: "question",
             showCancelButton: true,
@@ -133,7 +141,7 @@ const PindahKelas = () => {
         if (!confirmResult.isConfirmed) return;
 
         const payload = {
-            santri_id: selectedSantriIds,
+            biodata_id: selectedSantriIds,
             lembaga_id: selectedLembagaTujuan.lembaga,
             jurusan_id: selectedLembagaTujuan.jurusan,
             kelas_id: selectedLembagaTujuan.kelas,
@@ -143,7 +151,7 @@ const PindahKelas = () => {
         try {
             Swal.fire({
                 title: 'Mohon tunggu...',
-                html: 'Sedang memproses perpindahan.',
+                html: 'Sedang memproses.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -151,7 +159,7 @@ const PindahKelas = () => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}fitur/pindah-naik-jenjang`, {
+            const response = await fetch(`${API_BASE_URL}fitur/${endpoint}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -187,7 +195,7 @@ const PindahKelas = () => {
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: "Pindah kelas berhasil diproses!",
+                text: `${submitAction} kelas berhasil diproses!`,
             });
 
             // Reset form jika diperlukan
@@ -205,9 +213,8 @@ const PindahKelas = () => {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 pl-6 pt-6 pb-6">
-            {/* LEFT SIDE - FILTER + TABLE */}
-            <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
+        <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
+            <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">Daftar Siswa</h2>
 
                 <div className="flex flex-wrap w-full mb-4">
@@ -231,105 +238,120 @@ const PindahKelas = () => {
                     </div>
                 ) : (
                     <DoubleScrollbarTable>
-                    <table className="min-w-full text-sm text-left">
-                        <thead className="bg-gray-100 text-gray-700">
-                            <tr>
-                                <th className="px-3 py-2 border-b text-center w-10">
-                                    <input
-                                        type="checkbox"
-                                        checked={isAllSelected}
-                                        onChange={(e) => {
-                                            const checked = e.target.checked;
-                                            setIsAllSelected(checked);
-                                            if (checked) {
-                                                // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                setSelectedSantriIds(pelajar.map((item) => item.biodata_id));
-                                            } else {
-                                                // Hilangkan semua centang
-                                                setSelectedSantriIds([]);
-                                            }
-                                        }}
-                                    />
-                                </th>
-                                <th className="px-3 py-2 border-b text-center w-10">No</th>
-                                <th className="px-3 py-2 border-b">No. Induk (Siswa/Mahasiswa)</th>
-                                <th className="px-3 py-2 border-b">Nama</th>
-                                <th className="px-3 py-2 border-b">Kelas</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-gray-800">
-                            {loadingPelajar ? (
+                        <table className="min-w-full text-sm text-left">
+                            <thead className="bg-gray-100 text-gray-700">
                                 <tr>
-                                    <td colSpan="5" className="text-center py-6">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </td>
+                                    <th className="px-3 py-2 border-b text-center w-10">
+                                        <input
+                                            type="checkbox"
+                                            checked={isAllSelected}
+                                            onChange={(e) => {
+                                                const checked = e.target.checked;
+                                                setIsAllSelected(checked);
+                                                if (checked) {
+                                                    // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
+                                                    setSelectedSantriIds(pelajar.map((item) => item.biodata_id));
+                                                } else {
+                                                    // Hilangkan semua centang
+                                                    setSelectedSantriIds([]);
+                                                }
+                                            }}
+                                        />
+                                    </th>
+                                    <th className="px-3 py-2 border-b text-center w-10">No</th>
+                                    <th className="px-3 py-2 border-b">No. Induk (Siswa/Mahasiswa)</th>
+                                    <th className="px-3 py-2 border-b">Nama</th>
+                                    <th className="px-3 py-2 border-b">Kelas</th>
                                 </tr>
-                            ) : pelajar.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="text-center py-6">Tidak ada data</td>
-                                </tr>
-                            ) : (
-                                pelajar.map((item, index) => (
-                                    <tr key={item.id} className="hover:bg-gray-50 text-center">
-                                        <td className="px-3 py-2 border-b">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedSantriIds.includes(item.biodata_id)}
-                                                onChange={(e) => {
-                                                    const checked = e.target.checked;
-                                                    if (checked) {
-                                                        setSelectedSantriIds((prev) => {
-                                                            const newSelected = [...prev, item.biodata_id];
-                                                            if (newSelected.length === pelajar.length) {
-                                                                setIsAllSelected(true);
-                                                            }
-                                                            return newSelected;
-                                                        });
-                                                    } else {
-                                                        setSelectedSantriIds((prev) => {
-                                                            const newSelected = prev.filter((biodata_id) => biodata_id !== item.biodata_id);
-                                                            setIsAllSelected(false);
-                                                            return newSelected;
-                                                        });
-                                                    }
-                                                }}
-                                            />
+                            </thead>
+                            <tbody className="text-gray-800">
+                                {loadingPelajar ? (
+                                    <tr>
+                                        <td colSpan="5" className="text-center py-6">
+                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
-                                        <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.no_induk}</td>
-                                        <td className="px-3 py-2 border-b text-left">{item.nama}</td>
-                                        <td className="px-3 py-2 border-b">{item.kelas}</td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : pelajar.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="5" className="text-center py-6">Tidak ada data</td>
+                                    </tr>
+                                ) : (
+                                    pelajar.map((item, index) => (
+                                        <tr key={item.id} className="hover:bg-gray-50 text-center">
+                                            <td className="px-3 py-2 border-b">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedSantriIds.includes(item.biodata_id)}
+                                                    onChange={(e) => {
+                                                        const checked = e.target.checked;
+                                                        if (checked) {
+                                                            setSelectedSantriIds((prev) => {
+                                                                const newSelected = [...prev, item.biodata_id];
+                                                                if (newSelected.length === pelajar.length) {
+                                                                    setIsAllSelected(true);
+                                                                }
+                                                                return newSelected;
+                                                            });
+                                                        } else {
+                                                            setSelectedSantriIds((prev) => {
+                                                                const newSelected = prev.filter((biodata_id) => biodata_id !== item.biodata_id);
+                                                                setIsAllSelected(false);
+                                                                return newSelected;
+                                                            });
+                                                        }
+                                                    }}
+                                                />
+                                            </td>
+                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{item.no_induk}</td>
+                                            <td className="px-3 py-2 border-b text-left">{item.nama}</td>
+                                            <td className="px-3 py-2 border-b">{item.kelas}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
                     </DoubleScrollbarTable>
                 )}
             </div>
 
             {/* RIGHT SIDE - FORM TUJUAN */}
-            <form onSubmit={handleSubmit}>
-                <div className="w-full lg:w-[350px] bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start">
-                    <div>
-                        <h2 className="text-xl font-semibold mb-4">Pindahkan ke</h2>
+            {/* <div className="w-full lg:w-[350px] bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start"> */}
+            <form
+                onSubmit={handleSubmit}
+                className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-md flex flex-col justify-between self-start">
+                <div>
+                    <h2 className="text-xl font-semibold mb-4">Pindahkan ke</h2>
 
-                        <div className="flex flex-wrap w-full mb-4">
-                            <Filters
-                                filterOptions={updatedFilterLembagaTujuan}
-                                onChange={handleFilterChangeLembagaTujuan}
-                                selectedFilters={selectedLembagaTujuan}
-                                vertical={true}
-                            />
-                        </div>
+                    <div className="flex flex-wrap w-full mb-4">
+                        <Filters
+                            filterOptions={updatedFilterLembagaTujuan}
+                            onChange={handleFilterChangeLembagaTujuan}
+                            selectedFilters={selectedLembagaTujuan}
+                            vertical={true}
+                        />
                     </div>
+                </div>
 
-                    <button type="submit" className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded transition duration-200">
-                        Proses Pindah
+                <div className="flex gap-4">
+                    <button
+                        type="submit"
+                        onClick={() => setSubmitAction("Naik")}
+                        className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-semibold px-6 py-3 rounded transition duration-200 w-1/2 cursor-pointer"
+                    >
+                        Naik
+                    </button>
+                    <button
+                        type="submit"
+                        onClick={() => setSubmitAction("Pindah")}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded transition duration-200 w-1/2 cursor-pointer"
+                    >
+                        Pindah
                     </button>
                 </div>
             </form>
         </div>
+        // </div>
     );
 };
 

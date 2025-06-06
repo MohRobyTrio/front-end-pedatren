@@ -6,7 +6,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
+export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchData) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
     const { clearAuthData } = useLogout();
@@ -188,6 +188,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList) {
 
             reset({ modalPeserta: allFields });
 
+            refetchData?.(true);
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

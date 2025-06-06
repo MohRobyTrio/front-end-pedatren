@@ -24,9 +24,11 @@ const useFetchPerizinan = (filters) => {
     };
 }, [searchTerm]);
 
-  const fetchData = useCallback(async (filters = {}) => {
-    let url = `${API_BASE_URL}data-pokok/perizinan?limit=${limit}&page=${currentPage}`;
-    
+  const fetchData = useCallback(async (force = false) => {
+    let url = `${API_BASE_URL}data-pokok/perizinan?limit=${limit}`;
+    if (currentPage > 1) {
+        url += `&page=${currentPage}`;
+    }
     // Handle search
     if (debouncedSearchTerm) {
       url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
@@ -58,7 +60,7 @@ const useFetchPerizinan = (filters) => {
     // });
 
     // Skip duplicate requests
-    if (lastRequest.current === url) {
+    if (!force && lastRequest.current === url) {
       console.log('Skip duplicate request');
       return;
     }

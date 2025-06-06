@@ -87,7 +87,7 @@ const AnakPegawai = () => {
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
 
     // const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
-    const { anakPegawai, loadingAnakPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAnakPegawai, totalPages, currentPage, setCurrentPage } = useFetchAnakPegawai(updatedFilters);
+    const { anakPegawai, loadingAnakPegawai, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAnakPegawai, totalPages, currentPage, setCurrentPage, fetchData } = useFetchAnakPegawai(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -183,7 +183,7 @@ const AnakPegawai = () => {
 
     const [showFormModal, setShowFormModal] = useState(false);
 
-    const formState = useMultiStepFormAnakPegawai(() => setShowFormModal(false), jenisBerkasList);
+    const formState = useMultiStepFormAnakPegawai(() => setShowFormModal(false), jenisBerkasList, fetchData);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

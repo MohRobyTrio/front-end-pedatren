@@ -7,7 +7,7 @@ import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useMultiStepFormPegawai = ({ onClose }) => {
+const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const { clearAuthData } = useLogout();
@@ -169,7 +169,9 @@ const useMultiStepFormPegawai = ({ onClose }) => {
       };
 
       reset({ modalPegawai: allFields });
-
+      setActiveTab(0); // kembali ke tab pertama
+      setUnlockedTabs([0]);
+      refetchData?.(true);
       onClose?.();
     } catch (error) {
       console.error("Terjadi kesalahan:", error);

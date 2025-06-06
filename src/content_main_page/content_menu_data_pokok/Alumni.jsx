@@ -235,6 +235,7 @@ const Alumni = () => {
                                         <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Status Santri Terakhir</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b">Tgl Update Bio</th>
                                         <th className="px-3 py-2 border-b">Tgl Input Bio</th>
                                     </tr>
@@ -242,13 +243,13 @@ const Alumni = () => {
                                 <tbody className="text-gray-800">
                                     {loadingAlumni ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center py-6">
+                                            <td colSpan="8" className="text-center py-6">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
                                     ) : alumni.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center py-6">Tidak ada data</td>
+                                            <td colSpan="8" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
                                         alumni.map((item, index) => (
@@ -263,6 +264,16 @@ const Alumni = () => {
                                                 <td className="px-3 py-2 border-b">
                                                     {item.lembaga || "-"}<br />
                                                     <span className="italic">Lulus: {item.tahun_keluar_santri || "-"}</span>
+                                                </td>
+                                                <td className="px-3 py-2 border-b">
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "lulus"
+                                                                ? "bg-green-100 text-green-700"
+                                                                : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status === "lulus" ? "Lulus" : "-"}
+                                                    </span>
                                                 </td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
