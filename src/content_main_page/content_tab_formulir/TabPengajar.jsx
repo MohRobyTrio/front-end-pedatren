@@ -72,6 +72,9 @@ const TabPengajar = () => {
                 navigate("/login");
                 return;
             }
+            if (response.status === 403) {
+                throw new Error("403");
+            }
             if (!response.ok) {
                 // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -82,7 +85,7 @@ const TabPengajar = () => {
             setPengajarList(result.data || []);
             setError(null);
         } catch (err) {
-            if (err.response && err.response.status === 403) {
+            if (err.message == 403) {
                 setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
             } else {
                 setError("Terjadi kesalahan saat mengambil data.");
