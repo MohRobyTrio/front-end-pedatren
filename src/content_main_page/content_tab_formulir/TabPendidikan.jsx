@@ -399,10 +399,10 @@ const TabPendidikan = () => {
                             {capitalizeFirst(label)} {label === 'lembaga' ? '*' : ''}
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || !canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")}
+                            disabled={options.length <= 1 || !canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -543,10 +543,10 @@ const TabPendidikan = () => {
                                         </label>
                                         <select
                                             id="angkatan_id"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
                                             onChange={(e) => setAngkatanId(e.target.value)}
                                             value={angkatanId}
-                                            disabled={!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")} 
+                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)} 
                                             required
                                         >
                                             {menuAngkatanPelajar.map((pelajar, idx) => (
@@ -571,8 +571,8 @@ const TabPendidikan = () => {
                                             onChange={(e) => setNoInduk(e.target.value)}
                                             maxLength={50}
                                             placeholder="Masukkan Nomor Induk"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
                                         />
                                     </div>
 
@@ -583,8 +583,8 @@ const TabPendidikan = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -597,10 +597,10 @@ const TabPendidikan = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            disabled={!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")}
+                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
                                         />
                                     </div>
 
@@ -610,10 +610,10 @@ const TabPendidikan = () => {
                                         </label>
                                         <select
                                             id="status"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti") ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
-                                            disabled={!canEdit && (selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti")}
+                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
                                         >
                                             <option value="">Pilih Status</option>
                                             <option value="aktif">Aktif</option>
