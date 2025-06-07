@@ -67,13 +67,15 @@ const TabSantri = () => {
                     </div>
                 ) : error ? (
                     <div className="col-span-3 text-center py-10">
-                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
-                        <button
-                            onClick={fetchSantri}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Coba Lagi
-                        </button>
+                        <p className="text-red-600 font-semibold mb-4">{error}</p>
+                            {error.includes("Akses ditolak") ? null : (
+                                <button
+                                    onClick={fetchSantri}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Coba Lagi
+                                </button>
+                            )}
                     </div>
                 ) : santriList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -129,10 +131,10 @@ const TabSantri = () => {
                                         </label>
                                         <select
                                             id="angkatan_id"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             onChange={(e) => setAngkatanId(e.target.value)}
                                             value={angkatanId}
-                                            disabled={!canEdit}
+                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
                                             required
                                         >
                                             {menuAngkatanSantri.map((santri, idx) => (
@@ -144,33 +146,23 @@ const TabSantri = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-                                        <div className="flex items-center space-x-4 mt-3">
-                                            <label className="inline-flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="status"
-                                                    value="aktif"
-                                                    checked={status === "aktif"}
-                                                    onChange={(e) => setStatus( e.target.value )}
-                                                    className="text-blue-600 focus:ring-blue-500"
-                                                    disabled={!canEdit}
-                                                />
-                                                <span className="ml-2 text-gray-700">Aktif</span>
-                                            </label>
-                                            <label className="inline-flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="status"
-                                                    value="alumni"
-                                                    checked={status === "alumni"}
-                                                    onChange={(e) => setStatus( e.target.value )}
-                                                    className="text-blue-600 focus:ring-blue-500"
-                                                    disabled={!canEdit}
-                                                />
-                                                <span className="ml-2 text-gray-700">Alumni</span>
-                                            </label>
-                                        </div>
+                                        <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                                            Status
+                                        </label>
+                                        <select
+                                            id="status"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            value={status}
+                                            onChange={(e) => setStatus(e.target.value)}
+                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
+                                        >
+                                            <option value="">Pilih Status</option>
+                                            <option value="aktif">Aktif</option>
+                                            <option value="do">Drop Out</option>
+                                            <option value="berhenti">Berhenti</option>
+                                            <option value="alumni">Alumni</option>
+                                            <option value="nonaktif">Non Aktif</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-4">
@@ -182,10 +174,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
-                                            disabled={!canEdit}
+                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
                                         />
                                     </div>
 
@@ -196,10 +188,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            disabled={!canEdit}
+                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
                                         />
                                     </div>
                                 </div>
@@ -208,13 +200,15 @@ const TabSantri = () => {
                                     {/* <label className="block text-sm font-medium text-gray-700">&nbsp;</label> */}
                                     <div className="flex space-x-2 mt-1">
                                         <Access action="edit">
-                                            <button
-                                                type="button"
-                                                className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
-                                                onClick={handleUpdate}
-                                            >
-                                                Update
-                                            </button>
+                                            {(canEdit && selectedSantriDetail?.status === "aktif") && (
+                                                <button
+                                                    type="button"
+                                                    className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}
+                                                    onClick={handleUpdate}
+                                                >
+                                                    Update
+                                                </button>
+                                            )}
                                         </Access>
                                         <button
                                             type="button"

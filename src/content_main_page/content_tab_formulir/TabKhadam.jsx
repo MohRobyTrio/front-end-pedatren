@@ -90,13 +90,15 @@ const TabKhadam = () => {
                     </div>
                 ) : error ? (
                     <div className="col-span-3 text-center py-10">
-                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
-                        <button
-                            onClick={fetchKhadam}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Coba Lagi
-                        </button>
+                        <p className="text-red-600 font-semibold mb-4">{error}</p>
+                            {error.includes("Akses ditolak") ? null : (
+                                <button
+                                    onClick={fetchKhadam}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                >
+                                    Coba Lagi
+                                </button>
+                            )}
                     </div>
                 ) : khadamList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -118,12 +120,12 @@ const TabKhadam = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${khadam.status === 1
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${khadam.status === 1
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {khadam.status === 1 ? "Aktif" : "Nonaktif"}
+                                    {khadam.status || "-"}
                                 </span>
                             </div>
 

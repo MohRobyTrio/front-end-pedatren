@@ -238,7 +238,7 @@ const Pelajar = () => {
                                         <th className="px-3 py-2 border-b">Rombel</th>
                                         <th className="px-3 py-2 border-b">Wilayah</th>
                                         <th className="px-3 py-2 border-b">Kota Asal</th>
-                                        <th className="px-3 py-2 border-b">Status</th>
+                                        {/* <th className="px-3 py-2 border-b">Status</th> */}
                                         <th className="px-3 py-2 border-b">Tgl Update Bio</th>
                                         <th className="px-3 py-2 border-b">Tgl Input Bio</th>
                                     </tr>
@@ -266,7 +266,7 @@ const Pelajar = () => {
                                                 <td className="px-3 py-2 border-b">{item.rombel || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                                <td className="px-3 py-2 border-b">
+                                                {/* <td className="px-3 py-2 border-b">
                                                     <span
                                                         className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "aktif"
                                                                 ? "bg-green-100 text-green-700"
@@ -275,7 +275,7 @@ const Pelajar = () => {
                                                     >
                                                         {item.status === "aktif" ? "Aktif" : "Nonaktif"}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                             </tr>

@@ -235,7 +235,8 @@ const Alumni = () => {
                                         <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Status Santri Terakhir</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
-                                        <th className="px-3 py-2 border-b">Status</th>
+                                        {/* <th className="px-3 py-2 border-b">Status</th> */}
+                                        <th className="px-3 py-2 border-b">Kota Asal</th>
                                         <th className="px-3 py-2 border-b">Tgl Update Bio</th>
                                         <th className="px-3 py-2 border-b">Tgl Input Bio</th>
                                     </tr>
@@ -263,18 +264,19 @@ const Alumni = () => {
                                                 </td>
                                                 <td className="px-3 py-2 border-b">
                                                     {item.lembaga || "-"}<br />
-                                                    <span className="italic">Lulus: {item.tahun_keluar_santri || "-"}</span>
+                                                    <span className="italic">Lulus: {item.tahun_keluar_pendidikan || "-"}</span>
                                                 </td>
-                                                <td className="px-3 py-2 border-b">
+                                                {/* <td className="px-3 py-2 border-b">
                                                     <span
                                                         className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "lulus"
-                                                                ? "bg-green-100 text-green-700"
-                                                                : "bg-red-100 text-red-700"
+                                                                ? "bg-emerald-100 text-emerald-800"
+                                                                : "bg-slate-100 text-slate-500"
                                                             }`}
                                                     >
                                                         {item.status === "lulus" ? "Lulus" : "-"}
                                                     </span>
-                                                </td>
+                                                </td> */}
+                                                <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                             </tr>

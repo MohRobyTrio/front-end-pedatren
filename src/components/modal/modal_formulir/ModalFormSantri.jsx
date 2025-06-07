@@ -1,7 +1,7 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
@@ -14,9 +14,20 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
     const navigate = useNavigate();
     const { menuAngkatanSantri } = DropdownAngkatan();
     const [formData, setFormData] = useState({
+        nis: "",
         angkatan_id: "",
         tanggal_masuk: ""
     });
+
+    useEffect(() => {
+        if (isOpen) {
+            setFormData({
+                nis: "",
+                angkatan_id: "",
+                tanggal_masuk: ""
+            });
+        }
+    }, [isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,6 +80,14 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
             }
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
+                if (result.errors && result.errors.nis) {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        html: `<div style="text-align: center;">NIS sudah digunakan. Silakan masukkan NIS yang berbeda.</div>`,
+                    });
+                    return;
+                }
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
@@ -149,7 +168,25 @@ const ModalAddSantriFormulir = ({ isOpen, onClose, biodataId, refetchData }) => 
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">   
+                                            <div className="space-y-4">  
+                                                <div>
+                                                    <label htmlFor="nis" className="block text-gray-700">NIS *</label>
+                                                    <input
+                                                        type="text"
+                                                        inputMode="numeric"
+                                                        onInput={(e) => {
+                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                        }}
+                                                        id="nis"
+                                                        name="nis"
+                                                        value={formData.nis}
+                                                        onChange={(e) => setFormData({ ...formData, nis: e.target.value })}
+                                                        maxLength={50}
+                                                        required
+                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        placeholder="Masukkan NIS"
+                                                    />
+                                                </div>  
                                                 <div>
                                                     <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
                                                     <select

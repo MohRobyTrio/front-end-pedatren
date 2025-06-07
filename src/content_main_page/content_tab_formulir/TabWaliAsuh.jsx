@@ -165,12 +165,12 @@ const TabWaliAsuh = () => {
                   </p>
                 </div>
                 <span
-                  className={`text-sm font-semibold px-3 py-1 rounded-full ${waliAsuh.status === 1
+                  className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${waliAsuh.status === 1
                     ? "bg-green-100 text-green-700"
                     : "bg-red-100 text-red-700"
                     }`}
                 >
-                  {waliAsuh.status === 1 ? "Aktif" : "Nonaktif"}
+                  {waliAsuh.status || "-"}
                 </span>
               </div>
 

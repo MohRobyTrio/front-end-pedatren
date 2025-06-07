@@ -11,7 +11,7 @@ export const useWarPes = (biodata_id) => {
     const [warPesList, setWarPesList] = useState([]);
     const [selectedWarPesId, setSelectedWarPesId] = useState(null);
     const [selectedWarPesDetail, setSelectedWarPesDetail] = useState(null);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
     const [niup, setNiup] = useState("");
     const [aktif, setAktif] = useState("");
 
@@ -23,7 +23,7 @@ export const useWarPes = (biodata_id) => {
     const fetchWarPes = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
-            setError(false);
+            setError(null);
             setLoadingWarPes(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/wargapesantren`, {
                 method: 'GET',
@@ -43,6 +43,9 @@ export const useWarPes = (biodata_id) => {
               navigate("/login");
               return;
             }
+            if (response.status === 403) {
+                throw new Error("403");
+            }
             if (!response.ok) {
                 // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -50,9 +53,14 @@ export const useWarPes = (biodata_id) => {
 
             const result = await response.json();
             setWarPesList(result.data || []);
-        } catch (error) {
+            setError(null);
+        } catch (err) {
+            if (err.message == 403) {
+                setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
+            } else {
+                setError("Terjadi kesalahan saat mengambil data.");
+            }
             console.error("Gagal mengambil data warPes:", error);
-            setError(true);
         } finally {
             setLoadingWarPes(false);
         }

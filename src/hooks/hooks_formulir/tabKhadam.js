@@ -17,14 +17,14 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [keterangan, setKeterangan] = useState("");
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
 
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     const fetchKhadam = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
-            setError(false);
+            setError(null);
             setLoadingKhadam(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/khadam`, {
                 method: 'GET',
@@ -44,6 +44,9 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
               navigate("/login");
               return;
             }
+            if (response.status === 403) {
+                throw new Error("403");
+            }
             if (!response.ok) {
             // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -51,9 +54,14 @@ export const useKhadam = ({ biodata_id, setShowAddModal, setFeature }) => {
 
             const result = await response.json();
             setKhadamList(result.data || []);
-        } catch (error) {
+            setError(null);
+        } catch (err) {
+            if (err.message == 403) {
+                setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
+            } else {
+                setError("Terjadi kesalahan saat mengambil data.");
+            }
             console.error("Gagal mengambil data Khadam:", error);
-            setError(true);
         } finally {
             setLoadingKhadam(false);
         }

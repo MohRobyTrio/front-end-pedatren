@@ -49,9 +49,7 @@ const TabDomisiliSantri = () => {
     const {
         filterWilayah,
         handleFilterChangeWilayah,
-        selectedWilayah,
-        setSelectedWilayah
-    } = DropdownWilayah();
+        selectedWilayah } = DropdownWilayah();
 
     // Ubah label dropdown
     const updateFirstOptionLabel = (list, label) =>
@@ -109,6 +107,7 @@ const TabDomisiliSantri = () => {
 
     const handleCardClick = async (id) => {
         try {
+            setEndDate(null);
             setLoadingDetailDomisili(id);
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/domisili/show`, {
@@ -133,14 +132,27 @@ const TabDomisiliSantri = () => {
 
             setSelectedDomisiliId(id);
             setSelectedDomisiliDetail(result.data);
+            console.log(selectedDomisiliDetail);
+            
             // setStartDate(result.data.tanggal_masuk || "");
             // setEndDate(result.data.tanggal_keluar || "");
             // Parsing datetime ke format input
             // Format tanggal untuk input
             const parseDateTimeForInput = (datetime) => {
-                if (!datetime) return "";
+                if (!datetime || datetime === "-" || datetime === "null") return "";
                 const date = new Date(datetime);
-                return date.toISOString().split('T')[0]; // Ambil bagian tanggal saja
+                if (isNaN(date.getTime())) return "";
+
+                // Format ke YYYY-MM-DDTHH:mm
+                const pad = (num) => num.toString().padStart(2, '0');
+
+                const year = date.getFullYear();
+                const month = pad(date.getMonth() + 1);
+                const day = pad(date.getDate());
+                const hours = pad(date.getHours());
+                const minutes = pad(date.getMinutes());
+
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
             };
 
             setStartDate(parseDateTimeForInput(result.data.tanggal_masuk));
@@ -157,48 +169,48 @@ const TabDomisiliSantri = () => {
 
 
             // Set dropdown values
-            const dropdownValues = {};
+            // const dropdownValues = {};
 
-            // Cari ID berdasarkan nama
-            if (result.data.nama_wilayah) {
-                const wilayahOption = filterWilayah.wilayah.find(item => item.label === result.data.nama_wilayah);
-                if (wilayahOption) dropdownValues.wilayah = wilayahOption.value;
-            }
+            // // Cari ID berdasarkan nama
+            // if (result.data.nama_wilayah) {
+            //     const wilayahOption = filterWilayah.wilayah.find(item => item.label === result.data.nama_wilayah);
+            //     if (wilayahOption) dropdownValues.wilayah = wilayahOption.value;
+            // }
 
-            if (result.data.nama_blok) {
-                const blokOption = filterWilayah.blok.find(item => item.label === result.data.nama_blok);
-                if (blokOption) dropdownValues.blok = blokOption.value;
-            }
+            // if (result.data.nama_blok) {
+            //     const blokOption = filterWilayah.blok.find(item => item.label === result.data.nama_blok);
+            //     if (blokOption) dropdownValues.blok = blokOption.value;
+            // }
 
-            if (result.data.nama_kamar) {
-                const kamarOption = filterWilayah.kamar.find(item => item.label === result.data.nama_kamar);
-                if (kamarOption) dropdownValues.kamar = kamarOption.value;
-            }
+            // if (result.data.nama_kamar) {
+            //     const kamarOption = filterWilayah.kamar.find(item => item.label === result.data.nama_kamar);
+            //     if (kamarOption) dropdownValues.kamar = kamarOption.value;
+            // }
 
-            // Set selected wilayah
-            if (setSelectedWilayah && typeof setSelectedWilayah === 'function') {
-                setSelectedWilayah(dropdownValues);
-            } else {
-                // Handle perubahan dropdown bertahap
-                const setDropdownValues = async () => {
-                    if (dropdownValues.wilayah) {
-                        await handleFilterChangeWilayah({ wilayah: dropdownValues.wilayah });
+            // // Set selected wilayah
+            // if (setSelectedWilayah && typeof setSelectedWilayah === 'function') {
+            //     setSelectedWilayah(dropdownValues);
+            // } else {
+            //     // Handle perubahan dropdown bertahap
+            //     const setDropdownValues = async () => {
+            //         if (dropdownValues.wilayah) {
+            //             await handleFilterChangeWilayah({ wilayah: dropdownValues.wilayah });
 
-                        setTimeout(() => {
-                            if (dropdownValues.blok) {
-                                handleFilterChangeWilayah({ blok: dropdownValues.blok });
+            //             setTimeout(() => {
+            //                 if (dropdownValues.blok) {
+            //                     handleFilterChangeWilayah({ blok: dropdownValues.blok });
 
-                                setTimeout(() => {
-                                    if (dropdownValues.kamar) {
-                                        handleFilterChangeWilayah({ kamar: dropdownValues.kamar });
-                                    }
-                                }, 50);
-                            }
-                        }, 100);
-                    }
-                };
-                setDropdownValues();
-            }
+            //                     setTimeout(() => {
+            //                         if (dropdownValues.kamar) {
+            //                             handleFilterChangeWilayah({ kamar: dropdownValues.kamar });
+            //                         }
+            //                     }, 50);
+            //                 }
+            //             }, 100);
+            //         }
+            //     };
+            //     setDropdownValues();
+            // }
 
         } catch (error) {
             console.error("Gagal mengambil detail Domisili:", error);
@@ -207,6 +219,22 @@ const TabDomisiliSantri = () => {
         }
     };
 
+    useEffect(() => {
+        // Saat selectedFilterLembaga diisi, panggil handleFilterChangeLembaga secara bertahap
+        if (selectedDomisiliDetail) {
+            if (selectedDomisiliDetail.nama_wilayah) {
+                handleFilterChangeWilayah({ wilayah: selectedDomisiliDetail.nama_wilayah });
+            }
+            if (selectedDomisiliDetail.nama_blok) {
+                handleFilterChangeWilayah({ blok: selectedDomisiliDetail.nama_blok });
+            }
+            if (selectedDomisiliDetail.nama_kamar) {
+                handleFilterChangeWilayah({ kamar: selectedDomisiliDetail.nama_kamar });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDomisiliDetail]);
+
     const handleUpdate = async () => {
         if (!selectedDomisiliDetail) return;
 
@@ -214,16 +242,28 @@ const TabDomisiliSantri = () => {
 
         // Validasi wajib
         if (!wilayah || !startDate) {
-            alert("Wilayah dan Tanggal Mulai wajib diisi");
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Validasi',
+                text: 'Wilayah dan Tanggal Mulai wajib diisi',
+                confirmButtonText: 'OK',
+            });
             return;
         }
 
-        // Validasi format tanggal
-        // const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        // if (!dateRegex.test(startDate)) {
-        //   alert("Format tanggal mulai tidak valid (harus YYYY-MM-DD)");
-        //   return;
-        // }
+         const confirmResult = await Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Apakah Anda yakin ingin memperbarui data domisili?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, update',
+            cancelButtonText: 'Batal',
+        });
+
+        if (!confirmResult.isConfirmed) {
+            // Kalau batal, jangan lanjut
+            return;
+        }
 
         // Format payload sesuai kebutuhan backend
         const payload = {
@@ -233,8 +273,17 @@ const TabDomisiliSantri = () => {
             tanggal_masuk: startDate,
             tanggal_keluar: endDate || null
         };
-
+        console.log(payload);
+        
+        
         try {
+            Swal.fire({
+                title: 'Memperbarui data...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             setLoadingUpdateDomisili(true);
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
@@ -249,6 +298,7 @@ const TabDomisiliSantri = () => {
                 }
             );
             if (response.status === 401) {
+                Swal.close(); 
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -259,12 +309,26 @@ const TabDomisiliSantri = () => {
                 navigate("/login");
                 return;
             }
-
+            Swal.close(); 
             // Handle response
             const result = await response.json();
+            console.log(result);
+
+            if (response.ok && result.message && result.message.toLowerCase().includes("tidak boleh")) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    text: result.message,
+                });
+                return;
+            }
             if (!response.ok) throw new Error(result.message || "Gagal update");
 
-            alert(`Data domisili berhasil diperbarui!`);
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "Data domisili berhasil diperbarui!",
+            });
 
             // Reset form
             setSelectedDomisiliId(null);
@@ -279,7 +343,11 @@ const TabDomisiliSantri = () => {
 
         } catch (error) {
             console.error("Error saat update:", error);
-            alert(error.message || "Terjadi kesalahan saat update");
+                await Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message || "Terjadi kesalahan saat update",
+            });
         } finally {
             setLoadingUpdateDomisili(false);
         }
@@ -302,6 +370,11 @@ const TabDomisiliSantri = () => {
         setShowOutModal(true);
     };
 
+    const isTanggalKeluarValid = (
+        selectedDomisiliDetail?.tanggal_keluar &&
+        selectedDomisiliDetail?.tanggal_keluar !== "-"
+    );
+
     // Komponen dropdown
     const Filters = ({ filterOptions, onChange, selectedFilters }) => {
         return (
@@ -312,10 +385,10 @@ const TabDomisiliSantri = () => {
                             {capitalizeFirst(label)} {label === 'wilayah' ? '*' : ''}
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedDomisiliDetail?.tanggal_keluar ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || isTanggalKeluarValid ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || !canEdit || selectedDomisiliDetail?.tanggal_keluar}
+                            disabled={options.length <= 1 || !canEdit || isTanggalKeluarValid}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -408,12 +481,13 @@ const TabDomisiliSantri = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${!domisili.tanggal_keluar
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${!domisili.tanggal_keluar
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {!domisili.tanggal_keluar ? "Aktif" : "Nonaktif"}
+                                    {/* {!domisili.tanggal_keluar ? "Aktif" : "Nonaktif"} */}
+                                    {domisili.status}
                                 </span>
                             </div>
 
@@ -467,13 +541,13 @@ const TabDomisiliSantri = () => {
                                 <div className="flex flex-col gap-4">
                                     <div>
                                         <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-                                            Tanggal Mulai *
+                                            Tanggal Masuk *
                                         </label>
                                         <input
-                                            type="date"
+                                            type="datetime-local"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedDomisiliDetail?.tanggal_keluar ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedDomisiliDetail?.tanggal_keluar}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || isTanggalKeluarValid ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || isTanggalKeluarValid}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)} // Simpan hanya tanggal
                                         />
@@ -481,12 +555,12 @@ const TabDomisiliSantri = () => {
 
                                     <div>
                                         <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
-                                            Tanggal Akhir
+                                            Tanggal Keluar
                                         </label>
                                         <input
-                                            type="date"
+                                            type="datetime-local"
                                             id="endDate"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500"
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)} // Simpan hanya tanggal
                                             disabled
@@ -497,7 +571,7 @@ const TabDomisiliSantri = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        {!selectedDomisiliDetail?.tanggal_keluar && (
+                                        {(selectedDomisiliDetail?.tanggal_keluar == null || selectedDomisiliDetail?.tanggal_keluar == "-" || !selectedDomisiliDetail?.tanggal_keluar) && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

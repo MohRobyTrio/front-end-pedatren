@@ -31,7 +31,7 @@ const TabPengajar = () => {
     const [startDate, setStartDate] = useState("");
     const [feature, setFeature] = useState(null);
     const [golongan, setGolongan] = useState("");
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
 
     const [loadingPengajar, setLoadingPengajar] = useState(true);
     const [loadingDetailPengajar, setLoadingDetailPengajar] = useState(null);
@@ -52,7 +52,7 @@ const TabPengajar = () => {
         const token = sessionStorage.getItem("token") || getCookie("token");
         if (!biodata_id || !token) return;
         try {
-            setError(false);
+            setError(null);
             setLoadingPengajar(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/pengajar`, {
                 method: 'GET',
@@ -72,6 +72,9 @@ const TabPengajar = () => {
                 navigate("/login");
                 return;
             }
+            if (response.status === 403) {
+                throw new Error("403");
+            }
             if (!response.ok) {
                 // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -80,9 +83,14 @@ const TabPengajar = () => {
             console.log(result);
 
             setPengajarList(result.data || []);
-        } catch (error) {
+            setError(null);
+        } catch (err) {
+            if (err.message == 403) {
+                setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
+            } else {
+                setError("Terjadi kesalahan saat mengambil data.");
+            }
             console.error("Gagal mengambil data Pengajar:", error);
-            setError(true);
         } finally {
             setLoadingPengajar(false);
         }
@@ -489,13 +497,15 @@ const TabPengajar = () => {
                     </div>
                 ) : error ? (
                     <div className="col-span-3 text-center py-10">
-                        <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
-                        <button
-                            onClick={fetchPengajar}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Coba Lagi
-                        </button>
+                        <p className="text-red-600 font-semibold mb-4">{error}</p>
+                        {error.includes("Akses ditolak") ? null : (
+                            <button
+                                onClick={fetchPengajar}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                            >
+                                Coba Lagi
+                            </button>
+                        )}
                     </div>
                 ) : pengajarList.length === 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
@@ -515,12 +525,12 @@ const TabPengajar = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${pengajar.status === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengajar.status === "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {pengajar.status === "aktif" ? "Aktif" : "Nonaktif"}
+                                    {pengajar.status || "-"}
                                 </span>
                             </div>
 

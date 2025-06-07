@@ -15,7 +15,7 @@ export const useSantri = (biodata_id) => {
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const [status, setStatus] = useState("");
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
 
     const [loadingSantri, setLoadingSantri] = useState(true);
     const [loadingDetailSantri, setLoadingDetailSantri] = useState(null);
@@ -25,7 +25,7 @@ export const useSantri = (biodata_id) => {
     const fetchSantri = useCallback(async () => {
         if (!biodata_id || !token) return;
         try {
-            setError(false);
+            setError(null);
             setLoadingSantri(true);
             const response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/santri`, {
                 method: 'GET',
@@ -45,6 +45,9 @@ export const useSantri = (biodata_id) => {
               navigate("/login");
               return;
             }
+            if (response.status === 403) {
+                throw new Error("403");
+            }
             if (!response.ok) {
             // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -52,9 +55,14 @@ export const useSantri = (biodata_id) => {
 
             const result = await response.json();
             setSantriList(result.data || []);
-        } catch (error) {
+            setError(null);
+        } catch (err) {
+            if (err.message == 403) {
+                setError("Akses ditolak: Anda tidak memiliki izin untuk melihat data ini.");
+            } else {
+                setError("Terjadi kesalahan saat mengambil data.");
+            }
             console.error("Gagal mengambil data santri:", error);
-            setError(true);
         } finally {
             setLoadingSantri(false);
         }

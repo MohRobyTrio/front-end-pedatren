@@ -295,12 +295,12 @@ const TabPengurus = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${pengurus.status === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengurus.status === "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {pengurus.status === "aktif" ? "Aktif" : "Nonaktif"}
+                                    {pengurus.status || "-"}
                                 </span>
                             </div>
 
