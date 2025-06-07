@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -189,7 +188,7 @@ const TabBiodata = () => {
                 nama_pendidikan: biodata.nama_pendidikan_terakhir || '',
                 jalan: biodata.jalan || '',
                 kode_pos: biodata.kode_pos || '',
-                wafat: biodata.wafat === 0 ? '0' : '1',
+                wafat: biodata.wafat === false ? '0' : '1',
 
                 negara: biodata.negara_id || '',
                 provinsi: biodata.provinsi_id || '',
@@ -363,7 +362,6 @@ const TabBiodata = () => {
             const requestOptions = {
                 method: 'POST',
                 headers: {
-                    // Jangan set Content-Type secara manual, biarkan browser yang atur
                     'Authorization': `Bearer ${token}`,
                 },
                 body: formData,
@@ -416,8 +414,10 @@ const TabBiodata = () => {
                 text: isUpdateMode ? "Data berhasil diupdate!" : "Data berhasil disimpan!",
             });
 
-            // alert(isUpdateMode ? 'Data berhasil diupdate!' : 'Data berhasil disimpan!');
-
+            if (biodata_id && biodata_id.trim() !== "") {
+                loadPesertaData(biodata_id);
+            }
+            
             if (!isUpdateMode) {
                 // Reset form jika mode tambah data
                 reset();
