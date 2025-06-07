@@ -286,6 +286,25 @@ const TabBiodata = () => {
 
     // Submit form
     const onSubmit = async (data) => {
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin menyimpan data?",
+            text: "Pastikan semua data sudah diisi dengan benar.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            html: 'Sedang menyimpan data.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         setIsLoading(true);
         try {
             // Format tanggal lahir
@@ -341,27 +360,6 @@ const TabBiodata = () => {
 
             let response;
 
-            //  if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
-            //     // Double check - pastikan hanya update dengan ID valid
-            //     console.log(`Updating record with ID: ${biodata_id}`);
-            //     // Update data
-            //     response = await axios.post(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, formData, {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //             'Authorization': `Bearer ${token}`
-            //         }
-            //     });
-            // } else {
-            //     console.log("Creating new record");
-            //     // Create new data
-            //     response = await axios.post(`${API_BASE_URL}formulir/biodata?_method=POST`, formData, {
-            //         headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //             'Authorization': `Bearer ${token}`
-            //         }
-            //     });
-            // }
-
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -387,6 +385,9 @@ const TabBiodata = () => {
                 response = await fetch(`${API_BASE_URL}formulir/biodata?_method=POST`, requestOptions);
             }
 
+            const result = await response.json();
+            Swal.close();
+
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -399,7 +400,23 @@ const TabBiodata = () => {
                 return;
             }
 
-            alert(isUpdateMode ? 'Data berhasil diupdate!' : 'Data berhasil disimpan!');
+            if (!response.ok || result.errors) {
+                const errorMsg = result.message || "Terjadi kesalahan pada server.";
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align:center">${errorMsg}</div>`,
+                });
+                return;
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: isUpdateMode ? "Data berhasil diupdate!" : "Data berhasil disimpan!",
+            });
+
+            // alert(isUpdateMode ? 'Data berhasil diupdate!' : 'Data berhasil disimpan!');
 
             if (!isUpdateMode) {
                 // Reset form jika mode tambah data
@@ -409,15 +426,30 @@ const TabBiodata = () => {
             }
 
         } catch (error) {
+            Swal.close();
             console.error('Error saving data:', error);
             if (error.response && error.response.data && error.response.data.errors) {
                 // Tampilkan error dari validasi backend
                 const backendErrors = error.response.data.errors;
-                Object.keys(backendErrors).forEach(key => {
-                    alert(`${key}: ${backendErrors[key][0]}`);
+                // Object.keys(backendErrors).forEach(key => {
+                //     alert(`${key}: ${backendErrors[key][0]}`);
+                // });
+                const errorList = Object.keys(backendErrors)
+                    .map(key => `<li><strong>${key}</strong>: ${backendErrors[key][0]}</li>`)
+                    .join("");
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    html: `<ul style="text-align: left;">${errorList}</ul>`,
                 });
             } else {
-                alert('Terjadi kesalahan. Silakan coba lagi.');
+                await Swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Terjadi kesalahan saat mengirim data. Silakan coba lagi.",
+                });
+                // alert('Terjadi kesalahan. Silakan coba lagi.');
             }
         } finally {
             setIsLoading(false);

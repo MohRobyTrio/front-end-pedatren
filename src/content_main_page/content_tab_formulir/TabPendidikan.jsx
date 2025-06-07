@@ -26,7 +26,7 @@ const TabPendidikan = () => {
     const [selectedPendidikanId, setSelectedPendidikanId] = useState(null);
     const [selectedPendidikanDetail, setSelectedPendidikanDetail] = useState(null);
     const [noInduk, setNoInduk] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [endDate, setEndDate] = useState(null);
     const [startDate, setStartDate] = useState("");
     const [angkatanId, setAngkatanId] = useState("");
     const [status, setStatus] = useState("");
@@ -121,7 +121,7 @@ const TabPendidikan = () => {
             setSelectedPendidikanId(id);
             setSelectedPendidikanDetail(result.data);
             setNoInduk(result.data.no_induk || "");
-            setEndDate(result.data.tanggal_keluar || "");
+            setEndDate(result.data.tanggal_keluar === "-" ? null : result.data.tanggal_keluar);
             setStartDate(result.data.tanggal_masuk || "");
             setStatus(result.data.status || "");
             setAngkatanId(result.data.nama_angkatan || "");
@@ -230,9 +230,24 @@ const TabPendidikan = () => {
         const { lembaga, jurusan, kelas, rombel } = selectedLembaga;
 
         if (!lembaga || !noInduk || !startDate) {
-            alert("Lembaga, Nomor Induk, dan Tanggal Mulai wajib diisi");
+            await Swal.fire({
+                icon: "warning",
+                title: "Peringatan",
+                text: "Lembaga, Nomor Induk, dan Tanggal Mulai wajib diisi",
+            });
             return;
         }
+
+        const confirmed = await Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin memperbarui data pendidikan ini?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, update!",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmed.isConfirmed) return;
 
         const payload = {
             lembaga_id: lembaga,
@@ -242,12 +257,22 @@ const TabPendidikan = () => {
             no_induk: noInduk,
             angkatan_id: angkatanId,
             tanggal_masuk: startDate,
+            tanggal_keluar: endDate,
+            status: status
         };
 
         console.log("Payload:", payload);
 
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses update data pendidikan.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             setLoadingUpdatePendidikan(true);
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
@@ -262,6 +287,7 @@ const TabPendidikan = () => {
                 }
             );
             if (response.status === 401) {
+                Swal.close();
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -273,15 +299,63 @@ const TabPendidikan = () => {
                 return;
             }
             const result = await response.json();
+            console.log(result);
+            
             if (response.ok) {
-                alert(`Data pendidikan berhasil diperbarui!`);
+                const errorMessages = [
+                    "Tanggal keluar tidak boleh diisi jika status santri masih aktif",
+                    // tambahkan pesan validasi lain yang mungkin muncul
+                ];
+
+                const isErrorMessage = errorMessages.some(msg =>
+                    result.message?.toLowerCase().includes(msg.toLowerCase())
+                );
+
+                if (isErrorMessage) {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi gagal",
+                        text: result.message,
+                    });
+                    setEndDate(null);
+                } else {
+                    await Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: result.message || "Data pendidikan berhasil diperbarui!",
+                    });
+                    setSelectedPendidikanDetail(result.data || payload);
+                    fetchPendidikan();
+                }
                 setSelectedPendidikanDetail(result.data || payload);
                 fetchPendidikan();
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                if (result.errors) {
+                    let errMsg = "";
+                    Object.entries(result.errors).forEach(([field, messages]) => {
+                        errMsg += `${field}: ${messages.join(", ")}\n`;
+                    });
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Gagal update",
+                        text: errMsg,
+                    });
+                } else {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Gagal update",
+                        text: result.message || "Terjadi kesalahan",
+                    });
+                }
             }
         } catch (error) {
+            Swal.close();
             console.error("Error saat update:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Terjadi kesalahan saat mengupdate data. Silakan coba lagi.",
+            });
         } finally {
             setLoadingUpdatePendidikan(false);
         }
@@ -326,10 +400,10 @@ const TabPendidikan = () => {
                             {capitalizeFirst(label)} {label === 'lembaga' ? '*' : ''}
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedPendidikanDetail?.status !== "aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti" ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || !canEdit || selectedPendidikanDetail?.status !== "aktif"}
+                            disabled={options.length <= 1 || !canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -470,10 +544,10 @@ const TabPendidikan = () => {
                                         </label>
                                         <select
                                             id="angkatan_id"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti" ? "bg-gray-200 text-gray-500" : ""}`}
                                             onChange={(e) => setAngkatanId(e.target.value)}
                                             value={angkatanId}
-                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"} 
                                             required
                                         >
                                             {menuAngkatanPelajar.map((pelajar, idx) => (
@@ -498,8 +572,8 @@ const TabPendidikan = () => {
                                             onChange={(e) => setNoInduk(e.target.value)}
                                             maxLength={50}
                                             placeholder="Masukkan Nomor Induk"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status || selectedPendidikanDetail?.status !== "cuti" !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"}
                                         />
                                     </div>
 
@@ -510,8 +584,8 @@ const TabPendidikan = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -524,10 +598,10 @@ const TabPendidikan = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            disabled
+                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"}
                                         />
                                     </div>
 
@@ -537,17 +611,19 @@ const TabPendidikan = () => {
                                         </label>
                                         <select
                                             id="status"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
-                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPendidikanDetail?.status !== "aktif" || selectedPendidikanDetail?.status !== "cuti"}
                                         >
                                             <option value="">Pilih Status</option>
                                             <option value="aktif">Aktif</option>
                                             <option value="do">Drop Out</option>
                                             <option value="berhenti">Berhenti</option>
+                                            <option value="lulus">Lulus</option>
+                                            <option value="pindah">Pindah</option>
                                             <option value="cuti">Cuti</option>
-                                            <option value="alumni">Alumni</option>
+                                            <option value="naik_kelas">Naik Kelas</option>
                                             <option value="nonaktif">Non Aktif</option>
                                         </select>
                                     </div>

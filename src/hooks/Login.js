@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { API_BASE_URL } from "./config";
 import { setTokenCookie } from "../utils/cookieUtils";
+import Swal from "sweetalert2";
 
 const useLogin = () => {
     const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -12,6 +13,14 @@ const useLogin = () => {
         setLoginError(null);
 
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -19,6 +28,7 @@ const useLogin = () => {
                 },
                 body: JSON.stringify({ email, password }),
             });
+            Swal.close();
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -51,7 +61,13 @@ const useLogin = () => {
         } catch (error) {
             console.error("Login error:", error);
             setLoginError(error.message);
-        throw error;
+            await Swal.fire({
+                title: "Login Gagal",
+                text: error.message || "Terjadi kesalahan saat login",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+            throw error;
         } finally {
             setIsLoggingIn(false);
         }
