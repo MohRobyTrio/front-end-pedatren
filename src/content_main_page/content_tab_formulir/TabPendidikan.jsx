@@ -36,7 +36,7 @@ const TabPendidikan = () => {
     const [loadingDetailPendidikan, setLoadingDetailPendidikan] = useState(null);
     const [loadingUpdatePendidikan, setLoadingUpdatePendidikan] = useState(false);
 
-    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, setSelectedLembaga } = DropdownLembaga();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { menuAngkatanPelajar } = DropdownAngkatan();
 
     // Ubah label index ke-0 menjadi "Pilih ..."
@@ -124,79 +124,79 @@ const TabPendidikan = () => {
             setEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
             setStatus(result.data.status || "");
-            setAngkatanId(result.data.angkatan_id || "");
+            setAngkatanId(result.data.nama_angkatan || "");
 
             // Set dropdown values berdasarkan nama (cari ID berdasarkan nama)
-            const dropdownValues = {};
+            // const dropdownValues = {};
 
-            // Cari ID berdasarkan nama lembaga
-            if (result.data.nama_lembaga) {
-                const lembagaOption = filterLembaga.lembaga.find(item => item.label === result.data.nama_lembaga);
-                if (lembagaOption) {
-                    dropdownValues.lembaga = lembagaOption.value;
-                }
-            }
+            // // Cari ID berdasarkan nama lembaga
+            // if (result.data.nama_lembaga) {
+            //     const lembagaOption = filterLembaga.lembaga.find(item => item.label === result.data.nama_lembaga);
+            //     if (lembagaOption) {
+            //         dropdownValues.lembaga = lembagaOption.value;
+            //     }
+            // }
 
-            // Cari ID berdasarkan nama jurusan
-            if (result.data.nama_jurusan) {
-                const jurusanOption = filterLembaga.jurusan.find(item => item.label === result.data.nama_jurusan);
-                if (jurusanOption) {
-                    dropdownValues.jurusan = jurusanOption.value;
-                }
-            }
+            // // Cari ID berdasarkan nama jurusan
+            // if (result.data.nama_jurusan) {
+            //     const jurusanOption = filterLembaga.jurusan.find(item => item.label === result.data.nama_jurusan);
+            //     if (jurusanOption) {
+            //         dropdownValues.jurusan = jurusanOption.value;
+            //     }
+            // }
 
-            // Cari ID berdasarkan nama kelas
-            if (result.data.nama_kelas) {
-                const kelasOption = filterLembaga.kelas.find(item => item.label === result.data.nama_kelas);
-                if (kelasOption) {
-                    dropdownValues.kelas = kelasOption.value;
-                }
-            }
+            // // Cari ID berdasarkan nama kelas
+            // if (result.data.nama_kelas) {
+            //     const kelasOption = filterLembaga.kelas.find(item => item.label === result.data.nama_kelas);
+            //     if (kelasOption) {
+            //         dropdownValues.kelas = kelasOption.value;
+            //     }
+            // }
 
-            // Cari ID berdasarkan nama rombel
-            if (result.data.nama_rombel) {
-                const rombelOption = filterLembaga.rombel.find(item => item.label === result.data.nama_rombel);
-                if (rombelOption) {
-                    dropdownValues.rombel = rombelOption.value;
-                }
-            }
+            // // Cari ID berdasarkan nama rombel
+            // if (result.data.nama_rombel) {
+            //     const rombelOption = filterLembaga.rombel.find(item => item.label === result.data.nama_rombel);
+            //     if (rombelOption) {
+            //         dropdownValues.rombel = rombelOption.value;
+            //     }
+            // }
 
             console.log('Data from API:', result.data);
-            console.log('Dropdown values to set:', dropdownValues);
-            console.log('Available options:', filterLembaga);
+            // console.log('Dropdown values to set:', dropdownValues);
+            // console.log('Available options:', filterLembaga);
 
-            // Jika ada setSelectedLembaga function, gunakan itu
-            if (setSelectedLembaga && typeof setSelectedLembaga === 'function') {
-                setSelectedLembaga(dropdownValues);
-            } else {
-                // Gunakan handleFilterChangeLembaga secara bertahap dengan delay
-                const setDropdownValues = async () => {
-                    if (dropdownValues.lembaga) {
-                        await handleFilterChangeLembaga({ lembaga: dropdownValues.lembaga });
+            // // Jika ada setSelectedLembaga function, gunakan itu
+            // if (setSelectedLembaga && typeof setSelectedLembaga === 'function') {
+            //     setSelectedLembaga(dropdownValues);
+            // } else {
+            //     // Gunakan handleFilterChangeLembaga secara bertahap dengan delay
+            //     const setDropdownValues = async () => {
+            //         if (dropdownValues.lembaga) {
+            //             await handleFilterChangeLembaga({ lembaga: dropdownValues.lembaga });
 
-                        // Tunggu sebentar untuk memastikan jurusan options ter-load
-                        setTimeout(() => {
-                            if (dropdownValues.jurusan) {
-                                handleFilterChangeLembaga({ jurusan: dropdownValues.jurusan });
+            //             // Tunggu sebentar untuk memastikan jurusan options ter-load
+            //             setTimeout(() => {
+            //                 if (dropdownValues.jurusan) {
+            //                     handleFilterChangeLembaga({ jurusan: dropdownValues.jurusan });
 
-                                setTimeout(() => {
-                                    if (dropdownValues.kelas) {
-                                        handleFilterChangeLembaga({ kelas: dropdownValues.kelas });
+            //                     setTimeout(() => {
+            //                         if (dropdownValues.kelas) {
+            //                             handleFilterChangeLembaga({ kelas: dropdownValues.kelas });
 
-                                        setTimeout(() => {
-                                            if (dropdownValues.rombel) {
-                                                handleFilterChangeLembaga({ rombel: dropdownValues.rombel });
-                                            }
-                                        }, 50);
-                                    }
-                                }, 50);
-                            }
-                        }, 100);
-                    }
-                };
+            //                             setTimeout(() => {
+            //                                 if (dropdownValues.rombel) {
+            //                                     handleFilterChangeLembaga({ rombel: dropdownValues.rombel });
+            //                                 }
+            //                             }, 50);
+            //                         }
+            //                     }, 50);
+            //                 }
+            //             }, 100);
+            //         }
+            //     };
 
-                setDropdownValues();
-            }
+            //     setDropdownValues();
+            // }
 
         } catch (error) {
             console.error("Gagal mengambil detail Pendidikan:", error);
@@ -205,6 +205,24 @@ const TabPendidikan = () => {
         }
     };
 
+    useEffect(() => {
+        // Saat selectedFilterLembaga diisi, panggil handleFilterChangeLembaga secara bertahap
+        if (selectedPendidikanDetail) {
+            if (selectedPendidikanDetail.nama_lembaga) {
+                handleFilterChangeLembaga({ lembaga: selectedPendidikanDetail.nama_lembaga });
+            }
+            if (selectedPendidikanDetail.nama_jurusan) {
+                handleFilterChangeLembaga({ jurusan: selectedPendidikanDetail.nama_jurusan });
+            }
+            if (selectedPendidikanDetail.nama_kelas) {
+                handleFilterChangeLembaga({ kelas: selectedPendidikanDetail.nama_kelas });
+            }
+            if (selectedPendidikanDetail.nama_rombel) {
+                handleFilterChangeLembaga({ rombel: selectedPendidikanDetail.nama_rombel });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedPendidikanDetail]);
 
     const handleUpdate = async () => {
         if (!selectedPendidikanDetail) return;

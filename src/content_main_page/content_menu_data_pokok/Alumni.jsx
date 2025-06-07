@@ -268,12 +268,12 @@ const Alumni = () => {
                                                 </td>
                                                 <td className="px-3 py-2 border-b">
                                                     <span
-                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "alumni"
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "lulus"
                                                                 ? "bg-emerald-100 text-emerald-800"
                                                                 : "bg-slate-100 text-slate-500"
                                                             }`}
                                                     >
-                                                        {item.status === "alumni" ? "Alumni" : "-"}
+                                                        {item.status === "lulus" ? "Lulus" : "-"}
                                                     </span>
                                                 </td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>

@@ -214,7 +214,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
                         <div>
                           <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Mulai *</label>
                           <input
-                            type="date"
+                            type="datetime-local"
                             id="tanggal_masuk"
                             name="tanggal_masuk"
                             value={formData.tanggal_masuk}
@@ -328,19 +328,21 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
       }
 
       const result = await response.json();
+      console.log(result);
+      
 
       if (!response.ok) {
         throw new Error(result.message || "Terjadi kesalahan pada server.");
       }
 
-      if (!("data" in result)) {
-        await Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          html: `<div style="text-align: left;">${result.message}</div>`,
-        });
-        return;
-      }
+      // if (!("data" in result)) {
+      //   await Swal.fire({
+      //     icon: "error",
+      //     title: "Gagal",
+      //     html: `<div style="text-align: left;">${result.message}</div>`,
+      //   });
+      //   return;
+      // }
 
       await Swal.fire({
         icon: "success",
@@ -408,7 +410,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
                         <div>
                           <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Keluar *</label>
                           <input
-                            type="date"
+                            type="datetime-local"
                             id="tanggal_keluar"
                             name="tanggal_keluar"
                             value={formData.tanggal_keluar}

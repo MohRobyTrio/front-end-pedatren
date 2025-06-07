@@ -49,9 +49,7 @@ const TabDomisiliSantri = () => {
     const {
         filterWilayah,
         handleFilterChangeWilayah,
-        selectedWilayah,
-        setSelectedWilayah
-    } = DropdownWilayah();
+        selectedWilayah } = DropdownWilayah();
 
     // Ubah label dropdown
     const updateFirstOptionLabel = (list, label) =>
@@ -133,6 +131,8 @@ const TabDomisiliSantri = () => {
 
             setSelectedDomisiliId(id);
             setSelectedDomisiliDetail(result.data);
+            console.log(selectedDomisiliDetail);
+            
             // setStartDate(result.data.tanggal_masuk || "");
             // setEndDate(result.data.tanggal_keluar || "");
             // Parsing datetime ke format input
@@ -157,48 +157,48 @@ const TabDomisiliSantri = () => {
 
 
             // Set dropdown values
-            const dropdownValues = {};
+            // const dropdownValues = {};
 
-            // Cari ID berdasarkan nama
-            if (result.data.nama_wilayah) {
-                const wilayahOption = filterWilayah.wilayah.find(item => item.label === result.data.nama_wilayah);
-                if (wilayahOption) dropdownValues.wilayah = wilayahOption.value;
-            }
+            // // Cari ID berdasarkan nama
+            // if (result.data.nama_wilayah) {
+            //     const wilayahOption = filterWilayah.wilayah.find(item => item.label === result.data.nama_wilayah);
+            //     if (wilayahOption) dropdownValues.wilayah = wilayahOption.value;
+            // }
 
-            if (result.data.nama_blok) {
-                const blokOption = filterWilayah.blok.find(item => item.label === result.data.nama_blok);
-                if (blokOption) dropdownValues.blok = blokOption.value;
-            }
+            // if (result.data.nama_blok) {
+            //     const blokOption = filterWilayah.blok.find(item => item.label === result.data.nama_blok);
+            //     if (blokOption) dropdownValues.blok = blokOption.value;
+            // }
 
-            if (result.data.nama_kamar) {
-                const kamarOption = filterWilayah.kamar.find(item => item.label === result.data.nama_kamar);
-                if (kamarOption) dropdownValues.kamar = kamarOption.value;
-            }
+            // if (result.data.nama_kamar) {
+            //     const kamarOption = filterWilayah.kamar.find(item => item.label === result.data.nama_kamar);
+            //     if (kamarOption) dropdownValues.kamar = kamarOption.value;
+            // }
 
-            // Set selected wilayah
-            if (setSelectedWilayah && typeof setSelectedWilayah === 'function') {
-                setSelectedWilayah(dropdownValues);
-            } else {
-                // Handle perubahan dropdown bertahap
-                const setDropdownValues = async () => {
-                    if (dropdownValues.wilayah) {
-                        await handleFilterChangeWilayah({ wilayah: dropdownValues.wilayah });
+            // // Set selected wilayah
+            // if (setSelectedWilayah && typeof setSelectedWilayah === 'function') {
+            //     setSelectedWilayah(dropdownValues);
+            // } else {
+            //     // Handle perubahan dropdown bertahap
+            //     const setDropdownValues = async () => {
+            //         if (dropdownValues.wilayah) {
+            //             await handleFilterChangeWilayah({ wilayah: dropdownValues.wilayah });
 
-                        setTimeout(() => {
-                            if (dropdownValues.blok) {
-                                handleFilterChangeWilayah({ blok: dropdownValues.blok });
+            //             setTimeout(() => {
+            //                 if (dropdownValues.blok) {
+            //                     handleFilterChangeWilayah({ blok: dropdownValues.blok });
 
-                                setTimeout(() => {
-                                    if (dropdownValues.kamar) {
-                                        handleFilterChangeWilayah({ kamar: dropdownValues.kamar });
-                                    }
-                                }, 50);
-                            }
-                        }, 100);
-                    }
-                };
-                setDropdownValues();
-            }
+            //                     setTimeout(() => {
+            //                         if (dropdownValues.kamar) {
+            //                             handleFilterChangeWilayah({ kamar: dropdownValues.kamar });
+            //                         }
+            //                     }, 50);
+            //                 }
+            //             }, 100);
+            //         }
+            //     };
+            //     setDropdownValues();
+            // }
 
         } catch (error) {
             console.error("Gagal mengambil detail Domisili:", error);
@@ -206,6 +206,22 @@ const TabDomisiliSantri = () => {
             setLoadingDetailDomisili(null);
         }
     };
+
+    useEffect(() => {
+        // Saat selectedFilterLembaga diisi, panggil handleFilterChangeLembaga secara bertahap
+        if (selectedDomisiliDetail) {
+            if (selectedDomisiliDetail.nama_wilayah) {
+                handleFilterChangeWilayah({ wilayah: selectedDomisiliDetail.nama_wilayah });
+            }
+            if (selectedDomisiliDetail.nama_blok) {
+                handleFilterChangeWilayah({ blok: selectedDomisiliDetail.nama_blok });
+            }
+            if (selectedDomisiliDetail.nama_kamar) {
+                handleFilterChangeWilayah({ kamar: selectedDomisiliDetail.nama_kamar });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDomisiliDetail]);
 
     const handleUpdate = async () => {
         if (!selectedDomisiliDetail) return;
@@ -302,6 +318,11 @@ const TabDomisiliSantri = () => {
         setShowOutModal(true);
     };
 
+    const isTanggalKeluarValid = (
+        selectedDomisiliDetail?.tanggal_keluar &&
+        selectedDomisiliDetail?.tanggal_keluar !== "-"
+    );
+
     // Komponen dropdown
     const Filters = ({ filterOptions, onChange, selectedFilters }) => {
         return (
@@ -312,10 +333,10 @@ const TabDomisiliSantri = () => {
                             {capitalizeFirst(label)} {label === 'wilayah' ? '*' : ''}
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedDomisiliDetail?.tanggal_keluar ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || isTanggalKeluarValid ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || !canEdit || selectedDomisiliDetail?.tanggal_keluar}
+                            disabled={options.length <= 1 || !canEdit || isTanggalKeluarValid}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -472,8 +493,8 @@ const TabDomisiliSantri = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedDomisiliDetail?.tanggal_keluar ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedDomisiliDetail?.tanggal_keluar}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || isTanggalKeluarValid ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || isTanggalKeluarValid}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)} // Simpan hanya tanggal
                                         />
@@ -497,7 +518,7 @@ const TabDomisiliSantri = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        {!selectedDomisiliDetail?.tanggal_keluar && (
+                                        {(selectedDomisiliDetail?.tanggal_keluar == null || selectedDomisiliDetail?.tanggal_keluar == "-" || !selectedDomisiliDetail?.tanggal_keluar) && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

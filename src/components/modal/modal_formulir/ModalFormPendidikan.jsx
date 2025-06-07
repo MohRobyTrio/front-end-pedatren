@@ -145,8 +145,17 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
       }
 
       const result = await response.json();
+// console.log(result);
 
       if (!response.ok) {
+        if (result?.errors?.no_induk?.includes("validation.unique")) {
+          await Swal.fire({
+            icon: "error",
+            title: "Nomor Induk Duplikat",
+            text: "Nomor Induk sudah digunakan. Silakan gunakan nomor lain.",
+          });
+          return;
+        }
         throw new Error(result.message || "Terjadi kesalahan pada server.");
       }
 
@@ -402,19 +411,21 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
       }
 
       const result = await response.json();
+      // console.log(result);
+      
 
       if (!response.ok) {
         throw new Error(result.message || "Terjadi kesalahan pada server.");
       }
 
-      if (!("data" in result)) {
-        await Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          html: `<div style="text-align: left;">${result.message}</div>`,
-        });
-        return;
-      }
+      // if (!("data" in result)) {
+      //   await Swal.fire({
+      //     icon: "error",
+      //     title: "Gagal",
+      //     html: `<div style="text-align: left;">${result.message}</div>`,
+      //   });
+      //   return;
+      // }
 
       await Swal.fire({
         icon: "success",
@@ -510,9 +521,9 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
                             <option value="">Pilih Status</option>
                             <option value="do">DropOut</option>
                             <option value="berhenti">Berhenti</option>
-                            <option value="cuti">Cuti</option>
-                            <option value="alumni">Alumni</option>
+                            <option value="lulus">Lulus</option>
                             <option value="nonaktif">Non Aktif</option>
+                            <option value="selesai">Selesai</option>
                           </select>
 
                         </div>
