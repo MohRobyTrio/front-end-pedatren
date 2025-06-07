@@ -560,10 +560,10 @@ const TabDomisiliSantri = () => {
                                         <input
                                             type="datetime-local"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || isTanggalKeluarValid ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)} // Simpan hanya tanggal
-                                            disabled={!canEdit || isTanggalKeluarValid}
+                                            disabled
                                         />
                                     </div>
                                 </div>
