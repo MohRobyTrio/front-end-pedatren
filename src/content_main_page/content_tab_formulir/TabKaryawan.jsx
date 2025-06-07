@@ -18,6 +18,8 @@ const TabKaryawan = () => {
 	const { clearAuthData } = useLogout();
 	const navigate = useNavigate();
 	const canEdit = hasAccess("edit");
+	const canPindah = hasAccess("pindah");
+    const canKeluar = hasAccess("keluar");
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showOutModal, setShowOutModal] = useState(false);
 	const [karyawanList, setKaryawanList] = useState([]);
@@ -313,15 +315,15 @@ const TabKaryawan = () => {
 									</p>
 								</div>
 								<span
-									className={`text-sm font-semibold px-3 py-1 rounded-full ${karyawan.status === "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+									className={`text-sm font-semibold capitallize px-3 py-1 rounded-full ${karyawan.status === "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
 										}`}
 								>
-									{karyawan.status === "aktif" ? "Aktif" : "Nonaktif"}
+									{karyawan.status}
 								</span>
 							</div>
 
 							{!karyawan.tanggal_keluar && karyawan.status === "aktif" && ( // Ditambahkan pengecekan status aktif juga, karena bisa jadi tanggal keluar null tapi status sudah nonaktif dari proses lain
-								                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
+								<div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
 									<Access action="pindah">
 										<button
 											type="button"

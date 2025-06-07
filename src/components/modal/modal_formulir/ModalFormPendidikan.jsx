@@ -411,7 +411,7 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
       }
 
       const result = await response.json();
-      // console.log(result);
+      console.log(result);
       
 
       if (!response.ok) {
@@ -426,6 +426,15 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
       //   });
       //   return;
       // }
+
+      if (result.message && result.message.toLowerCase().includes("tidak boleh")) {
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          html: `<div style="text-align: left;">${result.message}</div>`,
+        });
+        return;
+      }
 
       await Swal.fire({
         icon: "success",

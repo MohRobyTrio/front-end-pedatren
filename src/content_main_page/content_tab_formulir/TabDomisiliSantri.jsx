@@ -429,12 +429,13 @@ const TabDomisiliSantri = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${!domisili.tanggal_keluar
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${!domisili.tanggal_keluar
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {!domisili.tanggal_keluar ? "Aktif" : "Nonaktif"}
+                                    {/* {!domisili.tanggal_keluar ? "Aktif" : "Nonaktif"} */}
+                                    {domisili.status}
                                 </span>
                             </div>
 

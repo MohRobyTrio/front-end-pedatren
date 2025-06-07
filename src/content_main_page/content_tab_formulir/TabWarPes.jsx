@@ -86,12 +86,12 @@ const TabWarPes = () => {
                                 <h5 className="text-lg font-bold">{warPes.niup}</h5>
                             </div>
                             <span
-                                className={`text-sm font-semibold px-3 py-1 rounded-full ${warPes.status
+                                className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${warPes.status
                                     ? "bg-green-100 text-green-700"
                                     : "bg-red-100 text-red-700"
                                     }`}
                             >
-                                {warPes.status ? "Aktif" : "Nonaktif"}
+                                {warPes.status || "-"}
                             </span>
                         </div>
 

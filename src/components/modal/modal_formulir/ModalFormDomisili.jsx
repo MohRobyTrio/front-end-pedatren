@@ -43,7 +43,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
     list.length > 0
       ? [{ ...list[0], label }, ...list.slice(1)]
       : list;
-      
+
   const updatedFilterWilayah = {
     wilayah: updateFirstOptionLabel(filterWilayah.wilayah, "Pilih Wilayah"),
     blok: updateFirstOptionLabel(filterWilayah.blok, "Pilih Blok"),
@@ -53,7 +53,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
   const isTambah = feature == 1;
   const endpoint = isTambah ? "domisili" : "domisili/pindah";
   const metod = isTambah ? "POST" : "PUT";
-  const id = isTambah ? biodataId : cardId;    
+  const id = isTambah ? biodataId : cardId;
 
   const [formData, setFormData] = useState({
     wilayah_id: "",
@@ -70,6 +70,27 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
       kamar_id: selectedWilayah.kamar || "",
     }));
   }, [selectedWilayah]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        wilayah_id: "",
+        blok_id: "",
+        kamar_id: "",
+        tanggal_masuk: ""
+      });
+      handleFilterChangeWilayah({
+        wilayah: "",
+        blok: "",
+        kamar: ""
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+  useEffect(() => {
+    console.log(formData);
+
+  }, [formData])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,6 +149,8 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
       }
 
       const result = await response.json();
+      console.log(result);
+
 
       if (!response.ok) {
         throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -147,6 +170,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
         title: "Berhasil!",
         text: "Data domisili berhasil disimpan.",
       });
+
 
       refetchData?.();
       onClose?.();
@@ -204,12 +228,12 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
                         {isTambah ? 'Tambah Data Domisili' : 'Pindah Domisili'}
                       </Dialog.Title>
 
-                      <div className="space-y-4">    
-                        <Filters 
-                          filterOptions={updatedFilterWilayah} 
-                          onChange={handleFilterChangeWilayah} 
-                          selectedFilters={selectedWilayah} 
-                        />     
+                      <div className="space-y-4">
+                        <Filters
+                          filterOptions={updatedFilterWilayah}
+                          onChange={handleFilterChangeWilayah}
+                          selectedFilters={selectedWilayah}
+                        />
 
                         <div>
                           <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Mulai *</label>
@@ -225,8 +249,8 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
                         </div>
 
                         {/* <div> */}
-                          {/* <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Akhir</label> */}
-                          {/* <input
+                        {/* <label htmlFor="tanggal_keluar" className="block text-gray-700">Tanggal Akhir</label> */}
+                        {/* <input
                             type="date"
                             id="tanggal_keluar"
                             name="tanggal_keluar"
@@ -269,7 +293,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     tanggal_keluar: ""
-  });    
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -329,7 +353,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
 
       const result = await response.json();
       console.log(result);
-      
+
 
       if (!response.ok) {
         throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -344,12 +368,22 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
       //   return;
       // }
 
+      if (result.message && result.message.toLowerCase().includes("tidak boleh")) {
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          html: `<div style="text-align: left;">${result.message}</div>`,
+        });
+        return;
+      }
+
       await Swal.fire({
         icon: "success",
         title: "Berhasil!",
         text: "Data domisili berhasil diperbarui.",
       });
 
+      setFormData({ tanggal_keluar: "" })
       refetchData?.();
       onClose?.();
     } catch (error) {
@@ -418,7 +452,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
-                        </div>                                            
+                        </div>
                       </div>
                     </div>
                   </div>

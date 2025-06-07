@@ -331,12 +331,12 @@ const TabWaliKelas = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${waliKelas.status_aktif === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${waliKelas.status_aktif === "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {waliKelas.status_aktif === "aktif" ? "Aktif" : "Nonaktif"}
+                                    {waliKelas.status_aktif || "-"}
                                 </span>
                             </div>
 

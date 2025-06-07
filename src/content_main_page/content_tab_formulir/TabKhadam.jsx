@@ -120,12 +120,12 @@ const TabKhadam = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${khadam.status === 1
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${khadam.status === 1
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {khadam.status === 1 ? "Aktif" : "Nonaktif"}
+                                    {khadam.status || "-"}
                                 </span>
                             </div>
 
