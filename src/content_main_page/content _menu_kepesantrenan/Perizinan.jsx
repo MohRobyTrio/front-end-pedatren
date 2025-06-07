@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import useFetchPerizinan from "../../hooks/hook_menu_kepesantrenan/Perizinan";
+import useApprovePerizinan from "../../hooks/hook_menu_kepesantrenan/approvePerizinan";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import { OrbitProgress } from "react-loading-indicators";
@@ -10,8 +11,9 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaPlus } from "react-icons/fa";
-import { ModalAddPerizinan } from "../../components/modal/ModalFormPerizinan";
+import { ModalAddPerizinan, ModalApprove } from "../../components/modal/ModalFormPerizinan";
 import Access from "../../components/Access";
+import { getRolesString } from "../../utils/getRolesString";
 
 
 const DataPerizinan = () => {
@@ -20,6 +22,10 @@ const DataPerizinan = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [feature, setFeature] = useState("");
+
+    const capitalizeFirstLetter = getRolesString(); 
+    console.log("Roles:", capitalizeFirstLetter);
+    
     
     const openModal = (item) => {
         setSelectedItem(item);
@@ -94,7 +100,7 @@ const DataPerizinan = () => {
         setSearchTerm,
         fetchData,
         // filterOptions
-    } = useFetchPerizinan();
+    } = useFetchPerizinan(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
 
@@ -132,7 +138,7 @@ const DataPerizinan = () => {
             { label: "Perizinan Ditolak", value: "perizinan ditolak" },
             { label: "Perizinan Dibatalkan", value: "dibatalkan" },
             { label: "Telat (sudah kembali)", value: "telat(sudah kembali)" },
-            { label: "Telat (belum kembali", value: "telat(belum kembali)" },
+            { label: "Telat (belum kembali)", value: "telat(belum kembali)" },
             { label: "Kembali Tepat Waktu", value: "kembali tepat waktu" }
         ]
     }
@@ -224,7 +230,7 @@ const DataPerizinan = () => {
                         ) : data.length > 0 ? (
                             <div className="">
                                 {data.map(perizinan => (
-                                    <PerizinanCard key={perizinan.id} data={perizinan} openModal={openModal} setShowFormModal={setShowFormModal} setFeature={setFeature} setSelectedId={setSelectedId} setSelectedName={setSelectedName} />
+                                    <PerizinanCard key={perizinan.id} data={perizinan} openModal={openModal} setShowFormModal={setShowFormModal} setFeature={setFeature} setSelectedId={setSelectedId} setSelectedName={setSelectedName} refetchData={fetchData} userRole={capitalizeFirstLetter} />
                                 ))}
                             </div>
                         ) : (
@@ -253,11 +259,78 @@ const DataPerizinan = () => {
 };
 
 // Komponen Card untuk Perizinan
-const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName }) => {
+const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName, refetchData}) => {
+
+    // Dapatkan role user dari sistem
+    const userRole = getRolesString().toLowerCase();
+
+    const { approvePerizinan, isApproving, error } = useApprovePerizinan();
+
+    const [showApproveModal, setShowApproveModal] = useState(false);
+    const [approveError, setApproveError] = useState(null);
+
+    // Cek apakah user dapat melakukan approval untuk role ini
+    const canApprove = useMemo(() => {
+        if (!userRole) return false;
+
+        // Cek status approval berdasarkan role
+        const approvalStatus = {
+            biktren: !data.approved_by_biktren,
+            kamtib: !data.approved_by_kamtib,
+            pengasuh: !data.approved_by_pengasuh
+        };
+
+        return approvalStatus[userRole];
+    }, [userRole, data]);
+
+    // Handle proses approval
+    const handleApprove = async () => {
+        setApproveError(null);
+        const success = await approvePerizinan(data.id, userRole);
+
+        if (success) {
+            setShowApproveModal(false);
+            try {
+                await refetchData(true); // Tambahkan await & try-catch
+            } catch (err) {
+                console.error("Gagal refetch:", err);
+            }
+        } else {
+            setApproveError(error);
+        }
+    };
+
+    console.log(refetchData);
+    console.log("role user:", userRole);
+    // console.log("approvalStatus:", approvalStatus);
+    console.log("canApprove:", canApprove);
+    console.log("data:", data);
+
+
+    
+
+
     return (
         <div key={data.id} className="max-w-6xl mx-auto cursor-pointer" onClick={() => openModal(data)}>
-            <div className="bg-white rounded border border-gray-200 p-6 shadow-sm mb-4">
+            <div className="bg-white rounded border border-gray-200 p-1 shadow-sm mb-4">
                 <div className="flex justify-end">
+                    {/* Tombol Approve */}
+                    {canApprove ? (
+                        <Access action="approve">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowApproveModal(true);
+                                }}
+                                className="w-24 h-6 flex items-center gap-2 px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded shadow cursor-pointer"
+                            >
+                                <i className="fas fa-check-circle"></i>
+                                <span>Approve</span>
+                            </button>
+                        </Access>
+                    ) : (
+                        <div className="w-24 h-6"></div> // Elemen kosong dengan ukuran tombol
+                    )}
                     <Access action="edit">
                         <button
                             onClick={(e) => {
@@ -267,19 +340,35 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                                 setSelectedName(data.nama_santri);
                                 setShowFormModal(true);
                             }}
-                            className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                            className="w-20 h-6 flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
                         >
                             <i className="fas fa-edit"></i>
                             <span>Edit</span>
                         </button>
                     </Access>
                 </div>
+               
+
+                {/* Modal Approval */}
+                <ModalApprove
+                    isOpen={showApproveModal}
+                    onClose={() => setShowApproveModal(false)}
+                    onConfirm={handleApprove}
+                    isLoading={isApproving}
+                    roleName={userRole}
+                />
+                {approveError && (
+                    <div className="mt-2 text-red-600 text-sm">
+                        Error: {approveError}
+                    </div>
+                )}
+
                 <div className="flex flex-col md:flex-row">
                     {/* Left Section - Student Photo */}
-                    <div className="md:w-1/5 mb-4 md:mb-0">
+                    <div className="md:w-1/7 mb-4 md:mb-0 flex item-center justify-center">
                         <img
                             alt={data.nama_santri || "-"}
-                            className="w-32 h-40 object-cover"
+                            className="w-24 h-24 object-cover"
                             src={data.foto_profil}
                             onError={(e) => {
                                 e.target.onerror = null;
@@ -289,13 +378,13 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                     </div>
 
                     {/* Middle Section - Student Details */}
-                    <div className="md:w-2/5">
+                    <div className="md:w-3/5 p-1/5">
                         <div className="flex items-center mb-4">
                             <h2 className="text-xl font-semibold text-gray-800 mr-2">{data.nama_santri}</h2>
                             <span className="text-blue-800">{data.jenis_kelamin === 'p' ? '♀' : '♂'}</span>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-1/4">
                             <div className="flex">
                                 <div className="w-24 text-gray-700">Domisili</div>
                                 <div className="flex-1">
@@ -317,7 +406,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                                 </div>
                             </div>
 
-                            <div className="flex mt-6">
+                            <div className="flex mt-1">
                                 <div className="w-24 font-medium text-gray-800">Alasan Izin</div>
                                 <div className="flex-1">
                                     <span className="text-gray-800 font-medium">: {data.alasan_izin}</span>
@@ -364,8 +453,10 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                     </div>
 
                     {/* Right Section - Permission Details */}
-                    <div className="md:w-2/5 md:pl-6  border-gray-200 mt-6 md:mt-0">
-                        <div className="space-y-3">
+                    <div className="md:w-2/5 md:pl-2 p-1/5 border-gray-200 mt-6 md:mt-0">
+                    <br />
+                    <br />
+                        <div className="space-y-1/4">
                             <div className="flex">
                                 <div className="w-32 text-gray-700">Pembuat Izin</div>
                                 <div className="flex-1">
@@ -397,7 +488,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                             </div>
                         </div>
 
-                        <div className="mt-6">
+                        <div className="mt-2">
                             <div className="text-gray-700 font-medium">Keterangan:</div>
                             <div className="mt-1 text-gray-600">
                                 {data.keterangan}
@@ -410,25 +501,9 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                                 {data.tanggal_kembali}
                             </div>
                         </div>
+                    </div>
 
-                        {/* QR Code */}
-                        {/* <div className="mt-4 flex justify-center">
-              <div className="relative">
-                <img
-                  src="/api/placeholder/160/160"
-                  alt="QR Code"
-                  className="w-40 h-40"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="bg-white rounded-full p-1 shadow-md">
-                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                      <span className="text-white text-lg">J</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-                    </div>
+                    
                 </div>
 
                 {/* Status Steps */}
@@ -445,12 +520,20 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
 
                         <div className="flex items-center mr-6 mb-2">
                             <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
-            ${(data.status !== "sedang proses izin" || data.status !== "perizinan ditolak" || data.status !== "dibatalkan")
-                                    ? 'border-blue-500 bg-blue-500 text-white'
-                                    : 'border-gray-400 text-gray-400'}`}>
-                                {(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
+            ${(data.status === "perizinan ditolak" || data.status === "dibatalkan")
+                                    ? 'border-red-500 bg-red-500 text-white'
+                                    : (data.status !== "sedang proses izin")
+                                        ? 'border-blue-500 bg-blue-500 text-white'
+                                        : 'border-gray-400 text-gray-400'}`}>
+                                {(data.status === "perizinan diterima" || data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                                {(data.status === "perizinan ditolak" || data.status === "dibatalkan") && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
                                 )}
                             </div>
                             <span className="text-gray-700">{data.status === "dibatalkan" ? "Perizinan dibatalkan" : data.status === "perizinan ditolak" ? "Perizinan ditolak" : " Perizinan diterima"}</span>
@@ -493,12 +576,14 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                             </div>
                             <span className="text-gray-700">{data.status === "telat(belum kembali)" ? " Telat" : data.status === "telat(sudah kembali)" ? " Telat" : " Kembali tepat waktu"}</span>
                         </div>
+                        <div className="justify-end ml-auto">
+                            <div className="text-right text-gray-500 text-sm mt-2">
+                                <div>Tgl dibuat : {data.tgl_input}</div>
+                                <div>Tgl diubah : {data.tgl_update}</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="text-right text-gray-500 text-sm mt-2">
-                        <div>Tgl dibuat : {data.tgl_input}</div>
-                        <div>Tgl diubah : {data.tgl_update}</div>
-                    </div>
                 </div>
             </div>
         </div>

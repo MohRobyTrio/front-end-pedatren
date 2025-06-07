@@ -11,7 +11,7 @@ const useDropdownSantri = () => {
     if (localData) {
       try {
         const parsedData = JSON.parse(localData);
-        console.log("Parsed sessionStorage data:", parsedData);
+        // console.log("Parsed sessionStorage data:", parsedData);
         setMenuSantri(parsedData);
       } catch (error) {
         console.error("Gagal parsing data dari sessionStorage:", error);
@@ -54,7 +54,7 @@ const useDropdownSantri = () => {
                   kota_asal: item.kota_asal || '-',
                   foto_profil: item.foto_profil || '-'
                 };
-                console.log("Formatted item:", formattedItem);
+                // console.log("Formatted item:", formattedItem);
                 return formattedItem;
               }),
             ];

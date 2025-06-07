@@ -80,21 +80,21 @@ const useFetchPerizinan = (filters) => {
       // Transform data
       const transformed = result.data.map(item => ({
         ...item,
-        tanggal_mulai: new Date(item.tanggal_mulai).toLocaleString('id-ID', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        tanggal_selesai: new Date(item.tanggal_selesai).toLocaleString('id-ID', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        durasi: calculateDuration(item.tanggal_mulai, item.tanggal_selesai),
+        // tanggal_mulai: new Date(item.tanggal_mulai).toLocaleString('id-ID', {
+        //   day: 'numeric',
+        //   month: 'long',
+        //   year: 'numeric',
+        //   hour: '2-digit',
+        //   minute: '2-digit'
+        // }),
+        // tanggal_selesai: new Date(item.tanggal_selesai).toLocaleString('id-ID', {
+        //   day: 'numeric',
+        //   month: 'long',
+        //   year: 'numeric',
+        //   hour: '2-digit',
+        //   minute: '2-digit'
+        // }),
+        // durasi: calculateDuration(item.tanggal_mulai, item.tanggal_selesai),
         foto_profil: item.foto_profil || null
       }));
 
