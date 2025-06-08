@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { ModalFormWaliAsuh, ModalFormKeluarWaliAsuh } from "../../components/modal/modal_formulir/ModalFormWaliAsuh";
 import { useWaliAsuh } from "../../hooks/hooks_formulir/tabWaliAsuh";
+import Access from "../../components/Access";
 
 const TabWaliAsuh = () => {
 
@@ -100,17 +101,19 @@ const TabWaliAsuh = () => {
   return (
     <div className="block" id="wali-asuh">
       <h1 className="text-xl font-bold flex items-center justify-between">Wali Asuh
-        <button
-          onClick={() => {
-            setFeature(1);
-            openAddModal();
-          }}
-          type="button"
-          className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-        >
-          <i className="fas fa-plus"></i>
-          <span>Tambah Data</span>
-        </button>
+        <Access action={"tambah"}>
+          <button
+            onClick={() => {
+              setFeature(1);
+              openAddModal();
+            }}
+            type="button"
+            className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+          >
+            <i className="fas fa-plus"></i>
+            <span>Tambah Data</span>
+          </button>
+        </Access>
       </h1>
 
       <ModalFormWaliAsuh
@@ -170,7 +173,7 @@ const TabWaliAsuh = () => {
                     : "bg-red-100 text-red-700"
                     }`}
                 >
-                  {waliAsuh.status || "-"}
+                  {waliAsuh.status === 1 ? 'Aktif' : 'Non Aktif'}
                 </span>
               </div>
 
@@ -187,17 +190,19 @@ const TabWaliAsuh = () => {
                   >
                     <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
                   </button> */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openOutModal(waliAsuh.id);
-                    }}
-                    className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
-                    title="Keluar Wali Asuh"
-                  >
-                    <FontAwesomeIcon icon={faRightFromBracket} />Keluar
-                  </button>
+                  <Access action={"keluar"}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openOutModal(waliAsuh.id);
+                      }}
+                      className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"
+                      title="Keluar Wali Asuh"
+                    >
+                      <FontAwesomeIcon icon={faRightFromBracket} />Keluar
+                    </button>
+                  </Access>
                 </div>
               )}
             </div>
@@ -287,13 +292,15 @@ const TabWaliAsuh = () => {
                 {/* Baris 3: Tombol */}
                 <div className="flex space-x-2 mt-1">
                   {waliAsuh.status === 1 && (
-                    <button
-                      type="button"
-                      className="px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                      onClick={handleUpdate}
-                    >
-                      Update
-                    </button>
+                      <Access action={"edit"}>
+                        <button
+                          type="button"
+                          className="px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                          onClick={handleUpdate}
+                        >
+                          Update
+                        </button>
+                      </Access>
                   )}
                   <button
                     type="button"

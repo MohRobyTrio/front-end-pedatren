@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddOrangtuaFormulir, ModalFormPindahKeluarga } from "../../components/modal/modal_formulir/ModalAddOrangtua";
+import Access from "../../components/Access";
 
 const TabKeluarga = () => {
     const { biodata_id } = useParams();
@@ -56,14 +57,16 @@ const TabKeluarga = () => {
         <div className="block" id="keluarga">
             <h1 className="text-xl font-bold flex items-center justify-between">
                 Relasi Keluarga
-                <button
-                    onClick={openAddModal}
-                    type="button"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
-                >
-                    <i className="fas fa-plus"></i>
-                    <span>Tambah Data Keluarga</span>
-                </button>
+                <Access action={"tambah"}>
+                    <button
+                        onClick={openAddModal}
+                        type="button"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
+                    >
+                        <i className="fas fa-plus"></i>
+                        <span>Tambah Data Keluarga</span>
+                    </button>
+                </Access>
             </h1>
 
             <ModalAddOrangtuaFormulir
@@ -111,18 +114,19 @@ const TabKeluarga = () => {
                     <p className="text-center text-gray-500">Tidak ada data keluarga</p>
                 ) : (
                     <>
-                        <div className="bg-white shadow-md drop-shadow rounded-lg p-4 w-100 flex justify-between items-center">
+                        <div className="bg-white shadow-md drop-shadow rounded-lg p-4 w-fit flex justify-between items-center gap-2">
                             <h2 className="text-md font-bold">
                                 No.KK {nokk || '-'}
                             </h2>
-                            <button
+                            {/* {sementara tidak dibutuhkan} */}
+                            {/* <button
                                 type="button"
                                 onClick={openPindahModal}
                                 className="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 cursor-pointer "
                                 title="Pindah Pendidikan"
                             >
                                 <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah Nomor KK
-                            </button>
+                            </button> */}
                         </div>
                         {keluargaList.filter(keluarga => !keluarga.is_selected).map((keluarga) => (
                             <div key={keluarga.id_keluarga}>
