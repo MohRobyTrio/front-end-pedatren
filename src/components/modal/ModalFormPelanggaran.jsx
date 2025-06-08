@@ -8,12 +8,14 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import { useNavigate } from "react-router-dom";
+import { ModalSelectSantri } from "../ModalSelectSantri";
 
 export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [santriId, setSantriId] = useState("");
+    const [santriId, setSantriId] = useState(null);
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
 
     const [formData, setFormData] = useState({
         status_pelanggaran: "",
@@ -25,7 +27,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
 
     useEffect(() => {
         if (isOpen && feature == 1) {
-            setSantriId("");
+            setSantriId(null);
             setFormData({
                 status_pelanggaran: "",
                 jenis_putusan: "",
@@ -37,62 +39,61 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
     }, [feature, isOpen]);
 
     useEffect(() => {      
-        setSantriId("");  
         if (feature === 2 && nama && menuSantri.length > 0) {
             const matchedSantri = menuSantri.find((s) => s.label === nama);            
             if (matchedSantri) {
-                setSantriId(matchedSantri.bio_id);
+                setSantriId(matchedSantri);
             }
         }
     }, [feature, nama, menuSantri]);
 
     useEffect(() => {
-            const fetchData = async () => {
-                try {
-                    const token = sessionStorage.getItem("token") || getCookie("token");
-                    const response = await fetch(`${API_BASE_URL}crud/${id}/pelanggaran/show`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    });
-    
-                    if (!response.ok) throw new Error("Gagal mengambil data");
-    
-                    const result = await response.json();
-    
-                    if (result.data) {
-                        setFormData({
-                            status_pelanggaran: result.data.status_pelanggaran ?? "",
-                            jenis_putusan: result.data.jenis_putusan ?? "",
-                            jenis_pelanggaran: result.data.jenis_pelanggaran ?? "",
-                            diproses_mahkamah: result.data.diproses_mahkamah ?? "",
-                            keterangan: result.data.keterangan ?? "",
-                        });
+        const fetchData = async () => {
+            try {
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const response = await fetch(`${API_BASE_URL}crud/${id}/pelanggaran/show`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
                     }
-                } catch (error) {
-                    console.error("Gagal mengambil data perizinan:", error);
-                    Swal.fire("Error", "Gagal mengambil data perizinan", "error");
-                }
-            };
-    
-            if (isOpen && feature === 2) {
-                setFormData({
-                    status_pelanggaran: "",
-                    jenis_putusan: "",
-                    jenis_pelanggaran: "",
-                    diproses_mahkamah: null,
-                    keterangan: "",
                 });
-                fetchData();
+
+                if (!response.ok) throw new Error("Gagal mengambil data");
+
+                const result = await response.json();
+
+                if (result.data) {
+                    setFormData({
+                        status_pelanggaran: result.data.status_pelanggaran ?? "",
+                        jenis_putusan: result.data.jenis_putusan ?? "",
+                        jenis_pelanggaran: result.data.jenis_pelanggaran ?? "",
+                        diproses_mahkamah: result.data.diproses_mahkamah ?? "",
+                        keterangan: result.data.keterangan ?? "",
+                    });
+                }
+            } catch (error) {
+                console.error("Gagal mengambil data perizinan:", error);
+                Swal.fire("Error", "Gagal mengambil data perizinan", "error");
             }
-        }, [feature, id, isOpen]);
+        };
+
+        if (isOpen && feature === 2) {
+            setFormData({
+                status_pelanggaran: "",
+                jenis_putusan: "",
+                jenis_pelanggaran: "",
+                diproses_mahkamah: null,
+                keterangan: "",
+            });
+            fetchData();
+        }
+    }, [feature, id, isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const isTambah = feature == 1;
         const metod = isTambah ? "POST" : "PUT";
-        const idSend = isTambah ? santriId : id;
+        const idSend = isTambah ? santriId.bio_id : id;
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -145,18 +146,13 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
 
             const result = await response.json();
 
-            // if (!response.ok) {
-            //     throw new Error(result.message || "Terjadi kesalahan pada server.");
-            // }
-
-            // if ("status" in result && !result.status) {
-           if (!("data" in result)) {
+            if (!("data" in result)) {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
                     html: `<div style="text-align: left;">${result.message}</div>`,
                 });
-                return; // Jangan lempar error, cukup berhenti
+                return;
             }
 
             console.log(result);
@@ -169,7 +165,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
             });
 
             refetchData?.(true);
-            onClose?.(); // tutup modal jika ada
+            onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
             await Swal.fire({
@@ -207,7 +203,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="w-full max-w-3xl bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -220,120 +216,127 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
                                 {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
-                                
                             </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
                                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
-
-                                            {/* FORM ISI */}
-                                            <div className="space-y-4">                                                                                                
-                                                <div>
-                                                    <label htmlFor="id_santri" className="block text-gray-700">Nama Santri *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${feature === 2 ? 'bg-gray-200 text-gray-700' : ''}`}
-                                                        onChange={(e) => setSantriId(e.target.value)}
-                                                        value={santriId}
-                                                        disabled={feature === 2 || menuSantri.length <= 1}
-                                                        required
-                                                    >
-                                                        {menuSantri.map((santri, idx) => (
-                                                            <option key={idx} value={santri.bio_id}>
-                                                                {santri.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                
-                                                <div>
-                                                    <label htmlFor="status_pelanggaran" className="block text-gray-700">Status Pelanggaran *</label>
-                                                    <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        onChange={(e) => setFormData({ ...formData, status_pelanggaran: e.target.value })}
-                                                        value={formData.status_pelanggaran}
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Status</option>
-                                                        <option value="Belum diproses">Belum Diproses</option>
-                                                        <option value="Sedang diproses">Sedang Diproses</option>
-                                                        <option value="Rombongan">Sudah Diproses</option>
-                                                    </select>
-                                                </div>        
-
-                                                <div>
-                                                    <label htmlFor="jenis_putusan" className="block text-gray-700">Jenis Putusan *</label>
-                                                    <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        onChange={(e) => setFormData({ ...formData, jenis_putusan: e.target.value })}
-                                                        value={formData.jenis_putusan}
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Jenis Putusan</option>
-                                                        <option value="Belum ada putusan">Belum ada putusan</option>
-                                                        <option value="Disanksi">Disanksi</option>
-                                                        <option value="Dibebaskan">Dibebaskan</option>
-                                                    </select>
-                                                </div>    
-
-                                                <div>
-                                                    <label htmlFor="jenis_pelanggaran" className="block text-gray-700">Jenis Pelanggaran *</label>
-                                                    <select
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        onChange={(e) => setFormData({ ...formData, jenis_pelanggaran: e.target.value })}
-                                                        value={formData.jenis_pelanggaran}
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Jenis Pelanggaran</option>
-                                                        <option value="Ringan">Ringan</option>
-                                                        <option value="Sedang">Sedang</option>
-                                                        <option value="Berat">Berat</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <label className="block text-gray-700 mb-1">Diproses Mahkamah *</label>
-                                                    <div className="flex items-center space-x-4">
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="diproses_mahkamah"
-                                                                value="true"
-                                                                checked={formData.diproses_mahkamah === true || formData.diproses_mahkamah == 1}
-                                                                onChange={() => setFormData({ ...formData, diproses_mahkamah: true })}
-                                                                required
-                                                                className="form-radio text-blue-500"
-                                                            />
-                                                            <span className="ml-2">Ya</span>
-                                                        </label>
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="diproses_mahkamah"
-                                                                value="false"
-                                                                checked={formData.diproses_mahkamah === false || formData.diproses_mahkamah == 0}
-                                                                onChange={() => setFormData({ ...formData, diproses_mahkamah: false })}
-                                                                required
-                                                                className="form-radio text-blue-500"
-                                                            />
-                                                            <span className="ml-2">Tidak</span>
-                                                        </label>
+                                            {/* Pilih Santri Button */}
+                                            {feature === 1 && (
+                                                <div className={`mb-4 flex ${santriId ? 'justify-end' : 'justify-center'}`}>
+                                                    <div className="flex-1 flex justify-between items-center max-w-2xl mx-auto">
+                                                        {!santriId && (
+                                                            <h2 className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
+                                                                Pilih Data Santri Terlebih Dahulu
+                                                            </h2>
+                                                        )}
+                                                        <div className={`ml-auto ${!santriId ? 'relative' : ''}`}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowSelectSantri(true)}
+                                                                className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                            >
+                                                                {santriId ? "Ganti Santri" : "Pilih Santri"}
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            )}
+                                            {/* Kartu Info Santri */}
+                                            {santriId && <SantriInfoCard santri={santriId} />}
 
-                                                <div>
-                                                    <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>
-                                                    <textarea
-                                                        name="keterangan"
-                                                        onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                                                        value={formData.keterangan}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        placeholder="Masukkan catatan atau tindak lanjut"
-                                                        required
-                                                    />
-                                                </div>                                     
-                                            </div>
+                                            {/* FORM ISI */}
+                                            {(santriId || feature === 2) && (
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <label htmlFor="status_pelanggaran" className="block text-gray-700">Status Pelanggaran *</label>
+                                                        <select
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            onChange={(e) => setFormData({ ...formData, status_pelanggaran: e.target.value })}
+                                                            value={formData.status_pelanggaran}
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Status</option>
+                                                            <option value="Belum diproses">Belum Diproses</option>
+                                                            <option value="Sedang diproses">Sedang Diproses</option>
+                                                            <option value="Rombongan">Sudah Diproses</option>
+                                                        </select>
+                                                    </div>        
+
+                                                    <div>
+                                                        <label htmlFor="jenis_putusan" className="block text-gray-700">Jenis Putusan *</label>
+                                                        <select
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            onChange={(e) => setFormData({ ...formData, jenis_putusan: e.target.value })}
+                                                            value={formData.jenis_putusan}
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Jenis Putusan</option>
+                                                            <option value="Belum ada putusan">Belum ada putusan</option>
+                                                            <option value="Disanksi">Disanksi</option>
+                                                            <option value="Dibebaskan">Dibebaskan</option>
+                                                        </select>
+                                                    </div>    
+
+                                                    <div>
+                                                        <label htmlFor="jenis_pelanggaran" className="block text-gray-700">Jenis Pelanggaran *</label>
+                                                        <select
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            onChange={(e) => setFormData({ ...formData, jenis_pelanggaran: e.target.value })}
+                                                            value={formData.jenis_pelanggaran}
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Jenis Pelanggaran</option>
+                                                            <option value="Ringan">Ringan</option>
+                                                            <option value="Sedang">Sedang</option>
+                                                            <option value="Berat">Berat</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-gray-700 mb-1">Diproses Mahkamah *</label>
+                                                        <div className="flex items-center space-x-4">
+                                                            <label className="inline-flex items-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="diproses_mahkamah"
+                                                                    value="true"
+                                                                    checked={formData.diproses_mahkamah === true || formData.diproses_mahkamah == 1}
+                                                                    onChange={() => setFormData({ ...formData, diproses_mahkamah: true })}
+                                                                    required
+                                                                    className="form-radio text-blue-500"
+                                                                />
+                                                                <span className="ml-2">Ya</span>
+                                                            </label>
+                                                            <label className="inline-flex items-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="diproses_mahkamah"
+                                                                    value="false"
+                                                                    checked={formData.diproses_mahkamah === false || formData.diproses_mahkamah == 0}
+                                                                    onChange={() => setFormData({ ...formData, diproses_mahkamah: false })}
+                                                                    required
+                                                                    className="form-radio text-blue-500"
+                                                                />
+                                                                <span className="ml-2">Tidak</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>
+                                                        <textarea
+                                                            name="keterangan"
+                                                            onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
+                                                            value={formData.keterangan}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                            placeholder="Masukkan catatan atau tindak lanjut"
+                                                            required
+                                                        />
+                                                    </div>                                     
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -359,7 +362,50 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                     </Transition.Child>
                 </div>
             </Dialog>
+            <ModalSelectSantri
+                isOpen={showSelectSantri}
+                onClose={() => setShowSelectSantri(false)}
+                onSantriSelected={(santri) => setSantriId(santri)}
+            />
         </Transition>
+    );
+};
+
+const SantriInfoCard = ({ santri }) => {
+    if (!santri) return null;
+
+    return (
+        <div className=" p-4 rounded-md bg-gray-50 shadow-sm mb-6">
+            <div className="flex items-start space-x-12">
+                {santri.foto_profil ? (
+                    <img src={santri.foto_profil}
+                        alt={santri.value}
+                        className="w-24 h-24 rounded object-cover" />
+                ) : (
+                    <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
+                        <i className="fas fa-user text-gray-400 text-4xl"></i>
+                    </div>
+                )}
+                <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+                    {/* Kolom Pertama */}
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
+                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
+                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
+                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
+                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+                    </div>
+
+                    {/* Kolom Kedua */}
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
+                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
+                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
+                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 
