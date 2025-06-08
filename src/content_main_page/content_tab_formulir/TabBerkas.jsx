@@ -14,8 +14,7 @@ export default function TabBerkas() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
 
-    const [imgError, setImgError] = useState(false);
-
+    const [imgErrorMap, setImgErrorMap] = useState({});
 
 
     useEffect(() => {
@@ -123,7 +122,7 @@ export default function TabBerkas() {
             {loading && <p>Loading...</p>}
             {error && <p className="text-red-500">{error}</p>}
 
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {(berkasList ?? []).length === 0 && !loading && (
                     <p className="col-span-full text-center">Tidak ada berkas.</p>
                 )}
@@ -160,12 +159,14 @@ export default function TabBerkas() {
 
                         {/* Preview Gambar atau Ikon */}
                         <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                            {berkas.file_path && isImage(berkas.file_path)  && !imgError  ? (
+                            {berkas.file_path && isImage(berkas.file_path) && !imgErrorMap[berkas.file_path]  ? (
                                 <img
                                     src={berkas.file_path}
                                     alt={berkas.nama_jenis_berkas || 'berkas'}
                                     className="object-cover h-full w-full"
-                                    onError={() => setImgError(true)}
+                                    onError={() =>
+                                        setImgErrorMap((prev) => ({ ...prev, [berkas.file_path]: true }))
+                                    }
                                 />
                             ) : (
                                 <FontAwesomeIcon
