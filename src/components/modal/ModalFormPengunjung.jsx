@@ -332,7 +332,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label htmlFor="nama" className="block text-gray-700">Nama *</label>
+                                                    <label htmlFor="nama" className="block text-gray-700">Nama Pengunjung *</label>
                                                     <input
                                                         type="text"
                                                         name="nama"
@@ -514,17 +514,22 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
     if (!santri) return null;
 
     return (
-        <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6">
-            {feature == 1 && (
-                <button
-                    type="button"
-                    onClick={() => setShowSelectSantri(true)}
-                    className="absolute top-3 right-3 px-2 py-1 rounded hover:bg-blue-700 text-gray-700 bg-blue-500 text-white"
-                    aria-label="Ganti Santri"
-                >
-                    <i className="fas fa-exchange-alt"></i>
-                </button>
-            )}
+    <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
+        {/* Keterangan */}
+        <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+            Data Santri yang Dikunjungi
+        </div>
+
+        {feature == 1 && (
+            <button
+                type="button"
+                onClick={() => setShowSelectSantri(true)}
+                className="absolute top-3 right-3 px-2 py-1 rounded hover:bg-blue-700 text-gray-700 bg-blue-500 text-white"
+                aria-label="Ganti Santri"
+            >
+                <i className="fas fa-exchange-alt"></i>
+            </button>
+        )}
 
             <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
 
