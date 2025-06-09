@@ -49,7 +49,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 tanggal_akhir: "",
                 tanggal_kembali: "",
                 jenis_izin: "",
-                status: "",
+                status: "sedang proses izin",
                 keterangan: "",
             });
         }
@@ -352,18 +352,20 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                         />
                                                     </div>
 
-                                                    <div>
-                                                        <label htmlFor="tanggal_kembali" className="block text-gray-700">Tanggal Kembali *</label>
-                                                        <input
-                                                            type="datetime-local"
-                                                            id="tanggal_kembali"
-                                                            name="tanggal_kembali"
-                                                            value={formData.tanggal_kembali}
-                                                            onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
-                                                            required
-                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        />
-                                                    </div>
+                                                    {feature == 2 && (
+                                                        <div>
+                                                            <label htmlFor="tanggal_kembali" className="block text-gray-700">Tanggal Kembali *</label>
+                                                            <input
+                                                                type="datetime-local"
+                                                                id="tanggal_kembali"
+                                                                name="tanggal_kembali"
+                                                                value={formData.tanggal_kembali}
+                                                                onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
+                                                                required
+                                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                            />
+                                                        </div>
+                                                    )}
 
                                                     <div>
                                                         <label htmlFor="jenis_izin" className="block text-gray-700">Jenis Izin *</label>
@@ -379,25 +381,27 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                         </select>
                                                     </div>
 
-                                                    <div>
-                                                        <label htmlFor="status" className="block text-gray-700">Status *</label>
-                                                        <select
-                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                                            value={formData.status}
-                                                            required
-                                                        >
-                                                            <option value="">Pilih Status</option>
-                                                            <option value="sedang proses izin">Sedang proses izin</option>
-                                                            <option value="perizinan diterima">Perizinan diterima</option>
-                                                            <option value="sudah berada diluar pondok">Sudah berada diluar pondok</option>
-                                                            <option value="perizinan ditolak">Perizinan ditolak</option>
-                                                            <option value="dibatalkan">Dibatalkan</option>
-                                                            <option value="telat(sudah kembali)">Telat(sudah kembali)</option>
-                                                            <option value="telat(belum kembali)">Telat(belum kembali)</option>
-                                                            <option value="kembali tepat waktu">Kembali tepat waktu</option>
-                                                        </select>
-                                                    </div>
+                                                    {feature == 2 && (
+                                                        <div>
+                                                            <label htmlFor="status" className="block text-gray-700">Status *</label>
+                                                            <select
+                                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                                value={formData.status}
+                                                                required
+                                                            >
+                                                                <option value="">Pilih Status</option>
+                                                                <option value="sedang proses izin">Sedang proses izin</option>
+                                                                <option value="perizinan diterima">Perizinan diterima</option>
+                                                                <option value="sudah berada diluar pondok">Sudah berada diluar pondok</option>
+                                                                <option value="perizinan ditolak">Perizinan ditolak</option>
+                                                                <option value="dibatalkan">Dibatalkan</option>
+                                                                <option value="telat(sudah kembali)">Telat(sudah kembali)</option>
+                                                                <option value="telat(belum kembali)">Telat(belum kembali)</option>
+                                                                <option value="kembali tepat waktu">Kembali tepat waktu</option>
+                                                            </select>
+                                                        </div>
+                                                    )}
 
                                                     <div>
                                                         <label htmlFor="keterangan" className="block text-gray-700">Keterangan *</label>

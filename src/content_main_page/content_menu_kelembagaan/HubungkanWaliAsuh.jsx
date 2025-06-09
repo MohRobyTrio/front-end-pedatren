@@ -8,6 +8,38 @@ import { API_BASE_URL } from "../../hooks/config";
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+
+const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
+    return (
+        <>
+            <div className={`w-full ${vertical ? "space-y-4" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"}`}>
+                {Object.entries(filterOptions).map(([label, options], index) => (
+                    <div key={`${label}-${index}`} className="w-full">
+
+                    {vertical && (
+                        <label className="block text-gray-700 mb-1 capitalize">{label} Tujuan</label>
+                    )}
+                    <select
+                        className={`w-full border border-gray-300 rounded p-2 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
+                            }`}
+                        onChange={(e) => onChange({ [label]: e.target.value })}
+                        value={selectedFilters[label] || ""}
+                        disabled={options.length <= 1}
+                        required={vertical}
+                    >
+                        {options.map((option, idx) => (
+                            <option key={idx} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            ))}
+            </div>
+        </>
+    );
+};
 
 const HubungkanWaliAsuh = () => {
     const { clearAuthData } = useLogout();
@@ -15,14 +47,50 @@ const HubungkanWaliAsuh = () => {
     const [selectedSantriIds, setSelectedSantriIds] = useState([]);
     const [selectedWaliAsuh, setSelectedWaliAsuh] = useState(null);
     const [isAllSelected, setIsAllSelected] = useState(false);
+    const [filters, setFilters] = useState({
+        wilayah: "",
+        blok: "",
+        kamar: "",
+    })
 
     useEffect(() => {
         console.log(selectedSantriIds);
     }, [selectedSantriIds]);
 
+    const {
+        filterWilayah: filterWilayahFilter,
+        handleFilterChangeWilayah: handleFilterChangeWilayahFilter,
+        selectedWilayah: selectedWilayahFilter,
+    } = DropdownWilayah();
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterWilayahFilter = {
+        wilayah: updateFirstOptionLabel(filterWilayahFilter.wilayah, "Pilih Wilayah"),
+        blok: updateFirstOptionLabel(filterWilayahFilter.blok, "Pilih Blok"),
+        kamar: updateFirstOptionLabel(filterWilayahFilter.kamar, "Pilih Kamar"),
+    };
+
+    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.label || "";
+    const blokTerpilih = filterWilayahFilter.blok.find((n) => n.value == selectedWilayahFilter.blok)?.label || "";
+    const kamarTerpilih = filterWilayahFilter.kamar.find((n) => n.value == selectedWilayahFilter.kamar)?.label || "";
+
+    useEffect(() => {
+        if (wilayahTerpilih || blokTerpilih || kamarTerpilih) {
+            setFilters({
+                wilayah: wilayahTerpilih,
+                blok: blokTerpilih,
+                kamar: kamarTerpilih,
+            });
+        }
+    }, [wilayahTerpilih, blokTerpilih, kamarTerpilih]);
+
     const { menuWaliAsuh2 } = useDropdownWaliAsuh();
 
-    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm } = useFetchSantri();
+    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm } = useFetchSantri(filters);
 
     useEffect(() => {
         if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
@@ -126,9 +194,29 @@ const HubungkanWaliAsuh = () => {
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
             <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
+            <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
                 <h2 className="text-xl font-semibold mb-4">Daftar Santri</h2>
-
-                <div className="relative mb-4 w-full max-w-64">
+                <div className="relative w-full sm:w-auto sm:max-w-sm">
+                        <input
+                            type="text"
+                            placeholder="Cari nama santri..."
+                            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                            <i className="fas fa-search"></i>
+                        </div>
+                    </div>
+                    </div>
+                <div className="flex flex-wrap w-full mb-4">
+                    <Filters
+                        filterOptions={updatedFilterWilayahFilter}
+                        onChange={handleFilterChangeWilayahFilter}
+                        selectedFilters={selectedWilayahFilter}
+                    />
+                </div>
+                {/* <div className="relative mb-4 w-full max-w-64">
                     <input
                         type="text"
                         placeholder="Cari nama santri..."
@@ -139,7 +227,7 @@ const HubungkanWaliAsuh = () => {
                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                         <i className="fas fa-search"></i>
                     </div>
-                </div>
+                </div> */}
 
                 {/* TABLE */}
                 {error ? (
@@ -177,6 +265,7 @@ const HubungkanWaliAsuh = () => {
                                 <th className="px-3 py-2 border-b text-center w-10">No</th>
                                 <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                 <th className="px-3 py-2 border-b">Nama</th>
+                                <th className="px-3 py-2 border-b">Wilayah</th>
                             </tr>
                         </thead>
                         <tbody className="text-gray-800">
@@ -220,6 +309,7 @@ const HubungkanWaliAsuh = () => {
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
                                         <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.nama}</td>
+                                        <td className="px-3 py-2 border-b text-left">{item.wilayah}</td>
                                     </tr>
                                 ))
                             )}

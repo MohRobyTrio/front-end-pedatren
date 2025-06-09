@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import useDropdownSantri from "../hooks/hook_dropdown/DropdownSantri";
 
 export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected }) => {

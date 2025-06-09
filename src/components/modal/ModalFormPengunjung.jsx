@@ -9,12 +9,16 @@ import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import DropdownHubungan from "../../hooks/hook_dropdown/DropdownHubungan";
+import { ModalSelectSantri } from "../ModalSelectSantri";
+import blankProfile from "../../assets/blank_profile.png";
 
 export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }) => {
     const { menuSantri } = useDropdownSantri();
     const { menuHubungan } = DropdownHubungan();
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santri, setSantri] = useState("");
 
     const [formData, setFormData] = useState({
         nik: "",
@@ -30,6 +34,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     });
 
     useEffect(() => {
+        setSantri("");
         if (isOpen && feature == 1) {
             setFormData({
                 nik: "",
@@ -47,6 +52,14 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     }, [feature, isOpen]);
 
     useEffect(() => {
+        if (isOpen && feature === 2 && formData.santri_id && menuSantri.length > 0) {
+            const s = menuSantri.find((s) => s.id == formData.santri_id);
+            if (s) setSantri(s);
+        }
+    }, [isOpen, feature, formData.santri_id, menuSantri]);
+
+
+    useEffect(() => {
             const fetchData = async () => {
                 try {
                     const token = sessionStorage.getItem("token") || getCookie("token");
@@ -59,6 +72,8 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                     if (!response.ok) throw new Error("Gagal mengambil data");
     
                     const result = await response.json();
+                    console.log("pengunujung show :",result);
+                    
     
                     if (result.data) {
                         setFormData({
@@ -81,6 +96,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
             };
     
             if (isOpen && feature === 2) {
+                setSantri("");
                 setFormData({
                     nik: "",
                     nama: "",
@@ -99,6 +115,12 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // if(feature == 1) {
+        //     console.log("hahah");
+            
+        //     setFormData({ ...formData, santri_id: santri.id })
+        // }
 
         if (formData.nik.length < 16) {
             await Swal.fire({
@@ -188,7 +210,8 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                 text: `Data berhasil dikirim.`,
             });
 
-            refetchData?.();
+            // setSantri("");
+            refetchData?.(true);
             onClose?.(); // tutup modal jika ada
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -199,6 +222,27 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
             });
         }
     };
+
+    // useEffect(() => {
+    //     console.log("data berubah");
+    //     // if (isOpen && feature == 1) {
+    //     //     setFormData({ ...formData, santri_id: santri.id })
+    //     // }
+    //     console.log(feature);
+        
+    //     console.log(santri);
+    //     console.log(formData.santri_id);
+    //     console.log(formData);
+    // }, [formData, santri]);
+
+    useEffect(() => {
+        if (isOpen && feature === 1 && santri?.id && formData.santri_id !== santri.id) {
+            console.log("data santri berubah");
+            setFormData((prev) => ({ ...prev, santri_id: santri.id }));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri, isOpen, feature]);
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -227,7 +271,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="w-full max-w-2xl bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -235,19 +279,45 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                            <Dialog.Title
-                                as="h3"
-                                className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
-                            >
-                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
-                            </Dialog.Title>
+                                <Dialog.Title
+                                    as="h3"
+                                    className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
+                                    >
+                                {santri && (
+                                    feature === 1
+                                        ? "Tambah Data Baru"
+                                        : feature === 2
+                                            ? "Edit Data"
+                                            : null
+                                )}
+                                </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
                                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
 
+                                            {(feature === 1 && !santri) && (
+                                                <div className="mb-4 flex justify-center">
+                                                    <div className="w-full max-w-2xl text-center">
+
+                                                        <h2 className="text-lg font-semibold mb-4">
+                                                            Pilih Data Santri Terlebih Dahulu
+                                                        </h2>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectSantri(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Santri
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            )}
+                                            {santri && <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} feature={feature} />}
                                             {/* FORM ISI */}
+                                            {(santri || feature === 2) && (
                                             <div className="space-y-4">
                                                 <div>
                                                     <label htmlFor="nik" className="block text-gray-700">NIK *</label>
@@ -325,7 +395,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                     </div>
                                                 </div>
 
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="santri_id" className="block text-gray-700">Santri *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuSantri.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
@@ -340,7 +410,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                             </option>
                                                         ))}
                                                     </select>
-                                                </div>
+                                                </div> */}
                                                 <div>
                                                     <label htmlFor="hubungan_id" className="block text-gray-700">Hubungan *</label>
                                                     <select
@@ -403,18 +473,21 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 
 
                                             </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Footer Button */}
                                 <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
+                                    {(santri || feature == 2) && (
                                     <button
                                         type="submit"
                                         className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                                     >
                                         Simpan
                                     </button>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={onClose}
@@ -428,6 +501,64 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                     </Transition.Child>
                 </div>
             </Dialog>
+            <ModalSelectSantri
+                isOpen={showSelectSantri}
+                onClose={() => setShowSelectSantri(false)}
+                onSantriSelected={(santri) => setSantri(santri)}
+            />
         </Transition>
+    );
+};
+
+const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
+    if (!santri) return null;
+
+    return (
+        <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6">
+            {feature == 1 && (
+                <button
+                    type="button"
+                    onClick={() => setShowSelectSantri(true)}
+                    className="absolute top-3 right-3 px-2 py-1 rounded hover:bg-blue-700 text-gray-700 bg-blue-500 text-white"
+                    aria-label="Ganti Santri"
+                >
+                    <i className="fas fa-exchange-alt"></i>
+                </button>
+            )}
+
+            <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
+
+                {/* Foto */}
+                <div className="flex justify-center sm:justify-start">
+                    <img
+                        src={santri.foto_profil}
+                        alt={santri.value}
+                        className="w-32 h-40 object-cover rounded"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = blankProfile;
+                        }}
+                    />
+                </div>
+
+                {/* Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
+                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
+                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
+                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
+                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+                    </div>
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
+                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
+                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
+                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     );
 };

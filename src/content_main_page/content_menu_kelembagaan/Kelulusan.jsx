@@ -18,11 +18,6 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
             <div className={`${vertical ? "space-y-4" : "grid grid-cols-1 md:grid-cols-2 gap-4"}`}>
                 {Object.entries(filterOptions).map(([label, options], index) => (
                     <div key={`${label}-${index}`} className="w-full">
-                        {/* {Object.entries(filterOptions).map(([label, options], index) => (
-                <div
-                    key={`${label}-${index}`}
-                    className={`mb-4 ${vertical ? "w-full" : "w-full px-2  md:w-1/2 "}`}
-                > */}
                         {vertical && (
                             <label className="block text-gray-700 mb-1 capitalize">{label} Tujuan</label>
                         )}
@@ -295,7 +290,7 @@ const Kelulusan = () => {
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
-            <div className="w-full lg:w-4/11 bg-white p-6 rounded-lg shadow-md">
+            <div className="w-full lg:w-20/49 bg-white p-6 rounded-lg shadow-md">
                 <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
                     <h2 className="text-xl font-semibold">Daftar Pelajar</h2>
                     <div className="relative w-full sm:w-auto sm:max-w-sm">
@@ -453,7 +448,7 @@ const Kelulusan = () => {
             {/* RIGHT SIDE - FORM TUJUAN */}
             <form
                 onSubmit={handleSubmit}
-                className="w-full lg:w-3/11 bg-white p-6 rounded-lg shadow-md flex flex-col justify-between gap-4 lg:sticky lg:top-1/2 self-start transform lg:-translate-y-1/2 z-10"
+                className="w-full lg:w-9/49 bg-white p-6 rounded-lg shadow-md flex flex-col justify-between gap-4 lg:sticky lg:top-1/2 self-start transform lg:-translate-y-1/2 z-10"
             >
 
                 <button
@@ -476,7 +471,7 @@ const Kelulusan = () => {
             </form>
 
 
-            <div className="w-full lg:w-4/11 bg-white p-6 rounded-lg shadow-md">
+            <div className="w-full lg:w-20/49 bg-white p-6 rounded-lg shadow-md">
                 <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
                     <h2 className="text-xl font-semibold">Alumni Pelajar</h2>
                     <div className="relative w-full sm:w-auto sm:max-w-sm">
