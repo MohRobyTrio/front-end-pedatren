@@ -154,7 +154,7 @@ export default function TabBerkas() {
 
                         {/* Label Jenis Berkas */}
                         <div className="absolute top-2 left-2 bg-purple-200 text-purple-700 text-xs px-2 py-1 rounded shadow">
-                            {berkas.nama_jenis_berkas || 'Berkas'}
+                            {'Berkas'}
                         </div>
 
                         {/* Preview Gambar atau Ikon */}
