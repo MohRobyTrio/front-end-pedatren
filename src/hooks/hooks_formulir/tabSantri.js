@@ -13,6 +13,7 @@ export const useSantri = (biodata_id) => {
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
     const [angkatanId, setAngkatanId] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [originalEndDate, setOriginalEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const [status, setStatus] = useState("");
     const [error, setError] = useState(null);
@@ -104,6 +105,7 @@ export const useSantri = (biodata_id) => {
             setSelectedSantriDetail(result.data);
             setAngkatanId(result.data.angkatan_id || "");
             setEndDate(result.data.tanggal_keluar || "");
+            setOriginalEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
             setStatus(result.data.status || "");
         } catch (error) {
@@ -115,6 +117,36 @@ export const useSantri = (biodata_id) => {
 
     const handleUpdate = async () => {
         if (!selectedSantriDetail) return;
+
+        // Konfirmasi jika endDate diisi
+        if (endDate && endDate !== originalEndDate) {
+            const warningResult = await Swal.fire({
+                title: "Perhatian",
+                text: "Pengisian Tanggal Keluar akan mengubah data domisili santri.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Batal",
+            });
+
+            if (!warningResult.isConfirmed) {
+                return;
+            }
+        }
+
+        // Konfirmasi umum sebelum update
+        const confirmUpdate = await Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin memperbarui data santri?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, perbarui",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmUpdate.isConfirmed) {
+            return;
+        }
 
         const payload = {
             angkatan_id: angkatanId,
