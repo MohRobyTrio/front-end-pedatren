@@ -69,6 +69,9 @@ const PindahKelas = () => {
         handleFilterChangeLembaga: handleFilterChangeLembagaTujuan,
         selectedLembaga: selectedLembagaTujuan,
     } = DropdownLembaga();
+
+    const shouldFetch = selectedLembagaFilter.lembaga !== "";
+
     const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData } = useFetchPelajar(filters);
 
     const updateFirstOptionLabel = (list, label) =>
@@ -226,7 +229,9 @@ const PindahKelas = () => {
                 </div>
 
                 {/* TABLE */}
-                {error ? (
+                {!shouldFetch ? (
+                    <div className="text-center py-6 text-gray-500 italic">Silakan pilih lembaga terlebih dahulu.</div>
+                ) : error ? (
                     <div className="col-span-3 text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
                         <button

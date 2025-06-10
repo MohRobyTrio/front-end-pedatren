@@ -6,6 +6,7 @@ import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { jenisBerkasList } from '../../data/menuData';
+import { OrbitProgress } from 'react-loading-indicators';
 
 export default function TabBerkas() {
     const { biodata_id } = useParams();
@@ -119,7 +120,9 @@ export default function TabBerkas() {
                 </button>
             </div>
 
-            {loading && <p>Loading...</p>}
+            {loading && <div className="flex justify-center items-center mt-4">
+                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                            </div>}
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

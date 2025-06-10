@@ -177,7 +177,7 @@ const CatatanKognitif = () => {
                 <h1 className="text-2xl font-bold">Catatan Kognitif</h1>
                 <div className="flex items-center space-x-2">
                     <Access action="tambah">
-                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                     </Access>
                 </div>
             </div>

@@ -169,7 +169,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 
             // console.log({ id, endpoint, metod, formData });
 
-            console.log(`Mengirim ke: ${API_BASE_URL}crud/pengunjung`);
+            console.log(`Mengirim ke: ${API_BASE_URL}crud/${endpoint}`);
 
 
             const result = await response.json();
@@ -243,6 +243,10 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [santri, isOpen, feature]);
 
+    console.log(feature == 2 || santri);
+    console.log(feature);
+    
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -283,14 +287,13 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                     as="h3"
                                     className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                                     >
-                                {santri && (
-                                    feature === 1
+                                {feature === 2
+                                    ? "Edit Data"
+                                    : santri && feature === 1
                                         ? "Tambah Data Baru"
-                                        : feature === 2
-                                            ? "Edit Data"
-                                            : null
-                                )}
-                                </Dialog.Title>
+                                        : null}
+
+                            </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
                                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
@@ -315,7 +318,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                 </div>
 
                                             )}
-                                            {santri && <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} feature={feature} />}
+                                            <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} feature={feature} />
                                             {/* FORM ISI */}
                                             {(santri || feature === 2) && (
                                             <div className="space-y-4">
@@ -511,7 +514,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 };
 
 const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
-    if (!santri) return null;
+if (!santri && feature !== 2) return null;
 
     return (
     <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
@@ -520,7 +523,6 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
             Data Santri yang Dikunjungi
         </div>
 
-        {feature == 1 && (
             <button
                 type="button"
                 onClick={() => setShowSelectSantri(true)}
@@ -529,7 +531,6 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
             >
                 <i className="fas fa-exchange-alt"></i>
             </button>
-        )}
 
             <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
 

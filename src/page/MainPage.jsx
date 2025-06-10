@@ -35,16 +35,29 @@ const MainPage = () => {
 
     const sidebarRef = useRef(null);
     const profilRef = useRef(null);
+    const toggleButtonRef = useRef(null);
 
     const toggleDropdownProfil = () => setIsOpen(prev => !prev);
-    const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
+    const toggleSidebar = () => {
+        console.log("klik");
+        console.log(isSidebarOpen);
+        
+        setIsSidebarOpen(prev => !prev)
+        console.log(isSidebarOpen);
+    };
 
     // Tutup jika klik di luar sidebar atau dropdown profil
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-                setIsSidebarOpen(false);
-            }
+            if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target)
+    ) {
+        setIsSidebarOpen(false);
+        console.log("klik luar sidebar");
+    }
             if (profilRef.current && !profilRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
@@ -73,6 +86,7 @@ const MainPage = () => {
                     toggleSidebar={toggleSidebar}
                     isOpen={isOpen}
                     profilRef={profilRef} // Tambahkan ref ke Navbar
+                    toggleButtonRef={toggleButtonRef}
                 />
                 <div ref={sidebarRef}>
                     <Sidebar

@@ -191,7 +191,7 @@ const AnakPegawai = () => {
                 <h1 className="text-2xl font-bold">Data Anak Pegawai</h1>
                 <div className="flex items-center">
                     <Access action="tambah">
-                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah Data</button>
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                     </Access>
                     {/* <div className="flex items-center space-x-2">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">

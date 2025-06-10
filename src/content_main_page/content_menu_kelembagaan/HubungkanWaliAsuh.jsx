@@ -90,6 +90,8 @@ const HubungkanWaliAsuh = () => {
 
     const { menuWaliAsuh2 } = useDropdownWaliAsuh();
 
+    const shouldFetch = selectedWilayahFilter.wilayah !== "";
+
     const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm } = useFetchSantri(filters);
 
     useEffect(() => {
@@ -230,7 +232,9 @@ const HubungkanWaliAsuh = () => {
                 </div> */}
 
                 {/* TABLE */}
-                {error ? (
+                {!shouldFetch ? (
+                    <div className="text-center py-6 text-gray-500 italic">Silakan pilih wilayah terlebih dahulu.</div>
+                ) : error ? (
                     <div className="col-span-3 text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
                         <button

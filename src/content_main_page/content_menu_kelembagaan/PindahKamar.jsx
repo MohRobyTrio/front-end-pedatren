@@ -67,6 +67,9 @@ const PindahKamar = () => {
         handleFilterChangeWilayah: handleFilterChangeWilayahTujuan,
         selectedWilayah: selectedWilayahTujuan,
     } = DropdownWilayah();
+
+    const shouldFetch = selectedWilayahFilter.wilayah !== "";
+
     const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData } = useFetchSantri(filters);
 
     const updateFirstOptionLabel = (list, label) =>
@@ -212,7 +215,9 @@ const PindahKamar = () => {
                 </div>
 
                 {/* TABLE */}
-                {error ? (
+                {!shouldFetch ? (
+                    <div className="text-center py-6 text-gray-500 italic">Silakan pilih wilayah terlebih dahulu.</div>
+                ) : error ? (
                     <div className="col-span-3 text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
                         <button

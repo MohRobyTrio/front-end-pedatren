@@ -283,7 +283,7 @@ const TabWaliKelas = () => {
                         className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
                     >
                         <i className="fas fa-plus"></i>
-                        <span>Tambah Data</span>
+                        <span>Tambah</span>
                     </button>
                 </Access>
             </h1>
