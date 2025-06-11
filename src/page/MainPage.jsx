@@ -50,14 +50,13 @@ const MainPage = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target) &&
-        toggleButtonRef.current &&
-        !toggleButtonRef.current.contains(event.target)
-    ) {
-        setIsSidebarOpen(false);
-        console.log("klik luar sidebar");
-    }
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                toggleButtonRef.current &&
+                !toggleButtonRef.current.contains(event.target)
+            ) {
+                setIsSidebarOpen(false);
+            }
             if (profilRef.current && !profilRef.current.contains(event.target)) {
                 setIsOpen(false);
             }

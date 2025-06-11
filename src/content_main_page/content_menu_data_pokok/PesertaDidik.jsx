@@ -20,9 +20,11 @@ import { jenisBerkasList } from "../../data/menuData";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import Access from "../../components/Access";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 const PesertaDidik = () => {
     const [exportLoading, setExportLoading] = useState(false);
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -199,7 +201,7 @@ const PesertaDidik = () => {
                         <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
                     </Access>
                     {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button> */}
-                    <button
+                    {/* <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`, setExportLoading)}
                         disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -215,6 +217,14 @@ const PesertaDidik = () => {
                                 <span>Export</span>
                             </>
                         )}
+                    </button> */}
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                                <FaFileExport />
+                                <span>Export</span>
                     </button>
 
                 </div>
@@ -306,6 +316,8 @@ const PesertaDidik = () => {
 
                     )
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} />
 
                 {isModalOpen && (
                     <ModalDetail
