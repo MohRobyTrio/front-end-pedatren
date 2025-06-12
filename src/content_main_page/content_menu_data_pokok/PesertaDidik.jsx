@@ -9,8 +9,8 @@ import Pagination from "../../components/Pagination";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
-import { API_BASE_URL } from "../../hooks/config";
-import { downloadFile } from "../../utils/downloadFile";
+// import { API_BASE_URL } from "../../hooks/config";
+// import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport, FaPlus } from "react-icons/fa";
 // import ModalForm from "../../components/ModalFormPesertaDidik";
@@ -23,7 +23,7 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
 
 const PesertaDidik = () => {
-    const [exportLoading, setExportLoading] = useState(false);
+    // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -317,7 +317,7 @@ const PesertaDidik = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} />
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} />
 
                 {isModalOpen && (
                     <ModalDetail

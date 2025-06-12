@@ -4,29 +4,33 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
 
-export const ModalExport = ({ isOpen, onClose }) => {
+export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage }) => {
     const [selectedFields, setSelectedFields] = useState([]);
     const [allPages, setAllPages] = useState(false);
+    console.log("filter modal export",filters);
+    
 
     const fields = [
         { label: "No. KK", value: "no_kk" },
         { label: "NIK", value: "nik" },
         { label: "NIUP", value: "niup" },
-        { label: "Nama", value: "nama" },
-        { label: "Tempat Lahir", value: "tempat_lahir" },
-        { label: "Tanggal Lahir", value: "tanggal_lahir" },
-        { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Lahir", value: "tempat_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
         { label: "Anak ke", value: "anak_ke" },
         { label: "Jumlah Saudara", value: "jumlah_saudara" },
-        { label: "NIS", value: "nis" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
         { label: "Domisili Santri", value: "domisili_santri" },
         { label: "Angkatan Santri", value: "angkatan_santri" },
-        { label: "No Induk", value: "no_induk" },
-        { label: "Lembaga", value: "lembaga" },
-        { label: "Jurusan", value: "jurusan" },
-        { label: "Kelas", value: "kelas" },
-        { label: "Rombel", value: "rombel" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
         { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        { label: "Status", value: "status" },
         { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
 
@@ -39,19 +43,44 @@ export const ModalExport = ({ isOpen, onClose }) => {
         );
     };
 
-    const handleExport = () => {
-        const baseUrl = `${API_BASE_URL}export/pesertadidik`; // Ganti sesuai route Laravel kamu
+   const handleExport = () => {
+        const baseUrl = `${API_BASE_URL}export/pesertadidik`;
         const params = new URLSearchParams();
 
-        // Tambahkan fields[] jika ada yang dipilih
+        if (filters?.phoneNumber) params.append('phone_number', filters.phoneNumber);
+        if (filters?.wargaPesantren) params.append('warga_pesantren', filters.wargaPesantren);
+        if (filters?.status) params.append('status', filters.status);
+        if (filters?.jenisKelamin) params.append('jenis_kelamin', filters.jenisKelamin);
+        if (filters?.smartcard) params.append('smartcard', filters.smartcard);
+        if (filters?.pemberkasan) params.append('pemberkasan', filters.pemberkasan);
+        if (filters?.urutBerdasarkan) params.append('sort_by', filters.urutBerdasarkan);
+        if (filters?.urutSecara) params.append('sort_order', filters.urutSecara);
+        if (filters?.negara && filters.negara !== "Semua Negara") params.append('negara', filters.negara);
+        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") params.append('provinsi', filters.provinsi);
+        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") params.append('kabupaten', filters.kabupaten);
+        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") params.append('kecamatan', filters.kecamatan);
+        if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") params.append('wilayah', filters.wilayah);
+        if (filters?.blok && filters.blok !== "Semua Blok") params.append('blok', filters.blok);
+        if (filters?.kamar && filters.kamar !== "Semua Kamar") params.append('kamar', filters.kamar);
+        if (filters?.angkatanPelajar) params.append('angkatan_pelajar', filters.angkatanPelajar);
+        if (filters?.angkatanSantri) params.append('angkatan_santri', filters.angkatanSantri);
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") params.append('lembaga', filters.lembaga);
+        if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") params.append('jurusan', filters.jurusan);
+        if (filters?.kelas && filters.kelas !== "Semua Kelas") params.append('kelas', filters.kelas);
+        if (filters?.rombel && filters.rombel !== "Semua Rombel") params.append('rombel', filters.rombel);
+
+        if (searchTerm) params.append("nama", searchTerm);
+        if (!allPages) {
+            if (limit) params.append("limit", limit);
+            if (currentPage) params.append("page", currentPage);
+        }
+
         selectedFields.forEach(field => params.append("fields[]", field));
 
-        // Tambahkan parameter 'all' hanya jika dicentang
         if (allPages) {
             params.append("all", "true");
         }
 
-        // Trigger download dengan mengarahkan ke URL
         window.location.href = `${baseUrl}?${params.toString()}`;
     };
 
