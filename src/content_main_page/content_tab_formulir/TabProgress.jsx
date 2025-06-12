@@ -356,7 +356,7 @@ const TabProgress = () => {
 								</span>
 
 								{/* Header */}
-								<div className="flex items-center gap-4">
+								<div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full">
 									{/* Foto */}
 									<img
 										alt={afektif.nama || "-"}
@@ -379,6 +379,18 @@ const TabProgress = () => {
 												? ` dan selesai ${formatDate(afektif.tanggal_selesai)}`
 												: ""}
 										</p>
+
+										<div className="flex gap-2 mt-2 text-sm">
+											<span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">
+												Kepedulian: {afektif.kepedulian_nilai}
+											</span>
+											<span className="bg-green-100 text-green-700 px-2 py-1 rounded">
+												Kebersihan: {afektif.kebersihan_nilai}
+											</span>
+											<span className="bg-red-100 text-red-700 px-2 py-1 rounded">
+												Akhlak: {afektif.akhlak_nilai}
+											</span>
+										</div>
 									</div>
 
 
@@ -625,7 +637,8 @@ const TabProgress = () => {
 								</span>
 
 								{/* Header */}
-								<div className="flex items-center gap-4">
+								<div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full">
+
 									{/* Foto */}
 									<img
 										alt={kognitif.nama || "-"}
@@ -648,6 +661,28 @@ const TabProgress = () => {
 												? ` dan selesai ${formatDate(kognitif.tanggal_selesai)}`
 												: ""}
 										</p>
+										{/* Ringkasan Nilai Kognitif */}
+										<div className="flex flex-wrap gap-2 mt-2 text-sm">
+											<span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">
+												Kebahasaan: {kognitif.kebahasaan_nilai}
+											</span>
+											<span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+												Kitab Kuning: {kognitif.baca_kitab_kuning_nilai}
+											</span>
+											<span className="bg-red-100 text-red-700 px-2 py-1 rounded">
+												Tahfidz: {kognitif.hafalan_tahfidz_nilai}
+											</span>
+											<span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">
+												Furudul &apos;Ainiyah: {kognitif.furudul_ainiyah_nilai}
+											</span>
+											<span className="bg-green-100 text-green-700 px-2 py-1 rounded">
+												Tulis Al-Qur&apos;an: {kognitif.tulis_alquran_nilai}
+											</span>
+											<span className="bg-pink-100 text-pink-700 px-2 py-1 rounded">
+												Baca Al-Qur&apos;an: {kognitif.baca_alquran_nilai}
+											</span>
+										</div>
+
 									</div>
 
 

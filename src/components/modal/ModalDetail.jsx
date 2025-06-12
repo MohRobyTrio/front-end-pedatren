@@ -89,7 +89,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 // console.log(item.biodata_id);
                 // console.log(item.id);
-                // console.log(menu);
+                console.log(menu);
             } catch (err) {
                 console.error(err);
                 // setError(err.message || `Gagal memuat data.`);
@@ -306,7 +306,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                             <div className="mt-4 pt-4 text-right space-x-2">
                                 {/* set id route */}
                                 {menu !== 23 && menu !== 17 && menu != 18  && (
-                                    <Link to={`/formulir/${item.biodata_id || item.id}/biodata`}>
+                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
                                         <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
                                             Buka di Formulir
                                         </button>

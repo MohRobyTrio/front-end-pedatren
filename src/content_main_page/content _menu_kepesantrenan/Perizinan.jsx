@@ -10,14 +10,16 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaPlus } from "react-icons/fa";
+import { FaFileExport, FaPlus } from "react-icons/fa";
 import { ModalAddPerizinan, ModalApprove } from "../../components/modal/ModalFormPerizinan";
 import Access from "../../components/Access";
 import { getRolesString } from "../../utils/getRolesString";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 
 const DataPerizinan = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedName, setSelectedName] = useState("");
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,6 +154,33 @@ const DataPerizinan = () => {
         ]
     }
 
+    const fieldsExports = [
+        { label: "Wewenang", value: "" },
+        // { label: "No. KK", value: "no_kk" },
+        // { label: "NIK", value: "nik" },
+        // { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        // { label: "Anak ke", value: "anak_ke" },
+        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        // { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        // { label: "Domisili Santri", value: "domisili_santri" },
+        // { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        // { label: "Pendidikan", value: "pendidikan" },
+        // { label: "Status", value: "status" },
+        // { label: "Ibu Kandung", value: "ibu_kandung" },
+        // { label: "Ayah Kandung", value: "ayah_kandung" }
+    ];
+
     const [showFormModal, setShowFormModal] = useState(false);
 
     return (
@@ -165,6 +194,14 @@ const DataPerizinan = () => {
                             setShowFormModal(true);
                             }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
                     </Access>
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                        <FaFileExport />
+                        <span>Export</span>
+                    </button>
                 </div>
             </div>
 
@@ -244,6 +281,8 @@ const DataPerizinan = () => {
                     handlePageChange={handlePageChange}
                     className="mt-6"
                 />
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/perizinan" /> 
 
                 {isModalOpen && (
                     <ModalDetail

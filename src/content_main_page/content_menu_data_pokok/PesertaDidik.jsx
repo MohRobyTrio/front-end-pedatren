@@ -187,6 +187,30 @@ const PesertaDidik = () => {
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     };
+    
+    const fieldsExports = [
+        { label: "No. KK", value: "no_kk" },
+        { label: "NIK", value: "nik" },
+        { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Lahir", value: "tempat_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        { label: "Anak ke", value: "anak_ke" },
+        { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        { label: "Domisili Santri", value: "domisili_santri" },
+        { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        { label: "Status", value: "status" },
+        { label: "Ibu Kandung", value: "ibu_kandung" }
+    ];
 
     const [showFormModal, setShowFormModal] = useState(false);
 
@@ -317,7 +341,7 @@ const PesertaDidik = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} />
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pesertadidik" />
 
                 {isModalOpen && (
                     <ModalDetail

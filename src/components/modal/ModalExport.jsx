@@ -4,36 +4,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
 
-export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage }) => {
+export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage, fields = [], endpoint }) => {
     const [selectedFields, setSelectedFields] = useState([]);
-    const [allPages, setAllPages] = useState(false);
-    console.log("filter modal export",filters);
-    
-
-    const fields = [
-        { label: "No. KK", value: "no_kk" },
-        { label: "NIK", value: "nik" },
-        { label: "NIUP", value: "niup" },
-        // { label: "Nama", value: "nama" },
-        // { label: "Tempat Lahir", value: "tempat_lahir" },
-        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
-        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
-        { label: "Anak ke", value: "anak_ke" },
-        { label: "Jumlah Saudara", value: "jumlah_saudara" },
-        { label: "Alamat", value: "alamat" },
-        // { label: "NIS", value: "nis" },
-        { label: "Domisili Santri", value: "domisili_santri" },
-        { label: "Angkatan Santri", value: "angkatan_santri" },
-        // { label: "No Induk", value: "no_induk" },
-        // { label: "Lembaga", value: "lembaga" },
-        // { label: "Jurusan", value: "jurusan" },
-        // { label: "Kelas", value: "kelas" },
-        // { label: "Rombel", value: "rombel" },
-        { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
-        { label: "Status", value: "status" },
-        { label: "Ibu Kandung", value: "ibu_kandung" }
-    ];
-
+    const [allPages, setAllPages] = useState(false);    
 
     const handleFieldChange = (field) => {
         setSelectedFields((prev) =>
@@ -43,8 +16,8 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
         );
     };
 
-   const handleExport = () => {
-        const baseUrl = `${API_BASE_URL}export/pesertadidik`;
+    const handleExport = () => {
+        const baseUrl = `${API_BASE_URL}${endpoint}`;
         const params = new URLSearchParams();
 
         if (filters?.phoneNumber) params.append('phone_number', filters.phoneNumber);
