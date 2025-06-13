@@ -8,15 +8,17 @@ import Filters from "../../components/Filters";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import Pagination from "../../components/Pagination";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
-import { API_BASE_URL } from "../../hooks/config";
-import { downloadFile } from "../../utils/downloadFile";
+// import { API_BASE_URL } from "../../hooks/config";
+// import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FaFileExport } from "react-icons/fa";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 const Alumni = () => {
-    const [exportLoading, setExportLoading] = useState(false);
+    const [openModalExport, setOpenModalExport] = useState(false);
+    // const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -130,13 +132,40 @@ const Alumni = () => {
         ]
     };
 
+    const fieldsExports = [
+        { label: "No. KK", value: "no_kk" },
+        { label: "NIK", value: "nik" },
+        { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Lahir", value: "tempat_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        { label: "Anak ke", value: "anak_ke" },
+        { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        { label: "Domisili Santri", value: "domisili_santri" },
+        { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        { label: "Status", value: "status" },
+        { label: "Ibu Kandung", value: "ibu_kandung" },
+        { label: "Tahun Keluar Santri", value: "tahun_keluar_santri" },
+        { label: "Tahun Keluar Pelajar", value: "tahun_keluar_pelajar" }
+    ];
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Alumni</h1>
+                <div className="flex items-center space-x-2">
                 {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}
                 {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
-                <button
+                {/* <button
                     onClick={() => downloadFile(`${API_BASE_URL}export/alumni`, setExportLoading)}
                     disabled={exportLoading}
                     className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -152,7 +181,16 @@ const Alumni = () => {
                             <span>Export</span>
                         </>
                     )}
-                </button>
+                </button> */}
+                <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                                <FaFileExport />
+                                <span>Export</span>
+                    </button>
+                    </div>
 
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10">
@@ -288,6 +326,8 @@ const Alumni = () => {
 
                     )
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/alumni" />
 
                 {isModalOpen && (
                     <ModalDetail

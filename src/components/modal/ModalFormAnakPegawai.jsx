@@ -41,7 +41,7 @@ export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }
         {
             id: 2,
             label: "Domisili & Pendidikan",
-            content: <FormDomisiliPendidikanAnakPegawai register={register} control={control} watch={watch} activeTab={activeTab} />
+            content: <FormDomisiliPendidikanAnakPegawai register={register} control={control} watch={watch} activeTab={activeTab} setValue={setValue} />
         },
         {
             id: 3,

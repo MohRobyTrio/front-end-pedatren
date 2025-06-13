@@ -41,7 +41,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         {
             id: 2,
             label: "Domisili & Pendidikan",
-            content: <FormDomisiliPendidikan register={register} control={control} watch={watch} activeTab={activeTab} />
+            content: <FormDomisiliPendidikan register={register} control={control} watch={watch} activeTab={activeTab} setValue={setValue} />
         },
         {
             id: 3,

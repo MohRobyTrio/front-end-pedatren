@@ -4,7 +4,7 @@ import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 import { useEffect } from "react";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
-const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab }) => {
+const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab, setValue }) => {
     const lembaga = watch("modalAnakPegawai.lembaga");
     const jurusan = watch("modalAnakPegawai.jurusan");
     const kelas = watch("modalAnakPegawai.kelas");
@@ -12,9 +12,20 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     const wilayah = watch("modalAnakPegawai.wilayah");
     const blok = watch("modalAnakPegawai.blok");
     const kamar = watch("modalAnakPegawai.kamar");
+    const mondok = watch("modalAnakPegawai.mondok");
+    const isDomisiliDisabled = mondok === "0";
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+
+    useEffect(() => {
+        if (mondok === "0") {
+            setValue("modalAnakPegawai.wilayah", "");
+            setValue("modalAnakPegawai.blok", "");
+            setValue("modalAnakPegawai.kamar", "");
+            setValue("modalAnakPegawai.tanggal_masuk_domisili", "");
+        }
+    }, [mondok, setValue]);
 
     useEffect(() => {
         if (activeTab !== 2) return;
@@ -45,10 +56,15 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-    const Filters = ({ filterOptions, control, onChange, selectedFilters }) => {
+    const Filters = ({ filterOptions, control, onChange, selectedFilters, disabled = false }) => {
+        const wilayah = watch("modalAnakPegawai.wilayah");
             return (
                 <div className="space-y-2">
-                    {Object.entries(filterOptions).map(([label, options], index) => (
+                    {Object.entries(filterOptions).map(([label, options], index) => {
+                        const isBlokOrKamar = label === "blok" || label === "kamar";
+                        const isDisabled = options.length <= 1 || disabled || (isBlokOrKamar && !wilayah);
+
+                        return (
                         <div
                             key={`${label}-${index}`}
                             className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4"
@@ -58,7 +74,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                             </label>
                             <div className="md:w-full md:max-w-md max-w-none">
                                 <div
-                                    className={`flex items-center rounded-md shadow-md border border-gray-300 border-gray-500 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
+                                    className={`flex items-center rounded-md shadow-md border border-gray-300 border-gray-500 ${isDisabled ? "bg-gray-200 text-gray-500" : ""
                                         }`}
                                 >
                                     <Controller
@@ -71,8 +87,8 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                                 {...field}
                                                 id={label}
                                                 required
-                                                disabled={options.length <= 1}
-                                                className={`w-full py-1.5 pr-3 pl-1 text-base focus:outline-none sm:text-sm ${options.length <= 1 ? "text-gray-500" : ""
+                                                disabled={isDisabled}
+                                                className={`w-full py-1.5 pr-3 pl-1 text-base focus:outline-none sm:text-sm ${isDisabled ? "text-gray-500" : ""
                                                     }`}
                                                 onChange={(e) => {
                                                     field.onChange(e);   // update react-hook-form state
@@ -90,7 +106,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    )})}
                 </div>
             );
         };
@@ -163,7 +179,8 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <hr className="border-t border-gray-500 mb-2 mt-8" />
                 <p className="font-bold text-xl">Domisili</p>
-                <hr className="border-t border-gray-500 mb-4 mt-2" />
+                <hr className="border-t border-gray-500 mt-2" />
+                <p className="text-sm text-red-500 italic mt-1 mb-4">* Bagian domisili ini boleh dikosongi</p>
 
                 <Filters filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} control={control} />
 
@@ -171,13 +188,14 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     <label htmlFor="tanggal_masuk_domisili" className="md:w-1/4 text-black">
                         Tanggal Masuk Domisili *
                     </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
+                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                             <input
                                 type="date"
                                 id="tanggal_masuk_domisili"
                                 name="tanggal_masuk_domisili"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                disabled={isDomisiliDisabled}
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
                                 {...register("modalAnakPegawai.tanggal_masuk_domisili", { required: true })}
                                 required
                             />
@@ -187,7 +205,8 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <hr className="border-t border-gray-500 mb-2 mt-8" />
                 <p className="font-bold text-xl">Pendidikan</p>
-                <hr className="border-t border-gray-500 mb-4 mt-2" />
+                <hr className="border-t border-gray-500 mt-2" />
+                <p className="text-sm text-red-500 italic mt-1 mb-4">* Bagian Pendidikan ini boleh dikosongi</p>
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="no_induk" className="md:w-1/4 text-black">
