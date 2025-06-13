@@ -4,6 +4,7 @@ import { API_BASE_URL } from "../config";
 const useDropdownWaliAsuh = () => {
   const [menuWaliAsuh, setMenuWaliAsuh] = useState([]);
   const [menuWaliAsuh2, setMenuWaliAsuh2] = useState([]);
+  const [menuWaliAsuh3, setMenuWaliAsuh3] = useState([]);
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuWaliAsuh");
@@ -78,7 +79,55 @@ const useDropdownWaliAsuh = () => {
     }
   }, []);
 
-  return { menuWaliAsuh, menuWaliAsuh2 };
+  useEffect(() => {
+  const localData = sessionStorage.getItem("menuWaliAsuh3");
+
+  if (localData) {
+    try {
+      const parsedData = JSON.parse(localData);
+      setMenuWaliAsuh3(parsedData);
+    } catch (error) {
+      console.error("Gagal parsing data dari sessionStorage:", error);
+      sessionStorage.removeItem("menuWaliAsuh3");
+    }
+  } else {
+    fetch(`${API_BASE_URL}data-pokok/waliasuh`)
+      .then((res) => res.json())
+      .then((resMeta) => {
+          console.log("Meta response:", resMeta);
+          const total = resMeta.total_data;
+          if (!total || isNaN(total))
+            throw new Error("Gagal mendapatkan total_data");
+
+          return fetch(`${API_BASE_URL}data-pokok/waliasuh?limit=${total}`);
+        })
+      .then((res) => res.json())
+      .then((resData) => {
+        if (Array.isArray(resData.data)) {
+          const formatted = [
+            { label: "Pilih Wali Asuh", value: "", id: null },
+            ...resData.data.map((item) => ({
+              ...item,
+              value: item.nama || "-", // untuk keperluan dropdown
+              label: item.nama || "-", // untuk keperluan dropdown
+            })),
+          ];
+
+          sessionStorage.setItem("menuWaliAsuh3", JSON.stringify(formatted));
+          setMenuWaliAsuh3(formatted);
+        } else {
+          throw new Error("Data tidak valid dari API");
+        }
+      })
+      .catch((error) => {
+        console.error("Gagal mengambil data wali asuh:", error);
+        setMenuWaliAsuh3([{ label: "Pilih Wali Asuh", value: "", id: null }]);
+      });
+  }
+}, []);
+
+
+  return { menuWaliAsuh, menuWaliAsuh2, menuWaliAsuh3 };
 };
 
 export default useDropdownWaliAsuh;

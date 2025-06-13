@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
@@ -6,13 +6,20 @@ import { API_BASE_URL } from "../../hooks/config";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
+// import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
+import { SantriInfoCard, WaliAsuhInfoCard } from "../CardInfo";
+import { ModalSelectWaliAsuh } from "../ModalSelectWaliAsuh";
+import { ModalSelectSantri } from "../ModalSelectSantri";
 
 export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
     const { menuWaliAsuh } = useDropdownWaliAsuh();
-    const { menuSantri } = useDropdownSantri();
+    // const { menuSantri } = useDropdownSantri();
+    const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
+    const [waliAsuh, setWaliAsuh] = useState("");
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santri, setSantri] = useState("");
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
@@ -29,8 +36,61 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
         tanggal_buat: "",
     });
 
+    useEffect(() => {
+        setWaliAsuh("");
+        setSantri("");
+        if (isOpen) {
+            setFormData({
+                id_santri: "",
+                id_wali_asuh: "",
+                kepedulian_nilai: "",
+                kepedulian_tindak_lanjut: "",
+                kebersihan_nilai: "",
+                kebersihan_tindak_lanjut: "",
+                akhlak_nilai: "",
+                akhlak_tindak_lanjut: "",
+                tanggal_buat: "",
+            });
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
+            // console.log("data wali Asuh berubah");
+            setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [waliAsuh, isOpen]);
+
+    useEffect(() => {
+        if (isOpen && santri?.id && formData.id_santri !== santri.id) {
+            // console.log("data santri berubah");
+            setFormData((prev) => ({ ...prev, id_santri: santri.id }));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri, isOpen]);
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.id_santri) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Santri belum dipilih",
+                text: "Harap pilih Santri terlebih dahulu.",
+            });
+            return;
+        }
+
+        if (!formData.id_wali_asuh) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Wali Asuh belum dipilih",
+                text: "Harap pilih Wali Asuh terlebih dahulu.",
+            });
+            return;
+        }
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -145,7 +205,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="w-full max-w-2xl bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -167,7 +227,39 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
-                                                <div>
+                                                 {/* --- Kartu Wali Asuh --- */}
+                                                {waliAsuh ? (
+                                                    <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} />
+                                                ) : (
+                                                    <div className="text-center bg-gray-100 p-6 rounded-md border border-dashed border-gray-400">
+                                                        <p className="text-gray-600 mb-3">Belum ada data Wali Asuh/Pencatat dipilih</p>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectWaliAsuh(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Wali Asuh
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {santri ? (
+                                                    <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} />
+                                                ) : (
+                                                    <div className="text-center bg-gray-100 p-6 rounded-md border border-dashed border-gray-400">
+                                                        <p className="text-gray-600 mb-3">Belum ada data Santri dipilih</p>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectSantri(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Santri
+                                                        </button>
+                                                    </div>
+                                                )}
+
+ 
+
+                                                {/* <div>
                                                     <label htmlFor="id_wali_asuh" className="block text-gray-700">Nama Pencatat *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
@@ -202,7 +294,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                </div>
+                                                </div> */}
 
 
                                                 {/* Kepedulian */}
@@ -333,6 +425,16 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                     </Transition.Child>
                 </div>
             </Dialog>
+            <ModalSelectWaliAsuh
+                isOpen={showSelectWaliAsuh}
+                onClose={() => setShowSelectWaliAsuh(false)}
+                onWaliAsuhSelected={(waliAsuh) => setWaliAsuh(waliAsuh)}
+            />
+            <ModalSelectSantri
+                isOpen={showSelectSantri}
+                onClose={() => setShowSelectSantri(false)}
+                onSantriSelected={(santri) => setSantri(santri)}
+            />
         </Transition>
     );
 };
@@ -341,7 +443,11 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { menuWaliAsuh } = useDropdownWaliAsuh();
-    const { menuSantri } = useDropdownSantri();
+    // const { menuSantri } = useDropdownSantri();
+    const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
+    const [waliAsuh, setWaliAsuh] = useState("");
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santri, setSantri] = useState("");
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
     // const [querySantri, setQuerySantri] = useState('');
 
@@ -371,8 +477,67 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
         tanggal_buat: "",
     });
 
+    useEffect(() => {
+        setWaliAsuh("");
+        setSantri("");
+        if (isOpen) {
+            setFormData({
+                id_santri: "",
+                id_wali_asuh: "",
+                kebahasaan_nilai: "",
+                kebahasaan_tindak_lanjut: "",
+                baca_kitab_kuning_nilai: "",
+                baca_kitab_kuning_tindak_lanjut: "",
+                hafalan_tahfidz_nilai: "",
+                hafalan_tahfidz_tindak_lanjut: "",
+                furudul_ainiyah_nilai: "",
+                furudul_ainiyah_tindak_lanjut: "",
+                tulis_alquran_nilai: "",
+                tulis_alquran_tindak_lanjut: "",
+                baca_alquran_nilai: "",
+                baca_alquran_tindak_lanjut: "",
+                tanggal_buat: "",
+            });
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
+            // console.log("data wali Asuh berubah");
+            setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [waliAsuh, isOpen]);
+
+    useEffect(() => {
+        if (isOpen && santri?.id && formData.id_santri !== santri.id) {
+            // console.log("data santri berubah");
+            setFormData((prev) => ({ ...prev, id_santri: santri.id }));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri, isOpen]);
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.id_santri) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Santri belum dipilih",
+                text: "Harap pilih Santri terlebih dahulu.",
+            });
+            return;
+        }
+
+        if (!formData.id_wali_asuh) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Wali Asuh belum dipilih",
+                text: "Harap pilih Wali Asuh terlebih dahulu.",
+            });
+            return;
+        }
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -488,7 +653,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
+                        <Dialog.Panel className="w-full max-w-2xl bg-white rounded-lg shadow-xl relative max-h-[90vh] flex flex-col">
                             <button
                                 onClick={onClose}
                                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -510,7 +675,36 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
-                                                <div>
+                                                {waliAsuh ? (
+                                                    <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} />
+                                                ) : (
+                                                    <div className="text-center bg-gray-100 p-6 rounded-md border border-dashed border-gray-400">
+                                                        <p className="text-gray-600 mb-3">Belum ada data Wali Asuh/Pencatat dipilih</p>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectWaliAsuh(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Wali Asuh
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {santri ? (
+                                                    <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} />
+                                                ) : (
+                                                    <div className="text-center bg-gray-100 p-6 rounded-md border border-dashed border-gray-400">
+                                                        <p className="text-gray-600 mb-3">Belum ada data Santri dipilih</p>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectSantri(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Santri
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                                {/* <div>
                                                     <label htmlFor="id_wali_asuh" className="block text-gray-700">Nama Pencatat *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
@@ -545,7 +739,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                </div>
+                                                </div> */}
 
                                                 {/* <div>
                                                     <label htmlFor="id_santri" className="block text-gray-700 mb-1">
@@ -807,6 +1001,16 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                     </Transition.Child>
                 </div>
             </Dialog>
+            <ModalSelectWaliAsuh
+                isOpen={showSelectWaliAsuh}
+                onClose={() => setShowSelectWaliAsuh(false)}
+                onWaliAsuhSelected={(waliAsuh) => setWaliAsuh(waliAsuh)}
+            />
+            <ModalSelectSantri
+                isOpen={showSelectSantri}
+                onClose={() => setShowSelectSantri(false)}
+                onSantriSelected={(santri) => setSantri(santri)}
+            />
         </Transition>
     );
 };

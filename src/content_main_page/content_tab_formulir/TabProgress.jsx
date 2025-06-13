@@ -11,6 +11,8 @@ import { ModalAddProgressAfektifFormulir, ModalAddProgressKognitifFormulir, Moda
 import useLogout from "../../hooks/Logout";
 import { hasAccess } from "../../utils/hasAccess";
 import Access from "../../components/Access";
+import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
+import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh";
 
 const TabProgress = () => {
 	const { biodata_id } = useParams();
@@ -28,11 +30,15 @@ const TabProgress = () => {
 	const [endDate, setEndDate] = useState("");
 	const [startDate, setStartDate] = useState("");
 	const [error, setError] = useState(null);
+	const [dataWaliAsuh, setDataWaliAsuh] = useState(null);
+	const { menuWaliAsuh3 } = useDropdownWaliAsuh();
+	const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
 
 	const [loadingData, setLoadingData] = useState(true);
 	const [loadingDetailData, setLoadingDetailData] = useState(null);
 
 	const [formAfektif, setFormAfektif] = useState({
+		id_wali_asuh: "",
 		kepedulian_nilai: "",
 		kepedulian_tindak_lanjut: "",
 		kebersihan_nilai: "",
@@ -42,6 +48,7 @@ const TabProgress = () => {
 	});
 
 	const [formKognitif, setFormKognitif] = useState({
+		// id_wali_asuh: "",
 		kebahasaan_nilai: "",
 		kebahasaan_tindak_lanjut: "",
 		baca_kitab_kuning_nilai: "",
@@ -81,8 +88,8 @@ const TabProgress = () => {
 				return;
 			}
 			if (response.status === 403) {
-                throw new Error("403");
-            }
+				throw new Error("403");
+			}
 			if (!response.ok) {
 				// Misalnya response.status === 500
 				throw new Error(`Gagal fetch: ${response.status}`);
@@ -143,6 +150,7 @@ const TabProgress = () => {
 			if (endpoint == "afektif") {
 				setSelectedAfektifDetail(result.data);
 				setFormAfektif({
+					id_wali_asuh: result.data.id_wali_asuh || "",
 					kepedulian_nilai: result.data.kepedulian_nilai || "",
 					kepedulian_tindak_lanjut: result.data.kepedulian_tindak_lanjut || "",
 					kebersihan_nilai: result.data.kebersihan_nilai || "",
@@ -153,6 +161,7 @@ const TabProgress = () => {
 			} else {
 				setSelectedKognitifDetail(result.data);
 				setFormKognitif({
+					// id_wali_asuh: result.data.id_wali_asuh || "",
 					kebahasaan_nilai: result.data.kebahasaan_nilai || "",
 					kebahasaan_tindak_lanjut: result.data.kebahasaan_tindak_lanjut || "",
 					baca_kitab_kuning_nilai: result.data.baca_kitab_kuning_nilai || "",
@@ -295,6 +304,123 @@ const TabProgress = () => {
 		}
 	};
 
+	useEffect(() => {
+
+		if (formAfektif.id_wali_asuh && menuWaliAsuh3.length > 0) {
+			// console.log("wali asuh");
+			const s = menuWaliAsuh3.find((item) => (item.id === formAfektif.id_wali_asuh || item.id === formKognitif.id_wali_asuh) && item.id !== null);
+
+			if (s) {
+				setDataWaliAsuh(s)
+				if (activeTab === "afektif") {
+					console.log("[AFEK] Setting formAfektif");
+					setFormAfektif((prev) => ({
+						...prev,
+						id_wali_asuh: s.id
+					}));
+				} 
+				// else if (activeTab === "kognitif") {
+				// 	console.log("[KOG] Setting formKognitif");
+				// 	setFormKognitif((prev) => ({
+				// 		...prev,
+				// 		id_wali_asuh: s.id
+				// 	}));
+				// }
+				console.log("idwaliasuh afektif", formAfektif.id_wali_asuh);
+
+			};
+			// console.log("Data wali asuh",s.id);
+
+		}
+	}, [activeTab, formAfektif.id_wali_asuh, formKognitif.id_wali_asuh, menuWaliAsuh3]);
+
+	useEffect(() => {
+		if (dataWaliAsuh) {
+			console.log("datawaliasuh ", dataWaliAsuh.id);
+			if (activeTab === "afektif") {
+				console.log("[AFEK] Setting formAfektif");
+				setFormAfektif((prev) => ({
+					...prev,
+					id_wali_asuh: dataWaliAsuh.id
+				}));
+			} 
+			// else if (activeTab === "kognitif") {
+			// 	console.log("[KOG] Setting formKognitif");
+			// 	setFormKognitif((prev) => ({
+			// 		...prev,
+			// 		id_wali_asuh: dataWaliAsuh.id
+			// 	}));
+			// }
+		}
+
+	}, [activeTab, dataWaliAsuh]);
+
+	// useEffect(() => {
+	// 	console.log(formAfektif);
+	// }, [formAfektif]);
+
+	// useEffect(() => {
+	// 	console.log(menuWaliAsuh3);
+	// }, [menuWaliAsuh3]);
+
+	const WaliAsuhInfoCard = ({ waliAsuh, setShowSelectWaliAsuh, showChange }) => {
+		// console.log("card wali asuh",waliAsuh);
+
+		if (!waliAsuh) return null;
+
+		return (
+			<div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
+				{/* Keterangan */}
+				<div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+					Data Wali Asuh/Pencatat
+				</div>
+
+				{showChange && (
+					<button
+						type="button"
+						onClick={() => setShowSelectWaliAsuh(true)}
+						className="absolute top-3 right-3 px-2 py-1 rounded hover:bg-blue-700 text-gray-700 bg-blue-500 text-white"
+						aria-label="Ganti WaliAsuh"
+					>
+						<i className="fas fa-exchange-alt"></i>
+					</button>
+				)}
+
+				<div className="flex flex-col lg:flex-row lg:items-start lg:space-x-6 space-y-4 lg:space-y-0">
+
+					{/* Foto */}
+					<div className="flex justify-center lg:justify-start">
+						<img
+							src={waliAsuh.foto_profil}
+							alt={waliAsuh.nama}
+							className="w-32 h-40 object-cover rounded"
+							onError={(e) => {
+								e.target.onerror = null;
+								e.target.src = blankProfile;
+							}}
+						/>
+					</div>
+
+					{/* Info */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
+						<div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+							<span className="font-semibold">Nama</span> <span>: {waliAsuh.nama}</span>
+							<span className="font-semibold">NIS</span> <span>: {waliAsuh.nis}</span>
+							<span className="font-semibold">Angkatan</span> <span>: {waliAsuh.angkatan}</span>
+							<span className="font-semibold">Kota Asal</span> <span>: {waliAsuh.kota_asal}</span>
+						</div>
+						<div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+							<span className="font-semibold">Wilayah</span> <span>: {waliAsuh.wilayah}</span>
+							<span className="font-semibold">Blok</span> <span>: {waliAsuh.blok}</span>
+							<span className="font-semibold">Kamar</span> <span>: {waliAsuh.kamar}</span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		);
+	};
+
 	const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
 	const tabs = [{
@@ -423,153 +549,156 @@ const TabProgress = () => {
 									<OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
 								</div>
 							) : selectedDataId === afektif.id && selectedAfektifDetail && (
-								<form className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6">
-									{/* Kolom Kiri */}
-									<div className="flex flex-col gap-4">
-										{/* Kepedulian */}
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Nilai Kepedulian</label>
-											<select
-												name="kepedulian_nilai"
-												data-form="afektif"
-												value={formAfektif.kepedulian_nilai}
-												onChange={handleChange}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-											>
-												<option value="">Pilih Nilai</option>
-												{optionsNilai.map(n => (
-													<option key={n} value={n}>{n}</option>
-												))}
-											</select>
-										</div>
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Kepedulian</label>
-											<textarea
-												name="kepedulian_tindak_lanjut"
-												data-form="afektif"
-												value={formAfektif.kepedulian_tindak_lanjut}
-												onChange={handleChange}
-												rows={3}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-												placeholder="Masukkan catatan atau tindak lanjut"
-											/>
-										</div>
-
-										{/* Kebersihan */}
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Nilai Kebersihan</label>
-											<select
-												name="kebersihan_nilai"
-												data-form="afektif"
-												value={formAfektif.kebersihan_nilai}
-												onChange={handleChange}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-											>
-												<option value="">Pilih Nilai</option>
-												{optionsNilai.map(n => (
-													<option key={n} value={n}>{n}</option>
-												))}
-											</select>
-										</div>
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Kebersihan</label>
-											<textarea
-												name="kebersihan_tindak_lanjut"
-												data-form="afektif"
-												value={formAfektif.kebersihan_tindak_lanjut}
-												onChange={handleChange}
-												rows={3}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-												placeholder="Masukkan catatan atau tindak lanjut"
-											/>
-										</div>
-									</div>
-
-									{/* Kolom Kanan */}
-									<div className="flex flex-col gap-4">
-										{/* Akhlak */}
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Nilai Akhlak</label>
-											<select
-												name="akhlak_nilai"
-												data-form="afektif"
-												value={formAfektif.akhlak_nilai}
-												onChange={handleChange}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-											>
-												<option value="">Pilih Nilai</option>
-												{optionsNilai.map(n => (
-													<option key={n} value={n}>{n}</option>
-												))}
-											</select>
-										</div>
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Akhlak</label>
-											<textarea
-												name="akhlak_tindak_lanjut"
-												data-form="afektif"
-												value={formAfektif.akhlak_tindak_lanjut}
-												onChange={handleChange}
-												rows={3}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`} placeholder="Masukkan catatan atau tindak lanjut"
-											/>
-										</div>
-
-										{/* Periode */}
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Tanggal Dibuat</label>
-											<input
-												type="date"
-												value={startDate}
-												onChange={(e) => setStartDate(e.target.value)}
-												disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
-											/>
-										</div>
-										<div>
-											<label className="block text-sm font-semibold text-gray-700">Tanggal Selesai</label>
-											<input
-												type="date"
-												value={endDate || ""}
-												onChange={(e) => setEndDate(e.target.value)}
-												disabled
-												className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed" />
-										</div>
-									</div>
-
-									{/* Tombol Aksi */}
-									<div className="md:col-span-2 flex justify-end gap-3 mt-4">
-										<button
-											type="button"
-											className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
-											onClick={() => {
-												setSelectedDataId(null);
-												setSelectedAfektifDetail(null);
-												setStartDate("");
-												setEndDate("");
-											}}
-										>
-											Batal
-										</button>
-										{!afektif.tanggal_selesai && (
-											<Access action="edit">
-												<button
-													type="button"
-													onClick={() => handleUpdate("afektif")}
-													className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
+								<div className=" bg-white shadow-md rounded-lg p-6">
+									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedAfektifDetail?.tanggal_selesai || selectedAfektifDetail?.tanggal_selesai === "-")} />
+									<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+										{/* Kolom Kiri */}
+										<div className="flex flex-col gap-4">
+											{/* Kepedulian */}
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Nilai Kepedulian</label>
+												<select
+													name="kepedulian_nilai"
+													data-form="afektif"
+													value={formAfektif.kepedulian_nilai}
+													onChange={handleChange}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
 												>
-													Update
-												</button>
-											</Access>
-										)}
-									</div>
-								</form>
+													<option value="">Pilih Nilai</option>
+													{optionsNilai.map(n => (
+														<option key={n} value={n}>{n}</option>
+													))}
+												</select>
+											</div>
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Kepedulian</label>
+												<textarea
+													name="kepedulian_tindak_lanjut"
+													data-form="afektif"
+													value={formAfektif.kepedulian_tindak_lanjut}
+													onChange={handleChange}
+													rows={3}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+													placeholder="Masukkan catatan atau tindak lanjut"
+												/>
+											</div>
+
+											{/* Kebersihan */}
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Nilai Kebersihan</label>
+												<select
+													name="kebersihan_nilai"
+													data-form="afektif"
+													value={formAfektif.kebersihan_nilai}
+													onChange={handleChange}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+												>
+													<option value="">Pilih Nilai</option>
+													{optionsNilai.map(n => (
+														<option key={n} value={n}>{n}</option>
+													))}
+												</select>
+											</div>
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Kebersihan</label>
+												<textarea
+													name="kebersihan_tindak_lanjut"
+													data-form="afektif"
+													value={formAfektif.kebersihan_tindak_lanjut}
+													onChange={handleChange}
+													rows={3}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+													placeholder="Masukkan catatan atau tindak lanjut"
+												/>
+											</div>
+										</div>
+
+										{/* Kolom Kanan */}
+										<div className="flex flex-col gap-4">
+											{/* Akhlak */}
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Nilai Akhlak</label>
+												<select
+													name="akhlak_nilai"
+													data-form="afektif"
+													value={formAfektif.akhlak_nilai}
+													onChange={handleChange}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+												>
+													<option value="">Pilih Nilai</option>
+													{optionsNilai.map(n => (
+														<option key={n} value={n}>{n}</option>
+													))}
+												</select>
+											</div>
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Tindak Lanjut Akhlak</label>
+												<textarea
+													name="akhlak_tindak_lanjut"
+													data-form="afektif"
+													value={formAfektif.akhlak_tindak_lanjut}
+													onChange={handleChange}
+													rows={3}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`} placeholder="Masukkan catatan atau tindak lanjut"
+												/>
+											</div>
+
+											{/* Periode */}
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Tanggal Dibuat</label>
+												<input
+													type="date"
+													value={startDate}
+													onChange={(e) => setStartDate(e.target.value)}
+													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+												/>
+											</div>
+											<div>
+												<label className="block text-sm font-semibold text-gray-700">Tanggal Selesai</label>
+												<input
+													type="date"
+													value={endDate || ""}
+													onChange={(e) => setEndDate(e.target.value)}
+													disabled
+													className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed" />
+											</div>
+										</div>
+
+										{/* Tombol Aksi */}
+										<div className="md:col-span-2 flex justify-end gap-3 mt-4">
+											<button
+												type="button"
+												className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none cursor-pointer"
+												onClick={() => {
+													setSelectedDataId(null);
+													setSelectedAfektifDetail(null);
+													setStartDate("");
+													setEndDate("");
+												}}
+											>
+												Batal
+											</button>
+											{!afektif.tanggal_selesai && (
+												<Access action="edit">
+													<button
+														type="button"
+														onClick={() => handleUpdate("afektif")}
+														className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-sm cursor-pointer"
+													>
+														Update
+													</button>
+												</Access>
+											)}
+										</div>
+									</form>
+								</div>
 							)}
 
 
@@ -941,7 +1070,6 @@ const TabProgress = () => {
 												<button
 													type="button"
 													onClick={() => {
-														console.log("klik");
 
 														handleUpdate("kognitif")
 													}
@@ -973,6 +1101,8 @@ const TabProgress = () => {
 			<ModalAddProgressKognitifFormulir biodataId={biodata_id} isOpen={showAddKognitifModal} onClose={closeAddKognitifModal} refetchData={fetchData} />
 
 			<ModalKeluarProgressFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedDataId} refetchData={fetchData} endpoint={activeTab} />
+
+			<ModalSelectWaliAsuh isOpen={showSelectWaliAsuh} onClose={() => setShowSelectWaliAsuh(false)} onWaliAsuhSelected={(dataWaliAsuh) => setDataWaliAsuh(dataWaliAsuh)} />
 
 			{tabs.length > 0 && (
 				<>

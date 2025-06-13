@@ -514,7 +514,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 };
 
 const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
-if (!santri && feature !== 2) return null;
+    if (!santri && feature !== 2) return null;
 
     return (
     <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
