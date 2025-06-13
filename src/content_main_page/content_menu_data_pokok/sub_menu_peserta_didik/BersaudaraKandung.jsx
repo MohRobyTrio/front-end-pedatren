@@ -252,7 +252,7 @@ const BersaudaraKandung = () => {
                     totalData={totalDataBersaudara}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={pesertaDidikBersaudara.length}
+                    // totalFiltered={pesertaDidikBersaudara.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

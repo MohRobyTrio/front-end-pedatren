@@ -163,7 +163,7 @@ const DataPelanggaran = () => {
                     totalData={totalData}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={data.length}
+                    // totalFiltered={data.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
                 />

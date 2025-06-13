@@ -269,7 +269,7 @@ const PesertaDidik = () => {
                     totalData={totalDataPesertaDidik}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={pesertaDidik.length}
+                    // totalFiltered={pesertaDidik.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

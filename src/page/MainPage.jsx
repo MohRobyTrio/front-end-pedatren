@@ -15,6 +15,7 @@ const MainPage = () => {
     const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(() => sessionStorage.getItem("dropdownDataKepegawaian") === "true");
     const [dropdownDataMahrom, setDropdownMahrom] = useState(() => sessionStorage.getItem("dropdownDataMahrom") === "true");
     const [dropdownDataKelembagaan, setDropdownDataKelembagaan] = useState(() => sessionStorage.getItem("dropdownDataKelembagaan") === "true");
+    const [dropdownDataAkademik, setDropdownDataAkademik] = useState(() => sessionStorage.getItem("dropdownDataAkademik") === "true");
     // const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
 
     useEffect(() => {
@@ -25,8 +26,9 @@ const MainPage = () => {
         sessionStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
         sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
         sessionStorage.setItem("dropdownDataKelembagaan", dropdownDataKelembagaan);
+        sessionStorage.setItem("dropdownDataAkademik", dropdownDataAkademik);
         // sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
-    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataKelembagaan]);
+    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataKelembagaan, dropdownDataAkademik]);
 
     const toggleDropdown = (setter) => setter((prev) => !prev);
 
@@ -105,6 +107,8 @@ const MainPage = () => {
                         // setDropdownRWS={setDropdownRWS}
                         dropdownDataKelembagaan={dropdownDataKelembagaan}
                         setDropdownDataKelembagaan={setDropdownDataKelembagaan}
+                        dropdownDataAkademik={dropdownDataAkademik}
+                        setDropdownDataAkademik={setDropdownDataAkademik}
                         isSidebarOpen={isSidebarOpen}
                         toggleDropdown={toggleDropdown}
                     />

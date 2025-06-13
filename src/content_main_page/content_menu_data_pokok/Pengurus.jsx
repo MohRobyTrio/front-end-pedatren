@@ -182,7 +182,7 @@ const Pengurus = () => {
                     totalData={totalDataPengurus}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={pengurus.length}
+                    // totalFiltered={pengurus.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

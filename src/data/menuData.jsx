@@ -18,7 +18,7 @@ import SantriNonDomisili from "../content_main_page/content_menu_data_pokok/sub_
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import Golongan from "../content_main_page/content_menu_kelembagaan/Golongan";
-import PindahKelas from "../content_main_page/content_menu_kelembagaan/PindahKelas";
+import PindahKelas from "../content_main_page/content_menu_akademik/PindahKelas";
 import GolonganJabatan from "../content_main_page/content_menu_kelembagaan/GolonganJabatan";
 import KategoriGolongan from "../content_main_page/content_menu_kelembagaan/KategoriGolongan";
 import Lembaga from "../content_main_page/content_menu_kelembagaan/Lembaga";
@@ -46,9 +46,10 @@ import TabWaliKelas from "../content_main_page/content_tab_formulir/TabWaliKelas
 import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPes";
 import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
-import PindahKamar from "../content_main_page/content_menu_kelembagaan/PindahKamar";
-import HubungkanWaliAsuh from "../content_main_page/content_menu_kelembagaan/HubungkanWaliAsuh";
-import Kelulusan from "../content_main_page/content_menu_kelembagaan/Kelulusan";
+import PindahKamar from "../content_main_page/content_menu_akademik/PindahKamar";
+import HubungkanWaliAsuh from "../content_main_page/content_menu_akademik/HubungkanWaliAsuh";
+import Kelulusan from "../content_main_page/content_menu_akademik/Kelulusan";
+import PresensiSantri from "../content_main_page/content_menu_akademik/PresensiSantri";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -103,28 +104,15 @@ export const menuKelembagaanItems = [
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
+];
+
+export const menuAkademikItems =[
     { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
     { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
     { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh /> },
-    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan", link: "/kelulusan", content: <Kelulusan />
-}
+    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan", link: "/kelulusan", content: <Kelulusan /> },
+    { id: "presensisantri", icon: "fa-calendar-check", text: "Presensi Santri", link: "/presensi-santri", content: <PresensiSantri /> }
 ];
-
-// export const tabsFormulir = [
-//     { id: "biodata", label: "Biodata", link: "/formulir/biodata", content: <TabBiodata /> },
-//     { id: "keluarga", label: "Keluarga", link: "/formulir/keluarga", content: <TabKeluarga /> },
-//     { id: "santri", label: "Santri", link: "/formulir/santri", content: <TabSantri /> },
-//     { id: "domisili", label: "Domisili Santri", link: "/formulir/domisili-santri", content: <TabDomisiliSantri /> },
-//     { id: "waliasuh", label: "Wali Asuh", link: "/formulir/wali-asuh", content: <TabWaliAsuh /> },
-//     { id: "pendidikan", label: "Pendidikan", link: "/formulir/pendidikan", content: <TabPendidikan /> },
-//     { id: "pengajar", label: "Pengajar", link: "/formulir/pengajar", content: <TabPengajar /> },
-//     { id: "karyawan", label: "Karyawan", link: "/formulir/karyawan", content: <TabKaryawan /> },
-//     { id: "pengurus", label: "Pengurus", link: "/formulir/pengurus", content: <TabPengurus /> },
-//     { id: "khadam", label: "Khadam", link: "/formulir/khadam", content: <TabKhadam /> },
-//     { id: "berkas", label: "Berkas", link: "/formulir/berkas", content: <TabBerkas /> },
-//     { id: "warpes", label: "Warga Pesantren", link: "/formulir/warga-pesantren", content: <TabWarPes /> },
-//     { id: "progress", label: "Progress Report", link: "/formulir/progress-report", content: <TabProgress /> },
-// ];
 
 export const tabsFormulir = [
   { id: "biodata", label: "Biodata", link: "biodata", content: <TabBiodata /> },

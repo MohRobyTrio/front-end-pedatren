@@ -240,7 +240,7 @@ const Pelajar = () => {
                     totalData={totalDataPelajar}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={pelajar.length}
+                    // totalFiltered={pelajar.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

@@ -196,7 +196,7 @@ const SantriNonDomisili = () => {
                     totalData={totalDataSantriNonDomisili}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={santriNonDomisili.length}
+                    // totalFiltered={santriNonDomisili.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

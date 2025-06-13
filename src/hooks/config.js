@@ -5,6 +5,7 @@ export const rolesWithAccess = {
   edit: ['admin', 'superadmin'],
   delete: ['admin', 'superadmin'],
   kelembagaan: ['admin', 'superadmin'],
+  akademik: ['admin', 'superadmin'],
   pindah: ['admin', 'superadmin'],
   keluar: ['admin', 'superadmin'],
   approve: ['biktren', 'kamtib', 'pengasuh'],

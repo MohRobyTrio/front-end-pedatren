@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
+import Swal from "sweetalert2";
+import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 const useFetchLulus = (filters) => {
     const [dataLulus, setDataLulus] = useState([]);
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [loadingLulus, setLoadingLulus] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
@@ -61,6 +66,18 @@ const useFetchLulus = (filters) => {
                 }
             });
 
+            if (response.status === 401) {
+              await Swal.fire({
+                title: "Sesi Berakhir",
+                text: "Sesi anda telah berakhir, silakan login kembali.",
+                icon: "warning",
+                confirmButtonText: "OK",
+              });
+              clearAuthData();
+              navigate("/login");
+              return;
+            }
+
             if (!response.ok) {
                 throw new Error(`${response.statusText}: ${response.status}`);
             }
@@ -78,6 +95,7 @@ const useFetchLulus = (filters) => {
         } finally {
             setLoadingLulus(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, filters, limit, debouncedSearchTerm]);
 
     useEffect(() => {

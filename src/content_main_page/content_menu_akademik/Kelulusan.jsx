@@ -10,7 +10,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import useFetchLulus from "../../hooks/hooks_menu_kelembagaan/Kelulusan";
+import useFetchLulus from "../../hooks/hooks_menu_akademik/Kelulusan";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -457,7 +457,7 @@ const Kelulusan = () => {
                     className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-semibold px-6 py-3 rounded transition duration-200 cursor-pointer flex items-center justify-center gap-2"
                 >
                     Proses Lulus
-                    <FontAwesomeIcon icon={isMobile ? faArrowUp : faArrowRight} />
+                    <FontAwesomeIcon icon={isMobile ? faArrowDown : faArrowRight} />
                 </button>
 
                 <button
@@ -465,7 +465,7 @@ const Kelulusan = () => {
                     onClick={() => setSubmitAction("batal")}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded transition duration-200 cursor-pointer flex items-center justify-center gap-2"
                 >
-                    <FontAwesomeIcon icon={isMobile ? faArrowDown : faArrowLeft} />
+                    <FontAwesomeIcon icon={isMobile ? faArrowUp : faArrowLeft} />
                     Batal Lulus
                 </button>
             </form>

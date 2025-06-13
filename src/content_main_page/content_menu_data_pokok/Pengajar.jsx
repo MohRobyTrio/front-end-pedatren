@@ -84,7 +84,7 @@ const Pengajar = () => {
         lembaga: lembagaTerpilih
     }), [filters, golonganTerpilih, kabupatenTerpilih, kategoriTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
-    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, error, totalDataPengajar, totalPages, totalFiltered, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
+    const { pengajar, loadingPengajar, searchTerm, setSearchTerm, error, totalDataPengajar, totalPages, limit, setLimit, currentPage, setCurrentPage } = useFetchPengajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -250,7 +250,7 @@ const Pengajar = () => {
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
                     totalData={totalDataPengajar}
-                    totalFiltered={totalFiltered}
+                    // totalFiltered={totalFiltered}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                     limit={limit}

@@ -5,7 +5,7 @@ const SearchBar = ({
     setSearchTerm, 
     totalData, 
     toggleFilters, 
-    totalFiltered, 
+    // totalFiltered, 
     toggleView, 
     limit, 
     toggleLimit,

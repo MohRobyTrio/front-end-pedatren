@@ -214,7 +214,7 @@ const CatatanAfektif = () => {
                     totalData={totalData}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={groupedData.length}
+                    // totalFiltered={groupedData.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
                 />

@@ -242,7 +242,7 @@ const Santri = () => {
                     totalData={totalDataSantri}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    totalFiltered={santri.length}
+                    // totalFiltered={santri.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
                 />

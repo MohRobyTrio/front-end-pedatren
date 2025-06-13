@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import {
+    menuAkademikItems,
     menuDataPokokItems,
     menuItems,
     menuKelembagaanItems,
@@ -26,6 +27,8 @@ const Sidebar = ({
     setDropdownMahrom,
     dropdownDataKelembagaan,
     setDropdownDataKelembagaan,
+    dropdownDataAkademik,
+    setDropdownDataAkademik,
     isSidebarOpen,
     toggleDropdown
 }) => {
@@ -204,6 +207,17 @@ const Sidebar = ({
                                 onClick={() => toggleDropdown(setDropdownDataKelembagaan)}
                             />
                             {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
+                        </div>
+                    </Access>
+
+                    <Access action="akademik">
+                        <div className="mt-4 px-3">
+                            <MenuHeader
+                                name="Akademik"
+                                isOpen={dropdownDataAkademik}
+                                onClick={() => toggleDropdown(setDropdownDataAkademik)}
+                            />
+                            {dropdownDataAkademik && <DropdownMenu items={menuAkademikItems} />}
                         </div>
                     </Access>
                 </div>
