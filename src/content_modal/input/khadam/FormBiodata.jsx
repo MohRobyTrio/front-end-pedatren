@@ -2,25 +2,25 @@ import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab }) => {
+const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const kewarganegaraan = watch("modalAnakPegawai.kewarganegaraan");
-    const negara = watch("modalAnakPegawai.negara_id");
-    const provinsi = watch("modalAnakPegawai.provinsi_id");
-    const kabupaten = watch("modalAnakPegawai.kabupaten_id");
-    const kecamatan = watch("modalAnakPegawai.kecamatan_id");
+    const kewarganegaraan = watch("modalKhadam.kewarganegaraan");
+    const negara = watch("modalKhadam.negara_id");
+    const provinsi = watch("modalKhadam.provinsi_id");
+    const kabupaten = watch("modalKhadam.kabupaten_id");
+    const kecamatan = watch("modalKhadam.kecamatan_id");
 
     const handleKewarganegaraanChange = (e) => {
         const value = e.target.value;
-        setValue('modalAnakPegawai.kewarganegaraan', value);
+        setValue('modalKhadam.kewarganegaraan', value);
 
         if (value === 'wna') {
-            setValue('modalAnakPegawai.no_kk', '');
-            setValue('modalAnakPegawai.nik', '');
+            setValue('modalKhadam.no_kk', '');
+            setValue('modalKhadam.nik', '');
         } else if (value === 'wni') {
-            setValue('modalAnakPegawai.no_passport', '');
+            setValue('modalKhadam.no_passport', '');
         }
     };
 
@@ -79,7 +79,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                     }`}
                             >
                                 <Controller
-                                    name={`modalAnakPegawai.${label}_id`}
+                                    name={`modalKhadam.${label}_id`}
                                     control={control}
                                     rules={{ required: true }}
                                     defaultValue={selectedFilters[label] || ""}
@@ -120,11 +120,11 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                         Kewarganegaraan *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" {...register("modalAnakPegawai.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} required />
+                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" {...register("modalKhadam.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} required />
                         <span>WNI</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" {...register("modalAnakPegawai.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} required />
+                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" {...register("modalKhadam.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} required />
                         <span>WNA</span>
                     </label>
                 </div>
@@ -147,7 +147,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 disabled={kewarganegaraan !== 'wna'}
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalAnakPegawai.no_passport', { required: kewarganegaraan === "wna" ? true : false })}
+                                {...register('modalKhadam.no_passport', { required: kewarganegaraan === "wna" ? true : false })}
                                 required={kewarganegaraan === 'wna'}
                             />
                             {/* {errors.nama && <span>Nama wajib diisi</span>} */}
@@ -175,7 +175,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan No KK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalAnakPegawai.no_kk', { required: kewarganegaraan === "wni" ? true : false })}
+                                {...register('modalKhadam.no_kk', { required: kewarganegaraan === "wni" ? true : false })}
                                 required={kewarganegaraan === 'wni'}
                             />
                         </div>
@@ -202,7 +202,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan NIK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalAnakPegawai.nik', { required: kewarganegaraan === "wni" ? true : false })}
+                                {...register('modalKhadam.nik', { required: kewarganegaraan === "wni" ? true : false })}
                                 required={kewarganegaraan === 'wni'}
                             />
                         </div>
@@ -223,7 +223,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 type="text"
                                 placeholder="Masukkan Nama Lengkap"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalAnakPegawai.nama', { required: true })}
+                                {...register('modalKhadam.nama', { required: true })}
                                 required
                             />
                         </div>
@@ -236,11 +236,11 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                         Jenis Kelamin *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="p" className="w-4 h-4" {...register('modalAnakPegawai.jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="p" className="w-4 h-4" {...register('modalKhadam.jenis_kelamin', { required: true })} required />
                         <span>Perempuan</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="l" className="w-4 h-4" {...register('modalAnakPegawai.jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="l" className="w-4 h-4" {...register('modalKhadam.jenis_kelamin', { required: true })} required />
                         <span>Laki-Laki</span>
                     </label>
                 </div>
@@ -257,7 +257,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 name="tempatLahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
-                                {...register('modalAnakPegawai.tempat_lahir', { required: true })} 
+                                {...register('modalKhadam.tempat_lahir', { required: true })} 
                                 required
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -277,7 +277,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 id="tanggal_lahir"
                                 name="tanggal_lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.tanggal_lahir", { required: true })}
+                                {...register("modalKhadam.tanggal_lahir", { required: true })}
                                 required
                             />
                         </div>
@@ -297,7 +297,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.anak_keberapa")}
+                                {...register("modalKhadam.anak_keberapa")}
                             />
                         </div>
                         <span>Dari</span>
@@ -308,7 +308,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.dari_saudara")}
+                                {...register("modalKhadam.dari_saudara")}
                             />
                         </div>
                     </div>
@@ -328,7 +328,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 type="text"
                                 placeholder="Masukkan Tinggal Bersama"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.tinggal_bersama")}
+                                {...register("modalKhadam.tinggal_bersama")}
                             />
                         </div>
                     </div>
@@ -344,7 +344,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                             <select
                                 id="jenjang_pendidikan_terakhir"
                                 name="jenjang_pendidikan_terakhir"
-                                {...register("modalAnakPegawai.jenjang_pendidikan_terakhir")}
+                                {...register("modalKhadam.jenjang_pendidikan_terakhir")}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
                             >
                                 <option value="">
@@ -377,7 +377,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 type="text"
                                 placeholder="Masukkan Nama Pendidikan Terakhir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.nama_pendidikan_terakhir")}
+                                {...register("modalKhadam.nama_pendidikan_terakhir")}
                             />
                         </div>
                     </div>
@@ -401,7 +401,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 }}
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.no_telepon", { required: true })}
+                                {...register("modalKhadam.no_telepon", { required: true })}
                                 required
                             />
                         </div>
@@ -426,7 +426,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 }}
                                 placeholder="+62"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.no_telepon_2")}
+                                {...register("modalKhadam.no_telepon_2")}
                             />
                         </div>
                     </div>
@@ -446,7 +446,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 maxLength={100}
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.email", { required: true })}
+                                {...register("modalKhadam.email", { required: true })}
                                 required
                             />
                         </div>
@@ -473,7 +473,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 maxLength={255}
                                 placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.jalan", { required: true })}
+                                {...register("modalKhadam.jalan", { required: true })}
                                 required
                             />
                         </div>
@@ -499,7 +499,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
                                 inputMode="numeric"
                                 placeholder="Masukkan Kode Pos"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.kode_pos", { required: true })}
+                                {...register("modalKhadam.kode_pos", { required: true })}
                                 required
                             />
                         </div>
@@ -510,4 +510,4 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab 
     )
 };
 
-export default FormBiodataAnakPegawai;
+export default FormBiodataKhadam;

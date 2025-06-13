@@ -11,9 +11,12 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaFileExport } from "react-icons/fa";
+import { FaFileExport, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
+import Access from "../../components/Access";
+import MultiStepModalKhadam from "../../components/modal/ModalFormKhadam";
+import { useMultiStepFormKhadam } from "../../hooks/hooks_modal/useMultiStepFormKhadam";
 
 const Khadam = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -81,7 +84,7 @@ const Khadam = () => {
         rombel: rombelTerpilih
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
 
-    const { khadam, loadingKhadam, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKhadam, totalPages, currentPage, setCurrentPage } = useFetchKhadam(updatedFilters);
+    const { khadam, loadingKhadam, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKhadam, totalPages, currentPage, setCurrentPage, fetchData } = useFetchKhadam(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -164,6 +167,10 @@ const Khadam = () => {
         // { label: "Ayah Kandung", value: "ayah_kandung" }
     ];
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormKhadam(() => setShowFormModal(false), fetchData);
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -187,6 +194,9 @@ const Khadam = () => {
                         )}
                     </button> */}
                     <div className="flex items-center space-x-2">
+                        <Access action="tambah">
+                            <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
+                        </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
@@ -301,6 +311,8 @@ const Khadam = () => {
                 )}
 
                 <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/khadam" /> 
+
+                <MultiStepModalKhadam isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 
                 {isModalOpen && (
                     <ModalDetail

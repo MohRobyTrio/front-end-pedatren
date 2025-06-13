@@ -25,7 +25,7 @@ const useFetchKhadam = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/khadam?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -49,7 +49,7 @@ const useFetchKhadam = (filters) => {
         if (filters?.pemberkasan) url += `&pemberkasan=${encodeURIComponent(filters.pemberkasan)}`;
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -100,7 +100,8 @@ const useFetchKhadam = (filters) => {
         totalDataKhadam,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 
