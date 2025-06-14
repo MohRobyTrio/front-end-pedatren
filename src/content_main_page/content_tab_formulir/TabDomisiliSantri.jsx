@@ -372,7 +372,7 @@ const TabDomisiliSantri = () => {
 
     const isTanggalKeluarValid = (
         selectedDomisiliDetail?.tanggal_keluar &&
-        selectedDomisiliDetail?.tanggal_keluar !== "-"
+        selectedDomisiliDetail?.tanggal_keluar != "-"
     );
 
     // Komponen dropdown

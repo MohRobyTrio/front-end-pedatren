@@ -125,7 +125,7 @@ export default function TabBerkas() {
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {(berkasList ?? []).length === 0 && !loading && (
+                {(berkasList ?? []).length == 0 && !loading && (
                     <p className="col-span-full text-center">Tidak ada berkas.</p>
                 )}
 
@@ -191,7 +191,7 @@ export default function TabBerkas() {
 
                             {/* <div className="mt-2">
                                 <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
-                                    {jenisBerkasList.find(j => j.id === berkas.jenis_berkas_id)?.label || 'Berkas'}
+                                    {jenisBerkasList.find(j => j.id == berkas.jenis_berkas_id)?.label || 'Berkas'}
                                 </span>
                             </div> */}
                         </div>

@@ -62,7 +62,7 @@ const TabWaliKelas = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -73,11 +73,11 @@ const TabWaliKelas = () => {
                 navigate("/login");
                 return;
             }
-            if (response.status === 403) {
+            if (response.status == 403) {
                 throw new Error("403");
             }
             if (!response.ok) {
-                // Misalnya response.status === 500
+                // Misalnya response.status == 500
                 throw new Error(`Gagal fetch: ${response.status}`);
             }
             const result = await response.json();
@@ -134,7 +134,7 @@ const TabWaliKelas = () => {
                     }
                 }
             );
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -203,7 +203,7 @@ const TabWaliKelas = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -254,10 +254,10 @@ const TabWaliKelas = () => {
                             {capitalizeFirst(label)} *
                         </label>
                         <select
-                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                             onChange={(e) => onChange({ [label]: e.target.value })}
                             value={selectedFilters[label] || ""}
-                            disabled={options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif"}
+                            disabled={options.length <= 1 || !canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif"}
                         >
                             {options.map((option, idx) => (
                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -309,7 +309,7 @@ const TabWaliKelas = () => {
                                 </button>
                             )}
                     </div>
-                ) : waliKelasList.length === 0 ? (
+                ) : waliKelasList.length == 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
                 ) : waliKelasList.map((waliKelas) => (
                     <div key={waliKelas.id}>
@@ -331,7 +331,7 @@ const TabWaliKelas = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${waliKelas.status_aktif === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${waliKelas.status_aktif == "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
@@ -375,11 +375,11 @@ const TabWaliKelas = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailWaliKelas === waliKelas.id ? (
+                        {loadingDetailWaliKelas == waliKelas.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : selectedWaliKelasId === waliKelas.id && selectedWaliKelasDetail && (
+                        ) : selectedWaliKelasId == waliKelas.id && selectedWaliKelasDetail && (
                             <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 {/* Kolom kiri: Dropdown dependent */}
                                 <div className="flex flex-col gap-4">
@@ -402,8 +402,8 @@ const TabWaliKelas = () => {
                                             onChange={(e) => setJmlMurid(e.target.value)}
                                             maxLength={50}
                                             placeholder="Masukkan Jumlah Murid"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif == "tidak aktif"}
                                         />
                                     </div>
 
@@ -414,8 +414,8 @@ const TabWaliKelas = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif === "tidak aktif"}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif == "tidak aktif"}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -439,7 +439,7 @@ const TabWaliKelas = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        {waliKelas.status_aktif === "aktif" && (
+                                        {waliKelas.status_aktif == "aktif" && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

@@ -73,7 +73,7 @@ const TabWarPes = () => {
                                 </button>
                             )}
                     </div>
-                ) : warPesList.length === 0 ? (
+                ) : warPesList.length == 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
                 ) : warPesList.map((warPes) => (
                     <div key={warPes.id}>
@@ -96,11 +96,11 @@ const TabWarPes = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailWarPes === warPes.id ? (
+                        {loadingDetailWarPes == warPes.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : selectedWarPesId === warPes.id && selectedWarPesDetail && (
+                        ) : selectedWarPesId == warPes.id && selectedWarPesDetail && (
                             <form className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                                 {/* NIUP */}
                                 <div className="col-span-3 flex items-center">
@@ -129,7 +129,7 @@ const TabWarPes = () => {
                                                 name="aktif"
                                                 value="true"
                                                 className="form-radio text-blue-500 focus:ring-blue-500"
-                                                checked={aktif === true}
+                                                checked={aktif == true}
                                                 onChange={() => setAktif(true)}
                                                 disabled={!canEdit}
                                             />
@@ -140,7 +140,7 @@ const TabWarPes = () => {
                                                 type="radio"
                                                 name="aktif"
                                                 value="false"
-                                                checked={aktif === false}
+                                                checked={aktif == false}
                                                 onChange={() => setAktif(false)}
                                                 className="form-radio text-blue-500 focus:ring-blue-500"
                                                 disabled={!canEdit}

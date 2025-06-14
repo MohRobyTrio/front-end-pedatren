@@ -77,7 +77,7 @@ const TabSantri = () => {
                                 </button>
                             )}
                     </div>
-                ) : santriList.length === 0 ? (
+                ) : santriList.length == 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
                 ) : santriList.map((santri) => (
                     <div key={santri.id}>
@@ -94,7 +94,7 @@ const TabSantri = () => {
                                 </p>
                             </div>
                             <span
-                                className={`text-sm font-semibold px-3 py-1 rounded-full ${santri.status === "aktif"
+                                className={`text-sm font-semibold px-3 py-1 rounded-full ${santri.status == "aktif"
                                     ? "bg-green-100 text-green-700"
                                     : "bg-red-100 text-red-700"
                                     }`}
@@ -104,11 +104,11 @@ const TabSantri = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailSantri === santri.id ? (
+                        {loadingDetailSantri == santri.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : selectedSantriId === santri.id && selectedSantriDetail && (
+                        ) : selectedSantriId == santri.id && selectedSantriDetail && (
                             <form className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6">
                                 <div className="flex flex-col gap-4">
 
@@ -131,10 +131,10 @@ const TabSantri = () => {
                                         </label>
                                         <select
                                             id="angkatan_id"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             onChange={(e) => setAngkatanId(e.target.value)}
                                             value={angkatanId}
-                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedSantriDetail?.status != "aktif"}
                                             required
                                         >
                                             {menuAngkatanSantri.map((santri, idx) => (
@@ -151,10 +151,10 @@ const TabSantri = () => {
                                         </label>
                                         <select
                                             id="status"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
-                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedSantriDetail?.status != "aktif"}
                                         >
                                             <option value="">Pilih Status</option>
                                             <option value="aktif">Aktif</option>
@@ -174,10 +174,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
-                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedSantriDetail?.status != "aktif"}
                                         />
                                     </div>
 
@@ -188,10 +188,10 @@ const TabSantri = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            disabled={!canEdit || selectedSantriDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedSantriDetail?.status != "aktif"}
                                         />
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@ const TabSantri = () => {
                                     {/* <label className="block text-sm font-medium text-gray-700">&nbsp;</label> */}
                                     <div className="flex space-x-2 mt-1">
                                         <Access action="edit">
-                                            {(canEdit && selectedSantriDetail?.status === "aktif") && (
+                                            {(canEdit && selectedSantriDetail?.status == "aktif") && (
                                                 <button
                                                     type="button"
                                                     className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer`}

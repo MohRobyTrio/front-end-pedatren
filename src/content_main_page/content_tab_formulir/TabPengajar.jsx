@@ -345,7 +345,7 @@ const TabPengajar = () => {
 
 
     // const handleRemove = (indexToRemove) => {
-    //     const updatedList = materiList.filter((_, index) => index !== indexToRemove)
+    //     const updatedList = materiList.filter((_, index) => index != indexToRemove)
     //     setMateriList(updatedList)
     // }
 
@@ -525,7 +525,7 @@ const TabPengajar = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengajar.status === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengajar.status == "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
@@ -597,10 +597,10 @@ const TabPengajar = () => {
                                                 Golongan
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => setGolongan(e.target.value )}
                                                 value={golongan}
-                                                disabled={allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status === "tidak aktif"}
+                                                disabled={allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status == "tidak aktif"}
                                             >
                                                 {allGolonganList.map((golongan, idx) => (
                                                     <option key={idx} value={golongan.id}>
@@ -615,10 +615,10 @@ const TabPengajar = () => {
                                                 Jabatan
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => setJabatan(e.target.value)}
                                                 value={jabatan}
-                                                disabled={!canEdit || selectedPengajarDetail.status === "tidak aktif"}
+                                                disabled={!canEdit || selectedPengajarDetail.status == "tidak aktif"}
                                             >
                                                 {jenisJabatan.map((item, idx) => (
                                                     <option key={idx} value={item.value}>
@@ -639,8 +639,8 @@ const TabPengajar = () => {
                                             <input
                                                 type="date"
                                                 id="startDate"
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif === "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                                disabled={!canEdit || selectedPengajarDetail?.status === "tidak aktif"}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                                disabled={!canEdit || selectedPengajarDetail?.status == "tidak aktif"}
                                                 value={startDate}
                                                 onChange={(e) => setStartDate(e.target.value)}
                                             />
@@ -663,7 +663,7 @@ const TabPengajar = () => {
                                 </div>
                                 <h1 className="text-black font-bold flex items-center justify-between w-full mb-2">
                                     Materi Ajar
-                                    {pengajar.status === "aktif" && (
+                                    {pengajar.status == "aktif" && (
                                         <Access action="tambah">
                                             <button
                                                 type="button"
@@ -716,7 +716,7 @@ const TabPengajar = () => {
                                                     {pengajar.status === "aktif" && !semuaNonaktif && (
                                                         <Access action="delete">
                                                             <td className="px-3 py-2 border-b">
-                                                                {item.status === "aktif" && (
+                                                                {item.status == "aktif" && (
                                                                     <button
                                                                         onClick={(e) => handleRemove(index, e)}
                                                                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -741,7 +741,7 @@ const TabPengajar = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        {pengajar.status === "aktif" && (
+                                        {pengajar.status == "aktif" && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

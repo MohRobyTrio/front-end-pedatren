@@ -315,7 +315,7 @@ const TabKaryawan = () => {
 									</p>
 								</div>
 								<span
-									className={`text-sm font-semibold capitallize px-3 py-1 rounded-full ${karyawan.status === "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+									className={`text-sm font-semibold capitallize px-3 py-1 rounded-full ${karyawan.status == "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
 										}`}
 								>
 									{karyawan.status}
@@ -365,11 +365,11 @@ const TabKaryawan = () => {
 									<div>
 										<label className="block text-sm font-medium text-gray-700">Lembaga *</label>
 										<select
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status != "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={selectedLembagaId}
 											onChange={(e) => setSelectedLembagaId(e.target.value)}
-											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status != "aktif"}
 										>
 											{/* <option value="">Pilih Lembaga</option> */}
 											{menuLembaga.map((opt) => ( // Gunakan menuLembaga dari state/hook
@@ -383,11 +383,11 @@ const TabKaryawan = () => {
 									<div>
 										<label className="block text-sm font-medium text-gray-700">Golongan Jabatan *</label>
 										<select
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status != "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={selectedGolonganJabatanId}
 											onChange={(e) => setSelectedGolonganJabatanId(e.target.value)}
-											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status != "aktif"}
 										>
 											{/* <option value="">Pilih Golongan Jabatan</option> */}
 											{menuGolonganJabatan.map((opt) => ( // Gunakan menuGolonganJabatan dari state/hook
@@ -406,9 +406,9 @@ const TabKaryawan = () => {
 											id="keteranganJabatan"
 											value={keteranganJabatan}
 											onChange={(e) => setKeteranganJabatan(e.target.value)}
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status != "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
-											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status != "aktif"}
 										/>
 									</div>
 								</div>
@@ -421,11 +421,11 @@ const TabKaryawan = () => {
 										</label>
 										<select
 											id="jabatanKontrak"
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status != "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
 											value={jabatanKontrak}
 											onChange={(e) => setJabatanKontrak(e.target.value)}
-											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status != "aktif"}
 										>
 											<option value="">Pilih Jenis Kontrak</option>
 											<option value="kultural">Kultural</option>
@@ -443,9 +443,9 @@ const TabKaryawan = () => {
 										<input
 											type="date"
 											id="startDate"
-											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+											className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKaryawanDetail?.status != "aktif" ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
 												}`}
-											disabled={!canEdit || selectedKaryawanDetail?.status !== "aktif"}
+											disabled={!canEdit || selectedKaryawanDetail?.status != "aktif"}
 											value={startDate}
 											onChange={(e) => setStartDate(e.target.value)}
 										/>
@@ -468,7 +468,7 @@ const TabKaryawan = () => {
 								{/* Tombol Aksi Form */}
 								<div className="col-span-full">
 									<div className="flex space-x-2 mt-2">
-										{selectedKaryawanDetail?.status === "aktif" && (
+										{selectedKaryawanDetail?.status == "aktif" && (
 											<Access action="edit">
 												<button
 													type="button"

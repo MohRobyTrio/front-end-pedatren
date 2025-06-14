@@ -68,7 +68,7 @@ const TabWaliAsuh = () => {
 
   useEffect(() => {
     if (selectedWaliAsuhDetail?.grup && menuGrupWaliAsuh.length > 0) {
-      const grupTerpilih = menuGrupWaliAsuh.find(item => item.nama_grup === grupWaliAsuhId);
+      const grupTerpilih = menuGrupWaliAsuh.find(item => item.nama_grup == grupWaliAsuhId);
       if (grupTerpilih) {
         setGrupSearch(grupTerpilih.nama_grup);
       }
@@ -148,7 +148,7 @@ const TabWaliAsuh = () => {
               Coba Lagi
             </button>
           </div>
-        ) : waliAsuhList.length === 0 ? (
+        ) : waliAsuhList.length == 0 ? (
           <p className="text-center text-gray-500">Tidak ada data</p>
         ) : waliAsuhList.map((waliAsuh) => (
           <div key={waliAsuh.id}>
@@ -207,11 +207,11 @@ const TabWaliAsuh = () => {
               )}
             </div>
 
-            {loadingDetailWaliAsuhId === waliAsuh.id ? (
+            {loadingDetailWaliAsuhId == waliAsuh.id ? (
               <div className="flex justify-center items-center mt-4">
                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
               </div>
-            ) : selectedWaliAsuhId === waliAsuh.id && selectedWaliAsuhDetail && (
+            ) : selectedWaliAsuhId == waliAsuh.id && selectedWaliAsuhDetail && (
               <form className="grid grid-cols-1 gap-4 mt-4">
                 {/* Baris 1: NIS dan Tanggal Mulai */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -235,10 +235,10 @@ const TabWaliAsuh = () => {
                     <input
                       type="date"
                       id="startDate"
-                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliAsuhDetail.status === 0 ? "bg-gray-200 text-gray-500" : ""}`}
+                      className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${selectedWaliAsuhDetail.status == 0 ? "bg-gray-200 text-gray-500" : ""}`}
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      disabled={selectedWaliAsuhDetail?.status === 0}
+                      disabled={selectedWaliAsuhDetail?.status == 0}
                     />
                   </div>
                 </div>
@@ -291,7 +291,7 @@ const TabWaliAsuh = () => {
 
                 {/* Baris 3: Tombol */}
                 <div className="flex space-x-2 mt-1">
-                  {waliAsuh.status === 1 && (
+                  {waliAsuh.status == 1 && (
                       <Access action={"edit"}>
                         <button
                           type="button"

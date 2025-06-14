@@ -479,7 +479,7 @@ const TabPendidikan = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${pendidikan.status === "aktif"
+                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${pendidikan.status == "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
@@ -631,7 +631,7 @@ const TabPendidikan = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">&nbsp;</label>
                                     <div className="flex space-x-2 mt-1">
-                                        {pendidikan.status === "aktif" && (
+                                        {pendidikan.status == "aktif" && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

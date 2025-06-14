@@ -82,7 +82,7 @@ const TabBiodata = () => {
     useEffect(() => {
         console.log("Current biodata_id from URL:", biodata_id);
         // Cek apakah ID valid (tidak undefined, tidak null, dan bukan string kosong)
-        const isValidId = biodata_id && biodata_id.trim() !== "";
+        const isValidId = biodata_id && biodata_id.trim() != "";
         console.log("Is valid ID:", isValidId);
     }, [biodata_id]);
 
@@ -213,8 +213,8 @@ const TabBiodata = () => {
                 }
             });
 
-            const nikTerisi = !!formData.nik && formData.nik.trim() !== '';
-            const passportTerisi = !!formData.no_passport && formData.no_passport.trim() !== '';
+            const nikTerisi = !!formData.nik && formData.nik.trim() != '';
+            const passportTerisi = !!formData.no_passport && formData.no_passport.trim() != '';
 
             if (nikTerisi) {
                 setValue('kewarganegaraan', 'wni');
@@ -265,7 +265,7 @@ const TabBiodata = () => {
     // Trigger update mode when biodata_id is present in URL
     useEffect(() => {
         // Validasi ID harus ada dan bukan string kosong
-        if (biodata_id && biodata_id.trim() !== "") {
+        if (biodata_id && biodata_id.trim() != "") {
             console.log("Entering update mode with ID:", biodata_id);
             loadPesertaData(biodata_id);
         } else {
@@ -338,7 +338,7 @@ const TabBiodata = () => {
 
             // Tambahkan semua field form ke formData
             Object.keys(data).forEach(key => {
-                if (key !== 'tanggal_lahir') {
+                if (key != 'tanggal_lahir') {
                     formData.append(key, data[key]);
                 }
             });
@@ -367,7 +367,7 @@ const TabBiodata = () => {
                 body: formData,
             };
 
-            if (isUpdateMode && biodata_id && biodata_id.trim() !== "") {
+            if (isUpdateMode && biodata_id && biodata_id.trim() != "") {
                 console.log(`Updating record with ID: ${biodata_id}`);
                 response = await fetch(`${API_BASE_URL}formulir/${biodata_id}/biodata?_method=PUT`, requestOptions);
 
@@ -414,7 +414,7 @@ const TabBiodata = () => {
                 text: isUpdateMode ? "Data berhasil diupdate!" : "Data berhasil disimpan!",
             });
 
-            if (biodata_id && biodata_id.trim() !== "") {
+            if (biodata_id && biodata_id.trim() != "") {
                 loadPesertaData(biodata_id);
             }
 
@@ -728,7 +728,7 @@ const TabBiodata = () => {
                             </div>
                             {/* Label umur */}
                             <span className="w-fit h-8 bg-blue-200 text-blue-800 px-2 py-1 rounded-md text-sm">
-                                {umur !== null ? `Umur ${umur} tahun` : ''}
+                                {umur != null ? `Umur ${umur} tahun` : ''}
                             </span>
                         </div>
                     </div>

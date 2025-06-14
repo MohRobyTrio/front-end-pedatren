@@ -120,7 +120,7 @@ const TabKhadam = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${khadam.status === 1
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${khadam.status == 1
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
@@ -174,11 +174,11 @@ const TabKhadam = () => {
                                     <input
                                         type="text"
                                         id="keterangan"
-                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKhadamDetail.status === 0 ? "bg-gray-200 text-gray-500" : ""}`}
+                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKhadamDetail.status == 0 ? "bg-gray-200 text-gray-500" : ""}`}
                                         value={keterangan}
                                         maxLength={255}
                                         onChange={(e) => setKeterangan(e.target.value)}
-                                        disabled={!canEdit || selectedKhadamDetail?.status === 0}
+                                        disabled={!canEdit || selectedKhadamDetail?.status == 0}
                                     />
                                 </div>
 
@@ -191,10 +191,10 @@ const TabKhadam = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKhadamDetail.status === 0 ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKhadamDetail.status == 0 ? "bg-gray-200 text-gray-500" : ""}`}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
-                                            disabled={!canEdit || selectedKhadamDetail?.status === 0}
+                                            disabled={!canEdit || selectedKhadamDetail?.status == 0}
                                         />
                                     </div>
 
@@ -215,7 +215,7 @@ const TabKhadam = () => {
 
                                 {/* Baris 3: Tombol */}
                                 <div className="flex space-x-2 mt-1">
-                                    {khadam.status === 1 && (
+                                    {khadam.status == 1 && (
                                         <Access action="edit">
                                             <button
                                                 type="button"

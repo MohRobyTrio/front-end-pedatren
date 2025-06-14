@@ -141,12 +141,12 @@ const TabKeluarga = () => {
                                         </p>
                                     </div>
                                     <span
-                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${keluarga.sebagai_wali === 1
+                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${keluarga.sebagai_wali == 1
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-gray-100 text-gray-700"
                                             }`}
                                     >
-                                        {keluarga.sebagai_wali === 1 ? "Sebagai Wali" : ""}
+                                        {keluarga.sebagai_wali == 1 ? "Sebagai Wali" : ""}
                                     </span>
                                 </div>
 

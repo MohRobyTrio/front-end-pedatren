@@ -69,7 +69,7 @@ const TabPengurus = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -81,7 +81,7 @@ const TabPengurus = () => {
                 return;
             }
             if (!response.ok) {
-                // Misalnya response.status === 500
+                // Misalnya response.status == 500
                 throw new Error(`Gagal fetch: ${response.status}`);
             }
             const result = await response.json();
@@ -111,7 +111,7 @@ const TabPengurus = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -176,7 +176,7 @@ const TabPengurus = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status === 401) {
+            if (response.status == 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -217,7 +217,7 @@ const TabPengurus = () => {
     // console.log("selectedGolonganJabatanId", selectedGolonganJabatanId);
     // console.log(
     //   "matching option:",
-    //   menuGolonganJabatan.find((opt) => String(opt.id) === String(selectedGolonganJabatanId))
+    //   menuGolonganJabatan.find((opt) => String(opt.id) == String(selectedGolonganJabatanId))
     // );
 
     // console.log("selectedPengurusId:", selectedPengurusId);
@@ -273,7 +273,7 @@ const TabPengurus = () => {
                     <div className="flex justify-center items-center">
                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                     </div>
-                ) : pengurusList.length === 0 ? (
+                ) : pengurusList.length == 0 ? (
                     <p className="text-center text-gray-500">Tidak ada data</p>
                 ) : pengurusList.map((pengurus) => (
                     <div key={pengurus.id}>
@@ -297,7 +297,7 @@ const TabPengurus = () => {
                                     </p>
                                 </div>
                                 <span
-                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengurus.status === "aktif"
+                                    className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${pengurus.status == "aktif"
                                         ? "bg-green-100 text-green-700"
                                         : "bg-red-100 text-red-700"
                                         }`}
@@ -339,22 +339,22 @@ const TabPengurus = () => {
                             )}
                         </div>
 
-                        {loadingDetailPengurus === pengurus.id ? (
+                        {loadingDetailPengurus == pengurus.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : selectedPengurusId === pengurus.id && selectedPengurusDetail && (
+                        ) : selectedPengurusId == pengurus.id && selectedPengurusDetail && (
                             <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 <div className="flex flex-col gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Satuan Kerja *</label>
                                         <select
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
                                                 }`}
                                             // onChange={(e) => handleSatuanKerjaChange({ satuan_kerja: e.target.value })}
                                             value={selectedSatuanKerja || ""}
                                             onChange={(e) => setSelectedSatuanKerja(e.target.value)}
-                                            disabled={!canEdit || selectedPengurusDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
                                         >
                                             {menuSatuanKerja.map((option, idx) => (
                                                 <option key={idx} value={option.value}>{option.label}</option>
@@ -371,21 +371,21 @@ const TabPengurus = () => {
                                             id="keteranganJabatan"
                                             value={keteranganJabatan}
                                             onChange={(e) => setKeteranganJabatan(e.target.value)}
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
                                                 }`}
-                                            disabled={!canEdit || selectedPengurusDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
                                         />
                                     </div>
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Golongan Jabatan *</label>
                                         <select
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
                                                 }`}
                                             // onChange={(e) => handleGolonganJabatanChange({ golongan_jabatan: e.target.value })}
                                             value={selectedGolonganJabatanId || ""}
                                             onChange={(e) => setSelectedGolonganJabatanId(e.target.value)}
-                                            disabled={!canEdit || selectedPengurusDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
                                         >
                                             {menuGolonganJabatan.map((option, idx) => (
                                                 <option key={idx} value={option.id}>{option.label}</option>
@@ -402,11 +402,11 @@ const TabPengurus = () => {
                                         </label>
                                         <select
                                             id="jabatanKontrak"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
                                                 }`}
                                             value={jabatanKontrak}
                                             onChange={(e) => setJabatanKontrak(e.target.value)}
-                                            disabled={!canEdit || selectedPengurusDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
                                         >
                                             <option value="">Pilih Jenis Kontrak</option>
                                             <option value="kultural">Kultural</option>
@@ -423,9 +423,9 @@ const TabPengurus = () => {
                                         <input
                                             type="date"
                                             id="startDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status !== "aktif" ? "bg-gray-200 text-gray-500" : ""
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
                                                 }`}
-                                            disabled={!canEdit || selectedPengurusDetail?.status !== "aktif"}
+                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
                                             value={startDate}
                                             onChange={(e) => setStartDate(e.target.value)}
                                         />
@@ -448,7 +448,7 @@ const TabPengurus = () => {
 
                                 <div className="col-span-full">
                                     <div className="flex space-x-2">
-                                        {selectedPengurusDetail?.status === "aktif" && (
+                                        {selectedPengurusDetail?.status == "aktif" && (
                                             <Access action="edit">
                                                 <button
                                                     type="button"

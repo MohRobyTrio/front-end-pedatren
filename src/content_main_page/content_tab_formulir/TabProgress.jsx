@@ -76,7 +76,7 @@ const TabProgress = () => {
 					'Authorization': `Bearer ${token}`
 				}
 			});
-			if (response.status === 401) {
+			if (response.status == 401) {
 				await Swal.fire({
 					title: "Sesi Berakhir",
 					text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -87,11 +87,11 @@ const TabProgress = () => {
 				navigate("/login");
 				return;
 			}
-			if (response.status === 403) {
+			if (response.status == 403) {
 				throw new Error("403");
 			}
 			if (!response.ok) {
-				// Misalnya response.status === 500
+				// Misalnya response.status == 500
 				throw new Error(`Gagal fetch: ${response.status}`);
 			}
 			const result = await response.json();
@@ -132,7 +132,7 @@ const TabProgress = () => {
 					}
 				}
 			);
-			if (response.status === 401) {
+			if (response.status == 401) {
 				await Swal.fire({
 					title: "Sesi Berakhir",
 					text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -191,7 +191,7 @@ const TabProgress = () => {
 
 		const payload = {
 			tanggal_buat: startDate,
-			...(endpoint === "kognitif" ? formKognitif : formAfektif)
+			...(endpoint == "kognitif" ? formKognitif : formAfektif)
 		};
 
 		console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
@@ -218,7 +218,7 @@ const TabProgress = () => {
 					body: JSON.stringify(payload),
 				}
 			);
-			if (response.status === 401) {
+			if (response.status == 401) {
 				await Swal.fire({
 					title: "Sesi Berakhir",
 					text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -238,9 +238,9 @@ const TabProgress = () => {
 					title: "Berhasil!",
 					text: result.message || "Data berhasil diperbarui.",
 				});
-				if (endpoint === "afektif") {
+				if (endpoint == "afektif") {
 					setSelectedAfektifDetail(result.data || payload);
-				} else if (endpoint === "kognitif") {
+				} else if (endpoint == "kognitif") {
 					setSelectedKognitifDetail(result.data || payload);
 				}
 				fetchData(endpoint);
@@ -291,12 +291,12 @@ const TabProgress = () => {
 		const { name, value, dataset } = e.target;
 		const formType = dataset.form;
 
-		if (formType === 'afektif') {
+		if (formType == 'afektif') {
 			setFormAfektif(prev => ({
 				...prev,
 				[name]: value
 			}));
-		} else if (formType === 'kognitif') {
+		} else if (formType == 'kognitif') {
 			setFormKognitif(prev => ({
 				...prev,
 				[name]: value
@@ -308,18 +308,18 @@ const TabProgress = () => {
 
 		if (formAfektif.id_wali_asuh && menuWaliAsuh3.length > 0) {
 			// console.log("wali asuh");
-			const s = menuWaliAsuh3.find((item) => (item.id === formAfektif.id_wali_asuh || item.id === formKognitif.id_wali_asuh) && item.id !== null);
+			const s = menuWaliAsuh3.find((item) => (item.id == formAfektif.id_wali_asuh || item.id == formKognitif.id_wali_asuh) && item.id != null);
 
 			if (s) {
 				setDataWaliAsuh(s)
-				if (activeTab === "afektif") {
+				if (activeTab == "afektif") {
 					console.log("[AFEK] Setting formAfektif");
 					setFormAfektif((prev) => ({
 						...prev,
 						id_wali_asuh: s.id
 					}));
 				} 
-				// else if (activeTab === "kognitif") {
+				// else if (activeTab == "kognitif") {
 				// 	console.log("[KOG] Setting formKognitif");
 				// 	setFormKognitif((prev) => ({
 				// 		...prev,
@@ -337,14 +337,14 @@ const TabProgress = () => {
 	useEffect(() => {
 		if (dataWaliAsuh) {
 			console.log("datawaliasuh ", dataWaliAsuh.id);
-			if (activeTab === "afektif") {
+			if (activeTab == "afektif") {
 				console.log("[AFEK] Setting formAfektif");
 				setFormAfektif((prev) => ({
 					...prev,
 					id_wali_asuh: dataWaliAsuh.id
 				}));
 			} 
-			// else if (activeTab === "kognitif") {
+			// else if (activeTab == "kognitif") {
 			// 	console.log("[KOG] Setting formKognitif");
 			// 	setFormKognitif((prev) => ({
 			// 		...prev,
@@ -463,7 +463,7 @@ const TabProgress = () => {
 								</button>
 							)}
 						</div>
-					) : dataList.length === 0 ? (
+					) : dataList.length == 0 ? (
 						<p className="text-center text-gray-500">Tidak ada data</p>
 					) : dataList.map((afektif) => (
 						<div key={afektif.id}>
@@ -544,13 +544,13 @@ const TabProgress = () => {
 								</div>
 							</div>
 
-							{loadingDetailData === afektif.id ? (
+							{loadingDetailData == afektif.id ? (
 								<div className="flex justify-center items-center mt-4">
 									<OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
 								</div>
-							) : selectedDataId === afektif.id && selectedAfektifDetail && (
+							) : selectedDataId == afektif.id && selectedAfektifDetail && (
 								<div className=" bg-white shadow-md rounded-lg p-6">
-									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedAfektifDetail?.tanggal_selesai || selectedAfektifDetail?.tanggal_selesai === "-")} />
+									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedAfektifDetail?.tanggal_selesai || selectedAfektifDetail?.tanggal_selesai == "-")} />
 									<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 										{/* Kolom Kiri */}
 										<div className="flex flex-col gap-4">
@@ -747,7 +747,7 @@ const TabProgress = () => {
 								</button>
 							)}
 						</div>
-					) : dataList.length === 0 ? (
+					) : dataList.length == 0 ? (
 						<p className="text-center text-gray-500">Tidak ada data</p>
 					) : dataList.map((kognitif) => (
 						<div key={kognitif.id}>
@@ -839,11 +839,11 @@ const TabProgress = () => {
 								</div>
 							</div>
 
-							{loadingDetailData === kognitif.id ? (
+							{loadingDetailData == kognitif.id ? (
 								<div className="flex justify-center items-center mt-4 bg-white shadow-md rounded-lg p-6">
 									<OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
 								</div>
-							) : selectedDataId === kognitif.id && selectedKognitifDetail && (
+							) : selectedDataId == kognitif.id && selectedKognitifDetail && (
 								<form className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6">
 									{/* Kolom Kiri */}
 									<div className="flex flex-col gap-4">
@@ -1111,7 +1111,7 @@ const TabProgress = () => {
 							<li key={tab.id}>
 								<button
 									onClick={() => setActiveTab(tab.id)}
-									className={`cursor-pointer inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
+									className={`cursor-pointer inline-block p-3 rounded-t-lg border-b-2 ${activeTab == tab.id
 										? "text-blue-600 border-blue-600 bg-gray-200"
 										: "border-transparent hover:text-gray-600 hover:bg-gray-50"
 										}`}
@@ -1123,7 +1123,7 @@ const TabProgress = () => {
 					</ul>
 
 					<div className="pt-4">
-						{tabs.find((tab) => tab.id === activeTab)?.content}
+						{tabs.find((tab) => tab.id == activeTab)?.content}
 					</div>
 				</>
 			)}
