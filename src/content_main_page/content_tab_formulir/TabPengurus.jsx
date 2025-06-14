@@ -85,6 +85,8 @@ const TabPengurus = () => {
                 throw new Error(`Gagal fetch: ${response.status}`);
             }
             const result = await response.json();
+            console.log(result);
+            
             setPengurusList(result.data || []);
         } catch (error) {
             console.error("Gagal mengambil data Pengurus:", error);
@@ -324,6 +326,7 @@ const TabPengurus = () => {
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                setSelectedPengurusId(pengurus.id);
                                                 setShowOutModal(true);
                                             }}
                                             className="justify-end text-yellow-600 hover:text-yellow-800 flex items-center gap-1 cursor-pointer"

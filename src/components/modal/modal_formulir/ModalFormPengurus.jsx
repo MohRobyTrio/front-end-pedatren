@@ -125,7 +125,6 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                 onChange={(e) => setFormData({ ...formData, satuan_kerja: e.target.value })}
                                                 required
                                             >
-                                                <option value="">Pilih Satuan Kerja</option>
                                                 {menuSatuanKerja.map((option, idx) => (
                                                     <option key={idx} value={option.value}>{option.label}</option>
                                                 ))}
@@ -151,7 +150,6 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                 onChange={(e) => setFormData({ ...formData, golongan_jabatan_id: e.target.value })}
                                                 required
                                             >
-                                                <option value="">Pilih Golongan Jabatan</option>
                                                 {menuGolonganJabatan.map((option, idx) => (
                                                     <option key={idx} value={option.id}>{option.label}</option>
                                                 ))}
@@ -210,6 +208,9 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
     const [formData, setFormData] = useState({
         tanggal_akhir: "",
     });
+
+    console.log(id);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
