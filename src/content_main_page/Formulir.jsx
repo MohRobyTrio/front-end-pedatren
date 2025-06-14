@@ -8,17 +8,17 @@ const Formulir = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-  if (biodata_id) {
-    sessionStorage.setItem("last_biodata_id", biodata_id);
-  } else {
-    const lastId = sessionStorage.getItem("last_biodata_id");
-    const isFormulirRoot = location.pathname === "/formulir";
+        if (biodata_id) {
+            sessionStorage.setItem("last_biodata_id", biodata_id);
+        } else {
+            const lastId = sessionStorage.getItem("last_biodata_id");
+            const isFormulirRoot = location.pathname === "/formulir";
 
-    if (lastId && isFormulirRoot) {
-      navigate(`/formulir/${lastId}/${tabsFormulir[0].link}`, { replace: true });
-    }
-  }
-}, [biodata_id, navigate, location.pathname]);
+            if (lastId && isFormulirRoot) {
+                navigate(`/formulir/${lastId}/${tabsFormulir[0].link}`, { replace: true });
+            }
+        }
+    }, [biodata_id, navigate, location.pathname]);
 
 
     return (
@@ -35,7 +35,7 @@ const Formulir = () => {
                     </div>
                 ) : (
                     <>
-                        <nav aria-label="Breadcrumb">
+                        {/* <nav aria-label="Breadcrumb">
                             <ol className="flex flex-wrap rounded border border-gray-300 bg-white text-sm text-gray-700">
                                 {tabsFormulir.map((tab, index) => {
                                     const fullPath = `/formulir/${biodata_id}/${tab.link}`;
@@ -62,7 +62,30 @@ const Formulir = () => {
                                     );
                                 })}
                             </ol>
+                        </nav> */}
+                        <nav className="border-b border-gray-300 mb-4">
+                            <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500">
+                                {tabsFormulir.map((tab) => {
+                                    const fullPath = `/formulir/${biodata_id}/${tab.link}`;
+                                    const isActive = location.pathname === fullPath;
+
+                                    return (
+                                        <li key={tab.id}>
+                                            <Link
+                                                to={fullPath}
+                                                className={`inline-block p-3 rounded-t-lg border-b-2 transition-all duration-200 ${isActive
+                                                        ? "text-blue-600 border-blue-600 bg-gray-100 font-semibold"
+                                                        : "border-transparent hover:text-gray-600 hover:bg-gray-50"
+                                                    }`}
+                                            >
+                                                {tab.label}
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </nav>
+
 
                         <div className="p-4 relative">
                             <Outlet />

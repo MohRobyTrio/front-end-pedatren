@@ -502,7 +502,7 @@ const TabBiodata = () => {
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
                 <div className="flex-shrink-0">
                     <img
-                        src={photoPreview}
+                        src={photoPreview || blankProfile}
                         alt="Foto Profil"
                         className="w-46 h-54 object-cover rounded border border-gray-500 p-1"
                         onError={(e) => {
