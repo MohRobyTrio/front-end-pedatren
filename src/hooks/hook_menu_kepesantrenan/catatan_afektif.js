@@ -66,6 +66,8 @@ const useFetchAfektif = (filters) => {
       }
 
       const result = await response.json();
+      console.log(result);
+      
 
       // Transform data
       const transformed = result.data.map(item => ({
@@ -76,6 +78,8 @@ const useFetchAfektif = (filters) => {
       }));
 
       setData(transformed);
+      console.log(transformed);
+      
       setTotalData(result.total_data || 0);
       setTotalPages(result.total_pages || 1);
       setCurrentPage(result.current_page || 1);
@@ -102,7 +106,7 @@ const useFetchAfektif = (filters) => {
     return data.reduce((acc, curr) => {
       if (!acc[curr.id_santri]) {
         acc[curr.id_santri] = {
-          ...curr,
+          ...curr,  
           catatan: []
         };
       }

@@ -107,7 +107,7 @@ const CatatanAfektif = () => {
     // const [page, setPage] = useState(1);
 
     const {
-        groupedData,
+        data,
         loading,
         error,
         limit,
@@ -231,10 +231,8 @@ const CatatanAfektif = () => {
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : Object.values(groupedData).length > 0 ? (
-                            Object.values(groupedData).map(santri => (
-                                <SantriAfektifCard key={santri.id_santri} santri={santri} menu={19} />
-                            ))
+                        ) : data.length > 0 ? (
+                            <SantriAfektifCard santri={data} menu={19} />
                         ) : (
                             <p className="text-center py-8 text-gray-500">Tidak ada data</p>
                         )}

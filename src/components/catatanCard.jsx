@@ -30,7 +30,7 @@ const SantriAfektifCard = ({ santri, menu }) => {
 
     return (
         <div className="rounded-lg mb-4">
-            {santri.catatan?.map((catatan, i) => (
+            {santri?.map((data, i) => (
                 <div
                     key={i}
                     className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4"
@@ -40,11 +40,11 @@ const SantriAfektifCard = ({ santri, menu }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             setTitleModal("Peserta Didik");
-                            openModal(catatan.Biodata_uuid)
+                            openModal(data.Biodata_uuid)
                         }}>
-                        {santri.foto ? (
-                            <img src={santri.foto}
-                                alt={santri.nama_santri}
+                        {data.foto ? (
+                            <img src={data.foto}
+                                alt={data.nama_santri}
                                 className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
@@ -58,14 +58,14 @@ const SantriAfektifCard = ({ santri, menu }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             setTitleModal("Peserta Didik");
-                            openModal(catatan.Biodata_uuid)
+                            openModal(data.Biodata_uuid)
                         }}>
-                        <h2 className="text-lg font-semibold">{santri.nama_santri}</h2>
+                        <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
                         <p className="text-sm text-gray-800">
-                            Domisili: {santri.blok} - {santri.wilayah}
+                            Domisili: {data.blok} - {data.wilayah}
                         </p>
                         <p className="text-sm text-gray-800">
-                            Pendidikan: {[santri.pendidikan, santri.lembaga].filter(Boolean).join(' - ') || 'Tidak ada'}
+                            Pendidikan: {[data.pendidikan, data.lembaga].filter(Boolean).join(' - ') || 'Tidak ada'}
                         </p>
                     </div>
 
@@ -74,17 +74,17 @@ const SantriAfektifCard = ({ santri, menu }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             setTitleModal("Peserta Didik");
-                            openModal(catatan.Biodata_uuid)
+                            openModal(data.Biodata_uuid)
                         }}>
                         <h2 className='text-lg font-semibold'>
-                            {catatan.kategori}:{' '}
-                            <span className={`${nilaiConfig[catatan.nilai]?.color || 'text-gray-600'}`}>
-                                [ {catatan.nilai} ]
+                            {data.kategori}:{' '}
+                            <span className={`${nilaiConfig[data.nilai]?.color || 'text-gray-600'}`}>
+                                [ {data.nilai} ]
                             </span>
                         </h2>
-                        <p className="text-md text-gray-800">{nilaiConfig[catatan.nilai]?.label || 'Tidak ada'}</p>
+                        <p className="text-md text-gray-800">{nilaiConfig[data.nilai]?.label || 'Tidak ada'}</p>
                         <h2 className="text-md font-semibold">Tindak Lanjut :</h2>
-                        <p className="text-md text-gray-800">{catatan.tindak_lanjut || 'Tidak ada'}</p>
+                        <p className="text-md text-gray-800">{data.tindak_lanjut || 'Tidak ada'}</p>
                     </div>
 
                     {/* Pencatat  */}
@@ -92,16 +92,16 @@ const SantriAfektifCard = ({ santri, menu }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             setTitleModal("Pencatat");
-                            openModal(catatan.Pencatat_uuid)
+                            openModal(data.Pencatat_uuid)
                         }}
                     >
                         <div className="flex items-start gap-3">
                             <div className="p-1 flex items-center justify-center flex-shrink-0">
                                 <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                    {catatan.fotoPencatat ? (
+                                    {data.fotoPencatat ? (
                                         <img
-                                            src={catatan.fotoPencatat}
-                                            alt={catatan.pencatat}
+                                            src={data.fotoPencatat}
+                                            alt={data.pencatat}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -111,12 +111,12 @@ const SantriAfektifCard = ({ santri, menu }) => {
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm font-bold">Pencatat:</p>
-                                <p className="text-sm">{catatan.pencatat || 'Tidak ada'}</p>
-                                <p className="text-sm text-gray-700">({catatan.jabatanPencatat || 'Tidak ada'})</p>
+                                <p className="text-sm">{data.pencatat || 'Tidak ada'}</p>
+                                <p className="text-sm text-gray-700">({data.jabatanPencatat || 'Tidak ada'})</p>
                                 <br />
                             </div>
                         </div>
-                        <p className="text-end text-xs text-gray-500">{catatan.waktu_pencatatan || 'Tidak ada'}</p>
+                        <p className="text-end text-xs text-gray-500">{data.waktu_pencatatan || 'Tidak ada'}</p>
                     </div>
                 </div>
             ))}
