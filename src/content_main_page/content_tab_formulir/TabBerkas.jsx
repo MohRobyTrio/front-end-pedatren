@@ -5,7 +5,6 @@ import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { jenisBerkasList } from '../../data/menuData';
 import { OrbitProgress } from 'react-loading-indicators';
 
 export default function TabBerkas() {
@@ -183,11 +182,11 @@ export default function TabBerkas() {
                         {/* Deskripsi */}
                         <div className="p-3 text-center">
                             <p className="text-sm font-medium text-gray-700">
-                                {
-                                    jenisBerkasList.find(j => j.id === berkas.jenis_berkas_id)?.label || (
-                                        <span className="italic text-gray-400">*tanpa deskripsi</span>
-                                    )
-                                }
+                                {berkas.nama_jenis_berkas ? (
+                                    berkas.nama_jenis_berkas
+                                ) : (
+                                    <span className="italic text-gray-400">*tanpa deskripsi</span>
+                                )}
                             </p>
 
                             {/* <div className="mt-2">
