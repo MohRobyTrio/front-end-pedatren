@@ -5,13 +5,13 @@ import { useEffect } from "react";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
 const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue }) => {
-    const lembaga = watch("modalPeserta.lembaga");
-    const jurusan = watch("modalPeserta.jurusan");
-    const kelas = watch("modalPeserta.kelas");
-    const rombel = watch("modalPeserta.rombel");
-    const wilayah = watch("modalPeserta.wilayah");
-    const blok = watch("modalPeserta.blok");
-    const kamar = watch("modalPeserta.kamar");
+    const lembaga = watch("modalPeserta.lembaga_id");
+    const jurusan = watch("modalPeserta.jurusan_id");
+    const kelas = watch("modalPeserta.kelas_id");
+    const rombel = watch("modalPeserta.rombel_id");
+    const wilayah = watch("modalPeserta.wilayah_id");
+    const blok = watch("modalPeserta.blok_id");
+    const kamar = watch("modalPeserta.kamar_id");
     const mondok = watch("modalPeserta.mondok");
     const isDomisiliDisabled = mondok === "0";
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
@@ -20,9 +20,9 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
 
     useEffect(() => {
         if (mondok === "0") {
-            setValue("modalPeserta.wilayah", "");
-            setValue("modalPeserta.blok", "");
-            setValue("modalPeserta.kamar", "");
+            setValue("modalPeserta.wilayah_id", "");
+            setValue("modalPeserta.blok_id", "");
+            setValue("modalPeserta.kamar_id", "");
             setValue("modalPeserta.tanggal_masuk_domisili", "");
         }
     }, [mondok, setValue]);
@@ -57,7 +57,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     const Filters = ({ filterOptions, control, onChange, selectedFilters, disabled = false }) => {
-        const wilayah = watch("modalPeserta.wilayah");
+        const wilayah = watch("modalPeserta.wilayah_id");
             return (
                 <div className="space-y-2">
                     {Object.entries(filterOptions).map(([label, options], index) => {
@@ -78,7 +78,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                         }`}
                                 >
                                     <Controller
-                                        name={`modalPeserta.${label}`}
+                                        name={`modalPeserta.${label}_id`}
                                         control={control}
                                         rules={{ required: true }}
                                         defaultValue={selectedFilters[label] || ""}

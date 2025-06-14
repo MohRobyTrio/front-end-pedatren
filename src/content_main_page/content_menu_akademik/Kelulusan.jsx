@@ -11,6 +11,8 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import useFetchLulus from "../../hooks/hooks_menu_akademik/Kelulusan";
+import Pagination from "../../components/Pagination";
+import SearchBar from "../../components/SearchBar";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -96,8 +98,8 @@ const Kelulusan = () => {
 
     const shouldFetch = selectedLembagaFilter.lembaga !== "";
 
-    const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData, searchTerm: searchTermPelajar, setSearchTerm: setSearchTermPelajar } = useFetchPelajar(filters);
-    const { dataLulus, loadingLulus, error: errorLulus, setLimit: setLimitLulus, totalDataLulus, fetchData: fetchDataLulus, searchTerm: searchTermLulus, setSearchTerm: setSearchTermLulus } = useFetchLulus(filtersLulus);
+    const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData, fetchAllData: fetchAllDataPelajar, searchTerm: searchTermPelajar, setSearchTerm: setSearchTermPelajar, allPelajarIds, limit, setCurrentPage: setCurrentPagePelajar, currentPage: currentPagePelajar, totalPages: totalPagesPelajar } = useFetchPelajar(filters);
+    const { dataLulus, loadingLulus, error: errorLulus, setLimit: setLimitLulus, totalDataLulus, fetchData: fetchDataLulus, searchTerm: searchTermLulus, setSearchTerm: setSearchTermLulus, limit: limitLulus, setCurrentPage: setCurrentPageLulus, currentPage:currentPageLulus, totalPages: totalPagesLulus, fetchAllData: fetchAllDataLulus } = useFetchLulus(filtersLulus);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -147,15 +149,34 @@ const Kelulusan = () => {
         }
     }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih, lembagaTerpilihLulus, jurusanTerpilihLulus, kelasTerpilihLulus, rombelTerpilihLulus]);
 
-    useEffect(() => {
-        if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
-    }, [setLimit, totalDataPelajar]);
+    // useEffect(() => {
+    //     if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
+    // }, [setLimit, totalDataPelajar]);
 
     useEffect(() => {
-        console.log(totalDataLulus);
+        if (isAllSelectedPelajar && allPelajarIds.length > 0) {
+            setSelectedPelajarBiodataIds(allPelajarIds);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allPelajarIds]);
+
+    // useEffect(() => {
+    //     console.log(totalDataLulus);
         
-        if (totalDataLulus && totalDataLulus != 0) setLimitLulus(totalDataLulus);
-    }, [setLimitLulus, totalDataLulus]);
+    //     if (totalDataLulus && totalDataLulus != 0) setLimitLulus(totalDataLulus);
+    // }, [setLimitLulus, totalDataLulus]);
+
+    const handlePageChangePelajar = (page) => {
+        if (page >= 1 && page <= totalPagesPelajar) {
+            setCurrentPagePelajar(page);
+        }
+    };
+
+    const handlePageChangeLulus = (page) => {
+        if (page >= 1 && page <= totalPagesLulus) {
+            setCurrentPageLulus(page);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -358,6 +379,15 @@ const Kelulusan = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                        totalData={totalDataPelajar}
+                        limit={limit}
+                        toggleLimit={(e) => setLimit(Number(e.target.value))}
+                        showViewButtons={false}
+                        showFilterButtons={false}
+                        showSearch={false}
+                    />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
@@ -366,14 +396,13 @@ const Kelulusan = () => {
                                         <input
                                             type="checkbox"
                                             checked={isAllSelectedPelajar}
-                                            onChange={(e) => {
+                                            onChange={async (e) => {
                                                 const checked = e.target.checked;
                                                 setIsAllSelectedPelajar(checked);
                                                 if (checked) {
-                                                    // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                    setSelectedPelajarBiodataIds(pelajar.map((item) => item.biodata_id));
+                                                    await fetchAllDataPelajar(); // Ambil semua ID dari semua halaman
+                                                    setSelectedPelajarBiodataIds(allPelajarIds);
                                                 } else {
-                                                    // Hilangkan semua centang
                                                     setSelectedPelajarBiodataIds([]);
                                                 }
                                             }}
@@ -423,7 +452,7 @@ const Kelulusan = () => {
                                                     }}
                                                 />
                                             </td>
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{(currentPagePelajar - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.no_induk}</td>
                                             <td className="px-3 py-2 border-b text-left">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">
@@ -442,6 +471,10 @@ const Kelulusan = () => {
                             </tbody>
                         </table>
                     </DoubleScrollbarTable>
+                    {totalPagesPelajar > 1 && (
+                        <Pagination currentPage={currentPagePelajar} totalPages={totalPagesPelajar} handlePageChange={handlePageChangePelajar} />
+                    )}
+                    </>
                 )}
             </div>
 
@@ -533,6 +566,15 @@ const Kelulusan = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                        totalData={totalDataLulus}
+                        limit={limitLulus}
+                        toggleLimit={(e) => setLimitLulus(Number(e.target.value))}
+                        showViewButtons={false}
+                        showFilterButtons={false}
+                        showSearch={false}
+                    />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
@@ -541,12 +583,12 @@ const Kelulusan = () => {
                                         <input
                                             type="checkbox"
                                             checked={isAllSelectedLulus}
-                                            onChange={(e) => {
+                                            onChange={async (e) => {
                                                 const checked = e.target.checked;
                                                 setIsAllSelectedLulus(checked);
                                                 if (checked) {
-                                                    // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                    setSelectedLulusBiodataIds(dataLulus.map((item) => item.biodata_id));
+                                                    const allIds = await fetchAllDataLulus();
+                                                    setSelectedLulusBiodataIds(allIds);
                                                 } else {
                                                     // Hilangkan semua centang
                                                     setSelectedLulusBiodataIds([]);
@@ -598,7 +640,7 @@ const Kelulusan = () => {
                                                     }}
                                                 />
                                             </td>
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{(currentPageLulus - 1) * limitLulus + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b text-left">{item.no_induk}</td>
                                             <td className="px-3 py-2 border-b text-left">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">
@@ -617,6 +659,10 @@ const Kelulusan = () => {
                             </tbody>
                         </table>
                     </DoubleScrollbarTable>
+                    {totalPagesLulus > 1 && (
+                        <Pagination currentPage={currentPageLulus} totalPages={totalPagesLulus} handlePageChange={handlePageChangeLulus} />
+                    )}
+                    </>
                 )}
             </div>
         </div>

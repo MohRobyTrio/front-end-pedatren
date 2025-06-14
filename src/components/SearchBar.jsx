@@ -9,7 +9,9 @@ const SearchBar = ({
     toggleView, 
     limit, 
     toggleLimit,
-    showViewButtons = true // Prop baru dengan default true
+    showViewButtons = true, // Prop baru dengan default true
+    showFilterButtons = true,
+    showSearch = true
 }) => {
     const [viewMode, setViewMode] = useState("table");
 
@@ -29,13 +31,15 @@ const SearchBar = ({
     return (
         <div className="flex flex-col md:flex-row-reverse justify-between md:items-center items-left mb-4 w-95 md:w-auto space-y-2">
             <div className="flex items-center space-x-2">
-                <input
-                    className="border border-gray-300 rounded p-2 w-40"
-                    placeholder="Cari Nama ..."
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                {showSearch && (
+                    <input
+                        className="border border-gray-300 rounded p-2 w-40"
+                        placeholder="Cari Nama ..."
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                )}
                 
                 {showViewButtons && (
                     <div className="flex border rounded-sm overflow-hidden">
@@ -57,9 +61,11 @@ const SearchBar = ({
                     </div>
                 )}
                 
-                <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
-                    <i className="fas fa-filter text-lg"></i>
-                </button>
+                {showFilterButtons && (
+                    <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
+                        <i className="fas fa-filter text-lg"></i>
+                    </button>
+                )}
             </div>
 
             <div>

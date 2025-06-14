@@ -8,6 +8,8 @@ import { API_BASE_URL } from "../../hooks/config";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import Pagination from "../../components/Pagination";
+import SearchBar from "../../components/SearchBar";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -70,7 +72,7 @@ const PindahKamar = () => {
 
     const shouldFetch = selectedWilayahFilter.wilayah !== "";
 
-    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData } = useFetchSantri(filters);
+    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, fetchAllData, limit, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, allSantriIds } = useFetchSantri(filters);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -103,9 +105,16 @@ const PindahKamar = () => {
         }
     }, [wilayahTerpilih, blokTerpilih, kamarTerpilih]);
 
+    // useEffect(() => {
+    //     if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
+    // }, [setLimit, totalDataSantri]);
+
     useEffect(() => {
-        if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
-    }, [setLimit, totalDataSantri]);
+        if (isAllSelected && allSantriIds.length > 0) {
+            setSelectedSantriIds(allSantriIds);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allSantriIds]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -201,6 +210,12 @@ const PindahKamar = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
             <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
@@ -228,6 +243,16 @@ const PindahKamar = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        totalData={totalDataSantri}
+                        limit={limit}
+                        toggleLimit={(e) => setLimit(Number(e.target.value))}
+                        showViewButtons={false}
+                        showFilterButtons={false}
+                    />
                     <DoubleScrollbarTable>
                     <table className="min-w-full text-sm text-left">
                         <thead className="bg-gray-100 text-gray-700">
@@ -236,16 +261,15 @@ const PindahKamar = () => {
                                     <input
                                         type="checkbox"
                                         checked={isAllSelected}
-                                        onChange={(e) => {
-                                            const checked = e.target.checked;
-                                            setIsAllSelected(checked);
-                                            if (checked) {
-                                                // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                setSelectedSantriIds(santri.map((item) => item.id));
-                                            } else {
-                                                // Hilangkan semua centang
-                                                setSelectedSantriIds([]);
-                                            }
+                                        onChange={async (e) => {
+                                                const checked = e.target.checked;
+                                                setIsAllSelected(checked);
+                                                if (checked) {
+                                                    await fetchAllData(); // Ambil semua ID dari semua halaman
+                                                    setSelectedSantriIds(allSantriIds);
+                                                } else {
+                                                    setSelectedSantriIds([]);
+                                                }
                                         }}
                                     />
                                 </th>
@@ -293,7 +317,7 @@ const PindahKamar = () => {
                                                 }}
                                             />
                                         </td>
-                                        <td className="px-3 py-2 border-b">{index + 1}</td>
+                                        <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                         <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.nama}</td>
                                         <td className="px-3 py-2 border-b">{item.kamar}</td>
@@ -303,6 +327,10 @@ const PindahKamar = () => {
                         </tbody>
                     </table>
                     </DoubleScrollbarTable>
+                    {totalPages > 1 && (
+                        <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                    )}
+                    </>
                 )}
             </div>
 

@@ -5,13 +5,13 @@ import { useEffect } from "react";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
 const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab, setValue }) => {
-    const lembaga = watch("modalAnakPegawai.lembaga");
-    const jurusan = watch("modalAnakPegawai.jurusan");
-    const kelas = watch("modalAnakPegawai.kelas");
-    const rombel = watch("modalAnakPegawai.rombel");
-    const wilayah = watch("modalAnakPegawai.wilayah");
-    const blok = watch("modalAnakPegawai.blok");
-    const kamar = watch("modalAnakPegawai.kamar");
+    const lembaga = watch("modalAnakPegawai.lembaga_id");
+    const jurusan = watch("modalAnakPegawai.jurusan_id");
+    const kelas = watch("modalAnakPegawai.kelas_id");
+    const rombel = watch("modalAnakPegawai.rombel_id");
+    const wilayah = watch("modalAnakPegawai.wilayah_id");
+    const blok = watch("modalAnakPegawai.blok_id");
+    const kamar = watch("modalAnakPegawai.kamar_id");
     const mondok = watch("modalAnakPegawai.mondok");
     const isDomisiliDisabled = mondok === "0";
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
@@ -20,9 +20,9 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
     useEffect(() => {
         if (mondok === "0") {
-            setValue("modalAnakPegawai.wilayah", "");
-            setValue("modalAnakPegawai.blok", "");
-            setValue("modalAnakPegawai.kamar", "");
+            setValue("modalAnakPegawai.wilayah_id", "");
+            setValue("modalAnakPegawai.blok_id", "");
+            setValue("modalAnakPegawai.kamar_id", "");
             setValue("modalAnakPegawai.tanggal_masuk_domisili", "");
         }
     }, [mondok, setValue]);
@@ -57,7 +57,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     const Filters = ({ filterOptions, control, onChange, selectedFilters, disabled = false }) => {
-        const wilayah = watch("modalAnakPegawai.wilayah");
+        const wilayah = watch("modalAnakPegawai.wilayah_id");
             return (
                 <div className="space-y-2">
                     {Object.entries(filterOptions).map(([label, options], index) => {
@@ -78,7 +78,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                         }`}
                                 >
                                     <Controller
-                                        name={`modalAnakPegawai.${label}`}
+                                        name={`modalAnakPegawai.${label}_id`}
                                         control={control}
                                         rules={{ required: true }}
                                         defaultValue={selectedFilters[label] || ""}

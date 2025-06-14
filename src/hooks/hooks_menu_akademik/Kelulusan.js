@@ -87,7 +87,7 @@ const useFetchLulus = (filters) => {
 
             setDataLulus(Array.isArray(result.data) ? result.data : []);
             setTotalDataLulus(result.total_data || 0); // karena tidak ada total_data di response
-            setTotalPages(1); // tidak ada pagination info
+            setTotalPages(result.total_pages); // tidak ada pagination info
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
@@ -106,6 +106,53 @@ const useFetchLulus = (filters) => {
         setCurrentPage(1);
     }, [limit]);
 
+    const fetchAllData = useCallback(async () => {
+    const token = sessionStorage.getItem("token") || getCookie("token");
+    let baseUrl = `${API_BASE_URL}fitur/list-lulus`;
+    const params = [];
+
+    if (debouncedSearchTerm) params.push(`nama=${encodeURIComponent(debouncedSearchTerm)}`);
+    if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") params.push(`lembaga=${encodeURIComponent(filters.lembaga)}`);
+    if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") params.push(`jurusan=${encodeURIComponent(filters.jurusan)}`);
+    if (filters?.kelas && filters.kelas !== "Semua Kelas") params.push(`kelas=${encodeURIComponent(filters.kelas)}`);
+    if (filters?.rombel && filters.rombel !== "Semua Rombel") params.push(`rombel=${encodeURIComponent(filters.rombel)}`);
+    if (filters?.urutBerdasarkan) params.push(`sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`);
+
+    const urlWithoutLimit = `${baseUrl}?${params.join("&")}`;
+
+    try {
+        // Step 1: Fetch total data
+        const response1 = await fetch(urlWithoutLimit, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response1.ok) throw new Error("Gagal fetch total data");
+
+        const result1 = await response1.json();
+        const total = result1.total_data || result1.data.length || 0;
+
+        if (total === 0) return [];
+
+        // Step 2: Fetch ulang dengan limit = total
+        const urlWithLimit = `${baseUrl}?${[...params, `limit=${total}`].join("&")}`;
+        const response2 = await fetch(urlWithLimit, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!response2.ok) throw new Error("Gagal fetch semua data");
+
+        const result2 = await response2.json();
+        const ids = Array.isArray(result2.data) ? result2.data.map(item => item.biodata_id) : [];
+
+        console.log("✅ Total ID diambil:", ids.length);
+        return ids;
+
+    } catch (error) {
+        console.error("❌ fetchAllData error:", error);
+        return [];
+    }
+}, [filters, debouncedSearchTerm]);
+
     return {
         dataLulus,
         loadingLulus,
@@ -116,6 +163,7 @@ const useFetchLulus = (filters) => {
         setLimit,
         totalDataLulus,
         fetchData,
+        fetchAllData,
         totalPages,
         currentPage,
         setCurrentPage

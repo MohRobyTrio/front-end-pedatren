@@ -9,6 +9,8 @@ import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_pes
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import Pagination from "../../components/Pagination";
+import SearchBar from "../../components/SearchBar";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -92,11 +94,24 @@ const HubungkanWaliAsuh = () => {
 
     const shouldFetch = selectedWilayahFilter.wilayah !== "";
 
-    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm } = useFetchSantri(filters);
+    const { santri, loadingSantri, error, setLimit, totalDataSantri, fetchData, searchTerm, setSearchTerm, fetchAllData, limit, totalPages, currentPage, setCurrentPage, allSantriIds } = useFetchSantri(filters);
+
+    // useEffect(() => {
+    //     if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
+    // }, [setLimit, totalDataSantri]);
 
     useEffect(() => {
-        if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
-    }, [setLimit, totalDataSantri]);
+        if (isAllSelected && allSantriIds.length > 0) {
+            setSelectedSantriIds(allSantriIds);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allSantriIds]);
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -245,6 +260,15 @@ const HubungkanWaliAsuh = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                        totalData={totalDataSantri}
+                        limit={limit}
+                        toggleLimit={(e) => setLimit(Number(e.target.value))}
+                        showViewButtons={false}
+                        showFilterButtons={false}
+                        showSearch={false}
+                    />
                     <DoubleScrollbarTable>
                     <table className="min-w-full text-sm text-left">
                         <thead className="bg-gray-100 text-gray-700">
@@ -253,16 +277,15 @@ const HubungkanWaliAsuh = () => {
                                     <input
                                         type="checkbox"
                                         checked={isAllSelected}
-                                        onChange={(e) => {
-                                            const checked = e.target.checked;
-                                            setIsAllSelected(checked);
-                                            if (checked) {
-                                                // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                setSelectedSantriIds(santri.map((item) => item.id));
-                                            } else {
-                                                // Hilangkan semua centang
-                                                setSelectedSantriIds([]);
-                                            }
+                                        onChange={async (e) => {
+                                                const checked = e.target.checked;
+                                                setIsAllSelected(checked);
+                                                if (checked) {
+                                                    await fetchAllData(); // Ambil semua ID dari semua halaman
+                                                    setSelectedSantriIds(allSantriIds);
+                                                } else {
+                                                    setSelectedSantriIds([]);
+                                                }
                                         }}
                                     />
                                 </th>
@@ -320,6 +343,10 @@ const HubungkanWaliAsuh = () => {
                         </tbody>
                     </table>
                     </DoubleScrollbarTable>
+                    {totalPages > 1 && (
+                        <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                    )}
+                    </>
                 )}
             </div>
 

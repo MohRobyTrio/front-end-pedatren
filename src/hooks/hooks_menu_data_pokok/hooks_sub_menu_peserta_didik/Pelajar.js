@@ -7,6 +7,7 @@ const useFetchPelajar = (filters) => {
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalDataPelajar, setTotalDataPelajar] = useState(0);
+    const [allPelajarIds, setAllPelajarIds] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -100,6 +101,56 @@ const useFetchPelajar = (filters) => {
         }
     }, [currentPage, filters, limit, debouncedSearchTerm]);
 
+    const fetchAllData = useCallback(async () => {
+        let url = `${API_BASE_URL}data-pokok/pelajar`; // <-- pastikan endpoint ini hanya kembalikan ID
+
+        const params = [];
+
+        // Sertakan semua filter seperti pada fetchData
+        if (debouncedSearchTerm) params.push(`nama=${encodeURIComponent(debouncedSearchTerm)}`);
+        if (filters?.negara && filters.negara !== "Semua Negara") params.push(`negara=${encodeURIComponent(filters.negara)}`);
+        if (filters?.provinsi && filters.provinsi !== "Semua Provinsi") params.push(`provinsi=${encodeURIComponent(filters.provinsi)}`);
+        if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten") params.push(`kabupaten=${encodeURIComponent(filters.kabupaten)}`);
+        if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan") params.push(`kecamatan=${encodeURIComponent(filters.kecamatan)}`);
+        if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") params.push(`wilayah=${encodeURIComponent(filters.wilayah)}`);
+        if (filters?.blok && filters.blok !== "Semua Blok") params.push(`blok=${encodeURIComponent(filters.blok)}`);
+        if (filters?.kamar && filters.kamar !== "Semua Kamar") params.push(`kamar=${encodeURIComponent(filters.kamar)}`);
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") params.push(`lembaga=${encodeURIComponent(filters.lembaga)}`);
+        if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") params.push(`jurusan=${encodeURIComponent(filters.jurusan)}`);
+        if (filters?.kelas && filters.kelas !== "Semua Kelas") params.push(`kelas=${encodeURIComponent(filters.kelas)}`);
+        if (filters?.rombel && filters.rombel !== "Semua Rombel") params.push(`rombel=${encodeURIComponent(filters.rombel)}`);
+        if (filters?.jenisKelamin) params.push(`jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`);
+        if (filters?.smartcard) params.push(`smartcard=${encodeURIComponent(filters.smartcard)}`);
+        if (filters?.status) params.push(`status=${encodeURIComponent(filters.status)}`);
+        if (filters?.angkatanPelajar) params.push(`angkatan_pelajar=${encodeURIComponent(filters.angkatanPelajar)}`);
+        if (filters?.wargaPesantren) params.push(`warga_pesantren=${encodeURIComponent(filters.wargaPesantren)}`);
+        if (filters?.pemberkasan) params.push(`pemberkasan=${encodeURIComponent(filters.pemberkasan)}`);
+
+        if (params.length > 0) {
+            url += `?${params.join("&")}`;
+        }
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error("Gagal fetch semua ID pelajar");
+            }
+
+            const result = await response.json();
+
+            if (Array.isArray(result.data)) {
+                const ids = result.data.map((item) => item.biodata_id); // asumsi fieldnya `biodata_id`
+                setAllPelajarIds(ids);
+            } else {
+                setAllPelajarIds([]);
+            }
+        } catch (err) {
+            console.error("Fetch all data error:", err);
+            setAllPelajarIds([]);
+        }
+    }, [filters, debouncedSearchTerm]);
+
+
     useEffect(() => {
         fetchData();
     }, [fetchData]);
@@ -119,9 +170,11 @@ const useFetchPelajar = (filters) => {
         setLimit,
         totalDataPelajar,
         fetchData,
+        fetchAllData,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        allPelajarIds
     };
 };
 

@@ -8,6 +8,8 @@ import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../hooks/config";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import SearchBar from "../../components/SearchBar";
+import Pagination from "../../components/Pagination";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -43,7 +45,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
 const PindahKelas = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [selectedSantriIds, setSelectedSantriIds] = useState([]);
+    const [selectedPelajarIds, setSelectedPelajarIds] = useState([]);
     const [isAllSelected, setIsAllSelected] = useState(false);
     const [submitAction, setSubmitAction] = useState(null);
     const [filters, setFilters] = useState({
@@ -54,8 +56,8 @@ const PindahKelas = () => {
     })
 
     useEffect(() => {
-        console.log(selectedSantriIds);
-    }, [selectedSantriIds])
+        console.log(selectedPelajarIds);
+    }, [selectedPelajarIds])
 
     const {
         filterLembaga: filterLembagaFilter,
@@ -72,7 +74,7 @@ const PindahKelas = () => {
 
     const shouldFetch = selectedLembagaFilter.lembaga !== "";
 
-    const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData } = useFetchPelajar(filters);
+    const { pelajar, loadingPelajar, error, setLimit, totalDataPelajar, fetchData, fetchAllData, limit, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, allPelajarIds } = useFetchPelajar(filters);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -109,9 +111,16 @@ const PindahKelas = () => {
         }
     }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih]);
 
+    // useEffect(() => {
+    //     if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
+    // }, [setLimit, totalDataPelajar]);
+
     useEffect(() => {
-        if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
-    }, [setLimit, totalDataPelajar]);
+        if (isAllSelected && allPelajarIds.length > 0) {
+            setSelectedPelajarIds(allPelajarIds);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allPelajarIds]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -123,7 +132,7 @@ const PindahKelas = () => {
             endpoint = 'pindah-jenjang';
         }
 
-        if (selectedSantriIds.length === 0) {
+        if (selectedPelajarIds.length === 0) {
             await Swal.fire({
                 icon: "warning",
                 title: "Peringatan",
@@ -144,7 +153,7 @@ const PindahKelas = () => {
         if (!confirmResult.isConfirmed) return;
 
         const payload = {
-            biodata_id: selectedSantriIds,
+            biodata_id: selectedPelajarIds,
             lembaga_id: selectedLembagaTujuan.lembaga,
             jurusan_id: selectedLembagaTujuan.jurusan,
             kelas_id: selectedLembagaTujuan.kelas,
@@ -202,7 +211,7 @@ const PindahKelas = () => {
             });
 
             // Reset form jika diperlukan
-            setSelectedSantriIds([]);
+            setSelectedPelajarIds([]);
             fetchData(true);
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -214,6 +223,17 @@ const PindahKelas = () => {
             });
         }
     };
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    useEffect(() => {
+        console.log(selectedPelajarIds);
+        
+    }, [selectedPelajarIds]);
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
@@ -242,6 +262,16 @@ const PindahKelas = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        totalData={totalDataPelajar}
+                        limit={limit}
+                        toggleLimit={(e) => setLimit(Number(e.target.value))}
+                        showViewButtons={false}
+                        showFilterButtons={false}
+                    />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700">
@@ -250,15 +280,14 @@ const PindahKelas = () => {
                                         <input
                                             type="checkbox"
                                             checked={isAllSelected}
-                                            onChange={(e) => {
+                                            onChange={async (e) => {
                                                 const checked = e.target.checked;
                                                 setIsAllSelected(checked);
                                                 if (checked) {
-                                                    // Centang semua, isi selectedSantriIds dengan semua id dari pelajar
-                                                    setSelectedSantriIds(pelajar.map((item) => item.biodata_id));
+                                                    await fetchAllData(); // Ambil semua ID dari semua halaman
+                                                    setSelectedPelajarIds(allPelajarIds);
                                                 } else {
-                                                    // Hilangkan semua centang
-                                                    setSelectedSantriIds([]);
+                                                    setSelectedPelajarIds([]);
                                                 }
                                             }}
                                         />
@@ -282,15 +311,15 @@ const PindahKelas = () => {
                                     </tr>
                                 ) : (
                                     pelajar.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 text-center">
+                                        <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-center">
                                             <td className="px-3 py-2 border-b">
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedSantriIds.includes(item.biodata_id)}
+                                                    checked={selectedPelajarIds.includes(item.biodata_id)}
                                                     onChange={(e) => {
                                                         const checked = e.target.checked;
                                                         if (checked) {
-                                                            setSelectedSantriIds((prev) => {
+                                                            setSelectedPelajarIds((prev) => {
                                                                 const newSelected = [...prev, item.biodata_id];
                                                                 if (newSelected.length === pelajar.length) {
                                                                     setIsAllSelected(true);
@@ -298,7 +327,7 @@ const PindahKelas = () => {
                                                                 return newSelected;
                                                             });
                                                         } else {
-                                                            setSelectedSantriIds((prev) => {
+                                                            setSelectedPelajarIds((prev) => {
                                                                 const newSelected = prev.filter((biodata_id) => biodata_id !== item.biodata_id);
                                                                 setIsAllSelected(false);
                                                                 return newSelected;
@@ -307,7 +336,7 @@ const PindahKelas = () => {
                                                     }}
                                                 />
                                             </td>
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
+                                            <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.no_induk}</td>
                                             <td className="px-3 py-2 border-b text-left">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">{item.kelas}</td>
@@ -317,6 +346,10 @@ const PindahKelas = () => {
                             </tbody>
                         </table>
                     </DoubleScrollbarTable>
+                    {totalPages > 1 && (
+                        <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                    )}
+                    </>
                 )}
             </div>
 

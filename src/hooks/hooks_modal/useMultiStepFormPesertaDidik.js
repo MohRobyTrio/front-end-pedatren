@@ -190,6 +190,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
             refetchData?.(true);
             onClose?.();
+            resetData();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
         }
