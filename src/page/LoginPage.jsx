@@ -131,12 +131,6 @@ const LoginPage = () => {
             {isLoggingIn ? <Load /> : "Login"}
           </button>
           {loginError && <p className="text-red-500 text-sm mt-2 text-center">{loginError}</p>}
-          <p className="text-sm text-center text-gray-500 mt-2">
-            Belum punya akun?{" "}
-            <Link to="/register" className="text-blue-600 hover:underline font-medium">
-              Register
-            </Link>
-          </p>
         </form>
       </div>
     </section>

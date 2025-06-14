@@ -35,6 +35,22 @@ export function useMultiStepFormAnakPegawai(onClose, jenisBerkasList, refetchDat
         const valid = await trigger(getFieldsForTab(activeTab));
         if (!valid) return;
 
+        if (activeTab === 1) {
+            const nikAyah = watch("modalAnakPegawai.nik_ayah");
+            const nikIbu = watch("modalAnakPegawai.nik_ibu");
+            
+
+            if (nikAyah && nikIbu && nikAyah === nikIbu) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'NIK Ayah dan Ibu Sama',
+                    text: 'Silakan periksa kembali, NIK Ayah dan Ibu tidak boleh sama.',
+                    confirmButtonText: 'Oke'
+                });
+                return; // hentikan jika validasi gagal
+            }
+        }
+
         const nextTab = activeTab + 1;
         if (!unlockedTabs.includes(nextTab)) {
         setUnlockedTabs([...unlockedTabs, nextTab]);

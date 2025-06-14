@@ -51,8 +51,16 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
         if (kamar && filterWilayah.kamar.length >= 1) {
             handleFilterChangeWilayah({ kamar: kamar });
         }
+        const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
+        const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
+        if (defaultSantri) {
+            setValue("modalPeserta.angkatan_santri_id", defaultSantri.value);
+        }
+        if (defaultPelajar) {
+            setValue("modalPeserta.angkatan_pelajar_id", defaultPelajar.value);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length]);
+    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length, menuAngkatanSantri]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -80,13 +88,11 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                     <Controller
                                         name={`modalPeserta.${label}_id`}
                                         control={control}
-                                        rules={{ required: true }}
                                         defaultValue={selectedFilters[label] || ""}
                                         render={({ field }) => (
                                             <select
                                                 {...field}
                                                 id={label}
-                                                required
                                                 disabled={isDisabled}
                                                 className={`w-full py-1.5 pr-3 pl-1 text-base focus:outline-none sm:text-sm ${isDisabled ? "text-gray-500" : ""
                                                     }`}
@@ -150,8 +156,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 maxLength={15}
                                 placeholder="Masukkan NIS"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('modalPeserta.nis', { required: true })}
-                                 required
+                                 {...register('modalPeserta.nis')}
                             />
                         </div>
                     </div>
@@ -197,8 +202,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 name="tanggal_masuk_domisili"
                                 disabled={isDomisiliDisabled}
                                 className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
-                                {...register("modalPeserta.tanggal_masuk_domisili", { required: true })}
-                                required
+                                {...register("modalPeserta.tanggal_masuk_domisili")}
                             />
                         </div>
                     </div>
@@ -224,8 +228,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 }}
                                 placeholder="Masukkan No. Induk"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('modalPeserta.no_induk', { required: true })}
-                                 required
+                                 {...register('modalPeserta.no_induk')}
                             />
                         </div>
                     </div>
@@ -244,7 +247,6 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 name="angkatan_pelajar_id"
                                 {...register("modalPeserta.angkatan_pelajar_id")}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                required
                             >
                                 {menuAngkatanPelajar.map((pelajar, idx) => (
                                     <option key={idx} value={pelajar.value}>
@@ -267,8 +269,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 id="tanggal_masuk_pendidikan"
                                 name="tanggal_masuk_pendidikan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.tanggal_masuk_pendidikan", { required: true })}
-                                required
+                                {...register("modalPeserta.tanggal_masuk_pendidikan")}
                             />
                         </div>
                     </div>

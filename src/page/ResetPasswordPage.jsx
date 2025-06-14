@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { API_BASE_URL } from "../hooks/config";
 
 const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams();
@@ -58,7 +59,7 @@ const ResetPasswordPage = () => {
                     Swal.showLoading();
                 }
             });
-            const response = await fetch('http://localhost:8000/api/reset', {
+            const response = await fetch(`${API_BASE_URL}reset`, {
                 method: 'POST',
                 credentials: "include",
                 headers: {

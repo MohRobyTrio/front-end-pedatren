@@ -4,15 +4,17 @@ import logo from "../assets/logo.png";
 import { getRolesString } from "../utils/getRolesString";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faRightFromBracket, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil";
+import { ModalAddUser, ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil";
+import Access from "./Access";
 
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggleButtonRef }) => {
     const navigate = useNavigate();
     const { logout, isLoggingOut } = useLogout();
     const [openModalUpdateNameEmail, setOpenModalUpdateNameEmail] = useState(false);
     const [openModalUpdatePass, setOpenModalUpdatePass] = useState(false);
+    const [openModalAddUser, setOpenModalAddUser] = useState(false);
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
 
     const handleLogout = async () => {
@@ -66,6 +68,9 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
 
                         <ModalUpdatePassword isOpen={openModalUpdatePass} onClose={() => setOpenModalUpdatePass(false)} />
 
+                        <Access action="tambahakun">
+                            <ModalAddUser isOpen={openModalAddUser} onClose={() => setOpenModalAddUser(false)} />
+                        </Access>
                         {isOpen && (
                             <div className="absolute right-0 z-50 mt-3 w-56 text-base list-none bg-gray-700 divide-y divide-gray-400 rounded-xl shadow-lg overflow-hidden">
                                 <div className="px-4 py-3">
@@ -89,6 +94,15 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                                         >
                                             <FontAwesomeIcon icon={faLock} />
                                             Edit Password
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setOpenModalAddUser(true)}
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-500 hover:text-white transition duration-200 ease-in-out rounded-md cursor-pointer"
+                                        >
+                                            <FontAwesomeIcon icon={faUserPlus} />
+                                            Tambah Akun
                                         </button>
                                     </li>
                                     <li>

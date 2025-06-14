@@ -1,4 +1,4 @@
-const FormKeluargaAnakPegawai = ({ register, errors }) => {
+const FormKeluargaAnakPegawai = ({ register }) => {
     return (
         <>
             <div className="space-y-2">
@@ -26,7 +26,6 @@ const FormKeluargaAnakPegawai = ({ register, errors }) => {
                                  {...register('modalAnakPegawai.nik_ayah', { required: true })}
                                  required
                             />
-                            {errors.no_kk && <span>KK wajib diisi</span>}
                         </div>
                     </div>
                 </div>
@@ -433,37 +432,6 @@ const FormKeluargaAnakPegawai = ({ register, errors }) => {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="hubungan" className="md:w-1/4 text-black">
-                        Hubungan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <select
-                                id="hubungan"
-                                name="hubungan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                {...register("modalAnakPegawai.hubungan", { required: true })}
-                                required
-                            >
-                                <option value="">
-                                    Pilih
-                                </option>
-                                <option value="ayah kandung">Ayah Kandung</option>
-                                <option value="ibu kandung">Ibu Kandung</option>
-                                <option value="kakak kandung">Kakak Kandung</option>
-                                <option value="adik kandung">Adik Kandung</option>
-                                <option value="kakek kandung">Kakek Kandung</option>
-                                <option value="nenek kandung">Nenek Kandung</option>
-                                <option value="paman dari ayah/ibu">Paman dari Ayah/Ibu</option>
-                                <option value="bibi dari ayah/ibu">Bibi dari Ayah/Ibu</option>
-                                <option value="ayah sambung">Ayah sambung</option>
-                                <option value="ibu sambung">Ayah ibu</option>
-                            </select>
-                        </div>
-                    </div>
-                </div> */}
 
                 {/* Tempat Lahir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">

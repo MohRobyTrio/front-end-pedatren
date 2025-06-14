@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate,
   // useLocation, 
   useParams } from 'react-router-dom';
 import MainPage from './page/MainPage';
-import RegisterPage from './page/RegisterPage';
+// import RegisterPage from './page/RegisterPage';
 import LoginPage from './page/LoginPage';
 import NotFound from './content_main_page/NotFound';
 import Formulir from './content_main_page/Formulir';
@@ -111,9 +111,9 @@ function App() {
         {/* Public Route: Login hanya bisa diakses saat belum login */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          {/* <Route path="/register" element={<RegisterPage />} /> */}
           <Route path="/forgot" element={<ForgotPasswordPage />} />
-<Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         </Route>
 
