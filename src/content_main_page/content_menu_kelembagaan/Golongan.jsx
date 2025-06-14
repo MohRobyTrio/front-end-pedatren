@@ -65,12 +65,12 @@ const Golongan = () => {
                                             <td className="px-3 py-2 border-b">{item.nama_golongan}</td>
                                             <td className="px-3 py-2 border-b w-30">
                                                 <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === 1
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
                                                             ? "bg-green-100 text-green-700"
                                                             : "bg-red-100 text-red-700"
                                                         }`}
                                                 >
-                                                    {item.status === 1 ? "Aktif" : "Nonaktif"}
+                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
                                                 </span>
                                             </td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
