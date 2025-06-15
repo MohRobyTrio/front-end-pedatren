@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
+import { getCookie } from "../../utils/cookieUtils";
 
 export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage, fields = [], endpoint }) => {
     const [selectedFields, setSelectedFields] = useState([]);
@@ -16,7 +17,7 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
         );
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
         const baseUrl = `${API_BASE_URL}${endpoint}`;
         const params = new URLSearchParams();
 
@@ -54,7 +55,46 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
             params.append("all", "true");
         }
 
-        window.location.href = `${baseUrl}?${params.toString()}`;
+        // window.location.href = `${baseUrl}?${params.toString()}`;
+        const token = sessionStorage.getItem("token") || getCookie("token");
+        try {
+            const response = await fetch(`${baseUrl}?${params.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Export gagal");
+            }
+
+            const blob = await response.blob();
+
+            // Ambil nama file dari Content-Disposition
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = 'export.xlsx';
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                if (match && match[1]) {
+                    filename = match[1].replace(/['"]/g, '');
+                }
+            }
+
+            // Paksa download file
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Export gagal:", err);
+            alert("Export gagal: " + err.message);
+        }
+
     };
 
 

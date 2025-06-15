@@ -11,16 +11,18 @@ import Pagination from '../../components/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ModalDetail from '../../components/modal/ModalDetail';
-import { downloadFile } from '../../utils/downloadFile';
-import { API_BASE_URL } from '../../hooks/config';
+// import { downloadFile } from '../../utils/downloadFile';
+// import { API_BASE_URL } from '../../hooks/config';
 import { FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import Access from '../../components/Access';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
+import { ModalExport } from '../../components/modal/ModalExport';
 
 const Pegawai = () => {
-    const [exportLoading, setExportLoading] = useState(false);
+    // const [exportLoading, setExportLoading] = useState(false);
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -158,6 +160,30 @@ const Pegawai = () => {
         if (value === false) return <FontAwesomeIcon icon={faTimes} className="text-red-600" />;
         return "-";
     };
+
+    const fieldsExports = [
+        { label: "No. KK", value: "no_kk" },
+        { label: "NIK", value: "nik" },
+        { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Lahir", value: "tempat_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        // { label: "Anak ke", value: "anak_ke" },
+        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        // { label: "Domisili Santri", value: "domisili_santri" },
+        // { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        // { label: "Status", value: "status" },
+        // { label: "Ibu Kandung", value: "ibu_kandung" }
+    ];
       
     const [showFormModal, setShowFormModal] = useState(false);
 
@@ -171,7 +197,7 @@ const Pegawai = () => {
                     <Access action="tambah">
                         <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                     </Access>
-                    <button
+                    {/* <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/pegawai`, setExportLoading)}
                         disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -187,6 +213,14 @@ const Pegawai = () => {
                                 <span>Export</span>
                             </>
                         )}
+                    </button> */}
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                                <FaFileExport />
+                                <span>Export</span>
                     </button>
                 </div>
             </div>
@@ -293,6 +327,8 @@ const Pegawai = () => {
 
                     )
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pegawai" />
 
                 {isModalOpen && (
                     <ModalDetail
