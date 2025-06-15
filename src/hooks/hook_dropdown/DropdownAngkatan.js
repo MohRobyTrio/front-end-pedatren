@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const DropdownAngkatan = () => {
     const [menuAngkatanPelajar, setAngkatanPelajar] = useState([]);
     const [menuAngkatanSantri, setAngkatanSantri] = useState([]);
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const localData = sessionStorage.getItem("menuAngkatan");
@@ -21,7 +23,11 @@ const DropdownAngkatan = () => {
                 ...parsedData.santri.map(a => ({ value: a.id, label: a.label }))
             ]);
         } else {
-            fetch(`${API_BASE_URL}dropdown/angkatan`)
+            fetch(`${API_BASE_URL}dropdown/angkatan`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     const pelajar = data.data.pelajar || [];
@@ -45,6 +51,7 @@ const DropdownAngkatan = () => {
                     setAngkatanSantri([{ label: "Pilih Angkatan", value: "" }]);
                 });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { menuAngkatanPelajar, menuAngkatanSantri };

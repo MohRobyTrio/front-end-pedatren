@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useFetchPengunjung = (filters) => {
     const [pengunjung, setPengunjung] = useState([]);
@@ -14,6 +15,7 @@ const useFetchPengunjung = (filters) => {
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
     const lastRequest = useRef("");
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -47,7 +49,11 @@ const useFetchPengunjung = (filters) => {
         setError(null);
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) throw new Error(`Fetch error: ${response.status}`);
 
             const data = await response.json();
@@ -64,6 +70,7 @@ const useFetchPengunjung = (filters) => {
         } finally {
             setLoading(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, debouncedSearchTerm, filters]);
 
     useEffect(() => {

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const DropdownNegara = () => {
     const [data, setData] = useState([]);
     const [filterNegara, setFilterNegara] = useState({ negara: [], provinsi: [], kabupaten: [], kecamatan: [] });
     const [selectedNegara, setSelectedNegara] = useState({ negara: "", provinsi: "", kabupaten: "", kecamatan: "" });
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const sessionData = sessionStorage.getItem("menuNegara");
@@ -19,7 +21,11 @@ const DropdownNegara = () => {
                 kecamatan: [{ value: "", label: "Semua Kecamatan" }]
             });
         } else {
-            fetch(`${API_BASE_URL}dropdown/negara`)
+            fetch(`${API_BASE_URL}dropdown/negara`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     setData(data.negara);
@@ -43,6 +49,7 @@ const DropdownNegara = () => {
                 }
             );
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilterChangeNegara = (newFilter) => {

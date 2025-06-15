@@ -13,6 +13,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import { FaPlus } from "react-icons/fa";
 import { ModalAddProgressKognitif } from "../../components/modal/ModalFormCatatan";
 import Access from "../../components/Access";
+import { getCookie } from "../../utils/cookieUtils";
 
 
 const CatatanKognitif = () => {
@@ -35,7 +36,12 @@ const CatatanKognitif = () => {
     useEffect(() => {
         const fetchPeriode = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}dropdown/periode`);
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const response = await fetch(`${API_BASE_URL}dropdown/periode`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
                 const data = await response.json();
 
                 // Ambil hanya bagian kognitif dari respons API

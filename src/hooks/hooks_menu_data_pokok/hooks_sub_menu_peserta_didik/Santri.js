@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../../config";
+import { getCookie } from "../../../utils/cookieUtils";
 
 const useFetchSantri = (filters) => {
     const [santri, setSantri] = useState([]);
@@ -13,7 +14,7 @@ const useFetchSantri = (filters) => {
     const [allSantriIds, setAllSantriIds] = useState([]);
 
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-
+    const token = sessionStorage.getItem("token") || getCookie("token");
     const lastRequest = useRef("");
 
     useEffect(() => {
@@ -76,7 +77,11 @@ const useFetchSantri = (filters) => {
         setError(null);
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`${response.statusText}: ${response.status}`);
             }
@@ -95,6 +100,7 @@ const useFetchSantri = (filters) => {
         } finally {
             setLoadingSantri(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, filters, limit, debouncedSearchTerm]);
 
     const fetchAllData = useCallback(async () => {

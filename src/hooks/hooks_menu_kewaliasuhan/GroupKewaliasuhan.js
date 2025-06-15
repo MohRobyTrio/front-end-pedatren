@@ -1,6 +1,7 @@
 // src/hooks/useFetchGroupKewaliasuhan.js
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useFetchGroupKewaliasuhan = (filters) => {
     const [groupKewaliasuhan, setGroupKewaliasuhan] = useState([]);
@@ -14,6 +15,7 @@ const useFetchGroupKewaliasuhan = (filters) => {
 
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const lastRequest = useRef("");
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -51,7 +53,11 @@ const useFetchGroupKewaliasuhan = (filters) => {
         setError(null);
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) throw new Error(`Fetch error: ${response.status}`);
 
             const data = await response.json();
@@ -68,6 +74,7 @@ const useFetchGroupKewaliasuhan = (filters) => {
         } finally {
             setLoadingGroupKewaliasuhan(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, filters, limit, debouncedSearchTerm]);
 
     useEffect(() => {

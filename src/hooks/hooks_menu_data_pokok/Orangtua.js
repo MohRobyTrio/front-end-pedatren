@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useFetchOrangtua = (filters) => {
   const [orangtua, setOrangtua] = useState([]);
@@ -13,6 +14,7 @@ const useFetchOrangtua = (filters) => {
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const lastRequest = useRef("");
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -58,7 +60,11 @@ const useFetchOrangtua = (filters) => {
     setError(null);
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
       if (!response.ok) {
         throw new Error(`${response.statusText}: ${response.status}`);
       }
@@ -77,6 +83,7 @@ const useFetchOrangtua = (filters) => {
     } finally {
       setLoadingOrangtua(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filters, limit, debouncedSearchTerm]);
 
   useEffect(() => {

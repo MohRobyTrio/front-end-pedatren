@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const DropdownHubungan = () => {
   const [menuHubungan, setMenuHubungan] = useState([]);
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuHubungan");
@@ -17,7 +19,11 @@ const DropdownHubungan = () => {
         }))
       ]);
     } else {
-      fetch(`${API_BASE_URL}dropdown/hubungan`)
+      fetch(`${API_BASE_URL}dropdown/hubungan`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         .then((res) => res.json())
         .then((data) => {
           sessionStorage.setItem("menuHubungan", JSON.stringify(data));
@@ -35,6 +41,7 @@ const DropdownHubungan = () => {
           setMenuHubungan([{ label: "Pilih Hubungan", value: "" }]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { menuHubungan };

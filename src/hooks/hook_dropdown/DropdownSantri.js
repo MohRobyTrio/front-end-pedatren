@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useDropdownSantri = () => {
   const [menuSantri, setMenuSantri] = useState([]);
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuSantri");
@@ -19,7 +21,11 @@ const useDropdownSantri = () => {
       }
     } else {
       console.log("Mengambil data dari API...");
-      fetch(`${API_BASE_URL}data-pokok/santri`)
+      fetch(`${API_BASE_URL}data-pokok/santri`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         .then((res) => res.json())
         .then((resMeta) => {
           console.log("Meta response:", resMeta);
@@ -27,7 +33,11 @@ const useDropdownSantri = () => {
           if (!total || isNaN(total))
             throw new Error("Gagal mendapatkan total_data");
 
-          return fetch(`${API_BASE_URL}data-pokok/santri?limit=${total}`);
+          return fetch(`${API_BASE_URL}data-pokok/santri?limit=${total}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
         })
         .then((res) => res.json())
         .then((resData) => {
@@ -73,6 +83,7 @@ const useDropdownSantri = () => {
           setMenuSantri([{ label: "Pilih Santri", value: "", id: null }]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // console.log("Current menuSantri state:", menuSantri);

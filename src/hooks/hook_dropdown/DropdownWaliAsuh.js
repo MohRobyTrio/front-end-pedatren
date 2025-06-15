@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useDropdownWaliAsuh = () => {
   const [menuWaliAsuh, setMenuWaliAsuh] = useState([]);
   const [menuWaliAsuh2, setMenuWaliAsuh2] = useState([]);
   const [menuWaliAsuh3, setMenuWaliAsuh3] = useState([]);
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuWaliAsuh");
@@ -18,7 +20,11 @@ const useDropdownWaliAsuh = () => {
         sessionStorage.removeItem("menuWaliAsuh");
       }
     } else {
-      fetch(`${API_BASE_URL}dropdown/wali-asuh`)
+      fetch(`${API_BASE_URL}dropdown/wali-asuh`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         .then((res) => res.json())
         .then((resData) => {
           if (resData.status && Array.isArray(resData.data)) {
@@ -44,6 +50,7 @@ const useDropdownWaliAsuh = () => {
           ]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch untuk /dropdown/waliasuh
@@ -57,7 +64,11 @@ const useDropdownWaliAsuh = () => {
         sessionStorage.removeItem("menuWaliAsuh2");
       }
     } else {
-      fetch(`${API_BASE_URL}dropdown/waliasuh`)
+      fetch(`${API_BASE_URL}dropdown/waliasuh`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         .then((res) => res.json())
         .then((resData) => {
           if (Array.isArray(resData)) {
@@ -77,6 +88,7 @@ const useDropdownWaliAsuh = () => {
           setMenuWaliAsuh2([{ label: "Pilih Wali Asuh", value: "", id: "" }])
         );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -91,7 +103,11 @@ const useDropdownWaliAsuh = () => {
       sessionStorage.removeItem("menuWaliAsuh3");
     }
   } else {
-    fetch(`${API_BASE_URL}data-pokok/waliasuh`)
+    fetch(`${API_BASE_URL}data-pokok/waliasuh`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
       .then((res) => res.json())
       .then((resMeta) => {
           console.log("Meta response:", resMeta);
@@ -99,7 +115,11 @@ const useDropdownWaliAsuh = () => {
           if (!total || isNaN(total))
             throw new Error("Gagal mendapatkan total_data");
 
-          return fetch(`${API_BASE_URL}data-pokok/waliasuh?limit=${total}`);
+          return fetch(`${API_BASE_URL}data-pokok/waliasuh?limit=${total}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
         })
       .then((res) => res.json())
       .then((resData) => {
@@ -124,6 +144,7 @@ const useDropdownWaliAsuh = () => {
         setMenuWaliAsuh3([{ label: "Pilih Wali Asuh", value: "", id: null }]);
       });
   }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 

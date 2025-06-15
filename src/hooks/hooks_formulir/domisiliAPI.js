@@ -11,7 +11,11 @@ const token = localStorage.getItem("token") || sessionStorage.getItem("token");
  */
 export const getDomisiliList = async (biodataId) => {
   try {
-    const res = await fetch(`${API_BASE_URL}${biodataId}/domisili`);
+    const res = await fetch(`${API_BASE_URL}${biodataId}/domisili`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
     if (!res.ok) throw new Error("Respon tidak OK");
     const json = await res.json();
     return Array.isArray(json.data) ? json.data : [json.data];
@@ -28,7 +32,11 @@ export const getDomisiliList = async (biodataId) => {
  */
 export const getDomisiliDetail = async (id) => {
   try {
-    const res = await fetch(`${API_BASE_URL}${id}/domisili/show`);
+    const res = await fetch(`${API_BASE_URL}${id}/domisili/show`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
     if (!res.ok) throw new Error("Respon tidak OK");
     const json = await res.json();
     return json.data || null;

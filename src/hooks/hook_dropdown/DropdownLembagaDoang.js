@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useDropdownLembaga = () => {
     const [menuLembaga, setMenuLembaga] = useState([]);
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const localData = sessionStorage.getItem("menuLembaga");
@@ -23,7 +25,11 @@ const useDropdownLembaga = () => {
                 sessionStorage.removeItem("menuLembaga");
             }
         } else {
-            fetch(`${API_BASE_URL}dropdown/lembaga`)
+            fetch(`${API_BASE_URL}dropdown/lembaga`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     const formatted = [
@@ -43,6 +49,7 @@ const useDropdownLembaga = () => {
                     setMenuLembaga([{ label: "Pilih Lembaga", value: "" }]);
                 });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { menuLembaga };

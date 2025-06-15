@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const DropdownWilayah = () => {
     const [data, setData] = useState([]);
     const [filterWilayah, setFilterWilayah] = useState({ wilayah: [], blok: [], kamar: [] });
     const [selectedWilayah, setselectedWilayah] = useState({ wilayah: "", blok: "", kamar: "" });
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}dropdown/wilayah`)
+        fetch(`${API_BASE_URL}dropdown/wilayah`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((res) => res.json())
             .then((data) => {
                 setData(data.wilayah);
@@ -26,6 +32,7 @@ const DropdownWilayah = () => {
                     kamar: [{ value: "", label: "Semua Kamar" }]
                 });
             });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilterChangeWilayah = (newFilter) => {

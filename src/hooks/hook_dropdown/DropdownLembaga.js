@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 // const DropdownLembaga = ({ defaultValues }) => {
 const DropdownLembaga = () => {
     const [data, setData] = useState([]);
     const [filterLembaga, setFilterLembaga] = useState({ lembaga: [], jurusan: [], kelas: [], rombel: [] });
     const [selectedLembaga, setSelectedLembaga] = useState({ lembaga: "", jurusan: "", kelas: "", rombel: "" });
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
         const sessionData = sessionStorage.getItem("menuLembaga");
@@ -24,7 +26,13 @@ const DropdownLembaga = () => {
             });
         } else {
 
-        fetch(`${API_BASE_URL}dropdown/lembaga`)
+        fetch(`${API_BASE_URL}dropdown/lembaga`
+            , {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        )
             .then((res) => res.json())
             .then((data) => {
                 setData(data.lembaga);
@@ -46,6 +54,7 @@ const DropdownLembaga = () => {
                 });
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilterChangeLembaga = (newFilter) => {

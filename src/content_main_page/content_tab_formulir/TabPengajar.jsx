@@ -277,9 +277,8 @@ const TabPengajar = () => {
                     Swal.showLoading();
                 }
             });
-            const token = sessionStorage.getItem("token") || getCookie("token");
             const pengajarId = selectedPengajarId; // asumsi ID pengajar tersedia
-
+            
             const payload = {
                 ...formData,
                 materi_ajar: materiList.map(item => ({
@@ -289,7 +288,8 @@ const TabPengajar = () => {
             };
             
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
-
+            
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi`, {
                 method: 'POST',
                 headers: {

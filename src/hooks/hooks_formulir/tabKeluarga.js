@@ -66,6 +66,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
         }
         
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [biodata_id, token]);
     
     //debunging
@@ -118,6 +119,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
         } finally {
             setLoadingDetailKeluargaId(null);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     const handleUpdate = useCallback(async () => {
@@ -195,6 +197,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                 text: error.message || 'Terjadi kesalahan saat memperbarui data keluarga',
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedKeluargaDetail, selectedKeluargaId, biodataKeluargaId, nomorkk, hubungan, token, fetchKeluargaList]);
     
     return {

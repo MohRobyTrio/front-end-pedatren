@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const DropdownGolongan = () => {
     const [kategoriGolongan, setKategoriGolongan] = useState([]);
@@ -9,6 +10,7 @@ const DropdownGolongan = () => {
     const [isGolonganDisabled, setIsGolonganDisabled] = useState(true);
 
     const [allGolonganList, setAllGolonganList] = useState([]);
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
 
     useEffect(() => {
@@ -24,7 +26,11 @@ const DropdownGolongan = () => {
             ...parsedData.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
         ]);
     } else {
-        fetch(`${API_BASE_URL}dropdown/golongan`)
+        fetch(`${API_BASE_URL}dropdown/golongan`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((res) => res.json())
             .then((data) => {
                 setKategoriGolongan([
@@ -40,6 +46,7 @@ const DropdownGolongan = () => {
                 setKategoriGolongan([{ label: "Kategori Golongan", value: "" }]);
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

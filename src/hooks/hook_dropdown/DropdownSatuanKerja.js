@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useDropdownSatuanKerja = () => {
     const [menuSatuanKerja, setMenuSatuanKerja] = useState([]);
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}dropdown/satuan-kerja`)
+        fetch(`${API_BASE_URL}dropdown/satuan-kerja`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((res) => res.json())
             .then((data) => {
                 const formatted = [
@@ -23,6 +29,7 @@ const useDropdownSatuanKerja = () => {
                     { label: "Pilih Satuan Kerja", value: "" }
                 ]);
             });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { menuSatuanKerja };

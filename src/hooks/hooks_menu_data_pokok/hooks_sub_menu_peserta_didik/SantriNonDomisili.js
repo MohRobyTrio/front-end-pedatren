@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../../config";
+import { getCookie } from "../../../utils/cookieUtils";
 
 const useFetchSantriNonDomisili = (filters) => {
     const [santriNonDomisili, setSantriNonDomisili] = useState([]);
@@ -12,7 +13,7 @@ const useFetchSantriNonDomisili = (filters) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-
+    const token = sessionStorage.getItem("token") || getCookie("token");
     const lastRequest = useRef("");
 
     useEffect(() => {
@@ -71,7 +72,11 @@ const useFetchSantriNonDomisili = (filters) => {
         setError(null);
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`${response.statusText}: ${response.status}`);
             }
@@ -90,6 +95,7 @@ const useFetchSantriNonDomisili = (filters) => {
         } finally {
             setLoadingSantriNonDomisili(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, debouncedSearchTerm, filters, limit]);
 
     useEffect(() => {

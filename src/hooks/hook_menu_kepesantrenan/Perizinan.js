@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { API_BASE_URL } from '../config';
+import { getCookie } from '../../utils/cookieUtils';
 
 const useFetchPerizinan = (filters) => {
   const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ const useFetchPerizinan = (filters) => {
   const [currentPage, setCurrentPage] = useState(1);
   const lastRequest = useRef('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   // Debounce searchTerm selama 400ms
   useEffect(() => {
@@ -69,7 +71,11 @@ const useFetchPerizinan = (filters) => {
 
     try {
       setLoading(true);
-      const response = await fetch(url);
+      const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -108,6 +114,7 @@ const useFetchPerizinan = (filters) => {
     } finally {
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filters, limit, debouncedSearchTerm]);
 
   // Helper function untuk menghitung durasi

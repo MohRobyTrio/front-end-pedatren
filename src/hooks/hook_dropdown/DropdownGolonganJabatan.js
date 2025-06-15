@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
 
 const useDropdownGolonganJabatan = () => {
   const [menuGolonganJabatan, setMenuGolonganJabatan] = useState([]);
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
     const localData = sessionStorage.getItem("menuGolonganJabatan");
@@ -16,7 +18,11 @@ const useDropdownGolonganJabatan = () => {
         sessionStorage.removeItem("menuGolonganJabatan");
       }
     } else {
-      fetch(`${API_BASE_URL}dropdown/golongan-jabatan`)
+      fetch(`${API_BASE_URL}dropdown/golongan-jabatan`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
         .then((res) => res.json())
         .then((data) => {
           const formatted = [
@@ -38,6 +44,7 @@ const useDropdownGolonganJabatan = () => {
           ]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { menuGolonganJabatan };
