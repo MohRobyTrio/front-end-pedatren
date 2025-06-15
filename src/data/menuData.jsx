@@ -48,8 +48,9 @@ import Dashboard from "../content_main_page/Dashboard";
 import Formulir from "../content_main_page/Formulir";
 import PindahKamar from "../content_main_page/content_menu_akademik/PindahKamar";
 import HubungkanWaliAsuh from "../content_main_page/content_menu_akademik/HubungkanWaliAsuh";
-import Kelulusan from "../content_main_page/content_menu_akademik/Kelulusan";
 import PresensiSantri from "../content_main_page/content_menu_akademik/PresensiSantri";
+import KelulusanPelajar from "../content_main_page/content_menu_akademik/KelulusanPelajar";
+import AlumniSantri from "../content_main_page/content_menu_akademik/AlumniSantri";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -110,7 +111,8 @@ export const menuAkademikItems =[
     { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
     { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
     { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh /> },
-    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan", link: "/kelulusan", content: <Kelulusan /> },
+    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan Pelajar", link: "/kelulusan-pelajar", content: <KelulusanPelajar /> },
+    { id: "alumnisantri", icon: "fa-user-graduate", text: "Alumni Santri", link: "/alumni-santri", content: <AlumniSantri /> },
     { id: "presensisantri", icon: "fa-calendar-check", text: "Presensi Santri", link: "/presensi-santri", content: <PresensiSantri /> }
 ];
 

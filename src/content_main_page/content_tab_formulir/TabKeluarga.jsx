@@ -5,8 +5,6 @@ import { useTabKeluarga } from "../../hooks/hooks_formulir/tabKeluarga";
 // import Access from "../../components/Access";
 import { hasAccess } from "../../utils/hasAccess";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddOrangtuaFormulir, ModalFormPindahKeluarga } from "../../components/modal/modal_formulir/ModalAddOrangtua";
 import Access from "../../components/Access";
 
