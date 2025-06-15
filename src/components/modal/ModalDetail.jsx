@@ -24,6 +24,7 @@ import DetailBerkas from "../../content_modal/detail/DetailBerkas";
 import DetailPemohonIzin from "../../content_modal/detail/DetailPemohonIzin";
 import DetailPengantar from "../../content_modal/detail/DetailPengantar";
 import DetailPelanggaran from "../../content_modal/detail/DetailPelanggaran";
+import { getCookie } from "../../utils/cookieUtils";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
@@ -72,8 +73,12 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 else if (menu === 23) endpoint = `pengunjung/${item.id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
-
-                const res = await fetch(`${API_BASE_URL}data-pokok/${endpoint}`);
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const res = await fetch(`${API_BASE_URL}data-pokok/${endpoint}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 const json = await res.json();
                 if (!res.ok || json.status === false) {
                     throw new Error(json.message || 'Gagal mengambil data');
