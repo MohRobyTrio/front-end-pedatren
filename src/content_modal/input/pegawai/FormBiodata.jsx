@@ -590,7 +590,7 @@ const isDeleting = useRef(false);
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="smartcard" className="md:w-1/4 text-black">
-                        Smartcard *
+                        Smartcard 
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
@@ -606,8 +606,7 @@ const isDeleting = useRef(false);
                                 inputMode="numeric"
                                 placeholder="Masukkan Smartcard"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPegawai.smartcard", { required: true })}
-                                required
+                                {...register("modalPegawai.smartcard")}
                             />
                         </div>
                     </div>

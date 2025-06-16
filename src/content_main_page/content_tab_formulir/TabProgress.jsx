@@ -48,7 +48,7 @@ const TabProgress = () => {
 	});
 
 	const [formKognitif, setFormKognitif] = useState({
-		// id_wali_asuh: "",
+		id_wali_asuh: "",
 		kebahasaan_nilai: "",
 		kebahasaan_tindak_lanjut: "",
 		baca_kitab_kuning_nilai: "",
@@ -161,7 +161,7 @@ const TabProgress = () => {
 			} else {
 				setSelectedKognitifDetail(result.data);
 				setFormKognitif({
-					// id_wali_asuh: result.data.id_wali_asuh || "",
+					id_wali_asuh: result.data.id_wali_asuh || "",
 					kebahasaan_nilai: result.data.kebahasaan_nilai || "",
 					kebahasaan_tindak_lanjut: result.data.kebahasaan_tindak_lanjut || "",
 					baca_kitab_kuning_nilai: result.data.baca_kitab_kuning_nilai || "",
@@ -306,7 +306,7 @@ const TabProgress = () => {
 
 	useEffect(() => {
 
-		if (formAfektif.id_wali_asuh && menuWaliAsuh3.length > 0) {
+		if ((formAfektif.id_wali_asuh || formKognitif.id_wali_asuh) && menuWaliAsuh3.length > 0) {
 			// console.log("wali asuh");
 			const s = menuWaliAsuh3.find((item) => (item.id == formAfektif.id_wali_asuh || item.id == formKognitif.id_wali_asuh) && item.id != null);
 
@@ -319,13 +319,13 @@ const TabProgress = () => {
 						id_wali_asuh: s.id
 					}));
 				} 
-				// else if (activeTab == "kognitif") {
-				// 	console.log("[KOG] Setting formKognitif");
-				// 	setFormKognitif((prev) => ({
-				// 		...prev,
-				// 		id_wali_asuh: s.id
-				// 	}));
-				// }
+				else if (activeTab == "kognitif") {
+					console.log("[KOG] Setting formKognitif");
+					setFormKognitif((prev) => ({
+						...prev,
+						id_wali_asuh: s.id
+					}));
+				}
 				console.log("idwaliasuh afektif", formAfektif.id_wali_asuh);
 
 			};
@@ -335,6 +335,9 @@ const TabProgress = () => {
 	}, [activeTab, formAfektif.id_wali_asuh, formKognitif.id_wali_asuh, menuWaliAsuh3]);
 
 	useEffect(() => {
+		console.log(activeTab);
+		console.log(dataWaliAsuh);
+		
 		if (dataWaliAsuh) {
 			console.log("datawaliasuh ", dataWaliAsuh.id);
 			if (activeTab == "afektif") {
@@ -344,13 +347,13 @@ const TabProgress = () => {
 					id_wali_asuh: dataWaliAsuh.id
 				}));
 			} 
-			// else if (activeTab == "kognitif") {
-			// 	console.log("[KOG] Setting formKognitif");
-			// 	setFormKognitif((prev) => ({
-			// 		...prev,
-			// 		id_wali_asuh: dataWaliAsuh.id
-			// 	}));
-			// }
+			else if (activeTab == "kognitif") {
+				console.log("[KOG] Setting formKognitif");
+				setFormKognitif((prev) => ({
+					...prev,
+					id_wali_asuh: dataWaliAsuh.id
+				}));
+			}
 		}
 
 	}, [activeTab, dataWaliAsuh]);
@@ -844,7 +847,9 @@ const TabProgress = () => {
 									<OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
 								</div>
 							) : selectedDataId == kognitif.id && selectedKognitifDetail && (
-								<form className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white shadow-md rounded-lg p-6">
+								<div className=" bg-white shadow-md rounded-lg p-6">
+								<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedKognitifDetail?.tanggal_selesai || selectedKognitifDetail?.tanggal_selesai == "-")} />
+								<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									{/* Kolom Kiri */}
 									<div className="flex flex-col gap-4">
 										{/* Kepedulian */}
@@ -1050,6 +1055,7 @@ const TabProgress = () => {
 											/>
 										</div>
 									</div>
+									
 
 									{/* Tombol Aksi */}
 									<div className="md:col-span-2 flex justify-end gap-3 mt-4">
@@ -1082,6 +1088,7 @@ const TabProgress = () => {
 										)}
 									</div>
 								</form>
+								</div>
 							)}
 
 

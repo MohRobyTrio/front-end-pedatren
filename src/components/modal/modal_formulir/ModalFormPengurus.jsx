@@ -71,8 +71,10 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 body: JSON.stringify(formData),
             });
 
-            
+
             const result = await response.json();
+            console.log(result);
+
             Swal.close();
             if (response.status === 401) {
                 await Swal.fire({
@@ -85,7 +87,26 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 navigate("/login");
                 return;
             }
-            if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
+            if (!response.ok || !result.data) {
+                const messages = [];
+
+                if (result.errors) {
+                    for (const key in result.errors) {
+                        const errorList = result.errors[key];
+                        errorList.forEach(msg => messages.push(`• ${msg}`));
+                    }
+                    await Swal.fire({
+                        icon: "error",
+                        title: result.message || "Gagal menyimpan data",
+                        html: messages.length > 0 ? messages.join("<br>") : "Terjadi kesalahan pada input.",
+                    });
+
+                    return;
+                }
+
+
+                throw new Error(result.message || "Terjadi kesalahan pada server.")
+            };
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data pengurus berhasil disimpan." });
             refetchData?.();
@@ -210,7 +231,7 @@ export const ModalKeluarPengurusFormulir = ({ isOpen, onClose, id, refetchData }
     });
 
     console.log(id);
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();

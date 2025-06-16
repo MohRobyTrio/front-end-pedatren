@@ -4,8 +4,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
+import Swal from "sweetalert2";
 
 export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage, fields = [], endpoint }) => {
+    console.log(endpoint);
+    
     const [selectedFields, setSelectedFields] = useState([]);
     const [allPages, setAllPages] = useState(false);    
 
@@ -58,12 +61,22 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
         // window.location.href = `${baseUrl}?${params.toString()}`;
         const token = sessionStorage.getItem("token") || getCookie("token");
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang memproses data untuk diekspor.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             const response = await fetch(`${baseUrl}?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
             });
+
+            Swal.close();
 
             if (!response.ok) {
                 throw new Error("Export gagal");
@@ -73,12 +86,17 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
 
             // Ambil nama file dari Content-Disposition
             const contentDisposition = response.headers.get('Content-Disposition');
-            let filename = 'export.xlsx';
+            let filename = '';
             if (contentDisposition && contentDisposition.includes('filename=')) {
                 const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
                 if (match && match[1]) {
                     filename = match[1].replace(/['"]/g, '');
                 }
+            }
+
+            if (!filename) {
+                const endpointPart = endpoint.split('/').pop(); // Ambil setelah slash terakhir
+                filename = `export-${endpointPart || 'data'}.xlsx`;
             }
 
             // Paksa download file

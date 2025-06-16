@@ -153,11 +153,24 @@ const TabKaryawan = () => {
 
 		// Validasi field wajib (sesuaikan dengan kebutuhan)
 		if (!payload.lembaga_id || !payload.golongan_jabatan_id || !keteranganJabatan || !startDate) {
-			alert("Lembaga, Golongan Jabatan, Keterangan Jabatan, dan Tanggal Mulai wajib diisi!");
+			await Swal.fire({
+				title: "Validasi Gagal",
+				text: "Lembaga, Golongan Jabatan, Keterangan Jabatan, dan Tanggal Mulai wajib diisi!",
+				icon: "warning",
+				confirmButtonText: "OK"
+			});
 			return;
 		}
 
 		try {
+			Swal.fire({
+				title: 'Mohon tunggu...',
+				html: 'Sedang proses.',
+				allowOutsideClick: false,
+				didOpen: () => {
+					Swal.showLoading();
+				}
+			});
 			setLoadingUpdateKaryawan(true);
 			const token = sessionStorage.getItem("token") || getCookie("token");
 			const response = await fetch(
@@ -171,6 +184,7 @@ const TabKaryawan = () => {
 					body: JSON.stringify(payload),
 				}
 			);
+			Swal.close();
 			if (response.status === 401) {
 				await Swal.fire({
 					title: "Sesi Berakhir",
@@ -184,7 +198,12 @@ const TabKaryawan = () => {
 			}
 			const result = await response.json();
 			if (response.ok) {
-				alert(`Data karyawan berhasil diperbarui!`);
+				await Swal.fire({
+					title: "Berhasil!",
+					text: "Data karyawan berhasil diperbarui!",
+					icon: "success",
+					confirmButtonText: "OK"
+				});
 				// Optimistic update atau fetch ulang detail untuk data terbaru
 				// setSelectedKaryawanDetail(prev => ({ ...prev, ...payload, golongan_jabatan: menuGolonganJabatan.find(g => g.id === selectedGolonganJabatanId)?.label, lembaga: { nama: menuLembaga.find(l => l.id === selectedLembagaId)?.label } }));
 				fetchKaryawan(); // Refresh data list
@@ -192,11 +211,21 @@ const TabKaryawan = () => {
 				// setSelectedKaryawanId(null);
 				// setSelectedKaryawanDetail(null);
 			} else {
-				alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+				await Swal.fire({
+					title: "Gagal",
+					text: result.message || "Terjadi kesalahan saat memperbarui data.",
+					icon: "error",
+					confirmButtonText: "OK"
+				});
 			}
 		} catch (error) {
 			console.error("Error saat update:", error);
-			alert("Terjadi kesalahan saat update data.");
+			await Swal.fire({
+				title: "Error",
+				text: "Terjadi kesalahan saat update data.",
+				icon: "error",
+				confirmButtonText: "OK"
+			});
 		} finally {
 			setLoadingUpdateKaryawan(false);
 		}
