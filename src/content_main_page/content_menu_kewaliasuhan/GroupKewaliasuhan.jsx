@@ -16,7 +16,7 @@ const GroupKewaliasuhan = () => {
 
     const { filterWilayah } = DropdownWilayah();
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.nama || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,

@@ -384,7 +384,7 @@ export const ModalDetailKamar = ({ isOpen, onClose, id }) => {
                                             ["Kapasitas", data.kapasitas],
                                             ["Slot Kosong", data.slot],
                                             ["Jumlah Penghuni", data.penghuni],
-                                            ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
+                                            ["Status", data.status == 1 ? "Aktif" : "Nonaktif"],
                                         ]
                                             .map(([label, value]) => (
                                                 <div key={label} className="flex">

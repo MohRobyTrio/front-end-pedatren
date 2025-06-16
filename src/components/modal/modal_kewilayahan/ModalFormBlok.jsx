@@ -359,7 +359,7 @@ export const ModalDetailBlok = ({ isOpen, onClose, id }) => {
                                             ["Nama Blok", data.nama_blok],
                                             ["Nama Wilayah", data.wilayah?.nama_wilayah],
                                             ["Kategori", data.wilayah?.kategori],
-                                            ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
+                                            ["Status", data.status == 1 ? "Aktif" : "Nonaktif"],
                                             ["Total Kamar", data.total_kamar],
                                             ["Total Kapasitas", data.total_kapasitas],
                                             ["Slot Kosong", data.slot],

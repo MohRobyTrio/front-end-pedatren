@@ -38,6 +38,7 @@ const PresensiSantri = () => {
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                     showViewButtons={false}
+                    showFilterButtons={false}
                 />
 
                 {error ? (

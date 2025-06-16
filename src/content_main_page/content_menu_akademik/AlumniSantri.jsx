@@ -116,11 +116,11 @@ const AlumniSantri = () => {
         kamar: updateFirstOptionLabel(filterWilayahFilterLulus.kamar, "Pilih Kamar"),
     };
 
-    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.nama || "";
     const blokTerpilih = filterWilayahFilter.blok.find((n) => n.value == selectedWilayahFilter.blok)?.label || "";
     const kamarTerpilih = filterWilayahFilter.kamar.find((n) => n.value == selectedWilayahFilter.kamar)?.label || "";
 
-    const wilayahTerpilihLulus = filterWilayahFilterLulus.wilayah.find((n) => n.value == selectedWilayahFilterLulus.wilayah)?.label || "";
+    const wilayahTerpilihLulus = filterWilayahFilterLulus.wilayah.find((n) => n.value == selectedWilayahFilterLulus.wilayah)?.nama || "";
     const blokTerpilihLulus = filterWilayahFilterLulus.blok.find((n) => n.value == selectedWilayahFilterLulus.blok)?.label || "";
     const kamarTerpilihLulus = filterWilayahFilterLulus.kamar.find((n) => n.value == selectedWilayahFilterLulus.kamar)?.label || "";
 
@@ -133,6 +133,8 @@ const AlumniSantri = () => {
             });            
         }
         if (wilayahTerpilihLulus || blokTerpilihLulus || kamarTerpilihLulus) {
+            console.log(wilayahTerpilihLulus);
+            
             setFiltersLulus({
                 wilayah: wilayahTerpilihLulus,
                 blok: blokTerpilihLulus,

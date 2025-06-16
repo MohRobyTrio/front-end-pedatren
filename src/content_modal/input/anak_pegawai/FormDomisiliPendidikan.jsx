@@ -13,19 +13,31 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     const blok = watch("modalAnakPegawai.blok_id");
     const kamar = watch("modalAnakPegawai.kamar_id");
     const mondok = watch("modalAnakPegawai.mondok");
-    const isDomisiliDisabled = mondok === "0";
+    const lembagaId = watch("modalAnakPegawai.lembaga_id");
+    const angkatanSantri = watch("modalAnakPegawai.angkatan_santri_id");
+    const angkatanPelajar = watch("modalAnakPegawai.angkatan_pelajar_id");
+    const isDomisiliDisabled = mondok == "0" || mondok == null;
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah({ withSisa: true });
 
     useEffect(() => {
-        if (mondok === "0") {
+        if (isDomisiliDisabled) {
             setValue("modalAnakPegawai.wilayah_id", "");
             setValue("modalAnakPegawai.blok_id", "");
             setValue("modalAnakPegawai.kamar_id", "");
             setValue("modalAnakPegawai.tanggal_masuk_domisili", "");
+            setValue("modalAnakPegawai.nis", "");
+            setValue("modalAnakPegawai.angkatan_santri_id", "");
         }
-    }, [mondok, setValue]);
+    }, [isDomisiliDisabled, mondok, setValue]);
+
+    useEffect(() => {
+        if (!lembagaId) {
+            setValue("modalAnakPegawai.angkatan_pelajar_id", "");
+            setValue("modalAnakPegawai.tanggal_masuk_pendidikan", "")
+        }
+    }, [lembagaId, setValue]);
 
     useEffect(() => {
         if (activeTab !== 2) return;
@@ -53,10 +65,10 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
         }
         const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
         const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
-        if (defaultSantri) {
+        if (defaultSantri && angkatanSantri != "") {
             setValue("modalAnakPegawai.angkatan_santri_id", defaultSantri.value);
         }
-        if (defaultPelajar) {
+        if (defaultPelajar && angkatanPelajar != "") {
             setValue("modalAnakPegawai.angkatan_pelajar_id", defaultPelajar.value);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,18 +154,20 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     <label htmlFor="nis" className="md:w-1/4 text-black">
                         NIS 
                     </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
+                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <input
                                 id="nis"
                                 name="nis"
                                 type="text"
                                 inputMode="numeric"
+                                disabled={isDomisiliDisabled}
                                 onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 15);
                                 }}
+                                maxLength={15}
                                 placeholder="Masukkan NIS"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
                                  {...register('modalAnakPegawai.nis')}
                             />
                         </div>
@@ -164,13 +178,14 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     <label htmlFor="angkatan_santri_id" className="md:w-1/4 text-black">
                         Angkatan Santri *
                     </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <select
                                 id="angkatan_santri_id"
                                 name="angkatan_santri_id"
+                                disabled={isDomisiliDisabled}
                                 {...register("modalAnakPegawai.angkatan_santri_id")}
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
                             >
                                 {menuAngkatanSantri.map((santri, idx) => (
                                     <option key={idx} value={santri.value}>
@@ -194,7 +209,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                         Tanggal Masuk Domisili *
                     </label>
                     <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <input
                                 type="date"
                                 id="tanggal_masuk_domisili"
@@ -236,13 +251,14 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     <label htmlFor="angkatan_pelajar_id" className="md:w-1/4 text-black">
                         Angkatan Pelajar *
                     </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                    <div className={`md:w-full md:max-w-md max-w-none ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}>
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <select
                                 id="angkatan_pelajar_id"
                                 name="angkatan_pelajar_id"
+                                disabled={!lembagaId}
                                 {...register("modalAnakPegawai.angkatan_pelajar_id")}
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}
                             >
                                 {menuAngkatanPelajar.map((pelajar, idx) => (
                                     <option key={idx} value={pelajar.value}>
@@ -258,13 +274,14 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     <label htmlFor="tanggal_masuk_pendidikan" className="md:w-1/4 text-black">
                         Tanggal Masuk Pendidikan *
                     </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                    <div className={`md:w-full md:max-w-md max-w-none ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}>
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <input
                                 type="date"
                                 id="tanggal_masuk_pendidikan"
+                                disabled={!lembagaId}
                                 name="tanggal_masuk_pendidikan"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}
                                 {...register("modalAnakPegawai.tanggal_masuk_pendidikan")}
                             />
                         </div>

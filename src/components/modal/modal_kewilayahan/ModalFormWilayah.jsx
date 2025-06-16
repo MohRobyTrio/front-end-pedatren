@@ -367,7 +367,7 @@ export const ModalDetailWilayah = ({ isOpen, onClose, id }) => {
                                         {[
                                             ["Nama Wilayah", data.nama_wilayah],
                                             ["Kategori", data.kategori],
-                                            ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
+                                            ["Status", data.status == 1 ? "Aktif" : "Nonaktif"],
                                             ["Total Blok", data.total_blok],
                                             ["Total Kamar", data.total_kamar],
                                             ["Total Slot", data.total_slot],

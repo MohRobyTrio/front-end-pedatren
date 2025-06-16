@@ -76,7 +76,7 @@ const HubungkanWaliAsuh = () => {
         kamar: updateFirstOptionLabel(filterWilayahFilter.kamar, "Pilih Kamar"),
     };
 
-    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayahFilter.wilayah.find((n) => n.value == selectedWilayahFilter.wilayah)?.nama || "";
     const blokTerpilih = filterWilayahFilter.blok.find((n) => n.value == selectedWilayahFilter.blok)?.label || "";
     const kamarTerpilih = filterWilayahFilter.kamar.find((n) => n.value == selectedWilayahFilter.kamar)?.label || "";
 

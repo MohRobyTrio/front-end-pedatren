@@ -39,9 +39,9 @@ const useFetchLulusSantri = (filters) => {
         if (limit !== null) params.push(`limit=${limit}`);
         if (currentPage > 1) params.push(`page=${currentPage}`);
         if (debouncedSearchTerm) params.push(`nama=${encodeURIComponent(debouncedSearchTerm)}`);
-        if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") params.push(`wilayah=${encodeURIComponent(filters.wilayah)}`);
-        if (filters?.blok && filters.blok !== "Semua Blok") params.push(`blok=${encodeURIComponent(filters.blok)}`);
-        if (filters?.kamar && filters.kamar !== "Semua Kamar") params.push(`kamar=${encodeURIComponent(filters.kamar)}`);
+        if (filters?.wilayah && filters.wilayah != "Semua Wilayah") params.push(`wilayah=${encodeURIComponent(filters.wilayah)}`);
+        if (filters?.blok && filters.blok != "Semua Blok") params.push(`blok=${encodeURIComponent(filters.blok)}`);
+        if (filters?.kamar && filters.kamar != "Semua Kamar") params.push(`kamar=${encodeURIComponent(filters.kamar)}`);
         if (filters?.urutBerdasarkan) params.push(`sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`);
 
 
@@ -114,9 +114,9 @@ const useFetchLulusSantri = (filters) => {
     const params = [];
 
     if (debouncedSearchTerm) params.push(`nama=${encodeURIComponent(debouncedSearchTerm)}`);
-    if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") params.push(`wilayah=${encodeURIComponent(filters.wilayah)}`);
-    if (filters?.blok && filters.blok !== "Semua Blok") params.push(`blok=${encodeURIComponent(filters.blok)}`);
-    if (filters?.kamar && filters.kamar !== "Semua Kamar") params.push(`kamar=${encodeURIComponent(filters.kamar)}`);
+    if (filters?.wilayah && filters.wilayah != "Semua Wilayah") params.push(`wilayah=${encodeURIComponent(filters.wilayah)}`);
+    if (filters?.blok && filters.blok != "Semua Blok") params.push(`blok=${encodeURIComponent(filters.blok)}`);
+    if (filters?.kamar && filters.kamar != "Semua Kamar") params.push(`kamar=${encodeURIComponent(filters.kamar)}`);
     if (filters?.urutBerdasarkan) params.push(`sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`);
 
     const urlWithoutLimit = `${baseUrl}?${params.join("&")}`;

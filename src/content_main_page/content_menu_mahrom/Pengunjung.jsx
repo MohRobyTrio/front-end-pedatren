@@ -42,7 +42,7 @@ const Pengunjung = () => {
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.nama || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,

@@ -44,7 +44,7 @@ const DataPelanggaran = () => {
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.nama || "";
     const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
     const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
 

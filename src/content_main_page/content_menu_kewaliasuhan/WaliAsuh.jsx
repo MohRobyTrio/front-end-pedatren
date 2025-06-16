@@ -53,7 +53,7 @@ const WaliAsuh = () => {
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(w => w.value == selectedWilayah.wilayah)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find(w => w.value == selectedWilayah.wilayah)?.nama || "";
     const blokTerpilih = filterWilayah.blok.find(b => b.value == selectedWilayah.blok)?.label || "";
     const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
 
