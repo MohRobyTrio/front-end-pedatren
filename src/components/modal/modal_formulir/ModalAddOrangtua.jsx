@@ -79,6 +79,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         if (isOpen) {
             fetchHubunganKeluarga();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Update formData untuk alamat ketika selectedNegara berubah

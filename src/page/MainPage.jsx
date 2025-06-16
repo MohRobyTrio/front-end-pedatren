@@ -16,6 +16,7 @@ const MainPage = () => {
     const [dropdownDataMahrom, setDropdownMahrom] = useState(() => sessionStorage.getItem("dropdownDataMahrom") === "true");
     const [dropdownDataKelembagaan, setDropdownDataKelembagaan] = useState(() => sessionStorage.getItem("dropdownDataKelembagaan") === "true");
     const [dropdownDataAkademik, setDropdownDataAkademik] = useState(() => sessionStorage.getItem("dropdownDataAkademik") === "true");
+    const [dropdownDataKewilayahan, setDropdownDataKewilayahan] = useState(() => sessionStorage.getItem("dropdownDataKewilayahan") === "true");
     // const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
 
     useEffect(() => {
@@ -27,8 +28,9 @@ const MainPage = () => {
         sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
         sessionStorage.setItem("dropdownDataKelembagaan", dropdownDataKelembagaan);
         sessionStorage.setItem("dropdownDataAkademik", dropdownDataAkademik);
+        sessionStorage.setItem("dropdownDataKewilayahan", dropdownDataKewilayahan);
         // sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
-    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataKelembagaan, dropdownDataAkademik]);
+    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataKelembagaan, dropdownDataAkademik, dropdownDataKewilayahan]);
 
     const toggleDropdown = (setter) => setter((prev) => !prev);
 
@@ -109,6 +111,8 @@ const MainPage = () => {
                         setDropdownDataKelembagaan={setDropdownDataKelembagaan}
                         dropdownDataAkademik={dropdownDataAkademik}
                         setDropdownDataAkademik={setDropdownDataAkademik}
+                        dropdownDataKewilayahan={dropdownDataKewilayahan}
+                        setDropdownDataKewilayahan={setDropdownDataKewilayahan}
                         isSidebarOpen={isSidebarOpen}
                         toggleDropdown={toggleDropdown}
                     />

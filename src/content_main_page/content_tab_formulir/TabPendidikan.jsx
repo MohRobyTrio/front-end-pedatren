@@ -597,14 +597,14 @@ const TabPendidikan = () => {
                                         <input
                                             type="date"
                                             id="endDate"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status) ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500`}
                                             value={endDate}
                                             onChange={(e) => setEndDate(e.target.value)}
-                                            disabled={!canEdit || !["aktif", "cuti"].includes(selectedPendidikanDetail?.status)}
+                                            disabled
                                         />
                                     </div>
 
-                                    <div>
+                                    {/* <div>
                                         <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                                             Status
                                         </label>
@@ -625,7 +625,7 @@ const TabPendidikan = () => {
                                             <option value="naik_kelas">Naik Kelas</option>
                                             <option value="nonaktif">Non Aktif</option>
                                         </select>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div>

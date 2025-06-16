@@ -104,8 +104,15 @@ export const useSantri = (biodata_id) => {
             setSelectedSantriId(id);
             setSelectedSantriDetail(result.data);
             setAngkatanId(result.data.angkatan_id || "");
-            setEndDate(result.data.tanggal_keluar || "");
-            setOriginalEndDate(result.data.tanggal_keluar || "");
+            const rawTanggalKeluar = result.data.tanggal_keluar;
+
+const formattedDatetimeLocal = rawTanggalKeluar
+    ? new Date(rawTanggalKeluar).toISOString().slice(0, 16) // "YYYY-MM-DDTHH:MM"
+    : "";
+    
+setEndDate(formattedDatetimeLocal);
+setOriginalEndDate(formattedDatetimeLocal);
+
             setStartDate(result.data.tanggal_masuk || "");
             setStatus(result.data.status || "");
         } catch (error) {

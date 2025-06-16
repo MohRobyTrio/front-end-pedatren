@@ -16,7 +16,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
     const isDomisiliDisabled = mondok === "0";
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
-    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah({ withSisa: true });
 
     useEffect(() => {
         if (mondok === "0") {

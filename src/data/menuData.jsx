@@ -51,6 +51,9 @@ import HubungkanWaliAsuh from "../content_main_page/content_menu_akademik/Hubung
 import PresensiSantri from "../content_main_page/content_menu_akademik/PresensiSantri";
 import KelulusanPelajar from "../content_main_page/content_menu_akademik/KelulusanPelajar";
 import AlumniSantri from "../content_main_page/content_menu_akademik/AlumniSantri";
+import Wilayah from "../content_main_page/content_menu_kewilayahan/Wilayah";
+import Blok from "../content_main_page/content_menu_kewilayahan/Blok";
+import Kamar from "../content_main_page/content_menu_kewilayahan/Kamar";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -105,6 +108,12 @@ export const menuKelembagaanItems = [
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
+];
+
+export const menuKewilayahanItems = [
+    { id: "wilayah", icon: "fa-map", text: "Wilayah", link: "/wilayah", content: <Wilayah /> },
+    { id: "blok", icon: "fa-th-large", text: "Blok", link: "/blok", content: <Blok /> },
+    { id: "kamar", icon: "fa-bed", text: "Kamar", link: "/kamar", content: <Kamar /> },
 ];
 
 export const menuAkademikItems =[

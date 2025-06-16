@@ -506,7 +506,10 @@ const KelulusanPelajar = () => {
 
             <div className="w-full lg:w-20/49 bg-white p-6 rounded-lg shadow-md">
                 <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
-                    <h2 className="text-xl font-semibold">Lulusan Pelajar</h2>
+                    <h2 className="text-xl font-semibold">
+                        Lulusan Pelajar
+                        <p className="text-sm text-gray-500 mt-1">Menampilkan data lulusan 30 hari terakhir. Hanya data dalam rentang ini yang dapat dibatalkan kelulusannya.</p>
+                    </h2>
                     <div className="relative w-full sm:w-auto sm:max-w-sm">
                         <input
                             type="text"

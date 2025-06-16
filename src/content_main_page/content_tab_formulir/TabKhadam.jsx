@@ -125,7 +125,7 @@ const TabKhadam = () => {
                                         : "bg-red-100 text-red-700"
                                         }`}
                                 >
-                                    {khadam.status || "-"}
+                                    {khadam.status == 0 ? "Nonaktif" : "Aktif"}
                                 </span>
                             </div>
 

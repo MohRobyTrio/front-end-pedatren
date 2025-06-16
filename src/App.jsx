@@ -10,7 +10,7 @@ import Formulir from './content_main_page/Formulir';
 import {
   menuAkademikItems,
   menuDataPokokItems, menuItems, menuKelembagaanItems, menuKepegawaianItems, menuKepesantrenanItems,
-  menuKewaliasuhanItems, menuMahromItems, 
+  menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems, 
   // menuRWSItems, 
   subPesertaDidik, tabsFormulir
 } from './data/menuData';
@@ -142,6 +142,7 @@ function App() {
               ...subPesertaDidik,
               ...menuKelembagaanItems,
               ...menuAkademikItems,
+              ...menuKewilayahanItems,
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}

@@ -49,7 +49,7 @@ const TabDomisiliSantri = () => {
     const {
         filterWilayah,
         handleFilterChangeWilayah,
-        selectedWilayah } = DropdownWilayah();
+        selectedWilayah } = DropdownWilayah({withSisa: true});
 
     // Ubah label dropdown
     const updateFirstOptionLabel = (list, label) =>

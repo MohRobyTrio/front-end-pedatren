@@ -68,7 +68,7 @@ const PindahKamar = () => {
         filterWilayah: filterWilayahTujuan,
         handleFilterChangeWilayah: handleFilterChangeWilayahTujuan,
         selectedWilayah: selectedWilayahTujuan,
-    } = DropdownWilayah();
+    } = DropdownWilayah({ withSisa: true });
 
     const shouldFetch = selectedWilayahFilter.wilayah !== "";
 

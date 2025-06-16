@@ -37,7 +37,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
   const { clearAuthData } = useLogout();
   const navigate = useNavigate();
-  const { filterWilayah, handleFilterChangeWilayah, selectedWilayah } = DropdownWilayah();
+  const { filterWilayah, handleFilterChangeWilayah, selectedWilayah } = DropdownWilayah({ withSisa: true });
 
   const updateFirstOptionLabel = (list, label) =>
     list.length > 0

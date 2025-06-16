@@ -7,6 +7,7 @@ import {
     menuKepegawaianItems,
     menuKepesantrenanItems,
     menuKewaliasuhanItems,
+    menuKewilayahanItems,
     menuMahromItems,
     subPesertaDidik
 } from "../data/menuData";
@@ -29,6 +30,8 @@ const Sidebar = ({
     setDropdownDataKelembagaan,
     dropdownDataAkademik,
     setDropdownDataAkademik,
+    dropdownDataKewilayahan,
+    setDropdownDataKewilayahan,
     isSidebarOpen,
     toggleDropdown
 }) => {
@@ -198,6 +201,17 @@ const Sidebar = ({
                         />
                         {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
                     </div>
+
+                    <Access action="akademik">
+                        <div className="mt-4 px-3">
+                            <MenuHeader
+                                name="Akademik"
+                                isOpen={dropdownDataAkademik}
+                                onClick={() => toggleDropdown(setDropdownDataAkademik)}
+                            />
+                            {dropdownDataAkademik && <DropdownMenu items={menuAkademikItems} />}
+                        </div>
+                    </Access>
                     
                     <Access action="kelembagaan">
                         <div className="mt-4 px-3">
@@ -210,16 +224,17 @@ const Sidebar = ({
                         </div>
                     </Access>
 
-                    <Access action="akademik">
+                    <Access action="kewilayahan">
                         <div className="mt-4 px-3">
                             <MenuHeader
-                                name="Akademik"
-                                isOpen={dropdownDataAkademik}
-                                onClick={() => toggleDropdown(setDropdownDataAkademik)}
+                                name="kewilayahan"
+                                isOpen={dropdownDataKewilayahan}
+                                onClick={() => toggleDropdown(setDropdownDataKewilayahan)}
                             />
-                            {dropdownDataAkademik && <DropdownMenu items={menuAkademikItems} />}
+                            {dropdownDataKewilayahan && <DropdownMenu items={menuKewilayahanItems} />}
                         </div>
                     </Access>
+
                 </div>
             </div>
         </aside>
