@@ -5,11 +5,13 @@ import { OrbitProgress } from "react-loading-indicators";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import useFetchBlok from "../../hooks/hooks_menu_kewilayahan/Blok";
-import ModalAddOrEditBlok from "../../components/modal/modal_kewilayahan/ModalFormBlok";
+import { ModalAddOrEditBlok, ModalDetailBlok } from "../../components/modal/modal_kewilayahan/ModalFormBlok";
 
 const Blok = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedBlok, setSelectedBlok] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         blok,
@@ -53,6 +55,12 @@ const Blok = () => {
                 onClose={() => setOpenModal(false)}
                 data={selectedBlok}
                 refetchData={fetchBlok}
+            />
+
+            <ModalDetailBlok
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
             />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -100,7 +108,10 @@ const Blok = () => {
                                         </tr>
                                     ) : (
                                         blok.map((item, index) => (
-                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_blok}</td>
                                                 <td className="px-3 py-2 border-b">

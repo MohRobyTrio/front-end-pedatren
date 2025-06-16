@@ -5,11 +5,13 @@ import { OrbitProgress } from "react-loading-indicators";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import useFetchKamar from "../../hooks/hooks_menu_kewilayahan/Kamar";
-import ModalAddOrEditKamar from "../../components/modal/modal_kewilayahan/ModalFormKamar";
+import { ModalAddOrEditKamar, ModalDetailKamar } from "../../components/modal/modal_kewilayahan/ModalFormKamar";
 
 const Kamar = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedKamar, setSelectedKamar] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         kamar,
@@ -53,6 +55,12 @@ const Kamar = () => {
                 onClose={() => setOpenModal(false)}
                 data={selectedKamar}
                 refetchData={fetchKamar}
+            />
+
+            <ModalDetailKamar
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
             />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -102,7 +110,10 @@ const Kamar = () => {
                                         </tr>
                                     ) : (
                                         kamar.map((item, index) => (
-                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_kamar}</td>
                                                 <td className="px-3 py-2 border-b">{item.kapasitas}</td>

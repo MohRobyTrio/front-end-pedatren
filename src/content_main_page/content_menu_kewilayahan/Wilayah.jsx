@@ -5,11 +5,13 @@ import { OrbitProgress } from "react-loading-indicators";
 import useFetchWilayah from "../../hooks/hooks_menu_kewilayahan/Wilayah";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
-import ModalAddOrEditWilayah from "../../components/modal/modal_kewilayahan/ModalFormWilayah";
+import { ModalAddOrEditWilayah, ModalDetailWilayah } from "../../components/modal/modal_kewilayahan/ModalFormWilayah";
 
 const Wilayah = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedWilayah, setSelectedWilayah] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         wilayah,
@@ -53,6 +55,12 @@ const Wilayah = () => {
                 onClose={() => setOpenModal(false)}
                 data={selectedWilayah}
                 refetchData={fetchWilayah}
+            />
+
+            <ModalDetailWilayah
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
             />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -100,7 +108,10 @@ const Wilayah = () => {
                                     </tr>
                                 ) : (
                                     wilayah.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_wilayah}</td>
                                             <td className="px-3 py-2 border-b capitalize">{item.kategori}</td>

@@ -8,8 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import useFetchWilayah from "../../../hooks/hooks_menu_kewilayahan/Wilayah";
+import { OrbitProgress } from "react-loading-indicators";
 
-const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
+export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { wilayah } = useFetchWilayah();
@@ -194,11 +195,11 @@ const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                         <option value="">Pilih Wilayah</option>
                                                         {wilayah.map((wilayah, idx) => (
                                                             <option key={idx} value={wilayah.id}>
-                                                                {`${wilayah.nama_wilayah} (${wilayah.kategori})`} 
+                                                                {`${wilayah.nama_wilayah} (${wilayah.kategori})`}
                                                             </option>
                                                         ))}
                                                     </select>
-                                                </div> 
+                                                </div>
                                                 <div>
                                                     <label htmlFor="nama_blok" className="block text-gray-700">Nama Blok *</label>
                                                     <input
@@ -212,7 +213,7 @@ const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Masukkan Nama Wilayah"
                                                     />
-                                                </div>                                                
+                                                </div>
                                                 {data != null && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
@@ -274,4 +275,121 @@ const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
     );
 };
 
-export default ModalAddOrEditBlok;
+export const ModalDetailBlok = ({ isOpen, onClose, id }) => {
+    console.log(id);
+
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Ganti dengan token asli kamu
+
+    useEffect(() => {
+        if (isOpen && id) {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            setLoading(true);
+            fetch(`${API_BASE_URL}crud/blok/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((res) => {
+                    if (!res.ok) throw new Error("Gagal mengambil data");
+                    return res.json();
+                })
+                .then((json) => setData(json))
+                .catch((err) => {
+                    console.error(err);
+                    setData(null);
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [isOpen, id]);
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                {/* Background overlay */}
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                {/* Modal content wrapper */}
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-200 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-lg w-full h-full relative max-h-[90vh] flex flex-col">
+                            {/* Tombol Close */}
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            >
+                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                            </button>
+
+                            {/* Header */}
+                            <div className="pt-6">
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Blok</Dialog.Title>
+                            </div>
+
+                            {/* Body */}
+                            <div className="flex-1 overflow-y-auto pr-8 pl-8 pt-4 text-left">
+                                {loading ? (
+                                    <div className="flex justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </div>
+                                ) : data ? (
+                                    <div className="space-y-2">
+                                        {[
+                                            ["Nama Blok", data.nama_blok],
+                                            ["Nama Wilayah", data.wilayah?.nama_wilayah],
+                                            ["Kategori", data.wilayah?.kategori],
+                                            ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
+                                            ["Total Kamar", data.total_kamar],
+                                            ["Total Kapasitas", data.total_kapasitas],
+                                            ["Slot Kosong", data.slot],
+                                            ["Jumlah Penghuni", data.penghuni],
+                                        ].map(([label, value]) => (
+                                            <div key={label} className="flex">
+                                                <div className="w-35 font-semibold text-gray-700">{label}</div>
+                                                <div className="flex-1 text-gray-900">: {value}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-red-500">Gagal memuat data blok.</p>
+                                )}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-4 py-3 rounded-b-lg border-t border-gray-300">
+
+                                <button
+                                    onClick={onClose}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                                >
+                                    Tutup
+                                </button>
+                            </div>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+}

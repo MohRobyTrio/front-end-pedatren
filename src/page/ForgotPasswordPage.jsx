@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/logoku.png";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../hooks/config";
 
