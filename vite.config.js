@@ -13,6 +13,7 @@ export default defineConfig({
       ext: '.br',
     }),
   ],
+  // base: 'pedatren/frontend/',
   server: {
     host: '0.0.0.0',
     port: 5173, // Atur port sesuai kebutuhan

@@ -1,6 +1,6 @@
 // import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/Logout";
-import logo from "../assets/logo.png";
+import logo from "../assets/logoku.png";
 import { getRolesString } from "../utils/getRolesString";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,24 +30,33 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
         <nav className="fixed top-0 z-50 w-full bg-gray-800 border-b border-gray-700">
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
                 <div className="flex items-center justify-between">
-                    {/* Sidebar toggle and logo */}
+                    {/* Sidebar toggle dan logo + nama */}
                     <div className="flex items-center justify-start rtl:justify-end">
-                        <button 
-                        ref={toggleButtonRef}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleSidebar();
-                        }} className="sm:hidden text-gray-400 hover:bg-gray-700 p-2 rounded-lg">
+                        <button
+                            ref={toggleButtonRef}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleSidebar();
+                            }}
+                            className="sm:hidden text-gray-400 hover:bg-gray-700 p-2 rounded-lg"
+                        >
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                 <path clipRule="evenodd" fillRule="evenodd"
                                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
                                 </path>
                             </svg>
                         </button>
-                        <a href="/" className="flex ms-2 md:me-24">
-                            <img height="32" width="32" src={logo} className="h-8 me-3" alt="Pedatren Logo" />
-                            <span className="text-white text-xl font-semibold sm:text-2xl">PEDATREN</span>
+                        <a href="/" className="flex items-center ms-2 md:me-24 gap-3">
+                            <img
+                                src={logo}
+                                alt="Sipatren Logo"
+                                className="w-10 h-10 drop-shadow"
+                                style={{ minWidth: 40, minHeight: 40 }} // menjaga proporsi di mobile
+                            />
+                           <span className="text-white text-2xl font-semibold leading-none">
+                                SIPATREN
+                            </span>
                         </a>
                     </div>
 
@@ -59,15 +68,17 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                             onClick={toggleDropdownProfil}
                         >
                             <span className="sr-only">Open user menu</span>
-                            <img height="40" width="40" className="w-10 h-10 rounded-full"
+                            <img
+                                height="40"
+                                width="40"
+                                className="w-10 h-10 rounded-full"
                                 src="https://storage.googleapis.com/a1aa/image/pAPj3YDQYpFx78uqBMFpD5CY1oR_QcLARFVgoJVLIYE.jpg"
-                                alt="user photo" />
+                                alt="user photo"
+                            />
                         </button>
 
                         <ModalUpdateProfil isOpen={openModalUpdateNameEmail} onClose={() => setOpenModalUpdateNameEmail(false)} />
-
                         <ModalUpdatePassword isOpen={openModalUpdatePass} onClose={() => setOpenModalUpdatePass(false)} />
-
                         <Access action="tambahakun">
                             <ModalAddUser isOpen={openModalAddUser} onClose={() => setOpenModalAddUser(false)} />
                         </Access>
@@ -118,12 +129,12 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                                 </ul>
                             </div>
                         )}
-
                     </div>
                 </div>
             </div>
         </nav>
     );
+
 };
 
 
