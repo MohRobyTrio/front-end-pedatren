@@ -404,10 +404,10 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
 
                 <div className="flex flex-col md:flex-row">
                     {/* Left Section - Student Photo */}
-                    <div className="md:w-1/7 mb-4 md:mb-0 flex item-center justify-center">
+                    <div className="md:w-1/7 mb-4 md:mb-0 flex item-center justify-center rounded-md">
                         <img
                             alt={data.nama_santri || "-"}
-                            className="w-24 h-24 object-cover"
+                            className="w-24 h-24 object-cover rounded-md"
                             src={data.foto_profil}
                             onError={(e) => {
                                 e.target.onerror = null;
@@ -535,10 +535,16 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                         </div>
 
                         <div className="mt-2">
-                            <div className="text-gray-700 font-medium">{(data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") ? 'Sudah berada di Pondok :' : ''}</div>
-                            <div className="mt-1 font-medium text-blue-800">
-                                {data.tanggal_kembali}
-                            </div>
+                            {(data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (
+                                <>
+                                    <div className="text-gray-700 font-medium">
+                                        Sudah berada di Pondok :
+                                    </div>
+                                    <div className="mt-1 font-medium text-blue-800">
+                                        {data.tanggal_kembali}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 
