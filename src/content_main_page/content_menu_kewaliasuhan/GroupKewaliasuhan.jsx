@@ -1,21 +1,35 @@
-import {  useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Filters from "../../components/Filters";
 import SearchBar from "../../components/SearchBar";
 import { OrbitProgress } from "react-loading-indicators";
 import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
-import useFetchGroupKewaliasuhan from "../../hooks/hooks_menu_kewaliasuhan/GroupKewaliasuhan"; // Buat sesuai
+import useFetchGroupKewaliasuhan from "../../hooks/hooks_menu_kewaliasuhan/GroupKewaliasuhan";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { ModalFormGrupWaliAsuh } from "../../components/modal/ModalFormGrupwaliasuh";
+import Swal from "sweetalert2";
+import { API_BASE_URL } from "../../hooks/config";
+import { getCookie } from "../../utils/cookieUtils";
+import useLogout from "../../hooks/Logout";
+import { FaEdit, FaPlus } from "react-icons/fa";
+
 
 const GroupKewaliasuhan = () => {
+    const { clearAuthData } = useLogout();
     const [filters, setFilters] = useState({
         wilayah: "",
         jenisKelamin: "",
         jenisGroup: ""
     });
 
-    const { filterWilayah } = DropdownWilayah();
+    // State untuk modal dan data
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedGrup, setSelectedGrup] = useState(null);
+    const [modalMode, setModalMode] = useState("tambah");
+    const [loadingDetail, setLoadingDetail] = useState(false);
+    const [wilayahData, setWilayahData] = useState([]);
 
+    const { filterWilayah } = DropdownWilayah();
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.nama || "";
 
     const updatedFilters = useMemo(() => ({
@@ -34,14 +48,98 @@ const GroupKewaliasuhan = () => {
         totalData,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     } = useFetchGroupKewaliasuhan(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
 
+    // Ambil data wilayah untuk dropdown modal
+    useEffect(() => {
+        setWilayahData(filterWilayah.wilayah.map(w => ({
+            id: w.value,
+            nama_wilayah: w.label
+        })));
+    }, [filterWilayah]);
+
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
+        }
+    };
+
+    // Fungsi untuk mengambil detail grup dari API
+    const fetchGrupDetail = async (id) => {
+        setLoadingDetail(true);
+        try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}crud/${id}/grupwaliasuh/show`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return null;
+            }
+
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            return result.data;
+        } catch (error) {
+            console.error("Gagal mengambil detail grup:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `Gagal mengambil data grup: ${error.message}`,
+            });
+            return null;
+        } finally {
+            setLoadingDetail(false);
+        }
+    };
+
+    // Fungsi untuk membuka modal tambah
+    const handleTambah = () => {
+        setModalMode("tambah");
+        setSelectedGrup(null);
+        setIsModalOpen(true);
+    };
+
+    // Fungsi untuk membuka modal edit dengan mengambil data dari API
+    const handleEdit = async (id) => {
+        Swal.fire({
+            title: 'Memuat data...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        const grupDetail = await fetchGrupDetail(id);
+        Swal.close();
+        
+        if (grupDetail) {
+            setModalMode("edit");
+            setSelectedGrup({
+                id: grupDetail.id,
+                id_wilayah: grupDetail.id_wilayah,
+                nama_grup: grupDetail.nama_grup,
+                jenis_kelamin: grupDetail.jenis_kelamin
+            });
+            setIsModalOpen(true);
         }
     };
 
@@ -71,6 +169,15 @@ const GroupKewaliasuhan = () => {
                 {/* <div className="space-x-2 flex flex-wrap">
                     <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
                 </div> */}
+
+                <div className="space-x-2 flex flex-wrap">
+                    <button 
+                        onClick={handleTambah}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
+                    >
+                        <FaPlus /> Tambah Grup
+                    </button>
+                </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -110,6 +217,7 @@ const GroupKewaliasuhan = () => {
                                     <th className="px-3 py-2 border-b">Jum. Anak Asuh</th>
                                     <th className="px-3 py-2 border-b">Tgl Update Group</th>
                                     <th className="px-3 py-2 border-b">Tgl Input Group</th>
+                                    <th className="px-3 py-2 border-b">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800 text-center">
@@ -119,7 +227,6 @@ const GroupKewaliasuhan = () => {
                                     <tr><td colSpan="8" className="py-6">Tidak ada data</td></tr>
                                 ) : (
                                     groupKewaliasuhan.map((item, index) => (
-                                        // <tr key={item.id || index} className="hover:bg-gray-50 text-left"> //Ini yang awal
                                         <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-left">
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.group || "-"}</td>
@@ -129,6 +236,14 @@ const GroupKewaliasuhan = () => {
                                             <td className="px-3 py-2 border-b">{item.jumlah_anak_asuh || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                            <td className="px-3 py-2 border-b">
+                                                <button
+                                                    onClick={() => handleEdit(item.id)}
+                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))
                                 )}
@@ -137,6 +252,17 @@ const GroupKewaliasuhan = () => {
                     </DoubleScrollbarTable>
                 )}
 
+                {/* Modal untuk tambah/edit grup */}
+                <ModalFormGrupWaliAsuh
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    mode={modalMode}
+                    grupData={selectedGrup}
+                    wilayahList={wilayahData}
+                    refetchData={fetchData}
+                />
+
+                {/* Pagination */}
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}

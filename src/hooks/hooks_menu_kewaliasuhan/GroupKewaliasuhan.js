@@ -96,7 +96,8 @@ const useFetchGroupKewaliasuhan = (filters) => {
         totalData,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 
