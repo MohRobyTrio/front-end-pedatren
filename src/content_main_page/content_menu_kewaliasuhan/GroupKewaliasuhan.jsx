@@ -6,12 +6,13 @@ import Pagination from "../../components/Pagination";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import useFetchGroupKewaliasuhan from "../../hooks/hooks_menu_kewaliasuhan/GroupKewaliasuhan";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
-import { ModalFormGrupWaliAsuh } from "../../components/modal/ModalFormGrupwaliasuh";
+import { ModalFormGrupWaliAsuh, ModalConfirmationStatusGrup } from "../../components/modal/ModalFormGrupwaliasuh";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { FaEdit, FaPlus } from "react-icons/fa";
+import Access from "../../components/Access";
 
 
 const GroupKewaliasuhan = () => {
@@ -29,13 +30,28 @@ const GroupKewaliasuhan = () => {
     const [loadingDetail, setLoadingDetail] = useState(false);
     const [wilayahData, setWilayahData] = useState([]);
 
+    // State untuk modal konfirmasi status
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [statusModalData, setStatusModalData] = useState(null);
+    const [isActivateAction, setIsActivateAction] = useState(false);
+
+    // Fungsi untuk membuka modal konfirmasi status
+    const openStatusModal = (grup, isActivate) => {
+        setStatusModalData({
+            id: grup.id,
+            nama_grup: grup.group
+        });
+        setIsActivateAction(isActivate);
+        setIsStatusModalOpen(true);
+    };
+
     const { filterWilayah } = DropdownWilayah();
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == filters.wilayah)?.nama || "";
 
     const updatedFilters = useMemo(() => ({
         ...filters,
         wilayah: wilayahTerpilih
-    }), [filters, wilayahTerpilih]);    
+    }), [filters, wilayahTerpilih]);
 
     const {
         groupKewaliasuhan,
@@ -92,7 +108,7 @@ const GroupKewaliasuhan = () => {
             }
 
             const result = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -127,10 +143,10 @@ const GroupKewaliasuhan = () => {
                 Swal.showLoading();
             }
         });
-        
+
         const grupDetail = await fetchGrupDetail(id);
         Swal.close();
-        
+
         if (grupDetail) {
             setModalMode("edit");
             setSelectedGrup({
@@ -171,12 +187,14 @@ const GroupKewaliasuhan = () => {
                 </div> */}
 
                 <div className="space-x-2 flex flex-wrap">
-                    <button 
-                        onClick={handleTambah}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
-                    >
-                        <FaPlus /> Tambah Grup
-                    </button>
+                    <Access action={"tambah"}>
+                        <button
+                            onClick={handleTambah}
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
+                        >
+                            <FaPlus /> Tambah Grup
+                        </button>
+                    </Access>
                 </div>
             </div>
 
@@ -217,7 +235,9 @@ const GroupKewaliasuhan = () => {
                                     <th className="px-3 py-2 border-b">Jum. Anak Asuh</th>
                                     <th className="px-3 py-2 border-b">Tgl Update Group</th>
                                     <th className="px-3 py-2 border-b">Tgl Input Group</th>
-                                    <th className="px-3 py-2 border-b">Aksi</th>
+                                        <Access action={"edit"}>
+                                            <th className="px-3 py-2 border-b">Aksi</th>
+                                        </Access>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800 text-center">
@@ -236,14 +256,34 @@ const GroupKewaliasuhan = () => {
                                             <td className="px-3 py-2 border-b">{item.jumlah_anak_asuh || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
-                                            <td className="px-3 py-2 border-b">
-                                                <button
-                                                    onClick={() => handleEdit(item.id)}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                            </td>
+                                            <Access action={"edit"}>
+                                                <td className="px-3 py-2 border-b">
+                                                    <div className="flex items-center space-x-2">
+
+                                                        <button
+                                                            onClick={() => handleEdit(item.id)}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                        {item.status === 1 ? (
+                                                            <button
+                                                                onClick={() => openStatusModal(item, false)}
+                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                            >
+                                                                Non-Aktif
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => openStatusModal(item, true)}
+                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                            >
+                                                                Aktifkan
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </Access>
                                         </tr>
                                     ))
                                 )}
@@ -260,6 +300,14 @@ const GroupKewaliasuhan = () => {
                     grupData={selectedGrup}
                     wilayahList={wilayahData}
                     refetchData={fetchData}
+                />
+                {/* Modal Konfirmasi Status */}
+                <ModalConfirmationStatusGrup
+                    isOpen={isStatusModalOpen}
+                    onClose={() => setIsStatusModalOpen(false)}
+                    grupData={statusModalData}
+                    refetchData={fetchData}
+                    isActivate={isActivateAction}
                 />
 
                 {/* Pagination */}

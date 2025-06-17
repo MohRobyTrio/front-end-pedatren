@@ -10,9 +10,9 @@ import useLogout from "../../hooks/Logout";
 export const ModalFormGrupWaliAsuh = ({
     isOpen,
     onClose,
-    mode, 
-    grupData, 
-    wilayahList, 
+    mode,
+    grupData,
+    wilayahList,
     refetchData
 }) => {
     const { clearAuthData } = useLogout();
@@ -140,8 +140,8 @@ export const ModalFormGrupWaliAsuh = ({
             console.log("response:", error.response || "No response data");
             console.log("API URL:", mode === 'tambah' ? `${API_BASE_URL}crud/grupwaliasuh` : `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}`);
             console.log("result:", result || "No result data");
-                    
-            
+
+
         }
     };
 
@@ -270,6 +270,150 @@ export const ModalFormGrupWaliAsuh = ({
                                     </button>
                                 </div>
                             </form>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};
+
+export const ModalConfirmationStatusGrup = ({
+    isOpen,
+    onClose,
+    grupData,
+    refetchData,
+    isActivate
+}) => {
+    const { clearAuthData } = useLogout();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handleConfirm = async () => {
+        setIsProcessing(true);
+        try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const endpoint = isActivate
+                ? `${API_BASE_URL}grupwaliasuh/${grupData.id}/activate`
+                : `${API_BASE_URL}grupwaliasuh/${grupData.id}`;
+
+            const method = isActivate ? "PUT" : "DELETE";
+
+            const response = await fetch(endpoint, {
+                method,
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: `Grup ${grupData.nama_grup} berhasil ${isActivate ? 'diaktifkan' : 'dinonaktifkan'}.`,
+            });
+
+            refetchData?.();
+            onClose?.();
+        } catch (error) {
+            console.error("Gagal mengubah status grup:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `Gagal mengubah status grup: ${error.message}`,
+            });
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                {/* Background overlay */}
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                {/* Modal content wrapper */}
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-300 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
+                            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mt-2 sm:mt-0 text-left w-full">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg leading-6 font-medium text-gray-900 text-center mb-4"
+                                        >
+                                            Konfirmasi
+                                        </Dialog.Title>
+                                        <p className="text-center mb-6">
+                                            {isActivate
+                                                ? `Apakah Anda yakin ingin mengaktifkan grup ${grupData?.nama_grup || ''}?`
+                                                : `Apakah Anda yakin ingin menonaktifkan grup ${grupData?.nama_grup || ''}?`}
+                                        </p>
+                                        <div className="flex justify-center space-x-4">
+                                            <button
+                                                type="button"
+                                                onClick={onClose}
+                                                disabled={isProcessing}
+                                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 disabled:opacity-50"
+                                            >
+                                                Batal
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleConfirm}
+                                                disabled={isProcessing}
+                                                className={`px-4 py-2 text-white rounded ${isActivate
+                                                        ? 'bg-green-600 hover:bg-green-700'
+                                                        : 'bg-red-600 hover:bg-red-700'
+                                                    } disabled:opacity-50`}
+                                            >
+                                                {isProcessing ? (
+                                                    <span>Memproses...</span>
+                                                ) : isActivate ? (
+                                                    'Aktifkan'
+                                                ) : (
+                                                    'Non-Aktifkan'
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </Dialog.Panel>
                     </Transition.Child>
                 </div>
