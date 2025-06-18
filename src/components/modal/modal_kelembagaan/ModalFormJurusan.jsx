@@ -7,18 +7,27 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchLembaga from "../../../hooks/hooks_menu_kelembagaan/Lembaga";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { allLembaga } = useFetchLembaga();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_jurusan: "",
         lembaga_id: "",
         status: ""
     });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -184,17 +193,20 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="lembaga_id" className="block text-gray-700">Lembaga *</label>
+                                                    <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, lembaga_id: e.target.value })}
-                                                        value={formData.lembaga_id}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            handleFilterChangeLembaga({ lembaga: value });
+                                                            setFormData((prev) => ({ ...prev, lembaga_id: value }));
+                                                        }}
+                                                        value={selectedLembaga.lembaga}
                                                         required
                                                     >
-                                                        <option value="">Pilih Lembaga</option>
-                                                        {allLembaga.map((lembaga, idx) => (
-                                                            <option key={idx} value={lembaga.id}>
-                                                                {lembaga.nama_lembaga}
+                                                        {updatedFilterLembaga.lembaga.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
                                                             </option>
                                                         ))}
                                                     </select>

@@ -7,18 +7,28 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchJurusan from "../../../hooks/hooks_menu_kelembagaan/Jurusan";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { allJurusan } = useFetchJurusan();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_kelas: "",
         jurusan_id: "",
         status: ""
     });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+        jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -29,6 +39,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                handleFilterChangeLembaga({ lembaga: ""})
                 setFormData({
                     nama_kelas: "",
                     jurusan_id: "",
@@ -36,6 +47,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                 });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
 
@@ -184,17 +196,36 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="jurusan_id" className="block text-gray-700">Jurusan *</label>
+                                                    <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, jurusan_id: e.target.value })}
-                                                        value={formData.jurusan_id}
+                                                        onChange={(e) => handleFilterChangeLembaga({ lembaga: e.target.value })}
+                                                        value={selectedLembaga.lembaga}
                                                         required
                                                     >
-                                                        <option value="">Pilih Jurusan</option>
-                                                        {allJurusan.map((jurusan, idx) => (
-                                                            <option key={idx} value={jurusan.id}>
-                                                                {jurusan.nama_jurusan}
+                                                        {updatedFilterLembaga.lembaga.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label htmlFor="jurusan" className="block text-gray-700">Jurusan *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${filterLembaga.jurusan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            handleFilterChangeLembaga({ jurusan: value });
+                                                            setFormData((prev) => ({ ...prev, jurusan_id: value }));
+                                                        }}
+                                                        value={selectedLembaga.jurusan}
+                                                        disabled={filterLembaga.jurusan.length <= 1}
+                                                        required
+                                                    >
+                                                        {updatedFilterLembaga.jurusan.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
                                                             </option>
                                                         ))}
                                                     </select>

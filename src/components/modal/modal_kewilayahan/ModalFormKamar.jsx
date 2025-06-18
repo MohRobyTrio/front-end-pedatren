@@ -7,13 +7,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchBlok from "../../../hooks/hooks_menu_kewilayahan/Blok";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 
 export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { blok } = useFetchBlok();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     // const id = data.id;
     const [formData, setFormData] = useState({
         blok_id: "",
@@ -21,6 +21,16 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
         kapasitas: "",
         status: ""
     });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterWilayah = {
+        wilayah: updateFirstOptionLabel(filterWilayah.wilayah, "Pilih Wilayah"),
+        blok: updateFirstOptionLabel(filterWilayah.blok, "Pilih Blok"),
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -33,6 +43,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                handleFilterChangeWilayah({ wilayah: ""})
                 setFormData({
                     nama_kamar: "",
                     blok_id: "",
@@ -41,6 +52,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                 });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
 
@@ -190,17 +202,36 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="blok_id" className="block text-gray-700">Blok *</label>
+                                                    <label htmlFor="wilayah" className="block text-gray-700">Wilayah *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, blok_id: e.target.value })}
-                                                        value={formData.blok_id}
+                                                        onChange={(e) => handleFilterChangeWilayah({ wilayah: e.target.value })}
+                                                        value={selectedWilayah.wilayah}
                                                         required
                                                     >
-                                                        <option value="">Pilih Blok</option>
-                                                        {blok.map((item, idx) => (
-                                                            <option key={idx} value={item.id}>
-                                                                {item.nama_blok}
+                                                        {updatedFilterWilayah.wilayah.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label htmlFor="blok_id" className="block text-gray-700">Blok *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${filterWilayah.blok.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            handleFilterChangeWilayah({ blok: value });
+                                                            setFormData((prev) => ({ ...prev, blok_id: value }));
+                                                        }}
+                                                        value={selectedWilayah.blok}
+                                                        disabled={filterWilayah.blok.length <= 1}
+                                                        required
+                                                    >
+                                                        {updatedFilterWilayah.blok.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
                                                             </option>
                                                         ))}
                                                     </select>

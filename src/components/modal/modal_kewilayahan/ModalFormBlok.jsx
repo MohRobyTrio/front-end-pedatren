@@ -7,19 +7,28 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchWilayah from "../../../hooks/hooks_menu_kewilayahan/Wilayah";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 
 export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { wilayah } = useFetchWilayah();
+    const { filterWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     // const id = data.id;
     const [formData, setFormData] = useState({
         wilayah_id: "",
         nama_blok: "",
         status: ""
     });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterWilayah = {
+        wilayah: updateFirstOptionLabel(filterWilayah.wilayah, "Pilih Wilayah"),
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -31,6 +40,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                handleFilterChangeWilayah({ wilayah: ""})
                 setFormData({
                     nama_blok: "",
                     wilayah_id: "",
@@ -38,6 +48,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                 });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
 
@@ -192,10 +203,9 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                         value={formData.wilayah_id}
                                                         required
                                                     >
-                                                        <option value="">Pilih Wilayah</option>
-                                                        {wilayah.map((wilayah, idx) => (
-                                                            <option key={idx} value={wilayah.id}>
-                                                                {wilayah.nama_wilayah}
+                                                        {updatedFilterWilayah.wilayah.map((wilayah, idx) => (
+                                                            <option key={idx} value={wilayah.value}>
+                                                                {wilayah.label}
                                                             </option>
                                                         ))}
                                                     </select>

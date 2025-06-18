@@ -177,7 +177,7 @@ export const ModalAddOrEditWilayah = ({ isOpen, onClose, data, refetchData, feat
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                {feature == 1 ? "Tambah Data Baru" : "Edit Data"}
+                                                {!data ? "Tambah Data Baru" : "Edit Data"}
                                             </Dialog.Title>
 
                                             {/* FORM ISI */}

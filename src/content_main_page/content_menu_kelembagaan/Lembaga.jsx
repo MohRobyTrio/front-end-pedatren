@@ -93,23 +93,33 @@ const Lembaga = () => {
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_lembaga}</td>
                                             <td className="px-3 py-2 border-b">
-                                                <ToggleStatus
-                                                    label={item.status ? "Aktif" : "Nonaktif"}
-                                                    active={item.status}
-                                                    onClick={() => handleToggleStatus(item)}
-                                                />
+                                                <span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status ? "Aktif" : "Nonaktif"}
+                                                </span>
                                             </td>
                                             <td className="px-3 py-2 border-b text-center space-x-2">
-                                                <button
-                                                    onClick={() => {
-                                                        setLembagaData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
+                                                <div className="flex justify-center items-center space-x-2">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setLembagaData(item);
+                                                            setFeature(2);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <ToggleStatus
+                                                            active={item.status}
+                                                            onClick={() => handleToggleStatus(item)}
+                                                        />
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

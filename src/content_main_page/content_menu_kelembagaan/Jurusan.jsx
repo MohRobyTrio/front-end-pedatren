@@ -94,22 +94,32 @@ const Jurusan = () => {
                                             <td className="px-3 py-2 border-b">{item.nama_jurusan}</td>
                                             <td className="px-3 py-2 border-b">{item.lembaga}</td>
                                             <td className="px-3 py-2 border-b">
-                                                <ToggleStatus
-                                                    label={item.status ? "Aktif" : "Nonaktif"}
-                                                    active={item.status}
-                                                    onClick={() => handleToggleStatus(item)}
-                                                />
+                                                <span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status ? "Aktif" : "Nonaktif"}
+                                                </span>
                                             </td>
                                             <td className="px-3 py-2 border-b text-center space-x-2">
+                                                <div className="flex justify-center items-center space-x-2">
                                                 <button
-                                                    onClick={() => {
-                                                        setJurusanData(item);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setJurusanData(item);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <ToggleStatus
+                                                            active={item.status}
+                                                            onClick={() => handleToggleStatus(item)}
+                                                        />
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

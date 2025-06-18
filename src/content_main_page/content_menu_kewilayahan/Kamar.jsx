@@ -121,23 +121,32 @@ const Kamar = () => {
                                                     {item.wilayah}
                                                 </td>
                                                 <td className="px-3 py-2 border-b">
-                                                    <ToggleStatus
-                                                        label={item.status ? "Aktif" : "Nonaktif"}
-                                                        active={item.status}
-                                                        onClick={() => handleToggleStatus(item)}
-                                                    />
+                                                    <span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status ? "Aktif" : "Nonaktif"}
+                                                </span>
                                                 </td>
                                                 <td className="px-3 py-2 border-b space-x-2 text-center">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedKamar(item);
-                                                            setOpenModal(true);
-                                                        }}
-                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded"
-                                                    >
-                                                        <FaEdit />
-                                                    </button>
+                                                    <div className="flex justify-center items-center space-x-2">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedKamar(item);
+                                                                setOpenModal(true);
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                        <ToggleStatus
+                                                            active={item.status}
+                                                            onClick={() => handleToggleStatus(item)}
+                                                        />
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))

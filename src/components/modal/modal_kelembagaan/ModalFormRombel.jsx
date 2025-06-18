@@ -7,19 +7,30 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchKelas from "../../../hooks/hooks_menu_kelembagaan/Kelas";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { allKelas } = useFetchKelas();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_rombel: "",
         gender_rombel: "",
         kelas_id: "",
         status: ""
     });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    const updatedFilterLembaga = {
+        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+        jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+        kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -30,6 +41,7 @@ export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => 
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                handleFilterChangeLembaga({ lembaga: ""})
                 setFormData({
                     nama_rombel: "",
                     kelas_id: "",
@@ -38,6 +50,7 @@ export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => 
                 });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
 
@@ -188,17 +201,52 @@ export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="kelas_id" className="block text-gray-700">Kelas *</label>
+                                                    <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, kelas_id: e.target.value })}
-                                                        value={formData.kelas_id}
+                                                        onChange={(e) => handleFilterChangeLembaga({ lembaga: e.target.value })}
+                                                        value={selectedLembaga.lembaga}
                                                         required
                                                     >
-                                                        <option value="">Pilih Kelas</option>
-                                                        {allKelas.map((kelas, idx) => (
-                                                            <option key={idx} value={kelas.id}>
-                                                                {kelas.nama_kelas}
+                                                        {updatedFilterLembaga.lembaga.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label htmlFor="jurusan" className="block text-gray-700">Jurusan *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${filterLembaga.jurusan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        onChange={(e) => handleFilterChangeLembaga({ jurusan: e.target.value })}
+                                                        value={selectedLembaga.jurusan}
+                                                        disabled={filterLembaga.jurusan.length <= 1}
+                                                        required
+                                                    >
+                                                        {updatedFilterLembaga.jurusan.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label htmlFor="kelas_id" className="block text-gray-700">Kelas *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${filterLembaga.kelas.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            handleFilterChangeLembaga({ kelas: value });
+                                                            setFormData((prev) => ({ ...prev, kelas_id: value }));
+                                                        }}
+                                                        value={selectedLembaga.kelas}
+                                                        disabled={filterLembaga.kelas.length <= 1}
+                                                        required
+                                                    >
+                                                        {updatedFilterLembaga.kelas.map((item, idx) => (
+                                                            <option key={idx} value={item.value}>
+                                                                {item.label}
                                                             </option>
                                                         ))}
                                                     </select>
