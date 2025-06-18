@@ -40,31 +40,30 @@ const LoginPage = () => {
   const handleHelp = (e) => {
     e.preventDefault();
     Swal.fire({
-      title: "<span style='font-size: 1.2rem;'>Bantuan Login SIPATREN</span>",
+      title: `<span style="font-size: 1.12rem; font-weight:600; color: #1e293b;"><i class="fas fa-headset" style="color:#2563eb;margin-right:8px;"></i>Kontak Admin</span>`,
       html: `
-        <div style="text-align: left; font-size: 1rem;">
-          <ul style="padding-left: 1.2em; margin-bottom: 1em;">
-            <li>Pastikan email dan kata sandi Anda sudah benar.</li>
-            <li>Jika Anda lupa kata sandi, klik <b>Lupa sandi?</b> di bawah tombol login.</li>
-            <li>Jika masih mengalami kendala, silakan hubungi Admin SIPATREN melalui email:</li>
-          </ul>
-          <div style="padding: 0.8em 1em; background: #f4f7fe; border-radius: 8px; font-weight: 500;">
-            <i class="fas fa-envelope" style="margin-right: 0.5em; color: #2563eb;"></i>
-            <a href="mailto:sipatren@gmail.com" style="color: #2563eb; text-decoration: underline;">sipatren@gmail.com</a>
-          </div>
+      <div style="font-size:1rem;color:#334155;line-height:1.7;">
+        <p>
+          Jika Anda mengalami masalah login atau membutuhkan bantuan teknis,
+          silakan hubungi Admin Pesantren melalui email berikut:
+        </p>
+        <div style="margin-top:1.1em; display:flex;align-items:center;gap:.7em;padding:.8em 1em;background:#f4f7fe;border-radius:8px;">
+          <i class="fas fa-envelope" style="color:#2563eb;"></i>
+          <a href="mailto:sipatren@gmail.com" style="color:#2563eb;font-weight:500;text-decoration:underline;">sipatren@gmail.com</a>
         </div>
-      `,
-      icon: "info",
+      </div>
+    `,
+      showConfirmButton: true,
       confirmButtonText: "Tutup",
       showCloseButton: true,
       width: 400,
       customClass: {
-        htmlContainer: "text-gray-700",
-        popup: "rounded-xl",
-        confirmButton: "bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
+        popup: "rounded-2xl shadow-lg",
+        confirmButton: "bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-700"
       }
     });
   };
+
 
   const Load = () => (
     <div className="flex justify-center items-center">
