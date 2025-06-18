@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi"; // Icon panah kiri
 import logo from "../assets/logoku.png";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../hooks/config";
@@ -8,9 +9,8 @@ const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!email) {
       Swal.fire({
         icon: "warning",
@@ -18,38 +18,27 @@ const handleSubmit = async (e) => {
       });
       return;
     }
-
     setIsSubmitting(true);
     try {
-        Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang proses.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+      Swal.fire({
+        title: 'Tunggu sebentar...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
       const response = await fetch(`${API_BASE_URL}forgot`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
       Swal.close();
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Terjadi kesalahan.");
-      }
+      if (!response.ok) throw new Error(data.message || "Terjadi kesalahan.");
 
       Swal.fire({
         icon: "success",
-        title: "Permintaan Dikirim",
-        text: data.message || "Silakan cek email Anda untuk reset password.",
+        title: "Berhasil",
+        text: data.message || "Cek email untuk reset password.",
       });
-
       setEmail("");
     } catch (error) {
       Swal.fire({
@@ -63,44 +52,39 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 overflow-y-auto">
-      <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-md">
-        <div className="flex justify-center mb-4">
-          <img src={logo} alt="Logo" className="h-16" />
+    <section className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4">
+      <div className="w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg">
+        <div className="flex flex-col items-center mb-6">
+          <img src={logo} alt="Logo" className="h-14 mb-2" />
+          <h2 className="text-xl font-bold mb-1">Lupa Sandi</h2>
+          <p className="text-xs text-gray-500 text-center">Masukkan email anda</p>
         </div>
-        <h2 className="text-2xl font-semibold text-center mb-2">
-          Lupa Password
-        </h2>
-        <p className="text-sm text-center text-gray-600 mb-6">
-          Masukkan email Anda untuk menerima tautan reset password.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">
-              E-mail
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900"
-              placeholder="name@gmail.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isSubmitting}
+            required
+            autoFocus
+          />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
           >
-            Kirim Tautan Reset
+            {isSubmitting ? "Mengirim..." : "Kirim Link Reset"}
           </button>
         </form>
-        <div className="text-center mt-4">
-          <Link to="/" className="text-sm text-blue-600 hover:underline">
-            Kembali ke Login
+        <div className="mt-6 flex justify-center">
+          <Link
+            to="/"
+            className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+          >
+            <FiArrowLeft className="text-base" />
+            Kembali ke login
           </Link>
         </div>
       </div>
