@@ -5,38 +5,34 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useFetchKamar = () => {
+const useFetchRombel = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [kamar, setKamar] = useState([]);
-    const [loadingKamar, setLoadingKamar] = useState(true);
+    const [rombel, setRombel] = useState([]);
+    const [loadingRombel, setLoadingRombel] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalDataKamar, setTotalDataKamar] = useState(0);
-
+    const [totalDataRombel, setTotalDataRombel] = useState(0);
     const token = sessionStorage.getItem("token") || getCookie("token");
 
-    const fetchKamar = useCallback(async () => {
-        setLoadingKamar(true);
+    const fetchRombel = useCallback(async () => {
+        setLoadingRombel(true);
         setError(null);
 
         try {
-            const url = `${API_BASE_URL}crud/kamar?page=${currentPage}&per_page=${limit}`;
-            const response = await fetch(url, {
+            const response = await fetch(`${API_BASE_URL}crud/rombel?page=${currentPage}&per_page=${limit}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("fetch ke",url);
-            
 
             if (response.status === 401) {
                 await Swal.fire({
                     title: "Sesi Berakhir",
-                    text: "Silakan login kembali.",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
                     icon: "warning",
                     confirmButtonText: "OK",
                 });
@@ -48,25 +44,25 @@ const useFetchKamar = () => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const data = await response.json();
 
-            setKamar(data.data || []);
+            setRombel(data.data);
             setTotalPages(data.last_page || 1);
-            setTotalDataKamar(data.total || 0);
+            setTotalDataRombel(data.total || 0);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
-            setKamar([]);
+            setRombel([]);
         } finally {
-            setLoadingKamar(false);
+            setLoadingRombel(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, limit, token]);
+    }, [currentPage, limit, navigate, token]);
 
     useEffect(() => {
-        fetchKamar();
-    }, [fetchKamar]);
+        fetchRombel();
+    }, [fetchRombel]);
 
     const handleToggleStatus = async (data) => {
-        const confirm = await Swal.fire({
+        const confirmResult = await Swal.fire({
             title: data.status ? "Nonaktifkan Data?" : "Aktifkan Data?",
             text: data.status
                 ? "Data akan dinonaktifkan."
@@ -77,17 +73,19 @@ const useFetchKamar = () => {
             cancelButtonText: "Batal",
         });
 
-        if (!confirm.isConfirmed) return;
+        if (!confirmResult.isConfirmed) return;
 
         try {
             Swal.fire({
-                title: data.status ? "Menonaktifkan..." : "Mengaktifkan...",
+                title: "Mohon tunggu...",
+                html: data.status ? "Menonaktifkan data..." : "Mengaktifkan data...",
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading(),
             });
 
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
-                `${API_BASE_URL}crud/kamar/${data.id}${data.status ? "" : "/activate"}`,
+                `${API_BASE_URL}crud/rombel/${data.id}${data.status ? "" : "/activate"}`,
                 {
                     method: data.status ? "DELETE" : "PUT",
                     headers: {
@@ -99,8 +97,26 @@ const useFetchKamar = () => {
 
             Swal.close();
 
-            if (!response.ok)
-                throw new Error(data.status ? "Gagal menonaktifkan data." : "Gagal mengaktifkan data.");
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
+            if (!response.ok) {
+                let result = {};
+                try {
+                    result = await response.json();
+                // eslint-disable-next-line no-empty, no-unused-vars
+                } catch (_) { }
+                throw new Error(result.message || "Gagal memperbarui status data.");
+            }
 
             await Swal.fire({
                 icon: "success",
@@ -110,23 +126,24 @@ const useFetchKamar = () => {
                     : "Data berhasil diaktifkan.",
             });
 
-            fetchKamar(); // refresh data kamar setelah perubahan status
-        } catch (err) {
-            console.error(err);
+            fetchRombel(); // refresh data
+        } catch (error) {
+            console.error("Error saat mengubah status:", error);
             await Swal.fire({
                 icon: "error",
                 title: "Gagal",
-                text: err.message || "Terjadi kesalahan saat memperbarui status.",
+                text: error.message || "Terjadi kesalahan saat memperbarui status data.",
             });
         }
     };
 
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
-
-    return { kamar, loadingKamar, error, fetchKamar, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataKamar };
+    return {
+        rombel,
+        loadingRombel,
+        error,
+        fetchRombel,
+        handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataRombel
+    };
 };
 
-export default useFetchKamar;
+export default useFetchRombel;

@@ -54,6 +54,9 @@ import AlumniSantri from "../content_main_page/content_menu_akademik/AlumniSantr
 import Wilayah from "../content_main_page/content_menu_kewilayahan/Wilayah";
 import Blok from "../content_main_page/content_menu_kewilayahan/Blok";
 import Kamar from "../content_main_page/content_menu_kewilayahan/Kamar";
+import Jurusan from "../content_main_page/content_menu_kelembagaan/Jurusan";
+import Kelas from "../content_main_page/content_menu_kelembagaan/Kelas";
+import Rombel from "../content_main_page/content_menu_kelembagaan/Rombel";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -105,6 +108,9 @@ export const menuRWSItems = [
 
 export const menuKelembagaanItems = [
     { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/lembaga", content: <Lembaga /> },
+    { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/jurusan", content: <Jurusan /> },
+    { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelas", content: <Kelas /> },
+    { id: "rombel", icon: "fa-users", text: "Rombel", link: "/rombel", content: <Rombel /> },
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { OrbitProgress } from "react-loading-indicators";
 import useFetchWilayah from "../../hooks/hooks_menu_kewilayahan/Wilayah";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import { ModalAddOrEditWilayah, ModalDetailWilayah } from "../../components/modal/modal_kewilayahan/ModalFormWilayah";
+import ToggleStatus from "../../components/ToggleStatus";
 
 const Wilayah = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -18,7 +19,7 @@ const Wilayah = () => {
         loadingWilayah,
         error,
         fetchWilayah,
-        handleDelete,
+        handleToggleStatus,
         limit,
         setLimit,
         totalPages,
@@ -90,7 +91,6 @@ const Wilayah = () => {
                                 <tr>
                                     <th className="px-3 py-2 border-b">#</th>
                                     <th className="px-3 py-2 border-b">Nama Wilayah</th>
-                                    <th className="px-3 py-2 border-b">Kategori</th>
                                     <th className="px-3 py-2 border-b">Status</th>
                                     <th className="px-3 py-2 border-b w-20">Aksi</th>
                                 </tr>
@@ -108,26 +108,25 @@ const Wilayah = () => {
                                     </tr>
                                 ) : (
                                     wilayah.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={(e) => {
+                                                        e.stopPropagation();
                                                         setSelectedId(item.id);
                                                         setIsModalOpen(true);
                                                     }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_wilayah}</td>
-                                            <td className="px-3 py-2 border-b capitalize">{item.kategori}</td>
                                             <td className="px-3 py-2 border-b">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status ? "Aktif" : "Nonaktif"}
-                                                </span>
+                                                <ToggleStatus
+                                                    label={item.status ? "Aktif" : "Nonaktif"}
+                                                    active={item.status}
+                                                    onClick={() => handleToggleStatus(item)}
+                                                />
                                             </td>
                                             <td className="px-3 py-2 border-b space-x-2 text-center">
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        e.preventDefault();
                                                         setSelectedWilayah(item);
                                                         setOpenModal(true);
                                                     }}
@@ -135,12 +134,12 @@ const Wilayah = () => {
                                                 >
                                                     <FaEdit />
                                                 </button>
-                                                <button
+                                                {/* <button
                                                     onClick={() => handleDelete(item.id)}
                                                     className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded"
                                                 >
                                                     <FaTrash />
-                                                </button>
+                                                </button> */}
                                             </td>
                                         </tr>
                                     ))

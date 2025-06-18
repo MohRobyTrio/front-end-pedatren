@@ -65,13 +65,19 @@ const useFetchWilayah = () => {
         fetchWilayah();
     }, [fetchWilayah]);
 
-    const handleDelete = async (id) => {
+    const handleToggleStatus = async (data) => {
+        const isAktif = data.status == 1;
+        const actionText = isAktif ? "Nonaktifkan Data?" : "Aktifkan Data?";
+        const confirmText = isAktif
+            ? "Data akan dinonaktifkan."
+            : "Data akan diaktifkan kembali.";
+
         const confirm = await Swal.fire({
-            title: "Hapus Data?",
-            text: "Data yang dihapus tidak dapat dikembalikan.",
+            title: actionText,
+            text: confirmText,
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Ya, hapus",
+            confirmButtonText: isAktif ? "Ya, Nonaktifkan" : "Ya, aktifkan",
             cancelButtonText: "Batal",
         });
 
@@ -79,13 +85,20 @@ const useFetchWilayah = () => {
 
         try {
             Swal.fire({
-                title: "Menghapus...",
+                title: isAktif ? "Menonaktifkan..." : "Mengaktifkan...",
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading(),
             });
 
-            const response = await fetch(`${API_BASE_URL}crud/wilayah/${id}`, {
-                method: "DELETE",
+            let response;
+            const endpoint = isAktif
+                ? `${API_BASE_URL}crud/wilayah/${data.id}`
+                : `${API_BASE_URL}crud/wilayah/${data.id}/activate`;
+
+            const method = isAktif ? "DELETE" : "PUT";
+
+            response = await fetch(endpoint, {
+                method,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -94,12 +107,12 @@ const useFetchWilayah = () => {
 
             Swal.close();
 
-            if (!response.ok) throw new Error("Gagal menghapus data.");
+            if (!response.ok) throw new Error("Gagal memproses permintaan.");
 
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: "Data berhasil dihapus.",
+                text: isAktif ? "Data berhasil dinonaktifkan." : "Data berhasil diaktifkan.",
             });
 
             fetchWilayah();
@@ -108,7 +121,7 @@ const useFetchWilayah = () => {
             await Swal.fire({
                 icon: "error",
                 title: "Gagal",
-                text: err.message || "Terjadi kesalahan saat menghapus.",
+                text: err.message || "Terjadi kesalahan saat memproses data.",
             });
         }
     };
@@ -117,7 +130,7 @@ const useFetchWilayah = () => {
         setCurrentPage(1);
     }, [limit]);
 
-    return { wilayah, loadingWilayah, error, fetchWilayah, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataWilayah };
+    return { wilayah, loadingWilayah, error, fetchWilayah, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataWilayah };
 };
 
 export default useFetchWilayah;

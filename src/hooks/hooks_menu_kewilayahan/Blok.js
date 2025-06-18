@@ -65,13 +65,15 @@ const useFetchBlok = () => {
         fetchBlok();
     }, [fetchBlok]);
 
-    const handleDelete = async (id) => {
+    const handleToggleStatus = async (data) => {
         const confirm = await Swal.fire({
-            title: "Hapus Data?",
-            text: "Data yang dihapus tidak dapat dikembalikan.",
+            title: data.status ? "Nonaktifkan Data?" : "Aktifkan Data?",
+            text: data.status
+                ? "Data akan dinonaktifkan."
+                : "Data akan diaktifkan kembali.",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Ya, hapus",
+            confirmButtonText: data.status ? "Ya, nonaktifkan" : "Ya, aktifkan",
             cancelButtonText: "Batal",
         });
 
@@ -79,36 +81,50 @@ const useFetchBlok = () => {
 
         try {
             Swal.fire({
-                title: "Menghapus...",
+                title: data.status ? "Menonaktifkan..." : "Mengaktifkan...",
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading(),
             });
 
-            const response = await fetch(`${API_BASE_URL}crud/blok/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            let response = "";
+
+            if (data.status) {
+                // Nonaktifkan (DELETE)
+                response = await fetch(`${API_BASE_URL}crud/blok/${data.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } else {
+                // Aktifkan (PUT)
+                response = await fetch(`${API_BASE_URL}crud/blok/${data.id}/activate`, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
 
             Swal.close();
 
-            if (!response.ok) throw new Error("Gagal menghapus data.");
+            if (!response.ok)
+                throw new Error(data.status ? "Gagal menonaktifkan data." : "Gagal mengaktifkan data.");
 
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: "Data berhasil dihapus.",
+                text: data.status ? "Data berhasil dinonaktifkan." : "Data berhasil diaktifkan.",
             });
 
-            fetchBlok();
+            fetchBlok(); // panggil ulang data blok
         } catch (err) {
             console.error(err);
             await Swal.fire({
                 icon: "error",
                 title: "Gagal",
-                text: err.message || "Terjadi kesalahan saat menghapus.",
+                text: err.message || "Terjadi kesalahan saat memperbarui status.",
             });
         }
     };
@@ -117,7 +133,7 @@ const useFetchBlok = () => {
         setCurrentPage(1);
     }, [limit]);
 
-    return { blok, loadingBlok, error, fetchBlok, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataBlok };
+    return { blok, loadingBlok, error, fetchBlok, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataBlok };
 };
 
 export default useFetchBlok;

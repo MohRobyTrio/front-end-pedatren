@@ -1,18 +1,17 @@
 import { OrbitProgress } from "react-loading-indicators";
-import useFetchLembaga from "../../hooks/hooks_menu_kelembagaan/Lembaga";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { useState } from "react";
-import ModalAddOrEditLembaga from "../../components/modal/modal_kelembagaan/ModalFormLembaga";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import ToggleStatus from "../../components/ToggleStatus";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
+import useFetchRombel from "../../hooks/hooks_menu_kelembagaan/Rombel";
+import ModalAddOrEditRombel from "../../components/modal/modal_kelembagaan/ModalFormRombel";
 
-const Lembaga = () => {
+const Rombel = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [lembagaData, setLembagaData] = useState("");
-    const [feature, setFeature] = useState("");
-    const { lembaga, loadingLembaga, error, fetchLembaga, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataLembaga } = useFetchLembaga();
+    const [rombelData, setRombelData] = useState("");
+    const { rombel, loadingRombel, error, fetchRombel, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataRombel } = useFetchRombel();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -23,16 +22,16 @@ const Lembaga = () => {
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Lembaga</h1>
+                <h1 className="text-2xl font-bold">Data Rombel</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
-                        setFeature(1);
+                        setRombelData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditLembaga isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchLembaga} feature={feature} />
+            <ModalAddOrEditRombel isOpen={openModal} onClose={() => setOpenModal(false)} data={rombelData} refetchData={fetchRombel} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -48,7 +47,7 @@ const Lembaga = () => {
                 ) : (
                     <>
                     <SearchBar
-                            totalData={totalDataLembaga}
+                            totalData={totalDataRombel}
                             limit={limit}
                             toggleLimit={(e) => setLimit(Number(e.target.value))}
                             showFilterButtons={false}
@@ -60,27 +59,33 @@ const Lembaga = () => {
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
                                     <th className="px-3 py-2 border-b">#</th>
-                                    <th className="px-3 py-2 border-b">Nama Lembaga</th>
+                                    <th className="px-3 py-2 border-b">Nama Rombel</th>
+                                    <th className="px-3 py-2 border-b">Kelas</th>
+                                    <th className="px-3 py-2 border-b">Jurusan</th>
+                                    <th className="px-3 py-2 border-b">Lembaga</th>
                                     <th className="px-3 py-2 border-b">Status</th>
                                     <th className="px-3 py-2 border-b text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800">
-                                {loadingLembaga ? (
+                                {loadingRombel ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center p-4">
+                                        <td colSpan="7" className="text-center p-4">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
                                     </tr>
-                                ) : lembaga.length === 0 ? (
+                                ) : rombel.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center py-6">Tidak ada data</td>
+                                        <td colSpan="7" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
-                                    lembaga.map((item, index) => (
+                                    rombel.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.nama_lembaga}</td>
+                                            <td className="px-3 py-2 border-b">{item.nama_rombel}</td>
+                                            <td className="px-3 py-2 border-b">{item.kelas}</td>
+                                            <td className="px-3 py-2 border-b">{item.jurusan}</td>
+                                            <td className="px-3 py-2 border-b">{item.lembaga}</td>
                                             <td className="px-3 py-2 border-b">
                                                 <ToggleStatus
                                                     label={item.status ? "Aktif" : "Nonaktif"}
@@ -91,8 +96,7 @@ const Lembaga = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2">
                                                 <button
                                                     onClick={() => {
-                                                        setLembagaData(item);
-                                                        setFeature(2);
+                                                        setRombelData(item);
                                                         setOpenModal(true);
                                                     }}
                                                     className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
@@ -116,4 +120,4 @@ const Lembaga = () => {
     );
 };
 
-export default Lembaga;
+export default Rombel;

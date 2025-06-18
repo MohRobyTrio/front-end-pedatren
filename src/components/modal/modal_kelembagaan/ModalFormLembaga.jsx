@@ -64,7 +64,7 @@ const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) 
             // Tentukan URL dan method berdasarkan feature
             const isEdit = feature === 2;
             const url = isEdit
-                ? `${API_BASE_URL}crud/${id}/lembaga`
+                ? `${API_BASE_URL}crud/lembaga/${id}`
                 : `${API_BASE_URL}crud/lembaga`;
 
             const method = isEdit ? "PUT" : "POST";

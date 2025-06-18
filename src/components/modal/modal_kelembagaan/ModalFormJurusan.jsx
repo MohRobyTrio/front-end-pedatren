@@ -7,17 +7,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useFetchWilayah from "../../../hooks/hooks_menu_kewilayahan/Wilayah";
-import { OrbitProgress } from "react-loading-indicators";
+import useFetchLembaga from "../../../hooks/hooks_menu_kelembagaan/Lembaga";
 
-export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
+const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { wilayah } = useFetchWilayah();
-    // const id = data.id;
+    const { allLembaga } = useFetchLembaga();
     const [formData, setFormData] = useState({
-        wilayah_id: "",
-        nama_blok: "",
+        nama_jurusan: "",
+        lembaga_id: "",
         status: ""
     });
 
@@ -25,15 +23,14 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
         if (isOpen) {
             if (data) {
                 setFormData({
-                    nama_blok: data.nama_blok || "",
-                    wilayah_id: data.wilayah.id || "",
+                    nama_jurusan: data.nama_jurusan || "",
                     status: data.status === 1 || data.status === true ? true : false,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
                 setFormData({
-                    nama_blok: "",
-                    wilayah_id: "",
+                    nama_jurusan: "",
+                    lembaga_id: "",
                     status: "",
                 });
             }
@@ -67,24 +64,24 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
 
             const token = sessionStorage.getItem("token") || getCookie("token");
 
-            // Tentukan URL dan method berdasarkan ada/tidaknya data (data !== null berarti edit)
-            const isEdit = !!data;
+            // Tentukan URL dan method berdasarkan feature
+            const isEdit = data;
             const url = isEdit
-                ? `${API_BASE_URL}crud/blok/${data.id}`
-                : `${API_BASE_URL}crud/blok`;
+                ? `${API_BASE_URL}crud/jurusan/${data.id}`
+                : `${API_BASE_URL}crud/jurusan`;
 
             const method = isEdit ? "PUT" : "POST";
 
-            // Buat payload sesuai kondisi
+            // Tentukan data yang dikirim
             const payload = isEdit
                 ? {
-                    nama_blok: formData.nama_blok,
-                    blok_id: formData.wilayah_id,
-                    status: !!formData.status, // pastikan boolean
+                    nama_jurusan: formData.nama_jurusan,
+                    lembaga_id: formData.lembaga_id,
+                    status: formData.status,
                 }
                 : {
-                    nama_blok: formData.nama_blok,
-                    wilayah_id: formData.wilayah_id,
+                    nama_jurusan: formData.nama_jurusan,
+                    lembaga_id: formData.lembaga_id
                 };
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
@@ -98,8 +95,9 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
             });
 
             const result = await response.json();
+            Swal.close();
             console.log(result);
-
+            
 
             if (response.status === 401) {
                 await Swal.fire({
@@ -185,36 +183,36 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="wilayah_id" className="block text-gray-700">Wilayah *</label>
+                                                    <label htmlFor="lembaga_id" className="block text-gray-700">Lembaga *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, wilayah_id: e.target.value })}
-                                                        value={formData.wilayah_id}
+                                                        onChange={(e) => setFormData({ ...formData, lembaga_id: e.target.value })}
+                                                        value={formData.lembaga_id}
                                                         required
                                                     >
-                                                        <option value="">Pilih Wilayah</option>
-                                                        {wilayah.map((wilayah, idx) => (
-                                                            <option key={idx} value={wilayah.id}>
-                                                                {wilayah.nama_wilayah}
+                                                        <option value="">Pilih Lembaga</option>
+                                                        {allLembaga.map((lembaga, idx) => (
+                                                            <option key={idx} value={lembaga.id}>
+                                                                {lembaga.nama_lembaga}
                                                             </option>
                                                         ))}
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label htmlFor="nama_blok" className="block text-gray-700">Nama Blok *</label>
+                                                    <label htmlFor="nama_jurusan" className="block text-gray-700">Nama Jurusan *</label>
                                                     <input
                                                         type="text"
-                                                        id="nama_blok"
-                                                        name="nama_blok"
-                                                        value={formData.nama_blok}
-                                                        onChange={(e) => setFormData({ ...formData, nama_blok: e.target.value })}
+                                                        id="nama_jurusan"
+                                                        name="nama_jurusan"
+                                                        value={formData.nama_jurusan}
+                                                        onChange={(e) => setFormData({ ...formData, nama_jurusan: e.target.value })}
                                                         maxLength={255}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan Nama Wilayah"
+                                                        placeholder="Masukkan Keterangan"
                                                     />
-                                                </div>
-                                                {data != null && (
+                                                </div>                                                
+                                                {data && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -223,7 +221,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                                     type="radio"
                                                                     name="status"
                                                                     value="YA"
-                                                                    checked={formData.status === true}
+                                                                    checked={formData.status == true}
                                                                     onChange={() => setFormData({ ...formData, status: true })}
                                                                     className="form-radio text-blue-500 focus:ring-blue-500"
                                                                     required
@@ -235,7 +233,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                                     type="radio"
                                                                     name="status"
                                                                     value="TIDAK"
-                                                                    checked={formData.status === false}
+                                                                    checked={formData.status == false}
                                                                     onChange={() => setFormData({ ...formData, status: false })}
                                                                     className="form-radio text-blue-500 focus:ring-blue-500"
                                                                     required
@@ -275,121 +273,4 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
     );
 };
 
-export const ModalDetailBlok = ({ isOpen, onClose, id }) => {
-    console.log(id);
-
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    // Ganti dengan token asli kamu
-
-    useEffect(() => {
-        if (isOpen && id) {
-            const token = sessionStorage.getItem("token") || getCookie("token");
-            setLoading(true);
-            fetch(`${API_BASE_URL}crud/blok/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            })
-                .then((res) => {
-                    if (!res.ok) throw new Error("Gagal mengambil data");
-                    return res.json();
-                })
-                .then((json) => setData(json))
-                .catch((err) => {
-                    console.error(err);
-                    setData(null);
-                })
-                .finally(() => setLoading(false));
-        }
-    }, [isOpen, id]);
-
-    return (
-        <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
-                {/* Background overlay */}
-                <Transition.Child
-                    as={Fragment}
-                    enter="transition-opacity duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity duration-300"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-                </Transition.Child>
-
-                {/* Modal content wrapper */}
-                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
-                    <Transition.Child
-                        as={Fragment}
-                        enter="transition-transform duration-300 ease-out"
-                        enterFrom="scale-95 opacity-0"
-                        enterTo="scale-100 opacity-100"
-                        leave="transition-transform duration-200 ease-in"
-                        leaveFrom="scale-100 opacity-100"
-                        leaveTo="scale-95 opacity-0"
-                    >
-                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-lg w-full h-full relative max-h-[90vh] flex flex-col">
-                            {/* Tombol Close */}
-                            <button
-                                onClick={onClose}
-                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                            >
-                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
-                            </button>
-
-                            {/* Header */}
-                            <div className="pt-6">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Blok</Dialog.Title>
-                            </div>
-
-                            {/* Body */}
-                            <div className="flex-1 overflow-y-auto pr-8 pl-8 pt-4 text-left">
-                                {loading ? (
-                                    <div className="flex justify-center items-center">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </div>
-                                ) : data ? (
-                                    <div className="space-y-2">
-                                        {[
-                                            ["Nama Blok", data.nama_blok],
-                                            ["Nama Wilayah", data.wilayah?.nama_wilayah],
-                                            ["Kategori", data.wilayah?.kategori],
-                                            ["Status", data.status == 1 ? "Aktif" : "Nonaktif"],
-                                            ["Total Kamar", data.total_kamar],
-                                            ["Total Kapasitas", data.total_kapasitas],
-                                            ["Slot Kosong", data.slot],
-                                            ["Jumlah Penghuni", data.penghuni],
-                                        ].map(([label, value]) => (
-                                            <div key={label} className="flex">
-                                                <div className="w-35 font-semibold text-gray-700">{label}</div>
-                                                <div className="flex-1 text-gray-900">: {value}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-red-500">Gagal memuat data blok.</p>
-                                )}
-                            </div>
-
-                            {/* Footer */}
-                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-4 py-3 rounded-b-lg border-t border-gray-300">
-
-                                <button
-                                    onClick={onClose}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
-                                >
-                                    Tutup
-                                </button>
-                            </div>
-                        </Dialog.Panel>
-                    </Transition.Child>
-                </div>
-            </Dialog>
-        </Transition>
-    );
-}
+export default ModalAddOrEditJurusan;

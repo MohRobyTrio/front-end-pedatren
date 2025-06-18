@@ -5,25 +5,25 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useFetchLembaga = () => {
+const useFetchJurusan = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [lembaga, setLembaga] = useState([]);
-    const [loadingLembaga, setLoadingLembaga] = useState(true);
+    const [jurusan, setJurusan] = useState([]);
+    const [loadingJurusan, setLoadingJurusan] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalDataLembaga, setTotalDataLembaga] = useState(0);
-    const [allLembaga, setAllLembaga] = useState([]);
+    const [totalDataJurusan, setTotalDataJurusan] = useState(0);
+    const [allJurusan, setAllJurusan] = useState([]);
     const token = sessionStorage.getItem("token") || getCookie("token");
 
-    const fetchLembaga = useCallback(async () => {
-        setLoadingLembaga(true);
+    const fetchJurusan = useCallback(async () => {
+        setLoadingJurusan(true);
         setError(null);
 
         try {
-            const response = await fetch(`${API_BASE_URL}crud/lembaga?page=${currentPage}&per_page=${limit}`, {
+            const response = await fetch(`${API_BASE_URL}crud/jurusan?page=${currentPage}&per_page=${limit}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -45,71 +45,81 @@ const useFetchLembaga = () => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const data = await response.json();
 
-            setLembaga(data.data);
+            setJurusan(data.data);
             setTotalPages(data.last_page || 1);
-            setTotalDataLembaga(data.total || 0);
+            setTotalDataJurusan(data.total || 0);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
-            setLembaga([]);
+            setJurusan([]);
         } finally {
-            setLoadingLembaga(false);
+            setLoadingJurusan(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, navigate, token]);
 
     useEffect(() => {
-    const storedLembaga = sessionStorage.getItem("allLembaga");
-    if (storedLembaga) {
-        setAllLembaga(JSON.parse(storedLembaga));
-        setLoadingLembaga(false);
-    } else {
-        const fetchAllLembaga = async () => {
-            setLoadingLembaga(true);
-            setError(null);
+        console.log("halo");
 
-            try {
-                const response = await fetch(`${API_BASE_URL}crud/lembaga?per_page=100000`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (response.status === 401) {
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
+        const storedJurusan = sessionStorage.getItem("allJurusan");
+        if (storedJurusan) {
+            setAllJurusan(JSON.parse(storedJurusan));
+        } else {
+            // Lakukan fetch hanya jika belum ada di session
+            const fetchAllJurusan = async () => {
+                try {
+                    // Pertama ambil total data
+                    const resTotal = await fetch(`${API_BASE_URL}crud/jurusan?page=1&per_page=1`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
                     });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
+
+                    if (resTotal.status === 401) {
+                        await Swal.fire({
+                            title: "Sesi Berakhir",
+                            text: "Sesi anda telah berakhir, silakan login kembali.",
+                            icon: "warning",
+                            confirmButtonText: "OK",
+                        });
+                        clearAuthData();
+                        navigate("/login");
+                        return;
+                    }
+
+                    const dataTotal = await resTotal.json();
+                    const total = dataTotal.total || 0;
+
+                    // Ambil semua data sesuai total
+                    const resAll = await fetch(`${API_BASE_URL}crud/jurusan?page=1&per_page=${total}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                    const dataAll = await resAll.json();
+                    const result = dataAll.data || [];
+
+                    setAllJurusan(result);
+                    sessionStorage.setItem("allJurusan", JSON.stringify(result));
+                } catch (err) {
+                    console.error("Fetch error:", err);
+                    setError(err.message);
+                    setAllJurusan([]);
                 }
+            };
 
-                if (!response.ok) throw new Error(`Error ${response.status}`);
-                const data = await response.json();
+            fetchAllJurusan();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-                setAllLembaga(data.data || []);
-                sessionStorage.setItem("allLembaga", JSON.stringify(data.data));
-            } catch (err) {
-                console.error("Fetch ALL error:", err);
-                setError(err.message);
-                setAllLembaga([]);
-            } finally {
-                setLoadingLembaga(false);
-            }
-        };
-
-        fetchAllLembaga(); // hanya fetch jika belum ada di session
-    }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
 
     useEffect(() => {
-        fetchLembaga();
-    }, [fetchLembaga]);
+        fetchJurusan();
+    }, [fetchJurusan]);
 
     const handleToggleStatus = async (data) => {
         const confirmResult = await Swal.fire({
@@ -135,7 +145,7 @@ const useFetchLembaga = () => {
 
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
-                `${API_BASE_URL}crud/lembaga/${data.id}${data.status ? "" : "/activate"}`,
+                `${API_BASE_URL}crud/jurusan/${data.id}${data.status ? "" : "/activate"}`,
                 {
                     method: data.status ? "DELETE" : "PUT",
                     headers: {
@@ -176,7 +186,7 @@ const useFetchLembaga = () => {
                     : "Data berhasil diaktifkan.",
             });
 
-            fetchLembaga(); // refresh data
+            fetchJurusan(); // refresh data
         } catch (error) {
             console.error("Error saat mengubah status:", error);
             await Swal.fire({
@@ -187,24 +197,14 @@ const useFetchLembaga = () => {
         }
     };
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [limit]);
-
     return {
-        lembaga,
-        allLembaga,
-        loadingLembaga,
+        jurusan,
+        allJurusan,
+        loadingJurusan,
         error,
-        fetchLembaga,
-        handleToggleStatus,
-        limit,
-        setLimit,
-        totalPages,
-        currentPage,
-        setCurrentPage,
-        totalDataLembaga
+        fetchJurusan,
+        handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataJurusan
     };
 };
 
-export default useFetchLembaga;
+export default useFetchJurusan;

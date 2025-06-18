@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { OrbitProgress } from "react-loading-indicators";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import useFetchBlok from "../../hooks/hooks_menu_kewilayahan/Blok";
 import { ModalAddOrEditBlok, ModalDetailBlok } from "../../components/modal/modal_kewilayahan/ModalFormBlok";
+import ToggleStatus from "../../components/ToggleStatus";
 
 const Blok = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -18,7 +19,7 @@ const Blok = () => {
         loadingBlok,
         error,
         fetchBlok,
-        handleDelete,
+        handleToggleStatus,
         limit,
         setLimit,
         totalPages,
@@ -115,34 +116,25 @@ const Blok = () => {
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_blok}</td>
                                                 <td className="px-3 py-2 border-b">
-                                                    {item.wilayah
-                                                        ? `${item.wilayah.nama_wilayah} (${item.wilayah.kategori})`
-                                                        : "-"}                                                </td>
+                                                    {item.wilayah}</td>
                                                 <td className="px-3 py-2 border-b">
-                                                    <span
-                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
-                                                                ? "bg-green-100 text-green-700"
-                                                                : "bg-red-100 text-red-700"
-                                                            }`}
-                                                    >
-                                                        {item.status ? "Aktif" : "Nonaktif"}
-                                                    </span>
+                                                    <ToggleStatus
+                                                        label={item.status ? "Aktif" : "Nonaktif"}
+                                                        active={item.status}
+                                                        onClick={() => handleToggleStatus(item)}
+                                                    />
                                                 </td>
                                                 <td className="px-3 py-2 border-b space-x-2 text-center">
                                                     <button
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            e.preventDefault();
                                                             setSelectedBlok(item);
                                                             setOpenModal(true);
                                                         }}
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded"
                                                     >
                                                         <FaEdit />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded"
-                                                    >
-                                                        <FaTrash />
                                                     </button>
                                                 </td>
                                             </tr>
