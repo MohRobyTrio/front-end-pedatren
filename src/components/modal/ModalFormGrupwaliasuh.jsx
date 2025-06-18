@@ -139,7 +139,6 @@ export const ModalFormGrupWaliAsuh = ({
             console.log("Form data:", formData);
             console.log("response:", error.response || "No response data");
             console.log("API URL:", mode === 'tambah' ? `${API_BASE_URL}crud/grupwaliasuh` : `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}`);
-            console.log("result:", result || "No result data");
 
 
         }

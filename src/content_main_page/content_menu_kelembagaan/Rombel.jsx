@@ -6,10 +6,12 @@ import ToggleStatus from "../../components/ToggleStatus";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import useFetchRombel from "../../hooks/hooks_menu_kelembagaan/Rombel";
-import ModalAddOrEditRombel from "../../components/modal/modal_kelembagaan/ModalFormRombel";
+import { ModalAddOrEditRombel, ModalDetailRombel } from "../../components/modal/modal_kelembagaan/ModalFormRombel";
 
 const Rombel = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [rombelData, setRombelData] = useState("");
     const { rombel, loadingRombel, error, fetchRombel, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataRombel } = useFetchRombel();
 
@@ -32,6 +34,12 @@ const Rombel = () => {
             </div>
 
             <ModalAddOrEditRombel isOpen={openModal} onClose={() => setOpenModal(false)} data={rombelData} refetchData={fetchRombel} />
+
+            <ModalDetailRombel
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -80,7 +88,10 @@ const Rombel = () => {
                                     </tr>
                                 ) : (
                                     rombel.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_rombel}</td>
                                             <td className="px-3 py-2 border-b">{item.kelas}</td>

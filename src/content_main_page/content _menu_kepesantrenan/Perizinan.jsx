@@ -15,6 +15,9 @@ import { ModalAddPerizinan, ModalApprove } from "../../components/modal/ModalFor
 import Access from "../../components/Access";
 import { getRolesString } from "../../utils/getRolesString";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { API_BASE_URL } from "../../hooks/config";
+import Swal from "sweetalert2";
+import { getCookie } from "../../utils/cookieUtils";
 
 
 const DataPerizinan = () => {
@@ -344,15 +347,89 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
     // console.log("approvalStatus:", approvalStatus);
     console.log("canApprove:", canApprove);
     console.log("data:", data);
-
-
+    const token = sessionStorage.getItem("token") || getCookie("token");
     
 
+    const handleSetKeluar = async (id) => {
+        try {
+            Swal.fire({
+                title: "Mohon tunggu...",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+            });
+            const response = await fetch(`${API_BASE_URL}crud/${id}/perizinan/set-keluar`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            Swal.close();
+
+            const result = await response.json();
+            console.log(result);
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    text: result.message,
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            if (!response.ok) throw new Error(`Gagal set keluar (${response.status})`);
+
+            
+            Swal.fire("Berhasil!", "success");
+            refetchData(true); // misalnya kamu punya fungsi untuk refresh data
+        } catch (err) {
+            console.error(err);
+            Swal.fire("Gagal", err.message, "error");
+        }
+    };
+
+    const handleSetKembali = async (id) => {
+        try {
+            Swal.fire({
+                title: "Mohon tunggu...",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+            });
+            const response = await fetch(`${API_BASE_URL}crud/${id}/perizinan/set-kembali`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            Swal.close();
+            const result = await response.json();
+            console.log(result);
+            if (!("data" in result)) {
+                await Swal.fire({
+                    text: result.message,
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+            if (!response.ok) throw new Error(`Gagal set kembali (${response.status})`);
+
+            
+            Swal.fire("Berhasil!", "success");
+            refetchData(true); // misalnya kamu punya fungsi untuk refresh data
+        } catch (err) {
+            console.error(err);
+            Swal.fire("Gagal", err.message, "error");
+        }
+    };
 
     return (
         <div key={data.id} className="max-w-6xl mx-auto cursor-pointer" onClick={() => openModal(data)}>
             <div className="bg-white rounded border border-gray-200 p-1 shadow-sm mb-4">
-                <div className="flex justify-end">
+                <div className="flex justify-end space-x-1">
                     {/* Tombol Approve */}
                     {canApprove ? (
                         <Access action="approve">
@@ -370,6 +447,34 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                     ) : (
                         <div className="w-24 h-6"></div> // Elemen kosong dengan ukuran tombol
                     )}
+                    <Access action="edit">
+                        {data.status === "perizinan diterima" ? (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Set status menjadi "Keluar" atau panggil fungsi yang sesuai
+                                    handleSetKeluar(data.id);
+                                }}
+                                className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-yellow-600 hover:bg-yellow-700 rounded shadow cursor-pointer"
+                            >
+                                <i className="fas fa-sign-out-alt"></i>
+                                <span>Keluar</span>
+                            </button>
+                        ) : data.status === "sudah berada diluar pondok" ? (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Set status menjadi "Kembali" atau panggil fungsi yang sesuai
+                                    handleSetKembali(data.id);
+                                }}
+                                className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded shadow cursor-pointer"
+                            >
+                                <i className="fas fa-sign-in-alt"></i>
+                                <span>Kembali</span>
+                            </button>
+                        ) : null}
+                    </Access>
+
                     <Access action="edit">
                         <button
                             onClick={(e) => {

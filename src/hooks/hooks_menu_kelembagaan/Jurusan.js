@@ -197,12 +197,62 @@ const useFetchJurusan = () => {
         }
     };
 
+    const fetchJurusanDetail = async (id) => {
+            try {
+                Swal.fire({
+                            title: 'Memuat data...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const response = await fetch(`${API_BASE_URL}crud/jurusan/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                Swal.close();
+                if (response.status === 401) {
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    return null;
+                }
+    
+                const result = await response.json();
+                console.log("jurusan detail",result);
+                
+    
+                if (!response.ok) {
+                    throw new Error(result.message || "Terjadi kesalahan pada server.");
+                }
+    
+                return result.data;
+            } catch (error) {
+                console.error("Gagal mengambil detail:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: `Gagal mengambil data : ${error.message}`,
+                });
+                return null;
+            }
+        };
+
     return {
         jurusan,
         allJurusan,
         loadingJurusan,
         error,
         fetchJurusan,
+        fetchJurusanDetail,
         handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataJurusan
     };
 };

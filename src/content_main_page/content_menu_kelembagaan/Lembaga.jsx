@@ -2,7 +2,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import useFetchLembaga from "../../hooks/hooks_menu_kelembagaan/Lembaga";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { useState } from "react";
-import ModalAddOrEditLembaga from "../../components/modal/modal_kelembagaan/ModalFormLembaga";
+import { ModalAddOrEditLembaga, ModalDetailLembaga } from "../../components/modal/modal_kelembagaan/ModalFormLembaga";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import ToggleStatus from "../../components/ToggleStatus";
 import Pagination from "../../components/Pagination";
@@ -10,6 +10,8 @@ import SearchBar from "../../components/SearchBar";
 
 const Lembaga = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [lembagaData, setLembagaData] = useState("");
     const [feature, setFeature] = useState("");
     const { lembaga, loadingLembaga, error, fetchLembaga, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataLembaga } = useFetchLembaga();
@@ -33,6 +35,12 @@ const Lembaga = () => {
             </div>
 
             <ModalAddOrEditLembaga isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchLembaga} feature={feature} />
+
+            <ModalDetailLembaga
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            id={selectedId}
+                        />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -78,7 +86,10 @@ const Lembaga = () => {
                                     </tr>
                                 ) : (
                                     lembaga.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_lembaga}</td>
                                             <td className="px-3 py-2 border-b">

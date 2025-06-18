@@ -4,12 +4,14 @@ import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import ToggleStatus from "../../components/ToggleStatus";
 import useFetchJurusan from "../../hooks/hooks_menu_kelembagaan/Jurusan";
-import ModalAddOrEditJurusan from "../../components/modal/modal_kelembagaan/ModalFormJurusan";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
+import { ModalAddOrEditJurusan, ModalDetailJurusan } from "../../components/modal/modal_kelembagaan/ModalFormJurusan";
 
 const Jurusan = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [jurusanData, setJurusanData] = useState("");
     const { jurusan, loadingJurusan, error, fetchJurusan, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataJurusan } = useFetchJurusan();
 
@@ -32,6 +34,12 @@ const Jurusan = () => {
             </div>
 
             <ModalAddOrEditJurusan isOpen={openModal} onClose={() => setOpenModal(false)} data={jurusanData} refetchData={fetchJurusan} />
+
+            <ModalDetailJurusan
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -78,7 +86,10 @@ const Jurusan = () => {
                                     </tr>
                                 ) : (
                                     jurusan.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
+                                                        setSelectedId(item.id);
+                                                        setIsModalOpen(true);
+                                                    }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_jurusan}</td>
                                             <td className="px-3 py-2 border-b">{item.lembaga}</td>

@@ -371,7 +371,7 @@ export const ModalDetailKamar = ({ isOpen, onClose, id }) => {
                             {/* Body */}
                             <div className="flex-1 overflow-y-auto pr-8 pl-8 pt-4 text-left">
                                 {loading ? (
-                                    <div className="flex justify-center items-center">
+                                    <div className="flex h-24 justify-center items-center">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </div>
                                 ) : data ? (
