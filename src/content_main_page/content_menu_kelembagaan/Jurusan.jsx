@@ -13,7 +13,7 @@ const Jurusan = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [jurusanData, setJurusanData] = useState("");
-    const { jurusan, loadingJurusan, error, fetchJurusan, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataJurusan } = useFetchJurusan();
+    const { jurusan, loadingJurusan, error, fetchJurusan, fetchJurusanDetail, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataJurusan } = useFetchJurusan();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -106,9 +106,10 @@ const Jurusan = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2">
                                                 <div className="flex justify-center items-center space-x-2">
                                                 <button
-                                                        onClick={(e) => {
+                                                        onClick={async (e) => {
                                                             e.stopPropagation();
-                                                            setJurusanData(item);
+                                                            const data = await fetchJurusanDetail(item.id);
+                                                            setJurusanData(data);
                                                             setOpenModal(true);
                                                         }}
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"

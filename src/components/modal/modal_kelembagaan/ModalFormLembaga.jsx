@@ -8,11 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 export const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const id = data.id;
+    const { forceFetchDropdownLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_lembaga: "",
         status: ""
@@ -117,6 +119,7 @@ export const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feat
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownLembaga();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -192,7 +195,7 @@ export const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feat
                                                         placeholder="Masukkan Keterangan"
                                                     />
                                                 </div>
-                                                {feature == 2 && (
+                                                {/* {feature == 2 && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -222,7 +225,7 @@ export const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feat
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

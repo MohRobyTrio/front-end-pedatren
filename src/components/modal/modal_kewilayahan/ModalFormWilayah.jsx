@@ -8,10 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
+import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 
 export const ModalAddOrEditWilayah = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const { forceFetchDropdownWilayah } = DropdownWilayah();
     // const id = data.id;
     const [formData, setFormData] = useState({
         nama_wilayah: "",
@@ -121,6 +123,7 @@ export const ModalAddOrEditWilayah = ({ isOpen, onClose, data, refetchData, feat
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownWilayah();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -225,7 +228,7 @@ export const ModalAddOrEditWilayah = ({ isOpen, onClose, data, refetchData, feat
                                                         </label>
                                                     </div>
                                                 </div>
-                                                {data != null && (
+                                                {/* {data != null && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -255,7 +258,7 @@ export const ModalAddOrEditWilayah = ({ isOpen, onClose, data, refetchData, feat
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

@@ -4,6 +4,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import DropdownLembaga from "../hook_dropdown/DropdownLembaga";
 
 const useFetchJurusan = () => {
     const { clearAuthData } = useLogout();
@@ -16,6 +17,7 @@ const useFetchJurusan = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalDataJurusan, setTotalDataJurusan] = useState(0);
     const [allJurusan, setAllJurusan] = useState([]);
+    const { forceFetchDropdownLembaga } = DropdownLembaga();
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     const fetchJurusan = useCallback(async () => {
@@ -186,6 +188,7 @@ const useFetchJurusan = () => {
                     : "Data berhasil diaktifkan.",
             });
 
+            forceFetchDropdownLembaga();
             fetchJurusan(); // refresh data
         } catch (error) {
             console.error("Error saat mengubah status:", error);
@@ -234,7 +237,7 @@ const useFetchJurusan = () => {
                     throw new Error(result.message || "Terjadi kesalahan pada server.");
                 }
     
-                return result.data;
+                return result;
             } catch (error) {
                 console.error("Gagal mengambil detail:", error);
                 Swal.fire({

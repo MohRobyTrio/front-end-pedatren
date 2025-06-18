@@ -13,7 +13,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, forceFetchDropdownLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_kelas: "",
         jurusan_id: "",
@@ -33,8 +33,32 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
     useEffect(() => {
         if (isOpen) {
             if (data) {
+                // Ambil data lengkap dari session
+                const lembagaFullData = JSON.parse(sessionStorage.getItem("menuLembaga"))?.lembaga || [];
+
+                // Temukan lembaga berdasarkan nama
+                const matchingLembaga = lembagaFullData.find(
+                    (l) => l.nama_lembaga == data.lembaga
+                );
+                const lembagaId = matchingLembaga?.id || "";
+                console.log("Lembaga ID:", lembagaId);
+
+                // Set selected lembaga agar jurusan otomatis terisi
+                // handleFilterChangeLembaga({ lembaga: lembagaId });
+
+                // Temukan jurusan dari lembaga tersebut
+                const matchingJurusan = matchingLembaga?.jurusan?.find(
+                    (j) => j.nama_jurusan == data.jurusan
+                );
+                const jurusanId = matchingJurusan?.id || "";
+                console.log("Jurusan ID:", jurusanId);
+                
+                // handleFilterChangeLembaga({ jurusan: jurusanId });
+
+                // Set formData
                 setFormData({
                     nama_kelas: data.nama_kelas || "",
+                    jurusan_id: jurusanId,
                     status: data.status === 1 || data.status === true ? true : false,
                 });
             } else {
@@ -50,6 +74,10 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
+    useEffect(() => {
+        console.log(formData.jurusan_id);
+        
+    }, [formData.jurusan_id])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -134,6 +162,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownLembaga();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -195,6 +224,8 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
+                                                {!data && (
+                                                    <>
                                                 <div>
                                                     <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
                                                     <select
@@ -230,6 +261,8 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
+                                                </>
+                                                )}
                                                 <div>
                                                     <label htmlFor="nama_kelas" className="block text-gray-700">Nama Kelas *</label>
                                                     <input
@@ -244,7 +277,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                                                         placeholder="Masukkan Keterangan"
                                                     />
                                                 </div>                                                
-                                                {data && (
+                                                {/* {data && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -274,7 +307,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

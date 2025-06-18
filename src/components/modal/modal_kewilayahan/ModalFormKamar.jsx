@@ -13,7 +13,7 @@ import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah, forceFetchDropdownWilayah } = DropdownWilayah();
     // const id = data.id;
     const [formData, setFormData] = useState({
         blok_id: "",
@@ -39,7 +39,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                     nama_kamar: data.nama_kamar || "",
                     blok_id: data.blok.id || "",
                     kapasitas: data.kapasitas,
-                    status: data.status === 1 || data.status === true ? true : false,
+                    status: data.status == 1 || data.status == true ? true : false,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
@@ -140,6 +140,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownWilayah();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -201,6 +202,8 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
+                                                {!data && (
+                                                    <>
                                                 <div>
                                                     <label htmlFor="wilayah" className="block text-gray-700">Wilayah *</label>
                                                     <select
@@ -236,6 +239,8 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                                                         ))}
                                                     </select>
                                                 </div>
+                                                </>
+                                                )}
                                                 <div>
                                                     <label htmlFor="nama_kamar" className="block text-gray-700">Nama Kamar *</label>
                                                     <input
@@ -268,7 +273,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                                                         placeholder="Masukkan Kapasitas Kamar"
                                                     />
                                                 </div>
-                                                {data != null && (
+                                                {/* {data != null && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -298,7 +303,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

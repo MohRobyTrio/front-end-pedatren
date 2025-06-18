@@ -4,9 +4,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import DropdownLembaga from "../hook_dropdown/DropdownLembaga";
 
 const useFetchLembaga = () => {
     const { clearAuthData } = useLogout();
+    const { forceFetchDropdownLembaga } = DropdownLembaga();
     const navigate = useNavigate();
     const [lembaga, setLembaga] = useState([]);
     const [loadingLembaga, setLoadingLembaga] = useState(true);
@@ -176,6 +178,7 @@ const useFetchLembaga = () => {
                     : "Data berhasil diaktifkan.",
             });
 
+            forceFetchDropdownLembaga();
             fetchLembaga(); // refresh data
         } catch (error) {
             console.error("Error saat mengubah status:", error);

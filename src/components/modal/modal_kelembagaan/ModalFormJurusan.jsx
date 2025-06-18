@@ -13,7 +13,7 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga, forceFetchDropdownLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         nama_jurusan: "",
         lembaga_id: "",
@@ -32,9 +32,17 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
     useEffect(() => {
         if (isOpen) {
             if (data) {
+                const matchingLembaga = filterLembaga.lembaga.find(
+                    (lembaga) => lembaga.label == data.nama_lembaga
+                );
+
+                console.log(filterLembaga.lembaga);
+                
+
                 setFormData({
                     nama_jurusan: data.nama_jurusan || "",
-                    status: data.status === 1 || data.status === true ? true : false,
+                    lembaga_id: matchingLembaga?.value || "", // ambil value lembaga_id
+                    status: data.status == 1 || data.status == true ? true : false,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
@@ -45,6 +53,7 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                 });
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, data]);
 
 
@@ -131,6 +140,7 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownLembaga();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -192,25 +202,27 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value;
-                                                            handleFilterChangeLembaga({ lembaga: value });
-                                                            setFormData((prev) => ({ ...prev, lembaga_id: value }));
-                                                        }}
-                                                        value={selectedLembaga.lembaga}
-                                                        required
-                                                    >
-                                                        {updatedFilterLembaga.lembaga.map((item, idx) => (
-                                                            <option key={idx} value={item.value}>
-                                                                {item.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
+                                                {!data && (
+                                                    <div>
+                                                        <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
+                                                        <select
+                                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                handleFilterChangeLembaga({ lembaga: value });
+                                                                setFormData((prev) => ({ ...prev, lembaga_id: value }));
+                                                            }}
+                                                            value={selectedLembaga.lembaga}
+                                                            required
+                                                        >
+                                                            {updatedFilterLembaga.lembaga.map((item, idx) => (
+                                                                <option key={idx} value={item.value}>
+                                                                    {item.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <label htmlFor="nama_jurusan" className="block text-gray-700">Nama Jurusan *</label>
                                                     <input
@@ -225,7 +237,7 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                                                         placeholder="Masukkan Keterangan"
                                                     />
                                                 </div>                                                
-                                                {data && (
+                                                {/* {data && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -255,7 +267,7 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

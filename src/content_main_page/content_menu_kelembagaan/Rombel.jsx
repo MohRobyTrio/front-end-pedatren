@@ -13,7 +13,7 @@ const Rombel = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [rombelData, setRombelData] = useState("");
-    const { rombel, loadingRombel, error, fetchRombel, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataRombel } = useFetchRombel();
+    const { rombel, loadingRombel, error, fetchRombel, fetchRombelDetail, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataRombel } = useFetchRombel();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -110,9 +110,10 @@ const Rombel = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2">
                                                 <div className="flex justify-center items-center space-x-2">
                                                 <button
-                                                    onClick={(e) => {
+                                                    onClick={async (e) => {
                                                         e.stopPropagation();
-                                                        setRombelData(item);
+                                                        const data = await fetchRombelDetail(item.id);
+                                                        setRombelData(data);
                                                         setOpenModal(true);
                                                     }}
                                                     className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"

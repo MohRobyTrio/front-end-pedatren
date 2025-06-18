@@ -4,9 +4,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import DropdownLembaga from "../hook_dropdown/DropdownLembaga";
 
 const useFetchKelas = () => {
     const { clearAuthData } = useLogout();
+    const { forceFetchDropdownLembaga } = DropdownLembaga();
     const navigate = useNavigate();
     const [kelas, setKelas] = useState([]);
     const [loadingKelas, setLoadingKelas] = useState(true);
@@ -189,6 +191,7 @@ const useFetchKelas = () => {
                     : "Data berhasil diaktifkan.",
             });
 
+            forceFetchDropdownLembaga();
             fetchKelas(); // refresh data
         } catch (error) {
             console.error("Error saat mengubah status:", error);

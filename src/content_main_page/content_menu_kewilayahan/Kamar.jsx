@@ -19,6 +19,7 @@ const Kamar = () => {
         loadingKamar,
         error,
         fetchKamar,
+        fetchKamarDetail,
         handleToggleStatus,
         limit,
         setLimit,
@@ -133,10 +134,17 @@ const Kamar = () => {
                                                 <td className="px-3 py-2 border-b space-x-2 text-center">
                                                     <div className="flex justify-center items-center space-x-2">
                                                         <button
-                                                            onClick={(e) => {
+                                                            onClick={async (e) => {
                                                                 e.stopPropagation();
-                                                                setSelectedKamar(item);
-                                                                setOpenModal(true);
+                                                                const data = await fetchKamarDetail(item.id)
+                                                                console.log("data",data);
+                                                                
+                                                                if (data) {
+            setSelectedKamar(data);
+            setOpenModal(true);
+        } else {
+            console.warn("Gagal mengambil data kamar. Tidak akan membuka modal.");
+        }
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded"
                                                         >

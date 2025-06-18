@@ -19,6 +19,7 @@ const Wilayah = () => {
         loadingWilayah,
         error,
         fetchWilayah,
+        fetchWilayahDetail,
         handleToggleStatus,
         limit,
         setLimit,
@@ -129,10 +130,10 @@ const Wilayah = () => {
                                             <td className="px-3 py-2 border-b space-x-2 text-center">
                                                 <div className="flex justify-center items-center space-x-2">
                                                     <button
-                                                        onClick={(e) => {
+                                                        onClick={async (e) => {
                                                             e.stopPropagation();
-                                                            e.preventDefault();
-                                                            setSelectedWilayah(item);
+                                                            const data = await fetchWilayahDetail(item.id);
+                                                            setSelectedWilayah(data);
                                                             setOpenModal(true);
                                                         }}
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded"

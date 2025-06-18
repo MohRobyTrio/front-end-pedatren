@@ -13,7 +13,7 @@ import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah";
 export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { filterWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterWilayah, handleFilterChangeWilayah, forceFetchDropdownWilayah } = DropdownWilayah();
     // const id = data.id;
     const [formData, setFormData] = useState({
         wilayah_id: "",
@@ -134,6 +134,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                 text: "Data berhasil dikirim.",
             });
 
+            forceFetchDropdownWilayah();
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -195,21 +196,23 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="wilayah_id" className="block text-gray-700">Wilayah *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, wilayah_id: e.target.value })}
-                                                        value={formData.wilayah_id}
-                                                        required
-                                                    >
-                                                        {updatedFilterWilayah.wilayah.map((wilayah, idx) => (
-                                                            <option key={idx} value={wilayah.value}>
-                                                                {wilayah.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
+                                                {!data && (
+                                                    <div>
+                                                        <label htmlFor="wilayah_id" className="block text-gray-700">Wilayah *</label>
+                                                        <select
+                                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                            onChange={(e) => setFormData({ ...formData, wilayah_id: e.target.value })}
+                                                            value={formData.wilayah_id}
+                                                            required
+                                                        >
+                                                            {updatedFilterWilayah.wilayah.map((wilayah, idx) => (
+                                                                <option key={idx} value={wilayah.value}>
+                                                                    {wilayah.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <label htmlFor="nama_blok" className="block text-gray-700">Nama Blok *</label>
                                                     <input
@@ -224,7 +227,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                         placeholder="Masukkan Nama Wilayah"
                                                     />
                                                 </div>
-                                                {data != null && (
+                                                {/* {data != null && (
                                                     <div>
                                                         <label className="block text-gray-700">Status Aktif *</label>
                                                         <div className="flex space-x-4 mt-1">
@@ -254,7 +257,7 @@ export const ModalAddOrEditBlok = ({ isOpen, onClose, data, refetchData }) => {
                                                             </label>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>

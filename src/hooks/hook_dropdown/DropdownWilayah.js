@@ -48,6 +48,26 @@ const DropdownWilayah = ({ withSisa = false } = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const forceFetchDropdownWilayah = async () => {
+        const token = sessionStorage.getItem("token") || getCookie("token");
+
+        try {
+            const res = await fetch(`${API_BASE_URL}dropdown/wilayah`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+            sessionStorage.setItem("menuWilayah", JSON.stringify(data));
+            console.log("Berhasil update session menuWilayah");
+            return data;
+        } catch (err) {
+            console.error("Gagal fetch ulang menuWilayah:", err);
+            throw err;
+        }
+    };
+
     const handleFilterChangeWilayah = (newFilter) => {
         setselectedWilayah(prevFilters => {
             const updatedFilters = { ...prevFilters, ...newFilter };
@@ -84,7 +104,7 @@ const DropdownWilayah = ({ withSisa = false } = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWilayah.wilayah, data, selectedWilayah.blok, filterWilayah.wilayah]);
 
-    return { filterWilayah, selectedWilayah, handleFilterChangeWilayah };
+    return { filterWilayah, selectedWilayah, handleFilterChangeWilayah, forceFetchDropdownWilayah };
 };
 
 export default DropdownWilayah;

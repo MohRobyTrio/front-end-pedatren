@@ -4,9 +4,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import DropdownWilayah from "../hook_dropdown/DropdownWilayah";
 
 const useFetchWilayah = () => {
     const { clearAuthData } = useLogout();
+    const { forceFetchDropdownWilayah } = DropdownWilayah();
     const navigate = useNavigate();
     const [wilayah, setWilayah] = useState([]);
     const [loadingWilayah, setLoadingWilayah] = useState(true);
@@ -115,6 +117,7 @@ const useFetchWilayah = () => {
                 text: isAktif ? "Data berhasil dinonaktifkan." : "Data berhasil diaktifkan.",
             });
 
+            forceFetchDropdownWilayah();
             fetchWilayah();
         } catch (err) {
             console.error(err);
@@ -126,11 +129,60 @@ const useFetchWilayah = () => {
         }
     };
 
+    const fetchWilayahDetail = async (id) => {
+        try {
+            Swal.fire({
+                        title: 'Memuat data...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}crud/wilayah/${id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            Swal.close();
+            if (response.status == 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                return null;
+            }
+
+            const result = await response.json();
+            console.log("kamar detail",result);
+            
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            return result;
+        } catch (error) {
+            console.error("Gagal mengambil detail:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `Gagal mengambil data : ${error.message}`,
+            });
+            return null;
+        }
+    };
+
     useEffect(() => {
         setCurrentPage(1);
     }, [limit]);
 
-    return { wilayah, loadingWilayah, error, fetchWilayah, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataWilayah };
+    return { wilayah, loadingWilayah, error, fetchWilayah, fetchWilayahDetail, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataWilayah };
 };
 
 export default useFetchWilayah;

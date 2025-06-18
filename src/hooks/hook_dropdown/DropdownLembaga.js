@@ -57,6 +57,26 @@ const DropdownLembaga = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const forceFetchDropdownLembaga = async () => {
+        const token = sessionStorage.getItem("token") || getCookie("token");
+
+        try {
+            const res = await fetch(`${API_BASE_URL}dropdown/lembaga`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+            sessionStorage.setItem("menuLembaga", JSON.stringify(data));
+            console.log("Berhasil update session menuLembaga");
+            return data;
+        } catch (err) {
+            console.error("Gagal fetch ulang menuLembaga:", err);
+            throw err;
+        }
+    };
+
     const handleFilterChangeLembaga = (newFilter) => {
         
         setSelectedLembaga(prevFilters => {
@@ -100,7 +120,7 @@ const DropdownLembaga = () => {
         });
     }, [selectedLembaga.lembaga, data, selectedLembaga.jurusan, selectedLembaga.kelas, filterLembaga.lembaga]);
 
-    return { filterLembaga, selectedLembaga, handleFilterChangeLembaga };
+    return { filterLembaga, selectedLembaga, handleFilterChangeLembaga, forceFetchDropdownLembaga };
 };
 
 export default DropdownLembaga;
