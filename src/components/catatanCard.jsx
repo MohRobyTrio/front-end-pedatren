@@ -36,7 +36,7 @@ const SantriAfektifCard = ({ santri, menu }) => {
                     className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4"
                 >
                     {/* Foto Santri*/}
-                    <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 rounded-md bg-gray-200 overflow-hidden cursor-pointer"
+                    <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 w-24 rounded-md bg-gray-200 overflow-hidden cursor-pointer"
                         onClick={(e) => {
                             e.stopPropagation();
                             setTitleModal("Peserta Didik");
