@@ -109,7 +109,14 @@ const useFetchWilayah = () => {
 
             Swal.close();
 
-            if (!response.ok) throw new Error("Gagal memproses permintaan.");
+            if (!response.ok) {
+                let result = {};
+                try {
+                    result = await response.json();
+                // eslint-disable-next-line no-empty, no-unused-vars
+                } catch (_) { }
+                throw new Error(result.message || "Gagal memperbarui status data.");
+            }
 
             await Swal.fire({
                 icon: "success",
@@ -120,7 +127,7 @@ const useFetchWilayah = () => {
             forceFetchDropdownWilayah();
             fetchWilayah();
         } catch (err) {
-            console.error(err);
+            console.error(err.message);
             await Swal.fire({
                 icon: "error",
                 title: "Gagal",

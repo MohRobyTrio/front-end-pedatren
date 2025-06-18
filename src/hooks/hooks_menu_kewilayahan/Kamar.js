@@ -101,8 +101,14 @@ const useFetchKamar = () => {
 
             Swal.close();
 
-            if (!response.ok)
-                throw new Error(data.status ? "Gagal menonaktifkan data." : "Gagal mengaktifkan data.");
+            if (!response.ok) {
+                let result = {};
+                try {
+                    result = await response.json();
+                // eslint-disable-next-line no-empty, no-unused-vars
+                } catch (_) { }
+                throw new Error(result.message || "Gagal memperbarui status data.");
+            }
 
             await Swal.fire({
                 icon: "success",
