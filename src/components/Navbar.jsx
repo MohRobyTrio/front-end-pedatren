@@ -1,14 +1,50 @@
+import React, { useState, useRef } from "react";
 import useLogout from "../hooks/Logout";
 import logo from "../assets/logoku.png";
 import logoUser from "../assets/user.png";
-
 import { getRolesString } from "../utils/getRolesString";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faRightFromBracket, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
 import { ModalAddUser, ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil";
 import Access from "./Access";
+
+// Custom hook untuk efek mengetik
+function useTypingOnHover(text, speed = 110) {
+  const [display, setDisplay] = useState(text);
+  const [isTyping, setIsTyping] = useState(false);
+  const timeoutRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    setIsTyping(true);
+    setDisplay("");
+    let i = 0;
+    const type = () => {
+      if (i < text.length) {
+        setDisplay(text.slice(0, i + 1));
+        i++;
+        timeoutRef.current = setTimeout(type, speed);
+      } else {
+        setIsTyping(false);
+      }
+    };
+    type();
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setDisplay(text);
+    setIsTyping(false);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  return [display, isTyping, handleMouseEnter, handleMouseLeave];
+}
 
 const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggleButtonRef }) => {
   const navigate = useNavigate();
@@ -17,6 +53,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
   const [openModalUpdatePass, setOpenModalUpdatePass] = useState(false);
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
   const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
+  const [typedSipatren, isTyping, onSipatrenHover, onSipatrenOut] = useTypingOnHover("SIPATREN", 110);
 
   const handleLogout = async () => {
     try {
@@ -28,13 +65,11 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
   };
 
   return (
-    <nav
-      className="
-        fixed top-0 z-50 w-full
-        bg-white/70 backdrop-blur-lg
-        shadow-lg border-b border-gray-200
-      "
-    >
+    <nav className="
+      fixed top-0 z-50 w-full
+      bg-gray-900/95 backdrop-blur-lg
+      shadow-lg border-b border-gray-800
+    ">
       <div className="px-3 py-1.5 md:px-8 flex items-center justify-between h-[56px]">
         {/* Sidebar toggle dan logo + nama */}
         <div className="flex items-center gap-2">
@@ -45,24 +80,49 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
               e.stopPropagation();
               toggleSidebar();
             }}
-            className="
-              sm:hidden text-gray-600 hover:bg-gray-100 p-2
-              rounded-lg transition
-            "
+            className="sm:hidden text-gray-200 hover:bg-gray-800 p-2 rounded-lg transition"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
             </svg>
           </button>
-          <a href="/" className="flex items-center gap-2 group">
+          <a href="/" className="flex items-center gap-2 group"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.reload();
+            }}>
             <img
               src={logo}
               alt="Sipatren Logo"
-              className="w-9 h-9 md:w-10 md:h-10 rounded-lg border border-gray-100 group-hover:scale-105 transition"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-lg border border-gray-800 transition"
               style={{ minWidth: 36, minHeight: 36 }}
             />
-            <span className="text-neutral-900 text-lg md:text-xl font-bold tracking-tight">
-              SIPATREN
+            <span
+              className={`
+              text-white text-lg md:text-xl font-bold font-sans
+              select-none relative
+            `}
+              style={{
+                minWidth: "7ch",
+                display: "inline-block",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={onSipatrenHover}
+              onMouseLeave={onSipatrenOut}
+            >
+              {typedSipatren}
+              {isTyping && (
+                <span
+                  className="ml-0.5 align-middle text-gray-400 animate-blink-cursor"
+                  style={{
+                    fontWeight: "400",
+                    fontSize: "1em",
+                    transition: "opacity 0.2s"
+                  }}
+                >
+                  |
+                </span>
+              )}
             </span>
           </a>
         </div>
@@ -71,11 +131,9 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
         <div ref={profilRef} className="relative">
           <button
             type="button"
-            className="
-              flex items-center bg-white/80 border border-gray-200
-              rounded-full shadow focus:ring-2 focus:ring-blue-100
-              hover:scale-105 active:scale-95 transition
-            "
+            className="flex items-center bg-gray-800/80 border border-gray-700
+              rounded-full shadow focus:ring-2 focus:ring-blue-900
+              hover:scale-105 active:scale-95 transition"
             onClick={toggleDropdownProfil}
             style={{ padding: 2 }}
             aria-label="Open user menu"
@@ -93,27 +151,24 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
           <Access action="tambahakun">
             <ModalAddUser isOpen={openModalAddUser} onClose={() => setOpenModalAddUser(false)} />
           </Access>
-          {/* Dropdown */}
           {isOpen && (
             <div className="
               absolute right-0 mt-2 w-56
-              bg-white/95 backdrop-blur-lg
-              rounded-xl shadow-2xl border border-gray-100
+              bg-gray-900/95 backdrop-blur-lg
+              rounded-xl shadow-2xl border border-gray-800
               z-50 overflow-hidden
             ">
-              <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-br from-blue-50 via-white to-white">
-                <p className="text-sm font-bold text-gray-800">{userName}</p>
+              <div className="px-4 py-3 border-b border-gray-800 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-900">
+                <p className="text-sm font-bold text-white">{userName}</p>
                 <p className="text-xs text-gray-400">({getRolesString()})</p>
               </div>
               <ul className="py-1 px-1">
                 <li>
                   <button
                     onClick={() => setOpenModalUpdateNameEmail(true)}
-                    className="
-                      flex items-center gap-3 w-full px-4 py-2
-                      text-gray-600 hover:bg-blue-50 hover:text-blue-700
-                      font-medium rounded-lg transition text-sm
-                    "
+                    className="flex items-center gap-3 w-full px-4 py-2
+                      text-gray-200 hover:bg-gray-800 hover:text-blue-400
+                      font-medium rounded-lg transition text-sm"
                   >
                     <FontAwesomeIcon icon={faUser} />
                     Edit Nama & Email
@@ -122,11 +177,9 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                 <li>
                   <button
                     onClick={() => setOpenModalUpdatePass(true)}
-                    className="
-                      flex items-center gap-3 w-full px-4 py-2
-                      text-gray-600 hover:bg-blue-50 hover:text-blue-700
-                      font-medium rounded-lg transition text-sm
-                    "
+                    className="flex items-center gap-3 w-full px-4 py-2
+                      text-gray-200 hover:bg-gray-800 hover:text-blue-400
+                      font-medium rounded-lg transition text-sm"
                   >
                     <FontAwesomeIcon icon={faLock} />
                     Edit Password
@@ -135,11 +188,9 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                 <li>
                   <button
                     onClick={() => setOpenModalAddUser(true)}
-                    className="
-                      flex items-center gap-3 w-full px-4 py-2
-                      text-gray-600 hover:bg-blue-50 hover:text-blue-700
-                      font-medium rounded-lg transition text-sm
-                    "
+                    className="flex items-center gap-3 w-full px-4 py-2
+                      text-gray-200 hover:bg-gray-800 hover:text-blue-400
+                      font-medium rounded-lg transition text-sm"
                   >
                     <FontAwesomeIcon icon={faUserPlus} />
                     Tambah Akun
@@ -149,12 +200,10 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                   <button
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                    className="
-                      flex items-center gap-3 w-full px-4 py-2
-                      text-red-500 hover:bg-red-50 hover:text-red-700
+                    className="flex items-center gap-3 w-full px-4 py-2
+                      text-red-400 hover:bg-red-900 hover:text-white
                       font-medium rounded-lg transition text-sm
-                      disabled:opacity-60
-                    "
+                      disabled:opacity-60"
                   >
                     <FontAwesomeIcon icon={faRightFromBracket} />
                     {isLoggingOut ? "Logging out..." : "Log out"}

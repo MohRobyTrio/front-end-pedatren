@@ -75,10 +75,10 @@ const ResetPasswordPage = () => {
             Swal.close();
             const data = await response.json();
 
-             if (!response.ok) {
-                 const friendlyMessage = getFriendlyMessage(data.message);
-                 throw new Error(friendlyMessage);
-             }
+            if (!response.ok) {
+                const friendlyMessage = getFriendlyMessage(data.message);
+                throw new Error(friendlyMessage);
+            }
 
             await Swal.fire({
                 icon: 'success',
@@ -117,19 +117,19 @@ const ResetPasswordPage = () => {
     }
 
     return (
-        <section className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-                <h2 className="text-xl font-semibold text-center mb-4">Reset Kata Sandi</h2>
+        <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-4">
+            <div className="bg-gray-900/95 border border-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-md">
+                <h2 className="text-xl font-semibold text-center mb-4 text-white">Reset Kata Sandi</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="mb-4">
-                        <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
+                        <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-300">
                             Kata Sandi Baru
                         </label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
-                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 pr-10"
+                                className="w-full p-2.5 border border-gray-700 rounded-lg bg-gray-900 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-900 transition"
                                 placeholder="Kata sandi"
                                 required
                                 value={password}
@@ -138,24 +138,23 @@ const ResetPasswordPage = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-400 transition"
                                 tabIndex={-1}
                             >
                                 {showPassword ? <i className="fas fa-eye" /> : <i className="fas fa-eye-slash" />}
                             </button>
                         </div>
                     </div>
-
                     {/* Konfirmasi Kata Sandi */}
                     <div className="mb-4">
-                        <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900">
+                        <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-300">
                             Konfirmasi Kata Sandi
                         </label>
                         <div className="relative">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 id="confirm-password"
-                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 pr-10"
+                                className="w-full p-2.5 border border-gray-700 rounded-lg bg-gray-900 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-900 transition"
                                 placeholder="Konfirmasi kata sandi"
                                 required
                                 value={passwordConfirmation}
@@ -164,7 +163,7 @@ const ResetPasswordPage = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-400 transition"
                                 tabIndex={-1}
                             >
                                 {showConfirmPassword ? <i className="fas fa-eye" /> : <i className="fas fa-eye-slash" />}
@@ -174,13 +173,14 @@ const ResetPasswordPage = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
                     >
                         {loading ? "Mengatur ulang..." : "Reset"}
                     </button>
                 </form>
             </div>
         </section>
+
     );
 };
 
