@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import { useMemo} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import useFetchPeserta from "../hooks/hooks_menu_data_pokok/PesertaDidik";
@@ -60,19 +59,19 @@ const Dashboard = () => {
         { label: "Telat Belum Kembali", value: loadingPerizinanTBK ? <Load /> : totalDataPerizinanTBK, color: "bg-red-400", icon: "🚨", link: "/pelanggaran" },
     ];
 
-    const [birthdays, setBirthdays] = useState([]);
+    // const [birthdays, setBirthdays] = useState([]);
 
-    useEffect(() => {
-        axios.get("")
-            .then(response => {
-                const today = new Date().toISOString().split("T")[0]; // Ambil tanggal hari ini (YYYY-MM-DD)
-                const filteredData = response.data.filter(person => person.birthday === today);
-                setBirthdays(filteredData);
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     axios.get("")
+    //         .then(response => {
+    //             const today = new Date().toISOString().split("T")[0]; // Ambil tanggal hari ini (YYYY-MM-DD)
+    //             const filteredData = response.data.filter(person => person.birthday === today);
+    //             setBirthdays(filteredData);
+    //         })
+    //         .catch(error => {
+    //             console.error("Error fetching data:", error);
+    //         });
+    // }, []);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -103,9 +102,9 @@ const Dashboard = () => {
                         </div>
 
                         {/* Tabel Ulang Tahun */}
-                        <h2 className="text-2xl font-semibold mt-6">Ulang Tahun Hari Ini</h2>
+                        {/* <h2 className="text-2xl font-semibold mt-6">Ulang Tahun Hari Ini</h2> */}
                         {/* <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md"> */}
-                        <div className="overflow-x-auto mt-6">
+                        {/* <div className="overflow-x-auto mt-6">
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap"> 
                                     <tr>
@@ -136,7 +135,7 @@ const Dashboard = () => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

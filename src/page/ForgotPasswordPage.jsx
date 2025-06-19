@@ -52,18 +52,18 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <section className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg">
+    <section className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800 px-4">
+      <div className="w-full max-w-sm bg-gray-900/95 border border-gray-800 p-6 rounded-2xl shadow-2xl">
         <div className="flex flex-col items-center mb-6">
           <img src={logo} alt="Logo" className="h-14 mb-2" />
-          <h2 className="text-xl font-bold mb-1">Lupa Sandi</h2>
-          <p className="text-xs text-gray-500 text-center">Masukkan email anda</p>
+          <h2 className="text-xl font-bold mb-1 text-white">Lupa Sandi</h2>
+          <p className="text-xs text-gray-400 text-center">Masukkan email anda</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="email"
             placeholder="Email"
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 text-sm"
+            className="w-full px-3 py-2 rounded-lg border border-gray-700 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isSubmitting}
@@ -81,7 +81,7 @@ const ForgotPasswordPage = () => {
         <div className="mt-6 flex justify-center">
           <Link
             to="/"
-            className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+            className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-500 hover:underline"
           >
             <FiArrowLeft className="text-base" />
             Kembali ke login
@@ -89,6 +89,7 @@ const ForgotPasswordPage = () => {
         </div>
       </div>
     </section>
+
   );
 };
 
