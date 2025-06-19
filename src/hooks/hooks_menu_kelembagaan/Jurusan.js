@@ -57,7 +57,7 @@ const useFetchJurusan = () => {
         } finally {
             setLoadingJurusan(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, navigate, token]);
 
     useEffect(() => {
@@ -115,7 +115,7 @@ const useFetchJurusan = () => {
 
             fetchAllJurusan();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
@@ -175,7 +175,7 @@ const useFetchJurusan = () => {
                 let result = {};
                 try {
                     result = await response.json();
-                // eslint-disable-next-line no-empty, no-unused-vars
+                    // eslint-disable-next-line no-empty, no-unused-vars
                 } catch (_) { }
                 throw new Error(result.message || "Gagal memperbarui status data.");
             }
@@ -201,53 +201,58 @@ const useFetchJurusan = () => {
     };
 
     const fetchJurusanDetail = async (id) => {
-            try {
-                Swal.fire({
-                            title: 'Memuat data...',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-                const token = sessionStorage.getItem("token") || getCookie("token");
-                const response = await fetch(`${API_BASE_URL}crud/jurusan/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
+        try {
+            Swal.fire({
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
+            });
 
-                Swal.close();
-                if (response.status === 401) {
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    return null;
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}crud/jurusan/${id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
                 }
-    
-                const result = await response.json();
-                console.log("jurusan detail",result);
-                
-    
-                if (!response.ok) {
-                    throw new Error(result.message || "Terjadi kesalahan pada server.");
-                }
-    
-                return result;
-            } catch (error) {
-                console.error("Gagal mengambil detail:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Gagal",
-                    text: `Gagal mengambil data : ${error.message}`,
+            });
+
+            Swal.close();
+            if (response.status === 401) {
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
                 });
+                clearAuthData();
                 return null;
             }
-        };
+
+            const result = await response.json();
+            console.log("jurusan detail", result);
+
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            return result;
+        } catch (error) {
+            console.error("Gagal mengambil detail:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `Gagal mengambil data : ${error.message}`,
+            });
+            return null;
+        }
+    };
 
     return {
         jurusan,

@@ -32,8 +32,8 @@ const useFetchWilayah = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("fetch ke",url);
-            
+            console.log("fetch ke", url);
+
 
             if (response.status === 401) {
                 await Swal.fire({
@@ -60,7 +60,7 @@ const useFetchWilayah = () => {
         } finally {
             setLoadingWilayah(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, token]);
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const useFetchWilayah = () => {
                 let result = {};
                 try {
                     result = await response.json();
-                // eslint-disable-next-line no-empty, no-unused-vars
+                    // eslint-disable-next-line no-empty, no-unused-vars
                 } catch (_) { }
                 throw new Error(result.message || "Gagal memperbarui status data.");
             }
@@ -139,12 +139,17 @@ const useFetchWilayah = () => {
     const fetchWilayahDetail = async (id) => {
         try {
             Swal.fire({
-                        title: 'Memuat data...',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
+            });
+
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}crud/wilayah/${id}`, {
                 method: "GET",
@@ -166,8 +171,8 @@ const useFetchWilayah = () => {
             }
 
             const result = await response.json();
-            console.log("kamar detail",result);
-            
+            console.log("kamar detail", result);
+
 
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
