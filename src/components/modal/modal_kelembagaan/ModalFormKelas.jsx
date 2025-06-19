@@ -170,7 +170,7 @@ export const ModalAddOrEditKelas = ({ isOpen, onClose, data, refetchData }) => {
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                text: error.message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };

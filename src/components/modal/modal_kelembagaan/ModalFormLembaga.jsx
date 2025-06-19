@@ -127,7 +127,7 @@ export const ModalAddOrEditLembaga = ({ isOpen, onClose, data, refetchData, feat
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                text: error.message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };

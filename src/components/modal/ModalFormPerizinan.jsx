@@ -9,7 +9,6 @@ import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import { useNavigate } from "react-router-dom";
 import { ModalSelectSantri } from "../ModalSelectSantri";
-import { OrbitProgress } from "react-loading-indicators";
 
 export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
@@ -814,7 +813,7 @@ export const ModalApprove = ({
                                 >
                                     {isLoading ? (
                                         <>
-                                            <OrbitProgress variant="disc" color="#fff" size="small" text="" textColor="" />
+                                            <i className="fa-solid fa-circle-notch fa-spin me-2"></i>
                                             Memproses...
                                         </>
                                     ) : 'Ya, Setujui'}

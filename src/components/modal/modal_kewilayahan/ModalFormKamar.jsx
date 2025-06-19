@@ -59,6 +59,15 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!formData.kapasitas || Number(formData.kapasitas) < 1) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Kapasitas Tidak Valid",
+                text: "Kapasitas harus lebih dari atau sama dengan 1.",
+            });
+            return;
+        }
+
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
             text: "Pastikan semua data sudah benar!",
@@ -148,7 +157,7 @@ export const ModalAddOrEditKamar = ({ isOpen, onClose, data, refetchData }) => {
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                text: error.message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };

@@ -161,6 +161,15 @@ export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => 
             }
 
             if (!response.ok) {
+                if (response.status === 422) {
+                    const errorMessages = Object.values(result.errors || {}).flat().join("\n");
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        text: errorMessages || "Data tidak valid.",
+                    });
+                    return;
+                }
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
@@ -178,7 +187,7 @@ export const ModalAddOrEditRombel = ({ isOpen, onClose, data, refetchData }) => 
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                text: error.message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };

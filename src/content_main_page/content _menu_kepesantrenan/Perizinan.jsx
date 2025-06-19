@@ -448,7 +448,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                         <div className="w-24 h-6"></div> // Elemen kosong dengan ukuran tombol
                     )}
                     <Access action="edit">
-                        {data.status === "perizinan diterima" ? (
+                        {data.status == "perizinan diterima" ? (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -460,7 +460,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                                 <i className="fas fa-sign-out-alt"></i>
                                 <span>Keluar</span>
                             </button>
-                        ) : data.status === "sudah berada diluar pondok" ? (
+                        ) : data.status == "sudah berada diluar pondok" ? (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
