@@ -68,6 +68,19 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                             'Authorization': `Bearer ${token}`,
                         }
                     });
+
+                    if (response.status == 401 && !window.sessionExpiredShown) {
+                        window.sessionExpiredShown = true;
+                        await Swal.fire({
+                            title: "Sesi Berakhir",
+                            text: "Sesi anda telah berakhir, silakan login kembali.",
+                            icon: "warning",
+                            confirmButtonText: "OK",
+                        });
+                        clearAuthData();
+                        navigate("/login");
+                        return;
+                    }
     
                     if (!response.ok) throw new Error("Gagal mengambil data");
     
@@ -111,6 +124,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                 });
                 fetchData();
             }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [feature, id, isOpen]);
 
     const handleSubmit = async (e) => {
@@ -177,7 +191,8 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
 
             Swal.close();
             // if (!response) throw new Error("Tidak ada response dari server.");
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",

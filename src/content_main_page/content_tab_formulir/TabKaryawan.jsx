@@ -57,17 +57,18 @@ const TabKaryawan = () => {
 					'Authorization': `Bearer ${token}`
 				}
 			});
-			if (response.status === 401) {
-				await Swal.fire({
-					title: "Sesi Berakhir",
-					text: "Sesi anda telah berakhir, silakan login kembali.",
-					icon: "warning",
-					confirmButtonText: "OK",
-				});
-				clearAuthData();
-				navigate("/login");
-				return;
-			}
+			if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
 			if (!response.ok) {
                 // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -98,17 +99,18 @@ const TabKaryawan = () => {
 					'Authorization': `Bearer ${token}`
 				}
 			});
-			if (response.status === 401) {
-				await Swal.fire({
-					title: "Sesi Berakhir",
-					text: "Sesi anda telah berakhir, silakan login kembali.",
-					icon: "warning",
-					confirmButtonText: "OK",
-				});
-				clearAuthData();
-				navigate("/login");
-				return;
-			}
+			if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
 			const result = await response.json();
 			const karyawanData = result.data;
 
@@ -185,17 +187,18 @@ const TabKaryawan = () => {
 				}
 			);
 			Swal.close();
-			if (response.status === 401) {
-				await Swal.fire({
-					title: "Sesi Berakhir",
-					text: "Sesi anda telah berakhir, silakan login kembali.",
-					icon: "warning",
-					confirmButtonText: "OK",
-				});
-				clearAuthData();
-				navigate("/login");
-				return;
-			}
+			if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
 			const result = await response.json();
 			if (response.ok) {
 				await Swal.fire({

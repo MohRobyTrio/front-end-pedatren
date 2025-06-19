@@ -123,17 +123,18 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
       console.log(result);
       Swal.close();
       // === Cek response ===
-      if (response.status === 401) {
-        await Swal.fire({
-          title: "Sesi Berakhir",
-          text: "Sesi anda telah berakhir, silakan login kembali.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-        clearAuthData();
-        navigate("/login");
-        return;
-      }
+      if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
       if (!response.ok) {
         const errorMessages = result.errors
           ? Object.entries(result.errors).map(

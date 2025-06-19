@@ -133,7 +133,8 @@ const TabBiodata = () => {
                 }
             });
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -386,7 +387,8 @@ const TabBiodata = () => {
             const result = await response.json();
             Swal.close();
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -404,6 +406,15 @@ const TabBiodata = () => {
                     icon: "error",
                     title: "Gagal",
                     html: `<div style="text-align:center">${errorMsg}</div>`,
+                });
+                return;
+            }
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: result.message,
                 });
                 return;
             }

@@ -98,7 +98,8 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
             const result = await response.json();
             
             Swal.close();
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -475,7 +476,8 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
             const result = await response.json();
             
             Swal.close();
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -886,7 +888,8 @@ export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, 
             const result = await response.json();
             Swal.close();
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",

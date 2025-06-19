@@ -35,18 +35,19 @@ export const useSantri = (biodata_id) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
-              await Swal.fire({
-                title: "Sesi Berakhir",
-                text: "Sesi anda telah berakhir, silakan login kembali.",
-                icon: "warning",
-                confirmButtonText: "OK",
-              });
-              clearAuthData();
-              navigate("/login");
-              return;
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
             }
-            if (response.status === 403) {
+            if (response.status == 403) {
                 throw new Error("403");
             }
             if (!response.ok) {
@@ -87,16 +88,17 @@ export const useSantri = (biodata_id) => {
                     }
                 }
             );
-            if (response.status === 401) {
-              await Swal.fire({
-                title: "Sesi Berakhir",
-                text: "Sesi anda telah berakhir, silakan login kembali.",
-                icon: "warning",
-                confirmButtonText: "OK",
-              });
-              clearAuthData();
-              navigate("/login");
-              return;
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
             }
             const result = await response.json();
             console.log(result);
@@ -184,16 +186,17 @@ setOriginalEndDate(formattedDatetimeLocal);
             );
             const result = await response.json();
             Swal.close();
-            if (response.status === 401) {
-              await Swal.fire({
-                title: "Sesi Berakhir",
-                text: "Sesi anda telah berakhir, silakan login kembali.",
-                icon: "warning",
-                confirmButtonText: "OK",
-              });
-              clearAuthData();
-              navigate("/login");
-              return;
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
             }
             if (!("data" in result)) {
               await Swal.fire({

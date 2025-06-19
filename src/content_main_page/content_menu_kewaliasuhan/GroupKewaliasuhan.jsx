@@ -13,10 +13,12 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import Access from "../../components/Access";
+import { useNavigate } from "react-router-dom";
 
 
 const GroupKewaliasuhan = () => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [filters, setFilters] = useState({
         wilayah: "",
         jenisKelamin: "",
@@ -27,7 +29,7 @@ const GroupKewaliasuhan = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedGrup, setSelectedGrup] = useState(null);
     const [modalMode, setModalMode] = useState("tambah");
-    const [loadingDetail, setLoadingDetail] = useState(false);
+    // const [loadingDetail, setLoadingDetail] = useState(false);
     const [wilayahData, setWilayahData] = useState([]);
 
     // State untuk modal konfirmasi status
@@ -86,7 +88,7 @@ const GroupKewaliasuhan = () => {
 
     // Fungsi untuk mengambil detail grup dari API
     const fetchGrupDetail = async (id) => {
-        setLoadingDetail(true);
+        // setLoadingDetail(true);
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}crud/${id}/grupwaliasuh/show`, {
@@ -96,7 +98,8 @@ const GroupKewaliasuhan = () => {
                 }
             });
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -104,7 +107,8 @@ const GroupKewaliasuhan = () => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
-                return null;
+                navigate("/login");
+                return;
             }
 
             const result = await response.json();
@@ -123,7 +127,7 @@ const GroupKewaliasuhan = () => {
             });
             return null;
         } finally {
-            setLoadingDetail(false);
+            // setLoadingDetail(false);
         }
     };
 

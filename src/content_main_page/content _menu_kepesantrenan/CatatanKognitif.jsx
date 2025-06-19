@@ -14,9 +14,14 @@ import { FaPlus } from "react-icons/fa";
 import { ModalAddProgressKognitif } from "../../components/modal/ModalFormCatatan";
 import Access from "../../components/Access";
 import { getCookie } from "../../utils/cookieUtils";
+import useLogout from "../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 
 const CatatanKognitif = () => {
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [filters, setFilters] = useState({
         negara: "",
         provinsi: "",
@@ -38,10 +43,24 @@ const CatatanKognitif = () => {
             try {
                 const token = sessionStorage.getItem("token") || getCookie("token");
                 const response = await fetch(`${API_BASE_URL}dropdown/periode`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
                 }
-            });
+
                 const data = await response.json();
 
                 // Ambil hanya bagian kognitif dari respons API
@@ -65,6 +84,7 @@ const CatatanKognitif = () => {
         };
 
         fetchPeriode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [listPeriode, setListPeriode] = useState([]);

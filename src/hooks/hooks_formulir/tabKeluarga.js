@@ -3,9 +3,11 @@ import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
+import { useNavigate } from "react-router-dom";
 
 export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [nokk, setNokk] = useState([]);
     const [keluargaList, setKeluargaList] = useState([]);
     const [id1, setId1] = useState([]);
@@ -35,7 +37,8 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                 }
             });
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -43,8 +46,10 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -90,7 +95,8 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                 }
             });
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -98,6 +104,7 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -159,8 +166,10 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                 body: JSON.stringify(payload)
             });
 
+            Swal.close();
             // Handle unauthorized (401)
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -168,13 +177,13 @@ export const useTabKeluarga = ({ biodata_id, setShowAddModal, setFeature }) => {
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
             const result = await response.json();
 
             // Tutup loading indicator
-            Swal.close();
 
             if (response.ok && result.success) {
                 Swal.fire({

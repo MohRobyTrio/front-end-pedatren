@@ -132,7 +132,8 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
             
             Swal.close();
             // if (!response) throw new Error("Tidak ada response dari server.");
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -580,7 +581,8 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
             const result = await response.json();
             
             Swal.close();
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",

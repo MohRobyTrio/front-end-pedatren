@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 const initialFormData = {
     // Alamat
@@ -45,6 +46,7 @@ const initialFormData = {
 
 export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
     const [formData, setFormData] = useState(initialFormData);
@@ -60,10 +62,18 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                if (response.status === 401) {
-                    clearAuthData();
-                    return;
-                }
+                if (response.status == 401 && !window.sessionExpiredShown) {
+                        window.sessionExpiredShown = true;
+                        await Swal.fire({
+                          title: "Sesi Berakhir",
+                          text: "Sesi anda telah berakhir, silakan login kembali.",
+                          icon: "warning",
+                          confirmButtonText: "OK",
+                        });
+                        clearAuthData();
+                        navigate("/login");
+                        return;
+                      }
                 if (response.ok) {
                     const data = await response.json();
                     setHubunganKeluargaOptions(data.map(item => ({
@@ -164,16 +174,18 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
 
 
 
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                      title: "Sesi Berakhir",
+                      text: "Sesi anda telah berakhir, silakan login kembali.",
+                      icon: "warning",
+                      confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                  }
 
             const result = await response.json();
 
@@ -826,6 +838,7 @@ export const ModalFormPindahKeluarga = ({
     refetchData
 }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         no_kk: ""
     });
@@ -897,16 +910,18 @@ export const ModalFormPindahKeluarga = ({
                 body: JSON.stringify(formData),
             });
 
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                      title: "Sesi Berakhir",
+                      text: "Sesi anda telah berakhir, silakan login kembali.",
+                      icon: "warning",
+                      confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                  }
 
             const result = await response.json();
             Swal.close();

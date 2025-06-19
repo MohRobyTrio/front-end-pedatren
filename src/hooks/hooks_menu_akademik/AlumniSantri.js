@@ -68,16 +68,17 @@ const useFetchLulusSantri = (filters) => {
                 }
             });
 
-            if (response.status === 401) {
-              await Swal.fire({
-                title: "Sesi Berakhir",
-                text: "Sesi anda telah berakhir, silakan login kembali.",
-                icon: "warning",
-                confirmButtonText: "OK",
-              });
-              clearAuthData();
-              navigate("/login");
-              return;
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
             }
 
             if (!response.ok) {
@@ -127,6 +128,19 @@ const useFetchLulusSantri = (filters) => {
             headers: { Authorization: `Bearer ${token}` }
         });
 
+        if (response1.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
         if (!response1.ok) throw new Error("Gagal fetch total data");
 
         const result1 = await response1.json();
@@ -152,6 +166,7 @@ const useFetchLulusSantri = (filters) => {
         console.error("❌ fetchAllData error:", error);
         return [];
     }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [filters, debouncedSearchTerm]);
 
     return {

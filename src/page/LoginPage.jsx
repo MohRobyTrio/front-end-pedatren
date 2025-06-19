@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useLogin from "../hooks/Login";
 import logo from "../assets/logoku.png";
@@ -35,6 +35,10 @@ const LoginPage = () => {
       });
     }
   };
+
+  useEffect(() => {
+    window.sessionExpiredShown = false;
+  }, []);
 
   // Handler Bantuan Pop Up
   const handleHelp = (e) => {

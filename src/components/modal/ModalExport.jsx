@@ -5,10 +5,12 @@ import { Fragment, useState } from "react";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
+import useLogout from "../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, currentPage, fields = [], endpoint }) => {
-    console.log(endpoint);
-    
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [selectedFields, setSelectedFields] = useState([]);
     const [allPages, setAllPages] = useState(false);    
 
@@ -77,6 +79,18 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
             });
 
             Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
             if (!response.ok) {
                 throw new Error("Export gagal");

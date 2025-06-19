@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../Logout";
+import Swal from "sweetalert2";
 
 const useFetchPeserta = (filters) => { 
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [pesertaDidik, setPesertaDidik] = useState([]);
     const [loadingPesertaDidik, setLoadingPesertaDidik] = useState(true);
     const [error, setError] = useState(null);
@@ -74,6 +79,20 @@ const useFetchPeserta = (filters) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(`${response.message}: ${response.status}`);
             }

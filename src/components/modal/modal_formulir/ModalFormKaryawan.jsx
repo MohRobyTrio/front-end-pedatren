@@ -88,7 +88,8 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
             console.log("token:", token)
             console.log("formData:", formData);
             console.log("response:", response);
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -270,7 +271,8 @@ export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }
 
             Swal.close();
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",

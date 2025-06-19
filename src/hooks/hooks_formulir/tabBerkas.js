@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../Logout";
 
 export function useBerkas(bioId) {
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [berkasList, setBerkasList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -20,6 +25,18 @@ export function useBerkas(bioId) {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if (res.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
             if (!res.ok) throw new Error("Gagal memuat data berkas");
             const data = await res.json();
             console.log(data);
@@ -41,6 +58,18 @@ export function useBerkas(bioId) {
                     'Authorization': `Bearer ${token}`
                 }
         });
+        if (res.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
         if (!res.ok) throw new Error("Gagal memuat detail berkas");
         return await res.json();
     }
@@ -55,6 +84,19 @@ export function useBerkas(bioId) {
             },
             body: formData,
         });
+
+        if (res.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
         if (!res.ok) {
             const errText = await res.text();
@@ -78,6 +120,20 @@ export function useBerkas(bioId) {
                 },
             body: formData,
         });
+        
+        if (res.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
         const result = await res.json();
         console.log(result);
         if (!res.ok) throw new Error("Gagal mengupdate berkas");

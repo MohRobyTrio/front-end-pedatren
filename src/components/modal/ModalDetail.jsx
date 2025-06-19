@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 // import blankProfile from "../assets/blank_profile.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import axios from "axios";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
@@ -25,12 +25,16 @@ import DetailPemohonIzin from "../../content_modal/detail/DetailPemohonIzin";
 import DetailPengantar from "../../content_modal/detail/DetailPengantar";
 import DetailPelanggaran from "../../content_modal/detail/DetailPelanggaran";
 import { getCookie } from "../../utils/cookieUtils";
+import Swal from "sweetalert2";
+import useLogout from "../../hooks/Logout";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
 const ModalDetail = ({ title, menu, item, onClose }) => {
     // const [activeTab, setActiveTab] = useState("biodata");
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -79,6 +83,18 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+                if (res.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
                 const json = await res.json();
                 if (!res.ok || json.status === false) {
                     throw new Error(json.message || 'Gagal mengambil data');
@@ -107,6 +123,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
         if (item?.biodata_id || item?.id_khadam || item?.id || item) {
             fetchData();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [item, item.biodata_id, item.id, item.id_khadam, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;

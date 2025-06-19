@@ -61,17 +61,18 @@ const TabPengajar = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             if (response.status === 403) {
                 throw new Error("403");
             }
@@ -135,17 +136,18 @@ const TabPengajar = () => {
                     }
                 }
             );
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             const result = await response.json();
             console.log(result);
 
@@ -224,22 +226,23 @@ const TabPengajar = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             console.log(`${API_BASE_URL}formulir/${selectedPengajarId}/pengajar`);
             const result = await response.json();
             console.log(result);
             
-            Swal.close();
             if (response.ok) {
                 await Swal.fire({
                     icon: "success",
@@ -299,21 +302,22 @@ const TabPengajar = () => {
                 body: JSON.stringify(payload)
             });
 
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
 
             const result = await response.json();
             console.log(result);
-            Swal.close();
             if (!response.ok || !("data" in result)) {
                 await Swal.fire({
                     icon: "error",
@@ -378,22 +382,23 @@ const TabPengajar = () => {
                 }
             });
 
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
 
             const result = await response.json();
             console.log(result);
 
-             Swal.close();
             if (!response.ok) {
                 console.log("gagal");
                 

@@ -69,17 +69,18 @@ const TabPengurus = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status == 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             if (!response.ok) {
                 // Misalnya response.status == 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -111,17 +112,18 @@ const TabPengurus = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status == 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             const result = await response.json();
 
             setSelectedPengurusId(id);
@@ -158,11 +160,34 @@ const TabPengurus = () => {
         };
 
         if (!payload.satuan_kerja || !keteranganJabatan || !startDate) {
-            alert("Satuan Kerja, Keterangan Jabatan, dan Tanggal Mulai wajib diisi");
+            await Swal.fire({
+                icon: "warning",
+                title: "Peringatan",
+                text: "Satuan Kerja, Keterangan Jabatan, dan Tanggal Mulai wajib diisi",
+            });
             return;
         }
 
+        const confirmed = await Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin memperbarui data ini?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, update!",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmed.isConfirmed) return;
+
         try {
+            Swal.fire({
+                title: 'Mohon tunggu...',
+                html: 'Sedang proses update data.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             setLoadingUpdatePengurus(true);
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(
@@ -176,7 +201,9 @@ const TabPengurus = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status == 401) {
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -188,12 +215,28 @@ const TabPengurus = () => {
                 return;
             }
             const result = await response.json();
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: result.message,
+                });
+                return;
+            }
             if (response.ok) {
-                alert(`Data pengurus berhasil diperbarui!`);
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: result.message || "Data pendidikan berhasil diperbarui!",
+                });
                 setSelectedPengurusDetail(result.data || payload);
                 fetchPengurus();
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal update",
+                    text: result.message || "Terjadi kesalahan",
+                });
             }
         } catch (error) {
             console.error("Error saat update:", error);

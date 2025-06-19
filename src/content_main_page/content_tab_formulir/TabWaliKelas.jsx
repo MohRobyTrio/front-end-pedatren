@@ -62,7 +62,8 @@ const TabWaliKelas = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status == 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -134,7 +135,8 @@ const TabWaliKelas = () => {
                     }
                 }
             );
-            if (response.status == 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -203,7 +205,9 @@ const TabWaliKelas = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status == 401) {
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -216,7 +220,6 @@ const TabWaliKelas = () => {
             }
             console.log(`${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`);
             const result = await response.json();
-            Swal.close();
             if (response.ok) {
                 alert(`Data berhasil diperbarui! ${result.message}-${result.data}`);
                 setSelectedWaliKelasDetail(result.data || payload);

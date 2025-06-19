@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import useLogout from "../../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 export const ModalFormWaliAsuh = ({
     isOpen,
@@ -16,6 +17,7 @@ export const ModalFormWaliAsuh = ({
     grupWaliAsuhList // Diterima sebagai prop
 }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         id_grup_wali_asuh: "",
         tanggal_mulai: ""
@@ -96,7 +98,8 @@ export const ModalFormWaliAsuh = ({
 
 
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -104,6 +107,7 @@ export const ModalFormWaliAsuh = ({
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 
@@ -274,6 +278,7 @@ export const ModalFormKeluarWaliAsuh = ({
     refetchData
 }) => {
     const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         tanggal_berakhir:""
     });
@@ -315,7 +320,8 @@ export const ModalFormKeluarWaliAsuh = ({
             console.log("Response status:", response.status);
             
 
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -323,6 +329,7 @@ export const ModalFormKeluarWaliAsuh = ({
                     confirmButtonText: "OK",
                 });
                 clearAuthData();
+                navigate("/login");
                 return;
             }
 

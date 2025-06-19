@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage';
 
+window.sessionExpiredShown = false;
 
 // const isTokenExpired = () => {
 //   const expiresAt = localStorage.getItem("expiresAt");

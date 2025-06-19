@@ -65,17 +65,18 @@ const TabPendidikan = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             if (!response.ok) {
                 // Misalnya response.status === 500
                 throw new Error(`Gagal fetch: ${response.status}`);
@@ -105,17 +106,18 @@ const TabPendidikan = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             const result = await response.json();
 
             setSelectedPendidikanId(id);
@@ -285,18 +287,19 @@ const TabPendidikan = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status === 401) {
-                Swal.close();
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
             const result = await response.json();
             console.log(result);
             
@@ -317,7 +320,16 @@ const TabPendidikan = () => {
                         text: result.message,
                     });
                     setEndDate(null);
-                } else {
+                    return;
+                } else if (!("data" in result)) {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: result.message,
+                    });
+                    return;
+                }
+                else {
                     await Swal.fire({
                         icon: "success",
                         title: "Berhasil",

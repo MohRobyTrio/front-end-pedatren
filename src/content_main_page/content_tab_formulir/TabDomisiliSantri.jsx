@@ -14,6 +14,7 @@ import { hasAccess } from "../../utils/hasAccess";
 
 const TabDomisiliSantri = () => {
     const { biodata_id } = useParams();
+    const { forceFetchDropdownWilayah } = DropdownWilayah();
     const canEdit = hasAccess("edit");
     const canPindah = hasAccess("pindah");
     const canKeluar = hasAccess("keluar");
@@ -75,7 +76,8 @@ const TabDomisiliSantri = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -117,7 +119,8 @@ const TabDomisiliSantri = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -297,8 +300,9 @@ const TabDomisiliSantri = () => {
                     body: JSON.stringify(payload),
                 }
             );
-            if (response.status === 401) {
-                Swal.close(); 
+            Swal.close(); 
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -309,10 +313,18 @@ const TabDomisiliSantri = () => {
                 navigate("/login");
                 return;
             }
-            Swal.close(); 
             // Handle response
             const result = await response.json();
             console.log(result);
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: result.message,
+                });
+                return;
+            }
 
             if (response.ok && result.message && result.message.toLowerCase().includes("tidak boleh")) {
                 await Swal.fire({
@@ -341,6 +353,7 @@ const TabDomisiliSantri = () => {
                 fetchDomisili();
             }, 300);
 
+            forceFetchDropdownWilayah();
         } catch (error) {
             console.error("Error saat update:", error);
                 await Swal.fire({

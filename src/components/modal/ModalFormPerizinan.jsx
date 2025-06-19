@@ -70,6 +70,19 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                     }
                 });
 
+                if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
+
                 if (!response.ok) throw new Error("Gagal mengambil data");
 
                 const result = await response.json();
@@ -113,6 +126,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             });
             fetchData();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [feature, id, isOpen]);
 
 
@@ -161,8 +175,8 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             // console.log(`Mengirim ke: ${API_BASE_URL}crud/${santriId}/perizinan`);
 
             Swal.close();
-            if (!response) throw new Error("Tidak ada response dari server.");
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -173,6 +187,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                 navigate("/login");
                 return;
             }
+            if (!response) throw new Error("Tidak ada response dari server.");
 
             const result = await response.json();
 
@@ -519,9 +534,8 @@ export const ModalAddBerkasPerizinan = ({ isOpen, onClose, id, close }) => {
 
             Swal.close();
 
-            if (!response) throw new Error("Tidak ada response dari server.");
-
-            if (response.status === 401) {
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
                     text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -532,6 +546,8 @@ export const ModalAddBerkasPerizinan = ({ isOpen, onClose, id, close }) => {
                 navigate("/login");
                 return;
             }
+
+            if (!response) throw new Error("Tidak ada response dari server.");
 
             const result = await response.json();
 

@@ -37,7 +37,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
 export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, refetchData, feature }) => {
   const { clearAuthData } = useLogout();
   const navigate = useNavigate();
-  const { filterWilayah, handleFilterChangeWilayah, selectedWilayah } = DropdownWilayah({ withSisa: true });
+  const { filterWilayah, handleFilterChangeWilayah, selectedWilayah, forceFetchDropdownWilayah } = DropdownWilayah({ withSisa: true });
 
   const updateFirstOptionLabel = (list, label) =>
     list.length > 0
@@ -136,16 +136,17 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
       Swal.close();
 
-      if (response.status === 401) {
-        await Swal.fire({
-          title: "Sesi Berakhir",
-          text: "Sesi anda telah berakhir, silakan login kembali.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-        clearAuthData();
-        navigate("/login");
-        return;
+      if (response.status == 401 && !window.sessionExpiredShown) {
+          window.sessionExpiredShown = true;
+          await Swal.fire({
+              title: "Sesi Berakhir",
+              text: "Sesi anda telah berakhir, silakan login kembali.",
+              icon: "warning",
+              confirmButtonText: "OK",
+          });
+          clearAuthData();
+          navigate("/login");
+          return;
       }
 
       const result = await response.json();
@@ -171,7 +172,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
         text: "Data domisili berhasil disimpan.",
       });
 
-
+      forceFetchDropdownWilayah();
       refetchData?.();
       onClose?.();
     } catch (error) {
@@ -290,6 +291,7 @@ export const ModalAddDomisiliFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
 export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }) => {
   const { clearAuthData } = useLogout();
+  const { forceFetchDropdownWilayah } = DropdownWilayah();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     tanggal_keluar: ""
@@ -339,7 +341,8 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
 
       Swal.close();
 
-      if (response.status === 401) {
+      if (response.status == 401 && !window.sessionExpiredShown) {
+        window.sessionExpiredShown = true;
         await Swal.fire({
           title: "Sesi Berakhir",
           text: "Sesi anda telah berakhir, silakan login kembali.",
@@ -385,6 +388,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
 
       setFormData({ tanggal_keluar: "" })
       refetchData?.();
+      forceFetchDropdownWilayah();
       onClose?.();
     } catch (error) {
       console.error("Terjadi kesalahan:", error);
