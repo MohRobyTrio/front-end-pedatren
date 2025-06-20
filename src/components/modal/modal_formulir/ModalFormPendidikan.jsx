@@ -107,11 +107,11 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
         e.preventDefault();
 
         // Validasi form
-        if (!formData.lembaga_id || !formData.no_induk || !formData.tanggal_masuk) {
+        if (!formData.lembaga_id || !formData.tanggal_masuk) {
             await Swal.fire({
                 icon: "error",
                 title: "Data tidak lengkap",
-                text: "Lembaga, Nomor Induk, dan Tanggal Mulai wajib diisi",
+                text: "Lembaga, dan Tanggal Mulai wajib diisi",
             });
             return;
         }
@@ -129,17 +129,37 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang proses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 
             console.log("formData:", formData);
             console.log("id:", id);
 
+            const payload = isTambah
+                ? {
+                    lembaga_id: formData.lembaga_id,
+                    jurusan_id: formData.jurusan_id,
+                    kelas_id: formData.kelas_id,
+                    rombel_id: formData.rombel_id,
+                    no_induk: formData.no_induk,
+                    angkatan_id: formData.angkatan_id,
+                    tanggal_masuk: formData.tanggal_masuk
+                }
+                : {
+                    lembaga_id: formData.lembaga_id,
+                    jurusan_id: formData.jurusan_id,
+                    kelas_id: formData.kelas_id,
+                    rombel_id: formData.rombel_id,
+                    tanggal_masuk: formData.tanggal_masuk
+                };
 
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${id}/${endpoint}`, {
@@ -148,7 +168,7 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
             });
 
             Swal.close();
@@ -263,36 +283,40 @@ export const ModalAddPendidikanFormulir = ({ isOpen, onClose, biodataId, cardId,
                                                     selectedFilters={selectedLembaga}
                                                 />
 
-                                                <div>
-                                                    <label htmlFor="no_induk" className="block text-gray-700">Nomor Induk *</label>
-                                                    <input
-                                                        type="text"
-                                                        id="no_induk"
-                                                        name="no_induk"
-                                                        value={formData.no_induk}
-                                                        onChange={(e) => setFormData({ ...formData, no_induk: e.target.value })}
-                                                        maxLength={50}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan Nomor Induk"
-                                                    />
-                                                </div>
+                                                {feature == 1 && (
+                                                    <>
+                                                        <div>
+                                                            <label htmlFor="no_induk" className="block text-gray-700">Nomor Induk *</label>
+                                                            <input
+                                                                type="text"
+                                                                id="no_induk"
+                                                                name="no_induk"
+                                                                value={formData.no_induk}
+                                                                onChange={(e) => setFormData({ ...formData, no_induk: e.target.value })}
+                                                                maxLength={50}
+                                                                required
+                                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                                placeholder="Masukkan Nomor Induk"
+                                                            />
+                                                        </div>
 
-                                                <div>
-                                                    <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({ ...formData, angkatan_id: e.target.value })}
-                                                        value={formData.angkatan_id}
-                                                        required
-                                                    >
-                                                        {menuAngkatanPelajar.map((pelajar, idx) => (
-                                                            <option key={idx} value={pelajar.value}>
-                                                                {pelajar.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
+                                                        <div>
+                                                            <label htmlFor="angkatan_id" className="block text-gray-700">Angkatan *</label>
+                                                            <select
+                                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                                onChange={(e) => setFormData({ ...formData, angkatan_id: e.target.value })}
+                                                                value={formData.angkatan_id}
+                                                                required
+                                                            >
+                                                                {menuAngkatanPelajar.map((pelajar, idx) => (
+                                                                    <option key={idx} value={pelajar.value}>
+                                                                        {pelajar.label}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    </>
+                                                )}
 
                                                 <div>
                                                     <label htmlFor="tanggal_masuk" className="block text-gray-700">Tanggal Mulai *</label>
@@ -398,11 +422,14 @@ export const ModalKeluarPendidikanFormulir = ({ isOpen, onClose, id, refetchData
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang proses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 

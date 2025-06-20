@@ -9,13 +9,14 @@ const DetailPendidikan = ({ pendidikan }) => (
                     <th className="px-3 py-2 border-b">Jurusan</th>
                     <th className="px-3 py-2 border-b">Kelas</th>
                     <th className="px-3 py-2 border-b">Rombel</th>
+                    <th className="px-3 py-2 border-b">Status</th>
                     <th className="px-3 py-2 border-b">Tahun Masuk</th>
                     <th className="px-3 py-2 border-b">Tahun Lulus</th>
                 </tr>
             </thead>
             <tbody className="text-gray-800">
                 {
-                    pendidikan.length === 0 ? (
+                    pendidikan.length == 0 ? (
                         <tr>
                             <td colSpan="5" className="text-center py-6">Tidak ada data</td>
                         </tr>
@@ -28,8 +29,16 @@ const DetailPendidikan = ({ pendidikan }) => (
                                 <td className="px-3 py-2 border-b capitalize">{item.nama_jurusan || "-"}</td>
                                 <td className="px-3 py-2 border-b capitalize">{item.nama_kelas || "-"}</td>
                                 <td className="px-3 py-2 border-b capitalize">{item.nama_rombel || "-"}</td>
+                                <td className="px-3 py-2 border-b capitalize"><span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == "aktif"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status}
+                                                </span></td>
                                 <td className="px-3 py-2 border-b">{item.tahun_masuk || "-"}</td>
-                                <td className="px-3 py-2 border-b">{item.tahun_lul || "-"}</td>
+                                <td className="px-3 py-2 border-b">{item.tahun_lulus || "-"}</td>
                             </tr>
                         ))
                     )

@@ -207,11 +207,14 @@ const AlumniSantri = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memproses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 
@@ -303,6 +306,26 @@ const AlumniSantri = () => {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    useEffect(() => {
+        const availableIds = santri.map(item => item.id);
+        setSelectedSantriIds(prev => prev.filter(id => availableIds.includes(id)));
+
+        if (!availableIds.some(id => selectedSantriIds.includes(id))) {
+            setIsAllSelectedSantri(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri]);
+
+    useEffect(() => {
+        const availableIds = dataLulus.map(item => item.id);
+        setSelectedLulusIds(prev => prev.filter(id => availableIds.includes(id)));
+
+        if (!availableIds.some(id => selectedLulusIds.includes(id))) {
+            setIsAllSelectedLulus(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataLulus]);
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">

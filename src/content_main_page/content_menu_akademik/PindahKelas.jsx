@@ -55,10 +55,6 @@ const PindahKelas = () => {
         rombel: "",
     })
 
-    useEffect(() => {
-        console.log(selectedPelajarIds);
-    }, [selectedPelajarIds])
-
     const {
         filterLembaga: filterLembagaFilter,
         handleFilterChangeLembaga: handleFilterChangeLembagaFilter,
@@ -162,11 +158,14 @@ const PindahKelas = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memproses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 
@@ -205,10 +204,20 @@ const PindahKelas = () => {
                 return;
             }
 
+            const berhasil = result?.data?.berhasil;
+            if (!berhasil || (Array.isArray(berhasil) && berhasil.length === 0)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${result.message || "Tidak ada data yang berhasil diproses."}</div>`,
+                });
+                return;
+            }
+
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: `${submitAction} kelas berhasil diproses!`,
+                text: result.message || `${submitAction} kelas berhasil diproses!`,
             });
 
             // Reset form jika diperlukan
@@ -234,7 +243,24 @@ const PindahKelas = () => {
     useEffect(() => {
         console.log(selectedPelajarIds);
         
-    }, [selectedPelajarIds]);
+        }, [selectedPelajarIds]);
+        
+        useEffect(() => {
+        // Ambil semua ID yang tersedia setelah filter diterapkan
+        const availableIds = pelajar.map(item => item.biodata_id);
+
+        // Buang ID yang tidak lagi ada di daftar
+        setSelectedPelajarIds(prevSelected =>
+            prevSelected.filter(id => availableIds.includes(id))
+        );
+
+        // Jika semua sudah tidak terpilih lagi, reset "Select All"
+        if (!availableIds.some(id => selectedPelajarIds.includes(id))) {
+            setIsAllSelected(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pelajar]);
+
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">

@@ -74,10 +74,15 @@ export function useMultiStepFormKhadam(onClose, refetchData) {
             if (!confirmResult.isConfirmed) return;
 
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang mengirim data...',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
-                didOpen: () => Swal.showLoading(),
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
             });
 
             const token = getCookie("token") || sessionStorage.getItem("token");

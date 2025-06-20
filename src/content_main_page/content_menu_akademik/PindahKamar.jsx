@@ -119,7 +119,7 @@ const PindahKamar = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (selectedSantriIds.length === 0) {
+        if (selectedSantriIds.length == 0) {
             await Swal.fire({
                 icon: "warning",
                 title: "Peringatan",
@@ -148,11 +148,14 @@ const PindahKamar = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memproses perpindahan.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 
@@ -191,6 +194,16 @@ const PindahKamar = () => {
                 return;
             }
 
+            const berhasil = result?.data?.berhasil;
+            if (!berhasil || (Array.isArray(berhasil) && berhasil.length === 0)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${result.message || "Tidak ada santri yang berhasil dipindah."}</div>`,
+                });
+                return;
+            }
+
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
@@ -216,6 +229,20 @@ const PindahKamar = () => {
             setCurrentPage(page);
         }
     };
+
+    useEffect(() => {
+        const availableIds = santri.map(item => item.id);
+
+        setSelectedSantriIds(prevSelected =>
+            prevSelected.filter(id => availableIds.includes(id))
+        );
+
+        if (!availableIds.some(id => selectedSantriIds.includes(id))) {
+            setIsAllSelected(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri]);
+
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">

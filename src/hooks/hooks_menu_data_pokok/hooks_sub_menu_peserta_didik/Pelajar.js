@@ -157,7 +157,11 @@ const useFetchPelajar = (filters) => {
         }
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error("Gagal fetch semua ID pelajar");
             }
@@ -174,6 +178,7 @@ const useFetchPelajar = (filters) => {
             console.error("Fetch all data error:", err);
             setAllPelajarIds([]);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, debouncedSearchTerm]);
 
 

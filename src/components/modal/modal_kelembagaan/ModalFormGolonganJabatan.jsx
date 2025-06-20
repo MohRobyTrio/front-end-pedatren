@@ -48,18 +48,21 @@ const ModalAddOrEditGolonganJabatan = ({ isOpen, onClose, data, refetchData, fea
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang proses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
 
             // Tentukan URL dan method berdasarkan feature
-            const isEdit = feature === 2;
+            const isEdit = feature == 2;
             const url = isEdit
                 ? `${API_BASE_URL}crud/${id}/golongan-jabatan`
                 : `${API_BASE_URL}crud/golongan-jabatan`;
