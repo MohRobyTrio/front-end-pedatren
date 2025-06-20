@@ -95,50 +95,68 @@ const LoginPage = () => {
   {/* Form Card */}
   <div className="w-full max-w-xs sm:max-w-sm bg-gray-900/95 rounded-2xl shadow-xl p-5 sm:p-8 border border-gray-800">
     <form className="space-y-5" onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="email" className="block mb-1 text-sm font-semibold text-gray-300">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-900 text-base text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-900 transition"
-          placeholder="name@gmail.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoFocus
-        />
-      </div>
-      <div>
-        <label htmlFor="password" className="block mb-1 text-sm font-semibold text-gray-300">
-          Kata Sandi
-        </label>
-        <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            className="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-900 text-base text-white placeholder-gray-500 pr-10 focus:ring-2 focus:ring-blue-900 transition"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-400 transition"
-            tabIndex={-1}
-            aria-label="Toggle password visibility"
-          >
-            {showPassword ? (
-              <i className="fas fa-eye text-base"></i>
-            ) : (
-              <i className="fas fa-eye-slash text-base"></i>
-            )}
-          </button>
-        </div>
-      </div>
+     <div>
+  <label htmlFor="email" className="block mb-1 text-sm font-semibold text-gray-300">
+    Email
+  </label>
+  <input
+    type="email"
+    id="email"
+    className="
+      w-full px-3 py-2 
+      rounded-lg border border-gray-300
+      bg-white/80 text-gray-900 placeholder-gray-500
+      shadow-sm focus:shadow-lg
+      focus:border-blue-600 focus:ring-2 focus:ring-blue-300
+      transition-all duration-200
+      outline-none
+    " // CHANGES HERE
+    placeholder="name@gmail.com"
+    required
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    autoFocus
+  />
+</div>
+<div>
+  <label htmlFor="password" className="block mb-1 text-sm font-semibold text-gray-300">
+    Kata Sandi
+  </label>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      id="password"
+      className="
+        w-full px-3 py-2 
+        rounded-lg border border-gray-300
+        bg-white/80 text-gray-900 placeholder-gray-500
+        shadow-sm focus:shadow-lg
+        focus:border-blue-600 focus:ring-2 focus:ring-blue-300
+        transition-all duration-200
+        pr-10
+        outline-none
+      " // CHANGES HERE
+      placeholder="Password"
+      required
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 transition"
+      tabIndex={-1}
+      aria-label="Toggle password visibility"
+    >
+      {showPassword ? (
+        <i className="fas fa-eye text-base"></i>
+      ) : (
+        <i className="fas fa-eye-slash text-base"></i>
+      )}
+    </button>
+  </div>
+</div>
+
       {/* Login Button */}
       <button
         type="submit"
