@@ -209,6 +209,19 @@ const HubungkanWaliAsuh = () => {
         }
     };
 
+    useEffect(() => {
+        const availableIds = santri.map(item => item.id);
+
+        setSelectedSantriIds(prevSelected =>
+            prevSelected.filter(id => availableIds.includes(id))
+        );
+
+        if (!availableIds.some(id => selectedSantriIds.includes(id))) {
+            setIsAllSelected(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri]);
+
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
             <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">

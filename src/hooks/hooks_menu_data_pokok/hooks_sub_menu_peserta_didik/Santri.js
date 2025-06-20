@@ -155,7 +155,11 @@ const useFetchSantri = (filters) => {
         }
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error("Gagal fetch semua ID santri");
             }
@@ -174,6 +178,7 @@ const useFetchSantri = (filters) => {
             console.error("Fetch all data error:", err);
             setAllSantriIds([]);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, debouncedSearchTerm]);
 
 

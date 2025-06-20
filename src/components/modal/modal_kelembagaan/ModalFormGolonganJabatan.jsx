@@ -59,7 +59,7 @@ const ModalAddOrEditGolonganJabatan = ({ isOpen, onClose, data, refetchData, fea
             const token = sessionStorage.getItem("token") || getCookie("token");
 
             // Tentukan URL dan method berdasarkan feature
-            const isEdit = feature === 2;
+            const isEdit = feature == 2;
             const url = isEdit
                 ? `${API_BASE_URL}crud/${id}/golongan-jabatan`
                 : `${API_BASE_URL}crud/golongan-jabatan`;

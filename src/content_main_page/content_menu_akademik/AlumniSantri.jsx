@@ -304,6 +304,26 @@ const AlumniSantri = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        const availableIds = santri.map(item => item.id);
+        setSelectedSantriIds(prev => prev.filter(id => availableIds.includes(id)));
+
+        if (!availableIds.some(id => selectedSantriIds.includes(id))) {
+            setIsAllSelectedSantri(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri]);
+
+    useEffect(() => {
+        const availableIds = dataLulus.map(item => item.id);
+        setSelectedLulusIds(prev => prev.filter(id => availableIds.includes(id)));
+
+        if (!availableIds.some(id => selectedLulusIds.includes(id))) {
+            setIsAllSelectedLulus(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataLulus]);
+
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
             <div className="w-full lg:w-20/49 bg-white p-6 rounded-lg shadow-md">

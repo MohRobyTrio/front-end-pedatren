@@ -149,22 +149,12 @@ const KelulusanPelajar = () => {
         }
     }, [lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih, lembagaTerpilihLulus, jurusanTerpilihLulus, kelasTerpilihLulus, rombelTerpilihLulus]);
 
-    // useEffect(() => {
-    //     if (totalDataPelajar && totalDataPelajar != 0) setLimit(totalDataPelajar);
-    // }, [setLimit, totalDataPelajar]);
-
     useEffect(() => {
         if (isAllSelectedPelajar && allPelajarIds.length > 0) {
             setSelectedPelajarBiodataIds(allPelajarIds);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allPelajarIds]);
-
-    // useEffect(() => {
-    //     console.log(totalDataLulus);
-        
-    //     if (totalDataLulus && totalDataLulus != 0) setLimitLulus(totalDataLulus);
-    // }, [setLimitLulus, totalDataLulus]);
 
     const handlePageChangePelajar = (page) => {
         if (page >= 1 && page <= totalPagesPelajar) {
@@ -309,6 +299,27 @@ const KelulusanPelajar = () => {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    useEffect(() => {
+        const currentIds = pelajar.map((item) => item.biodata_id);
+        setSelectedPelajarBiodataIds((prev) => prev.filter((id) => currentIds.includes(id)));
+
+        // Auto-uncheck select-all jika semua ID terpilih tidak lagi valid
+        if (!currentIds.some((id) => selectedPelajarBiodataIds.includes(id))) {
+            setIsAllSelectedPelajar(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pelajar]);
+
+    useEffect(() => {
+        const currentIds = dataLulus.map((item) => item.biodata_id);
+        setSelectedLulusBiodataIds((prev) => prev.filter((id) => currentIds.includes(id)));
+
+        if (!currentIds.some((id) => selectedLulusBiodataIds.includes(id))) {
+            setIsAllSelectedLulus(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataLulus]);
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">
@@ -463,7 +474,7 @@ const KelulusanPelajar = () => {
                                                         : "bg-red-100 text-red-700"
                                                         }`}
                                                 >
-                                                    {item.status === "aktif" ? "Aktif" : "Nonaktif"}
+                                                    {item.status == "aktif" ? "Aktif" : "Nonaktif"}
                                                 </span>
                                             </td>
                                         </tr>
@@ -654,7 +665,7 @@ const KelulusanPelajar = () => {
                                                         : "bg-red-100 text-red-700"
                                                         }`}
                                                 >
-                                                    {item.status === "lulus" ? "Lulus" : "-"}
+                                                    {item.status == "lulus" ? "Lulus" : "-"}
                                                 </span>
                                             </td>
                                         </tr>
