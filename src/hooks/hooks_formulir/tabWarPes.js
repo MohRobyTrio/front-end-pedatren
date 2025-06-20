@@ -119,11 +119,14 @@ export const useWarPes = (biodata_id) => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memperbarui data.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));

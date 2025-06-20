@@ -64,11 +64,14 @@ export const ModalExport = ({ isOpen, onClose, filters, searchTerm, limit, curre
         const token = sessionStorage.getItem("token") || getCookie("token");
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memproses data untuk diekspor.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             const response = await fetch(`${baseUrl}?${params.toString()}`, {

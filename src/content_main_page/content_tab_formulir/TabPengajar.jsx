@@ -207,11 +207,14 @@ const TabPengajar = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang memperbarui data pengajar.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             const token = sessionStorage.getItem("token") || getCookie("token");
@@ -273,11 +276,14 @@ const TabPengajar = () => {
     const handleAdd = async (formData, materiList) => {
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang menonaktifkan materi.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             const pengajarId = selectedPengajarId; // asumsi ID pengajar tersedia
@@ -361,11 +367,14 @@ const TabPengajar = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang menonaktifkan materi.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             const token = sessionStorage.getItem("token") || getCookie("token");

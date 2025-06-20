@@ -52,11 +52,14 @@ const ResetPasswordPage = () => {
 
         try {
             Swal.fire({
-                title: 'Mohon tunggu...',
-                html: 'Sedang proses.',
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
             const response = await fetch(`${API_BASE_URL}reset`, {
