@@ -129,7 +129,7 @@ const ResetPasswordPage = () => {
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
-                                className="w-full p-2.5 border border-gray-700 rounded-lg bg-gray-900 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-900 transition"
+                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-white/80 text-gray-900 placeholder-gray-500 pr-10 shadow-sm focus:shadow-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-300 transition-all duration-200 outline-none"
                                 placeholder="Kata sandi"
                                 required
                                 value={password}
@@ -145,7 +145,6 @@ const ResetPasswordPage = () => {
                             </button>
                         </div>
                     </div>
-                    {/* Konfirmasi Kata Sandi */}
                     <div className="mb-4">
                         <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-300">
                             Konfirmasi Kata Sandi
@@ -154,7 +153,7 @@ const ResetPasswordPage = () => {
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 id="confirm-password"
-                                className="w-full p-2.5 border border-gray-700 rounded-lg bg-gray-900 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-900 transition"
+                                className="w-full p-2.5 border border-gray-300 rounded-lg bg-white/80 text-gray-900 placeholder-gray-500 pr-10 shadow-sm focus:shadow-lg focus:border-blue-600 focus:ring-2 focus:ring-blue-300 transition-all duration-200 outline-none"
                                 placeholder="Konfirmasi kata sandi"
                                 required
                                 value={passwordConfirmation}
@@ -170,6 +169,7 @@ const ResetPasswordPage = () => {
                             </button>
                         </div>
                     </div>
+
                     <button
                         type="submit"
                         disabled={loading}
