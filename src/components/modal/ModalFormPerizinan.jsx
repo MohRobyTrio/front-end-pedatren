@@ -9,6 +9,7 @@ import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import { useNavigate } from "react-router-dom";
 import { ModalSelectSantri } from "../ModalSelectSantri";
+import { SantriInfoCard } from "../CardInfo";
 
 export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
@@ -276,28 +277,26 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
                                             {/* Pilih Santri Button */}
-                                            {feature === 1 && (
-                                                <div className={`mb-4 flex ${santriId ? 'justify-end' : 'justify-center'}`}>
-                                                    <div className="flex-1 flex justify-between items-center max-w-2xl mx-auto">
-                                                        {!santriId && (
-                                                            <h2 className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">
-                                                                Pilih Data Santri Terlebih Dahulu
-                                                            </h2>
-                                                        )}
-                                                        <div className={`ml-auto ${!santriId ? 'relative' : ''}`}>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setShowSelectSantri(true)}
-                                                                className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                                            >
-                                                                {santriId ? "Ganti Santri" : "Pilih Santri"}
-                                                            </button>
-                                                        </div>
+                                            {(feature == 1 && !santriId) && (
+                                                <div className="mb-4 flex justify-center">
+                                                    <div className="w-full max-w-2xl text-center">
+
+                                                        <h2 className="text-lg font-semibold mb-4">
+                                                            Pilih Data Santri Terlebih Dahulu
+                                                        </h2>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowSelectSantri(true)}
+                                                            className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                                        >
+                                                            Pilih Santri
+                                                        </button>
                                                     </div>
                                                 </div>
+
                                             )}
                                             {/* Kartu Info Santri */}
-                                            {santriId && <SantriInfoCard santri={santriId} />}
+                                            {santriId && <SantriInfoCard santri={santriId} setShowSelectSantri={() => setShowSelectSantri(true)} />}
 
                                             {/* FORM ISI */}
                                             {(santriId || feature === 2) && (
@@ -438,12 +437,14 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
 
                                 {/* Footer Button */}
                                 <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
-                                    <button
-                                        type="submit"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
-                                    >
-                                        Simpan
-                                    </button>
+                                    {(santriId || feature == 2) && (
+                                        <button
+                                            type="submit"
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
+                                        >
+                                            Simpan
+                                        </button>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={onClose}
@@ -730,44 +731,44 @@ export const ModalAddBerkasPerizinan = ({ isOpen, onClose, id, close }) => {
     );
 };
 
-const SantriInfoCard = ({ santri }) => {
-    if (!santri) return null;
+// const SantriInfoCard = ({ santri }) => {
+//     if (!santri) return null;
 
-    return (
-        <div className=" p-4 rounded-md bg-gray-50 shadow-sm mb-6">
-            <div className="flex items-start space-x-12">
-                {/* <img src={santri.foto_profil} alt="Foto Santri" className="w-24 h-24 rounded object-cover" /> */}
-                {santri.foto_profil ? (
-                    <img src={santri.foto_profil}
-                        alt={santri.value}
-                        className="w-24 h-24 rounded object-cover" />
-                ) : (
-                    <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
-                        <i className="fas fa-user text-gray-400 text-4xl"></i>
-                    </div>
-                )}
-                <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
-                    {/* Kolom Pertama */}
-                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
-                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
-                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
-                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
-                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
-                    </div>
+//     return (
+//         <div className=" p-4 rounded-md bg-gray-50 shadow-sm mb-6">
+//             <div className="flex items-start space-x-12">
+//                 {/* <img src={santri.foto_profil} alt="Foto Santri" className="w-24 h-24 rounded object-cover" /> */}
+//                 {santri.foto_profil ? (
+//                     <img src={santri.foto_profil}
+//                         alt={santri.value}
+//                         className="w-24 h-24 rounded object-cover" />
+//                 ) : (
+//                     <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
+//                         <i className="fas fa-user text-gray-400 text-4xl"></i>
+//                     </div>
+//                 )}
+//                 <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+//                     {/* Kolom Pertama */}
+//                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+//                         <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
+//                         <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
+//                         <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
+//                         <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
+//                         <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+//                     </div>
 
-                    {/* Kolom Kedua */}
-                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
-                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
-                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
-                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+//                     {/* Kolom Kedua */}
+//                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+//                         <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
+//                         <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
+//                         <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
+//                         <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
 
 
 export const ModalApprove = ({
