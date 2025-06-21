@@ -314,6 +314,10 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
     const { approvePerizinan, isApproving, error } = useApprovePerizinan();
 
     const [showApproveModal, setShowApproveModal] = useState(false);
+    const [showKeluarModal, setShowKeluarModal] = useState(false);
+    const [showKembaliModal, setShowKembaliModal] = useState(false);
+    const [showLoadingKeluarModal, setShowLoadingKeluarModal] = useState(false);
+    const [showLoadingKembaliModal, setShowLoadingKembaliModal] = useState(false);
     const [approveError, setApproveError] = useState(null);
 
     // Cek apakah user dapat melakukan approval untuk role ini
@@ -355,20 +359,21 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
     const token = sessionStorage.getItem("token") || getCookie("token");
     
 
-    const handleSetKeluar = async (id) => {
+    const handleSetKeluar = async () => {
         try {
-            Swal.fire({
-                background: "transparent",    // tanpa bg putih box
-                showConfirmButton: false,     // tanpa tombol
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                customClass: {
-                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
-                }
-            });
-            const response = await fetch(`${API_BASE_URL}crud/${id}/perizinan/set-keluar`, {
+            setShowLoadingKeluarModal(true)
+            // Swal.fire({
+            //     background: "transparent",    // tanpa bg putih box
+            //     showConfirmButton: false,     // tanpa tombol
+            //     allowOutsideClick: false,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //     },
+            //     customClass: {
+            //         popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+            //     }
+            // });
+            const response = await fetch(`${API_BASE_URL}crud/${data.id}/perizinan/set-keluar`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -376,7 +381,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                 },
             });
 
-            Swal.close();
+            // Swal.close();
 
             if (response.status == 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
@@ -407,34 +412,38 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
 
             
             Swal.fire("Berhasil!", "success");
+            setShowKeluarModal(false);
             refetchData(true); // misalnya kamu punya fungsi untuk refresh data
         } catch (err) {
             console.error(err);
             Swal.fire("Gagal", err.message, "error");
+        } finally {
+            setShowLoadingKeluarModal(false)
         }
     };
 
-    const handleSetKembali = async (id) => {
+    const handleSetKembali = async () => {
         try {
-            Swal.fire({
-                background: "transparent",    // tanpa bg putih box
-                showConfirmButton: false,     // tanpa tombol
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                customClass: {
-                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
-                }
-            });
-            const response = await fetch(`${API_BASE_URL}crud/${id}/perizinan/set-kembali`, {
+            setShowLoadingKembaliModal(true)
+            // Swal.fire({
+            //     background: "transparent",    // tanpa bg putih box
+            //     showConfirmButton: false,     // tanpa tombol
+            //     allowOutsideClick: false,
+            //     didOpen: () => {
+            //         Swal.showLoading();
+            //     },
+            //     customClass: {
+            //         popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+            //     }
+            // });
+            const response = await fetch(`${API_BASE_URL}crud/${data.id}/perizinan/set-kembali`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
-            Swal.close();
+            // Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
                 await Swal.fire({
@@ -461,10 +470,13 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
 
             
             Swal.fire("Berhasil!", "success");
+            setShowKembaliModal(false);
             refetchData(true); // misalnya kamu punya fungsi untuk refresh data
         } catch (err) {
             console.error(err);
             Swal.fire("Gagal", err.message, "error");
+        } finally {
+            setShowLoadingKembaliModal(false)
         }
     };
 
@@ -494,8 +506,9 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
+                                    setShowKeluarModal(true)
                                     // Set status menjadi "Keluar" atau panggil fungsi yang sesuai
-                                    handleSetKeluar(data.id);
+                                    // handleSetKeluar(data.id);
                                 }}
                                 className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-yellow-600 hover:bg-yellow-700 rounded shadow cursor-pointer"
                             >
@@ -506,8 +519,9 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
+                                    setShowKembaliModal(true)
                                     // Set status menjadi "Kembali" atau panggil fungsi yang sesuai
-                                    handleSetKembali(data.id);
+                                    // handleSetKembali(data.id);
                                 }}
                                 className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded shadow cursor-pointer"
                             >
@@ -543,6 +557,24 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                     isLoading={isApproving}
                     roleName={userRole}
                 />
+
+                <ModalApprove
+                    isOpen={showKeluarModal}
+                    onClose={() => setShowKeluarModal(false)}
+                    onConfirm={handleSetKeluar}
+                    isLoading={showLoadingKeluarModal}
+                    mode="keluar"
+                />
+
+                <ModalApprove
+                    isOpen={showKembaliModal}
+                    onClose={() => setShowKembaliModal(false)}
+                    onConfirm={handleSetKembali}
+                    isLoading={showLoadingKembaliModal}
+                    mode="kembali"
+                />
+
+
                 {approveError && (
                     <div className="mt-2 text-red-600 text-sm">
                         Error: {approveError}
