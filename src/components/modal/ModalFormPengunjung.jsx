@@ -318,7 +318,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
 
-                                            {(feature === 1 && !santri) && (
+                                            {(feature == 1 && !santri) && (
                                                 <div className="mb-4 flex justify-center">
                                                     <div className="w-full max-w-2xl text-center">
 
