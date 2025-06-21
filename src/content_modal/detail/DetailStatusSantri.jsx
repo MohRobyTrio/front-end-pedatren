@@ -10,9 +10,11 @@ const DetailStatusSantri = ({ statusSantri }) => {
                     {statusSantri?.Kewaliasuhan.map((item, index) => (
                         <div key={`${item.id} - ${index}`} className="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer">
                             <div className="flex-1">
-                                <p className="font-bold text-gray-400 border-b w-full pb-2">Group Kewaliasuhan: {item.group || "-"}</p>
+                                <p className="font-bold text-gray-400 border-b w-full pb-2">Group Kewaliasuhan: {item.group_kewaliasuhan || "-"}</p>
                                 <p className="text-gray-600 pt-2"><strong>Sebagai: </strong>{item.sebagai || "-"}</p>
+                                {item.sebagai != "Wali Asuh" && (
                                 <p className="text-gray-600"><strong>Nama Wali Asuh: </strong>{item["Nama Wali Asuh"] || "-"}</p>
+                            )}
 
                             </div>
                         </div>
