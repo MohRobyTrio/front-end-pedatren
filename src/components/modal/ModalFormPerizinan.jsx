@@ -377,8 +377,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                                 id="tanggal_kembali"
                                                                 name="tanggal_kembali"
                                                                 value={formData.tanggal_kembali}
-                                                                onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
-                                                                required
+                                                                onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}                                                                
                                                                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                             />
                                                         </div>
@@ -776,9 +775,31 @@ export const ModalApprove = ({
     onClose,
     onConfirm,
     isLoading,
-    roleName
+    roleName,
+    mode = 'approve', // 'approve' | 'keluar' | 'kembali'
+    title,
+    message,
 }) => {
     if (!isOpen) return null;
+
+    // Default Judul dan Pesan
+    const modeTitle = {
+        approve: 'Konfirmasi Approval',
+        keluar: 'Konfirmasi Keluar Pondok',
+        kembali: 'Konfirmasi Kembali ke Pondok',
+    };
+
+    const modeMessage = {
+        approve: `Anda yakin ingin menyetujui perizinan ini sebagai ${roleName ? `<span class="font-semibold capitalize">${roleName}</span>` : '...'}?`,
+        keluar: 'Anda yakin ingin mengatur status santri menjadi <span class="font-semibold">Keluar Pondok</span>?',
+        kembali: 'Anda yakin ingin mengatur status santri menjadi <span class="font-semibold">Sudah Kembali ke Pondok</span>?',
+    };
+
+    const buttonLabel = {
+        approve: 'Ya, Setujui',
+        keluar: 'Ya, Set Keluar',
+        kembali: 'Ya, Set Kembali',
+    };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -812,16 +833,18 @@ export const ModalApprove = ({
                                 as="h3"
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
-                                Konfirmasi Approval
+                                {title || modeTitle[mode]}
                             </Dialog.Title>
 
                             <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto">
                                 <div className="sm:flex sm:items-start">
                                     <div className="mt-2 sm:mt-0 text-center w-full">
-                                        <p className="mb-4">
-                                            Anda yakin ingin menyetujui perizinan ini sebagai{' '}
-                                            <span className="font-semibold capitalize">{roleName}</span>?
-                                        </p>
+                                        <p
+                                            className="mb-4"
+                                            dangerouslySetInnerHTML={{
+                                                __html: message || modeMessage[mode],
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -838,7 +861,7 @@ export const ModalApprove = ({
                                             <i className="fa-solid fa-circle-notch fa-spin me-2"></i>
                                             Memproses...
                                         </>
-                                    ) : 'Ya, Setujui'}
+                                    ) : buttonLabel[mode]}
                                 </button>
                                 <button
                                     onClick={onClose}

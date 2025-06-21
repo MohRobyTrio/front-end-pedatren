@@ -120,13 +120,13 @@ const HubungkanWaliAsuh = () => {
             await Swal.fire({
                 icon: "warning",
                 title: "Peringatan",
-                text: "Pilih minimal satu santri untuk dipindah.",
+                text: "Pilih minimal satu santri untuk dijadikan anak asuh.",
             });
             return;
         }
 
         const confirmResult = await Swal.fire({
-            title: "Yakin ingin memproses perpindahan?",
+            title: "Yakin ingin memproses data ini?",
             text: "Pastikan data tujuan sudah sesuai.",
             icon: "question",
             showCancelButton: true,
@@ -187,7 +187,17 @@ const HubungkanWaliAsuh = () => {
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
-                    html: `<div style="text-align: left;">${result.message || "Terjadi kesalahan saat memproses perpindahan."}</div>`,
+                    html: `<div style="text-align: left;">${result.message || "Terjadi kesalahan saat memproses anak asuh."}</div>`,
+                });
+                return;
+            }
+
+            if (result.success && result.data?.berhasil?.length === 0 && result.data?.gagal?.length > 0) {
+                const gagalMessages = result.data.gagal.map(item => `- ${item.message}`).join("<br>");
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align:left">${result.message}<br><br>${gagalMessages}</div>`,
                 });
                 return;
             }
@@ -374,7 +384,7 @@ const HubungkanWaliAsuh = () => {
                         <h2 className="text-xl font-semibold mb-4">Tambahkan ke</h2>
 
                         <div className="flex flex-wrap w-full mb-4">
-                            <div>
+                            <div className="w-full">
                                 <label htmlFor="id_wali_asuh" className="block text-gray-700">Wali Asuh *</label>
                                 <select
                                     className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh2.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
