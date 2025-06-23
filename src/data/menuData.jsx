@@ -41,6 +41,7 @@ import TabPengajar from "../content_main_page/content_tab_formulir/TabPengajar";
 import TabPengurus from "../content_main_page/content_tab_formulir/TabPengurus";
 import TabProgress from "../content_main_page/content_tab_formulir/TabProgress";
 import TabSantri from "../content_main_page/content_tab_formulir/TabSantri";
+import TabAnakAsuh from "../content_main_page/content_tab_formulir/TabAnakAsuh";
 import TabWaliAsuh from "../content_main_page/content_tab_formulir/TabWaliAsuh";
 import TabWaliKelas from "../content_main_page/content_tab_formulir/TabWaliKelas";
 import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPes";
@@ -136,6 +137,7 @@ export const tabsFormulir = [
   { id: "santri", label: "Santri", link: "santri", content: <TabSantri /> },
   { id: "domisili", label: "Domisili Santri", link: "domisili-santri", content: <TabDomisiliSantri /> },
   { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh", content: <TabWaliAsuh /> },
+  { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh", content: <TabAnakAsuh /> },
   { id: "pendidikan", label: "Pendidikan", link: "pendidikan", content: <TabPendidikan /> },
   { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
   { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
