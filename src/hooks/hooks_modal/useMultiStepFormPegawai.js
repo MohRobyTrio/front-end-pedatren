@@ -87,9 +87,27 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
       // === Append data dari modalPegawai (field utama) ===
       if (data.modalPegawai) {
         Object.entries(data.modalPegawai).forEach(([key, val]) => {
+          // Lewati mata_pelajaran karena akan diproses khusus
+          if (key === "mata_pelajaran") return;
+
           if (val !== null && val !== undefined) {
             formData.append(key, val);
           }
+        });
+      }
+
+      if (Array.isArray(data.modalPegawai.mata_pelajaran)) {
+        data.modalPegawai.mata_pelajaran.forEach((mapel, index) => {
+          if (mapel.kode_mapel)
+            formData.append(
+              `mata_pelajaran[${index}][kode_mapel]`,
+              mapel.kode_mapel
+            );
+          if (mapel.nama_mapel)
+            formData.append(
+              `mata_pelajaran[${index}][nama_mapel]`,
+              mapel.nama_mapel
+            );
         });
       }
 
@@ -110,6 +128,16 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
         formData.append(`berkas[${i}][file_path]`, b.file);
       });
 
+      berkas.forEach((b, i) => {
+                formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+                formData.append(`berkas[${i}][file_path]`, b.file);
+            });
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ':', pair[1]);
+            }
+
+            console.log("Payload yang dikirim ke API:", JSON.stringify(formData.mata_pelajaran, null, 2));
       // === Eksekusi API ===
       const token = getCookie("token") || sessionStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}crud/pegawai`, {
@@ -121,7 +149,7 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
       });
 
       const result = await response.json();
-      // console.log(result);
+      console.log(result);
 
       console.log(result);
       Swal.close();
