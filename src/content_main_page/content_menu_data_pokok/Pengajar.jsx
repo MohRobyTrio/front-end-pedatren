@@ -343,7 +343,7 @@ const Pengajar = () => {
                                         <th className="px-3 py-2 border-b">Materi Ajar</th>
                                         <th className="px-3 py-2 border-b">Total Materi Ajar</th>
                                         <th className="px-3 py-2 border-b">Masa Kerja</th>
-                                        <th className="px-3 py-2 border-b">Golonngan</th>
+                                        <th className="px-3 py-2 border-b">Golongan</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
                                         <th className="px-3 py-2 border-b">Tgl Update Bio</th>
                                         <th className="px-3 py-2 border-b">Tgl Input Bio</th>

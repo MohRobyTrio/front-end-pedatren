@@ -45,6 +45,21 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
 
+    useEffect(() => {
+        if (isOpen) {
+            handleFilterChangeLembaga({ lembaga: '' })
+            setFormData({
+                lembaga_id: "",
+                golongan_id: "",
+                jabatan: "",
+                tahun_masuk: ""
+            });
+            setForm({ nama_mapel: '' });
+            setMateriList([]);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen]);
+
     // Ubah label index ke-0 menjadi "Pilih ..."
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -71,7 +86,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
         tahun_masuk: ""
     });
     const [materiList, setMateriList] = useState([]);
-    const [form, setForm] = useState({ nama: '', menit: '', tahun_masuk: '', tahun_akhir: '' });
+    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' });
     const [showAddMateriModal, setShowAddMateriModal] = useState();
 
     const handleChange = (e) => {
@@ -80,13 +95,14 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
     const handleAdd = () => {
         // e.preventDefault();
-        if (!form.nama || !form.menit) return
+        if (!form.nama_mapel && !form.kode_mapel) return
 
         setMateriList([
             ...materiList,
-            { nama: form.nama, menit: parseInt(form.menit), tahun_masuk: form.tahun_masuk, tahun_akhir: form.tahun_akhir }
+            { kode_mapel: form.kode_mapel,
+            nama_mapel: form.nama_mapel }
         ])
-        setForm({ nama: '', menit: '', tahun_masuk: '', tahun_akhir: '' })
+        setForm({ kode_mapel: '', nama_mapel: '' })
         closeAddMateriModal();
     }
 
@@ -103,7 +119,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
         setFormData((prev) => ({
             ...prev,
             lembaga_id: selectedLembaga.lembaga || ""
-        }));        
+        }));
     }, [selectedLembaga]);
 
     const handleSubmit = async (e) => {
@@ -138,9 +154,9 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 }
             });
             const token = sessionStorage.getItem("token") || getCookie("token");
-            console.log("token :",token);
-            
-            
+            console.log("token :", token);
+
+
             // const nama_materi = materiList.map(item => item.nama);
             // const jumlah_menit = materiList.map(item => parseInt(item.menit));
             // const tahun_masuk_materi_ajar = materiList.map(item => item.tahun_masuk || null);
@@ -152,18 +168,23 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 // Struktur untuk feature 1
                 payload = {
                     ...formData,
-                    nama_materi: materiList.map(item => item.nama),
-                    jumlah_menit: materiList.map(item => parseInt(item.menit)),
-                    tahun_masuk_materi_ajar: materiList.map(item => item.tahun_masuk || null),
-                    tahun_akhir_materi_ajar: materiList.map(item => item.tahun_akhir || null),
+                    mata_pelajaran: materiList.map(item => ({
+                        kode_mapel: item.kode_mapel || null,
+                        nama_mapel: item.nama_mapel || null,
+                        // jumlah_menit: item.menit ? parseInt(item.menit) : null,
+                    })),
+                    // jumlah_menit: materiList.map(item => parseInt(item.menit)),
+                    // tahun_masuk_materi_ajar: materiList.map(item => item.tahun_masuk || null),
+                    // tahun_akhir_materi_ajar: materiList.map(item => item.tahun_akhir || null),
                 };
             } else if (feature == 2) {
                 // Struktur untuk feature 2
                 payload = {
                     ...formData,
-                    materi_ajar: materiList.map(item => ({
-                        nama_materi: item.nama || null,
-                        jumlah_menit: item.menit ? parseInt(item.menit) : null,
+                    mata_pelajaran: materiList.map(item => ({
+                        kode_mapel: item.kode_mapel || null,
+                        nama_mapel: item.nama_mapel || null,
+                        // jumlah_menit: item.menit ? parseInt(item.menit) : null,
                     })),
                 };
             }
@@ -179,9 +200,9 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 body: JSON.stringify(payload),
             });
 
-            
+
             const result = await response.json();
-            
+
             // console.log(result);
             Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
@@ -291,121 +312,111 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                             )}
 
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">
-                                                {feature != 3 && (
+                                            {feature != 3 && (
+                                                <div className="space-y-4">
                                                     <>
-                                                <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
+                                                        <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
 
-                                                <div>
-                                                    <label htmlFor="golongan" className="block text-gray-700">Golongan *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                        onChange={(e) => setFormData({ ...formData, golongan_id: e.target.value })}
-                                                        value={formData.golongan_id}
-                                                        disabled={allGolonganList.length <= 1}
-                                                        required
-                                                    >
-                                                        {allGolonganList.map((golongan, idx) => (
-                                                            <option key={idx} value={golongan.id}>
-                                                                {golongan.GolonganNama}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
+                                                        <div>
+                                                            <label htmlFor="golongan" className="block text-gray-700">Golongan *</label>
+                                                            <select
+                                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                                onChange={(e) => setFormData({ ...formData, golongan_id: e.target.value })}
+                                                                value={formData.golongan_id}
+                                                                disabled={allGolonganList.length <= 1}
+                                                                required
+                                                            >
+                                                                {allGolonganList.map((golongan, idx) => (
+                                                                    <option key={idx} value={golongan.id}>
+                                                                        {golongan.GolonganNama}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
 
-                                                <div>
-                                                    <label htmlFor="golongan" className="block text-gray-700">Jenis Jabatan *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({...formData, jabatan: e.target.value })}
-                                                        value={formData.jabatan}
-                                                        required
-                                                    >
-                                                        {jenisJabatan.map((item, idx) => (
-                                                            <option key={idx} value={item.value}>
-                                                                {item.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                        <div>
+                                                            <label htmlFor="golongan" className="block text-gray-700">Jenis Jabatan *</label>
+                                                            <select
+                                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                                onChange={(e) => setFormData({ ...formData, jabatan: e.target.value })}
+                                                                value={formData.jabatan}
+                                                                required
+                                                            >
+                                                                {jenisJabatan.map((item, idx) => (
+                                                                    <option key={idx} value={item.value}>
+                                                                        {item.label}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="tahun_masuk" className="block text-gray-700">Tanggal Masuk *</label>
+                                                            <input
+                                                                type="date"
+                                                                id="tahun_masuk"
+                                                                name="tahun_masuk"
+                                                                value={formData.tahun_masuk}
+                                                                onChange={(e) => setFormData({ ...formData, tahun_masuk: e.target.value })}
+                                                                required
+                                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                            />
+                                                        </div>
+                                                    </>
                                                 </div>
-                                                </>
-                                                )}
-                                                <div>
-                                                    <label htmlFor="tahun_masuk" className="block text-gray-700">Tanggal Masuk *</label>
-                                                    <input
-                                                        type="date"
-                                                        id="tahun_masuk"
-                                                        name="tahun_masuk"
-                                                        value={formData.tahun_masuk}
-                                                        onChange={(e) => setFormData({ ...formData, tahun_masuk: e.target.value })}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                <h1 className="text-black font-bold flex items-center justify-between w-full mb-2 mt-4">
-                                    Materi Ajar
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            openAddMateriModal();
-                                            console.log("add");
-                                        }}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
-                                    >
-                                        <FaPlus />
-                                    </button>
-                                </h1>
+                                    <h1 className={`text-black font-bold flex items-center justify-between w-full mb-2 ${feature != 3 ? 'mt-4' : ''}`}>
+                                        Mata Pelajaran
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                openAddMateriModal();
+                                                console.log("add");
+                                            }}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
+                                        >
+                                            <FaPlus />
+                                        </button>
+                                    </h1>
 
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full text-sm text-left">
-                                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                            <tr>
-                                                <th className="px-3 py-2 border-b">No</th>
-                                                <th className="px-3 py-2 border-b">Nama Materi</th>
-                                                <th className="px-3 py-2 border-b">Jumlah Menit</th>
-                                                {feature == 1 && (
-                                                    <>
-                                                        <th className="px-3 py-2 border-b">Tanggal Masuk</th>
-                                                        <th className="px-3 py-2 border-b">Tanggal Akhir</th>
-                                                    </>
-                                                )}
-                                                <th className="px-3 py-2 border-b">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-gray-800">
-                                            {materiList.map((item, index) => (
-                                                <tr key={index} className="hover:bg-gray-50 whitespace-nowrap text-left">
-                                                    <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nama}</td>
-                                                    <td className="px-3 py-2 border-b">{item.menit}</td>
-                                                    {feature == 1 && (
-                                                        <>
-                                                            <td className="px-3 py-2 border-b">{item.tahun_masuk}</td>
-                                                            <td className="px-3 py-2 border-b">{item.tahun_akhir}</td>
-                                                        </>
-                                                    )}
-                                                    <td className="px-3 py-2 border-b">
-                                                        <button
-                                                            onClick={() => handleRemove(index)}
-                                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                                        >
-                                                            <FontAwesomeIcon icon={faTrash} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {materiList.length === 0 && (
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full text-sm text-left">
+                                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                                 <tr>
-                                                    <td colSpan="6" className="text-center py-6">Belum Ada Materi</td>
+                                                    <th className="px-3 py-2 border-b">No</th>
+                                                    <th className="px-3 py-2 border-b">Kode Mapel</th>
+                                                    <th className="px-3 py-2 border-b">Nama Mapel</th>
+                                                    <th className="px-3 py-2 border-b">Aksi</th>
                                                 </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody className="text-gray-800">
+                                                {materiList.map((item, index) => (
+                                                    <tr key={index} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                                        <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                        <td className="px-3 py-2 border-b">{item.kode_mapel}</td>
+                                                        <td className="px-3 py-2 border-b">{item.nama_mapel}</td>
+                                                        {/* <td className="px-3 py-2 border-b">{item.menit}</td> */}
+                                                        <td className="px-3 py-2 border-b">
+                                                            <button
+                                                                onClick={() => handleRemove(index)}
+                                                                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                                                            >
+                                                                <FontAwesomeIcon icon={faTrash} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {materiList.length === 0 && (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center py-6">Belum Ada Materi</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
 
@@ -477,7 +488,7 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
                 body: JSON.stringify(formData),
             });
 
-            
+
             const result = await response.json();
             Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
@@ -621,7 +632,7 @@ export const ModalKeluarPengajarFormulir = ({ isOpen, onClose, id, refetchData }
 
 export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, form, handleChange, feature }) => {
     console.log(feature);
-    
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -658,44 +669,44 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                             </button>
 
                             {/* <form className="w-full" onSubmit={handleAdd}> */}
-                                {/* Header */}
-                                <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                    <div className="sm:flex sm:items-start">
-                                        <div className="mt-2 sm:mt-0 text-left w-full">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
-                                            >
-                                                Tambah Materi Ajar
-                                            </Dialog.Title>
+                            {/* Header */}
+                            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mt-2 sm:mt-0 text-left w-full">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
+                                        >
+                                            Tambah Materi Ajar
+                                        </Dialog.Title>
 
-                                            {/* FORM ISI */}
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="nama" className="block text-gray-700">Nama Materi *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="nama"
-                                                        placeholder="Masukkan Nama Materi"
-                                                        value={form.nama}
-                                                        onChange={handleChange}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="menit" className="block text-gray-700">Jumlah Menit *</label>
-                                                    <input
-                                                        type="number"
-                                                        name="menit"
-                                                        placeholder="Jumlah Menit"
-                                                        value={form.menit}
-                                                        onChange={handleChange}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                                {feature === 1 && (
+                                        {/* FORM ISI */}
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label htmlFor="kode_mapel" className="block text-gray-700">Kode Mapel *</label>
+                                                <input
+                                                    type="text"
+                                                    name="kode_mapel"
+                                                    placeholder="Masukkan Kode Mapel"
+                                                    value={form.kode_mapel}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="nama_mapel" className="block text-gray-700">Nama Mapel *</label>
+                                                <input
+                                                    type="text"
+                                                    name="nama_mapel"
+                                                    placeholder="Masukkan Nama Mapel"
+                                                    value={form.nama_mapel}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            {/* {feature === 1 && (
                                                     <>
                                                 <div>
                                                     <label htmlFor="periode_akhir" className="block text-gray-700">Tahun Masuk Materi Ajar *</label>
@@ -710,32 +721,32 @@ export const ModalAddMateriPengajarFormulir = ({ isOpen, onClose, handleAdd, for
                                                     />
                                                 </div>
                                                 </>
-                                                )}
-                                            </div>
+                                                )} */}
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Footer Button */}
-                                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleAdd();
-                                        }}
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                    >
-                                        Simpan
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={onClose}
-                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
+                            {/* Footer Button */}
+                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAdd();
+                                    }}
+                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                >
+                                    Simpan
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                             {/* </form> */}
                         </Dialog.Panel>
                     </Transition.Child>
