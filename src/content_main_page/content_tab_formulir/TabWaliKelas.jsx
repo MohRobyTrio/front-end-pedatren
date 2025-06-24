@@ -168,7 +168,12 @@ const TabWaliKelas = () => {
         const { lembaga, jurusan, kelas, rombel } = selectedLembaga;
 
         if (!lembaga || !jurusan || !kelas || !rombel) {
-            alert("Semua dropdown (Lembaga, Jurusan, Kelas, Rombel) harus dipilih.");
+            await Swal.fire({
+                icon: "warning",
+                title: "Data Belum Lengkap",
+                text: "Semua dropdown (Lembaga, Jurusan, Kelas, Rombel) harus dipilih.",
+                confirmButtonText: "OK"
+            });
             return;
         }
 
@@ -224,13 +229,30 @@ const TabWaliKelas = () => {
             console.log(`${API_BASE_URL}formulir/${selectedWaliKelasId}/walikelas`);
             const result = await response.json();
             if (response.ok) {
-                alert(`Data berhasil diperbarui! ${result.message}-${result.data}`);
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: result.message || "Data berhasil diperbarui!",
+                    confirmButtonText: "OK"
+                });
                 setSelectedWaliKelasDetail(result.data || payload);
             } else {
-                alert("Gagal update: " + (result.message || "Terjadi kesalahan"));
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal Update",
+                    text: result.message || "Terjadi kesalahan saat memperbarui data.",
+                    confirmButtonText: "Tutup"
+                });
             }
         } catch (error) {
             console.error("Error saat update:", error);
+            Swal.close();
+            await Swal.fire({
+                icon: "error",
+                title: "Kesalahan",
+                text: "Terjadi kesalahan saat mengirim permintaan. Silakan coba lagi.",
+                confirmButtonText: "OK"
+            });
         } 
     };
 
