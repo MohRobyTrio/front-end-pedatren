@@ -167,7 +167,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
             if (feature == 1) {
                 // Struktur untuk feature 1
                 payload = {
-                    // ...formData,
+                    ...formData,
                     mata_pelajaran: materiList.map(item => ({
                         kode_mapel: item.kode_mapel || null,
                         nama_mapel: item.nama_mapel || null,

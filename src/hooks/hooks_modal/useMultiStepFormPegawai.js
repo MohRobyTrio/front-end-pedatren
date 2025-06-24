@@ -7,7 +7,7 @@ import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
+const useMultiStepFormPegawai = ( onClose, refetchData ) => {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const { clearAuthData } = useLogout();
@@ -167,12 +167,26 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
                 return;
             }
       if (!response.ok) {
-        const errorMessages = result.errors
-          ? Object.entries(result.errors).map(
-              ([field, messages]) =>
-                `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
-            )
-          : [result.message || "Gagal mengirim data"];
+        const errorMessages = [];
+
+        // Tambahkan error dari `errors` jika ada
+        if (result.errors) {
+          const formattedErrors = Object.entries(result.errors).map(
+            ([field, messages]) =>
+              `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+          );
+          errorMessages.push(...formattedErrors);
+        }
+
+        // Tambahkan error dari `error` (string tunggal)
+        if (result.error) {
+          errorMessages.push(result.error);
+        }
+
+        // Tambahkan message umum
+        if (result.message && errorMessages.length === 0) {
+          errorMessages.push(result.message);
+        }
 
         await Swal.fire({
           icon: "error",
@@ -182,8 +196,11 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
           )}</div>`,
         });
 
-        throw new Error(result.message);
+        throw new Error(
+          result.message || result.error || "Gagal mengirim data"
+        );
       }
+
 
       await Swal.fire({
         icon: "success",

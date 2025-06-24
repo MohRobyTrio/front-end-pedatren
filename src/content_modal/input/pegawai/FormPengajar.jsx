@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +12,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const { allGolonganList } = DropdownGolongan();
     const lembaga = watch("modalPegawai.lembaga_id_pengajar");
     const existingMateri = watch("modalPegawai.mata_pelajaran");
+    const hydratedRef = useRef(false);
 
     const listGolonganNama = allGolonganList.map(g => ({
         value: g.id,
@@ -44,6 +45,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     }
 
     const handleRemove = (indexToRemove) => {
+        console.log("Menghapus index ke:", indexToRemove);
         const updatedList = materiList.filter((_, index) => index !== indexToRemove)
         setMateriList(updatedList)
     }
@@ -69,12 +71,13 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             
             setValue('modalPegawai.golongan_id_pengajar', golongan)
         }
-        if (existingMateri && existingMateri.length > 0 && materiList.length === 0) {
+        if (!hydratedRef.current && existingMateri && existingMateri.length > 0) {
             const hydratedMateri = existingMateri.map(item => ({
                 kode_mapel: item.kode_mapel,
                 nama_mapel: item.nama_mapel
             }));
             setMateriList(hydratedMateri);
+            hydratedRef.current = true; // ✅ hanya lakukan sekali
         }
     }, [activeTab, filterLembaga.lembaga, allGolonganList.length, materiList.length, lembaga, golongan, existingMateri, setValue]);
 
