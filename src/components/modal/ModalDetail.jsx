@@ -191,7 +191,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 content: <WarPes />
             },
             data?.Catatan_Progress 
-            // && ((Object.keys(data?.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data?.Catatan_Progress?.Kognitif).length > 0)) 
+            && (
+  (Object.keys(data?.Catatan_Progress?.Afektif || {}).length > 0 ||
+   Object.keys(data?.Catatan_Progress?.Kognitif || {}).length > 0)
+)
             &&
             {
                 id: "progress",
