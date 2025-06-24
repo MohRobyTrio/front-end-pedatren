@@ -26,9 +26,10 @@ const useDropdownGolonganJabatan = () => {
         .then((res) => res.json())
         .then((data) => {
           const formatted = [
-            { label: "Pilih Golongan Jabatan", value: "", id: null },
+            { label: "Pilih Golongan Jabatan", value: "", val: "", id: "null" },
             ...data.map((item) => ({
               id: item.id,
+              val: item.id,
               value: item.nama_golongan_jabatan,
               label: item.nama_golongan_jabatan,
             })),
