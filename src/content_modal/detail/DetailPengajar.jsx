@@ -25,27 +25,23 @@ const DetailPengajar = ({ pengajar }) => (
                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                     <tr>
                         <th className="px-3 py-2 border-b">#</th>
-                        <th className="px-3 py-2 border-b">Lembaga</th>
-                        <th className="px-3 py-2 border-b">Materi</th>
-                        <th className="px-3 py-2 border-b">Tanggal Mulai</th>
-                        <th className="px-3 py-2 border-b">Tanggal Akhir</th>
+                        <th className="px-3 py-2 border-b">Kode Mapel</th>
+                        <th className="px-3 py-2 border-b">Nama Mapel</th>
                     </tr>
                 </thead>
                 <tbody className="text-gray-800">
 
                     {
-                        pengajar?.Materi_Ajar?.length === 0 ? (
+                        pengajar?.Mata_Pelajaran?.length == 0 ? (
                             <tr>
-                                <td colSpan="4" className="text-center py-6">Tidak ada data</td>
+                                <td colSpan="5" className="text-center py-6">Tidak ada data</td>
                             </tr>
                         ) : (
-                            pengajar?.Materi_Ajar?.map((item, index) => (
+                            pengajar?.Mata_Pelajaran?.map((item, index) => (
                                 <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center text-left">
                                     <td className="px-3 py-2 border-b">{index + 1}</td>
-                                    <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
-                                    <td className="px-3 py-2 border-b">{item.daftar_materi || "-"}</td>
-                                    <td className="px-3 py-2 border-b">{item.tanggal_mulai || "-"}</td>
-                                    <td className="px-3 py-2 border-b">{item.tanggal_akhir || "-"}</td>
+                                    <td className="px-3 py-2 border-b">{item.kode_mapel || "-"}</td>
+                                    <td className="px-3 py-2 border-b">{item.nama_mapel || "-"}</td>
                                 </tr>
                             ))
                         )

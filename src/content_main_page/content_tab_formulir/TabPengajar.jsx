@@ -158,12 +158,10 @@ const TabPengajar = () => {
             setEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
             const formattedMateri = result.data.materi.map(item => ({
-                id: item.id || "-",
-                nama: item.nama_materi || "-",
-                menit: item.jumlah_menit || "-",
-                tahun_masuk: item.tahun_masuk || "-",
-                tahun_akhir: item.tahun_akhir || "-",
-                status: item.status_aktif || "-"
+                id: item.materi_id || "-",
+                kode_mapel: item.kode_mapel || "-",
+                nama_mapel: item.nama_mapel || "-",
+                status: item.status || "-"
             }));
             setMateriList(formattedMateri || []);        
         } catch (error) {
@@ -289,10 +287,11 @@ const TabPengajar = () => {
             const pengajarId = selectedPengajarId; // asumsi ID pengajar tersedia
             
             const payload = {
-                ...formData,
-                materi_ajar: materiList.map(item => ({
-                    nama_materi: item.nama || null,
-                    jumlah_menit: item.menit ? parseInt(item.menit) : null
+                // ...formData,
+                mata_pelajaran: materiList.map(item => ({
+                    kode_mapel: item.kode_mapel || null,
+                    nama_mapel: item.nama_mapel || null,
+                    // jumlah_menit: item.menit ? parseInt(item.menit) : null
                 })),
             };
             
@@ -581,11 +580,11 @@ const TabPengajar = () => {
                         </div>
 
                         {/* Form Input */}
-                        {loadingDetailPengajar === pengajar.id ? (
+                        {loadingDetailPengajar == pengajar.id ? (
                             <div className="flex justify-center items-center mt-4">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
-                        ) : selectedPengajarId === pengajar.id && selectedPengajarDetail && (
+                        ) : selectedPengajarId == pengajar.id && selectedPengajarDetail && (
                             <form>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-4">
                                     <div className="flex flex-col gap-4">
@@ -699,12 +698,10 @@ const TabPengajar = () => {
                                         <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                             <tr>
                                                 <th className="px-3 py-2 border-b">No</th>
-                                                <th className="px-3 py-2 border-b">Nama Materi</th>
-                                                <th className="px-3 py-2 border-b">Jumlah Menit</th>
-                                                <th className="px-3 py-2 border-b">Tanggal Masuk</th>
-                                                <th className="px-3 py-2 border-b">Tanggal Akhir</th>
+                                                <th className="px-3 py-2 border-b">Kode Mapel</th>
+                                                <th className="px-3 py-2 border-b">Nama Mapel</th>
                                                 <th className="px-3 py-2 border-b">Status</th>
-                                                {pengajar.status === "aktif" && !semuaNonaktif && (
+                                                {pengajar.status == "aktif" && !semuaNonaktif && (
                                                     <Access action="delete">
                                                         <th className="px-3 py-2 border-b">Aksi</th>
                                                     </Access>
@@ -715,22 +712,20 @@ const TabPengajar = () => {
                                             {materiList.map((item, index) => (
                                                 <tr key={index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                     <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nama}</td>
-                                                    <td className="px-3 py-2 border-b">{item.menit}</td>
-                                                    <td className="px-3 py-2 border-b">{item.tahun_masuk}</td>
-                                                    <td className="px-3 py-2 border-b">{item.tahun_akhir}</td>
+                                                    <td className="px-3 py-2 border-b">{item.kode_mapel}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nama_mapel}</td>
                                                     <td className="px-3 py-2 border-b"><span
-                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === "aktif"
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
                                                             ? "bg-green-100 text-green-700"
                                                             : "bg-red-100 text-red-700"
                                                             }`}
                                                     >
-                                                        {item.status === "aktif" ? "Aktif" : "Nonaktif"}
+                                                        {item.status == 1 ? "Aktif" : "Nonaktif"}
                                                     </span></td>
-                                                    {pengajar.status === "aktif" && !semuaNonaktif && (
+                                                    {pengajar.status == "aktif" && !semuaNonaktif && (
                                                         <Access action="delete">
                                                             <td className="px-3 py-2 border-b">
-                                                                {item.status == "aktif" && (
+                                                                {item.status == 1 && (
                                                                     <button
                                                                         onClick={(e) => handleRemove(index, e)}
                                                                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -743,7 +738,7 @@ const TabPengajar = () => {
                                                     )}
                                                 </tr>
                                             ))}
-                                            {materiList.length === 0 && (
+                                            {materiList.length == 0 && (
                                                 <tr>
                                                     <td colSpan="6" className="text-center py-6">Belum Ada Materi</td>
                                                 </tr>

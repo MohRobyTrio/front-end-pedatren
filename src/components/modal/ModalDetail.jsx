@@ -101,6 +101,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 }
 
                 console.log(endpoint);
+                console.log(json.data);
+                
 
 
                 setData(json.data);
