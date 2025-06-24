@@ -75,6 +75,8 @@ const TabAnakAsuh = () => {
     item.nama.toLowerCase().includes(waliSearch.toLowerCase())
   );
 
+  console.log(anakAsuhList.map(a => a.id));
+
   return (
     <div className="block" id="anak-asuh">
       <h1 className="text-xl font-bold flex items-center justify-between">Anak Asuh
@@ -146,12 +148,12 @@ const TabAnakAsuh = () => {
                   </p>
                 </div>
                 <span
-                  className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${anakAsuh.status_anak_asuh == 'aktif'
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
+                  className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${anakAsuh.tanggal_akhir
+                    ? "bg-red-100 text-red-700"
+                    : "bg-green-100 text-green-700"
                     }`}
                 >
-                  {anakAsuh.status_anak_asuh == 'aktif' ? 'Aktif' : 'Non Aktif'}
+                  {anakAsuh.tanggal_akhir ? 'Non Aktif' : 'Aktif'}
                 </span>
               </div>
 
@@ -165,7 +167,7 @@ const TabAnakAsuh = () => {
                         handleOpenAddModalWithDetail(anakAsuh.id, 2);
                       }}
                       className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
-                      title="Pindah Khadam"
+                      title="Pindah Anak Asuh"
                     >
                       <FontAwesomeIcon icon={faArrowRightArrowLeft} />Pindah
                     </button>
@@ -271,7 +273,7 @@ const TabAnakAsuh = () => {
 
                 {/* Baris 3: Tombol */}
                 <div className="flex space-x-2 mt-1">
-                  {anakAsuh.status_anak_asuh == 'aktif' && (
+                  {!anakAsuh.tanggal_akhir && (
                       <Access action="edit">
                         <button
                           type="button"
