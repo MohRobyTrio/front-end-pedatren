@@ -146,8 +146,8 @@ export const ModalFormGrupWaliAsuh = ({
             console.log("Form data:", formData);
             console.log("response:", error.response || "No response data");
             console.log("API URL:", mode === 'tambah' ? `${API_BASE_URL}crud/grupwaliasuh` : `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}`);
-
-
+            ///debug untuk activate
+            console.log("Activate action:", isActivateAction);
         }
     };
 
@@ -300,19 +300,20 @@ export const ModalConfirmationStatusGrup = ({
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
             const endpoint = isActivate
-                ? `${API_BASE_URL}grupwaliasuh/${grupData.id}/activate`
-                : `${API_BASE_URL}grupwaliasuh/${grupData.id}`;
+                ? `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}/activate`
+                : `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}`;
 
             const method = isActivate ? "PUT" : "DELETE";
 
             const response = await fetch(endpoint, {
                 method,
                 headers: {
-                    "Authorization": `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
                 }
             });
 
-            if (response.status == 401 && !window.sessionExpiredShown) {
+            if (response.status === 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -325,7 +326,15 @@ export const ModalConfirmationStatusGrup = ({
                 return;
             }
 
-            const result = await response.json();
+            let result;
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error("Respon bukan JSON:\n" + text);
+            }
 
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -343,13 +352,14 @@ export const ModalConfirmationStatusGrup = ({
             console.error("Gagal mengubah status grup:", error);
             await Swal.fire({
                 icon: "error",
-                title: "Gagal",
-                text: `Gagal mengubah status grup: ${error.message}`,
+                title: "Oops!",
+                text: error.message,
             });
         } finally {
             setIsProcessing(false);
         }
     };
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -407,8 +417,8 @@ export const ModalConfirmationStatusGrup = ({
                                                 onClick={handleConfirm}
                                                 disabled={isProcessing}
                                                 className={`px-4 py-2 text-white rounded ${isActivate
-                                                        ? 'bg-green-600 hover:bg-green-700'
-                                                        : 'bg-red-600 hover:bg-red-700'
+                                                    ? 'bg-green-600 hover:bg-green-700'
+                                                    : 'bg-red-600 hover:bg-red-700'
                                                     } disabled:opacity-50`}
                                             >
                                                 {isProcessing ? (
