@@ -131,6 +131,19 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
             }
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
+                if (response.status == 422) {
+                    const errorList = Object.values(result.errors || {})
+                        .flat()
+                        .map(msg => `<li>${msg}</li>`)
+                        .join("");
+
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: `<ul style="text-align: center; padding-left: 20px;">${errorList}</ul>`,
+                    });
+                    return;
+                }
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
@@ -158,7 +171,7 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                html: `<div style="text-align: center;">${error.message}</div>`,
             });
         }
     };

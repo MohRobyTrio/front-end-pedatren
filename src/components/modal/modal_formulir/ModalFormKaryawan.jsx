@@ -105,14 +105,29 @@ export const ModalAddKaryawanFormulir = ({ isOpen, onClose, biodataId, refetchDa
             }
 
             const result = await response.json();
-            if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
+            if (!response.ok || !result.data) {
+                if (response.status == 422) {
+                    const errorList = Object.values(result.errors || {})
+                        .flat()
+                        .map(msg => `<li>${msg}</li>`)
+                        .join("");
+
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: `<ul style="text-align: center; padding-left: 20px;">${errorList}</ul>`,
+                    });
+                    return;
+                }
+                throw new Error(result.message || "Terjadi kesalahan pada server.")
+            };
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data karyawan berhasil disimpan." });
             refetchData?.();
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
-            await Swal.fire({ icon: "error", title: "Oops!", text: "Terjadi kesalahan saat mengirim data." });
+            await Swal.fire({ icon: "error", title: "Oops!", html: `<div style="text-align: center;">${error.message}</div>` });
         }
     };
 
@@ -291,7 +306,9 @@ export const ModalKeluarKaryawanFormulir = ({ isOpen, onClose, id, refetchData }
             }
 
             const result = await response.json();
-            if (!response.ok || !result.data) throw new Error(result.message || "Terjadi kesalahan pada server.");
+            if (!response.ok || !result.data) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.")
+            };
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data karyawan berhasil diperbarui dengan tanggal keluar." });
             refetchData?.();
