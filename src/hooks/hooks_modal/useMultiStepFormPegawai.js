@@ -7,7 +7,7 @@ import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
+const useMultiStepFormPegawai = ( onClose, refetchData ) => {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const { clearAuthData } = useLogout();
@@ -87,9 +87,27 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
       // === Append data dari modalPegawai (field utama) ===
       if (data.modalPegawai) {
         Object.entries(data.modalPegawai).forEach(([key, val]) => {
+          // Lewati mata_pelajaran karena akan diproses khusus
+          if (key === "mata_pelajaran") return;
+
           if (val !== null && val !== undefined) {
             formData.append(key, val);
           }
+        });
+      }
+
+      if (Array.isArray(data.modalPegawai.mata_pelajaran)) {
+        data.modalPegawai.mata_pelajaran.forEach((mapel, index) => {
+          if (mapel.kode_mapel)
+            formData.append(
+              `mata_pelajaran[${index}][kode_mapel]`,
+              mapel.kode_mapel
+            );
+          if (mapel.nama_mapel)
+            formData.append(
+              `mata_pelajaran[${index}][nama_mapel]`,
+              mapel.nama_mapel
+            );
         });
       }
 
@@ -110,6 +128,16 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
         formData.append(`berkas[${i}][file_path]`, b.file);
       });
 
+      berkas.forEach((b, i) => {
+                formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+                formData.append(`berkas[${i}][file_path]`, b.file);
+            });
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ':', pair[1]);
+            }
+
+            console.log("Payload yang dikirim ke API:", JSON.stringify(formData.mata_pelajaran, null, 2));
       // === Eksekusi API ===
       const token = getCookie("token") || sessionStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}crud/pegawai`, {
@@ -121,7 +149,7 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
       });
 
       const result = await response.json();
-      // console.log(result);
+      console.log(result);
 
       console.log(result);
       Swal.close();
@@ -139,12 +167,26 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
                 return;
             }
       if (!response.ok) {
-        const errorMessages = result.errors
-          ? Object.entries(result.errors).map(
-              ([field, messages]) =>
-                `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
-            )
-          : [result.message || "Gagal mengirim data"];
+        const errorMessages = [];
+
+        // Tambahkan error dari `errors` jika ada
+        if (result.errors) {
+          const formattedErrors = Object.entries(result.errors).map(
+            ([field, messages]) =>
+              `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+          );
+          errorMessages.push(...formattedErrors);
+        }
+
+        // Tambahkan error dari `error` (string tunggal)
+        if (result.error) {
+          errorMessages.push(result.error);
+        }
+
+        // Tambahkan message umum
+        if (result.message && errorMessages.length === 0) {
+          errorMessages.push(result.message);
+        }
 
         await Swal.fire({
           icon: "error",
@@ -154,8 +196,11 @@ const useMultiStepFormPegawai = ({ onClose, refetchData }) => {
           )}</div>`,
         });
 
-        throw new Error(result.message);
+        throw new Error(
+          result.message || result.error || "Gagal mengirim data"
+        );
       }
+
 
       await Swal.fire({
         icon: "success",

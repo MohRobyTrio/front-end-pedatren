@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,8 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const { filterLembaga } = DropdownLembaga();
     const { allGolonganList } = DropdownGolongan();
     const lembaga = watch("modalPegawai.lembaga_id_pengajar");
-    const existingMateri = watch("modalPegawai.materi_ajar");
+    const existingMateri = watch("modalPegawai.mata_pelajaran");
+    const hydratedRef = useRef(false);
 
     const listGolonganNama = allGolonganList.map(g => ({
         value: g.id,
@@ -27,38 +28,39 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     }, [golongan, setValue]);
 
     const [materiList, setMateriList] = useState([])
-    const [form, setForm] = useState({ nama: '', menit: '' })
+    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' })
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
 
     const handleAdd = () => {
-        if (!form.nama || !form.menit) return
+        if (!form.kode_mapel || !form.nama_mapel) return
 
         setMateriList([
             ...materiList,
-            { nama: form.nama, menit: parseInt(form.menit) }
+            { kode_mapel: form.kode_mapel, nama_mapel: form.nama_mapel }
         ])
-        setForm({ nama: '', menit: '' })
+        setForm({ kode_mapel: '', nama_mapel: '' })
     }
 
     const handleRemove = (indexToRemove) => {
+        console.log("Menghapus index ke:", indexToRemove);
         const updatedList = materiList.filter((_, index) => index !== indexToRemove)
         setMateriList(updatedList)
     }
 
     useEffect(() => {
-        setValue("modalPegawai.materi_ajar", materiList.map(item => ({
-            nama_materi: item.nama,
-            jumlah_menit: item.menit
+        setValue("modalPegawai.mata_pelajaran", materiList.map(item => ({
+            kode_mapel: item.kode_mapel,
+            nama_mapel: item.nama_mapel
         })));
     }, [materiList, setValue]);
 
     useEffect(() => {
         // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
         console.log("handle", activeTab);
-        if (activeTab !== 2) return;
+        if (activeTab != 2) return;
         console.log("handle change", activeTab);
         
         if (lembaga && filterLembaga.lembaga.length >= 1) {
@@ -69,12 +71,13 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             
             setValue('modalPegawai.golongan_id_pengajar', golongan)
         }
-        if (existingMateri && existingMateri.length > 0 && materiList.length === 0) {
+        if (!hydratedRef.current && existingMateri && existingMateri.length > 0) {
             const hydratedMateri = existingMateri.map(item => ({
-                nama: item.nama_materi,
-                menit: item.jumlah_menit
+                kode_mapel: item.kode_mapel,
+                nama_mapel: item.nama_mapel
             }));
             setMateriList(hydratedMateri);
+            hydratedRef.current = true; // ✅ hanya lakukan sekali
         }
     }, [activeTab, filterLembaga.lembaga, allGolonganList.length, materiList.length, lembaga, golongan, existingMateri, setValue]);
 
@@ -162,7 +165,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             </div>
 
             {/* Tanggal Mulai pengajar (nullable|date) */}
-            <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mb-6">
+            {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mb-6">
                 <label htmlFor="tanggal_mulai_materi" className="md:w-1/4 text-black">
                     Tanggal Mulai Materi
                 </label>
@@ -177,22 +180,22 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             <label className="md:w-1/4 text-black font-bold">
-                Materi Ajar
+                Mata Pelajaran
             </label>
             <div className="flex flex-row gap-2 mb-4 items-center mt-2">
                 <div className="w-full max-w-md">
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                         <input
                             type="text"
-                            name="nama"
-                            placeholder="Masukkan Nama Materi"
-                            value={form.nama}
+                            name="kode_mapel"
+                            placeholder="Masukkan Kode Mapel"
+                            value={form.kode_mapel}
                             onChange={handleChange}
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            maxLength={100}
+                            maxLength={50}
                         />
                     </div>
                 </div>
@@ -201,13 +204,13 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                 <div className="w-full max-w-md">
                     <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
                         <input
-                            type="number"
-                            name="menit"
-                            placeholder="Jumlah Menit"
-                            value={form.menit}
+                            type="text"
+                            name="nama_mapel"
+                            placeholder="Masukkan Nama Mapel"
+                            value={form.nama_mapel}
                             onChange={handleChange}
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            maxLength={4}
+                            maxLength={100}
                         />
                     </div>
                 </div>
@@ -221,14 +224,14 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             </div>
 
             
-            {/* <input type="hidden" {...register("materi_ajar")} /> */}
+            {/* <input type="hidden" {...register("mata_pelajaran")} /> */}
             <div className="overflow-x-auto">
                 <table className="min-w-full text-sm text-left">
                     <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                         <tr>
                             <th className="px-3 py-2 border-b">No</th>
-                            <th className="px-3 py-2 border-b">Nama Materi</th>
-                            <th className="px-3 py-2 border-b">Jumlah Menit</th>
+                            <th className="px-3 py-2 border-b">Kode Mapel</th>
+                            <th className="px-3 py-2 border-b">Nama Mapel</th>
                             <th className="px-3 py-2 border-b">Aksi</th>
                         </tr>
                     </thead>
@@ -236,8 +239,8 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                         {materiList.map((item, index) => (
                             <tr key={index} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                <td className="px-3 py-2 border-b">{item.nama}</td>
-                                <td className="px-3 py-2 border-b">{item.menit}</td>
+                                <td className="px-3 py-2 border-b">{item.kode_mapel}</td>
+                                <td className="px-3 py-2 border-b">{item.nama_mapel}</td>
                                 <td className="px-3 py-2 border-b">
                                     <button
                                         onClick={() => handleRemove(index)}

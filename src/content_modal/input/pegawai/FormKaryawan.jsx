@@ -11,9 +11,12 @@ const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
     const lembaga = watch("modalPegawai.lembaga_id_karyawan");
 
     useEffect(() => {
-        if (golonganJabatan && golonganJabatan !== "") {
+        if (golonganJabatan && golonganJabatan != "") {
             setValue("modalPegawai.karyawan", "1");
-        } else {
+        } else if (golonganJabatan == "Pilih Golongan Jabatan") {
+            setValue("modalPegawai.karyawan", "0");
+        } 
+        else {
             setValue("modalPegawai.karyawan", "0");
         }
     }, [golonganJabatan, setValue]);
@@ -49,7 +52,7 @@ const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
                             {...register('modalPegawai.golongan_jabatan_id_karyawan')}
                         >
                             {menuGolonganJabatan?.map((option, idx) => (
-                                <option key={idx} value={option.id}>{option.label}</option>
+                                <option key={idx} value={option.val}>{option.label}</option>
                             ))}
                         </select>
                     </div>

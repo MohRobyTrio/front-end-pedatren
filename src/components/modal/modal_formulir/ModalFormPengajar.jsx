@@ -219,11 +219,26 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
             }
             // ✅ Kalau HTTP 500 atau fetch gagal, ini akan dilempar ke catch
             if (!response.ok) {
+                if (response.status == 422) {
+                    const errorList = Object.values(result.errors || {})
+                        .flat()
+                        .map(msg => `<li>${msg}</li>`)
+                        .join("");
+
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: `<ul style="text-align: center; padding-left: 20px;">${errorList}</ul>`,
+                    });
+                    return;
+                }
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
             // ✅ Jika status dari backend false meskipun HTTP 200
             if (!("data" in result)) {
+
+
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",

@@ -190,7 +190,12 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 label: "Warga Pesantren",
                 content: <WarPes />
             },
-            data?.Catatan_Progress && ((Object.keys(data.Catatan_Progress?.Afektif).length > 0) || (Object.keys(data.Catatan_Progress?.Kognitif).length > 0)) &&
+            data?.Catatan_Progress 
+            && (
+  (Object.keys(data?.Catatan_Progress?.Afektif || {}).length > 0 ||
+   Object.keys(data?.Catatan_Progress?.Kognitif || {}).length > 0)
+)
+            &&
             {
                 id: "progress",
                 label: "Catatan Progress",

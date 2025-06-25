@@ -383,7 +383,7 @@ const TabPengajar = () => {
             console.log(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`);
             
             const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`, {
-                method: 'PUT',
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
