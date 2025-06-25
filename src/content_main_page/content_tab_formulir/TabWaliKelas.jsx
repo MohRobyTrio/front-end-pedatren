@@ -256,6 +256,16 @@ const TabWaliKelas = () => {
         } 
     };
 
+    const handleOpenAddModalWithDetail = async (id, featureNum) => {
+        try {            
+            setSelectedWaliKelasId(id);
+            setFeature(featureNum);
+            setShowAddModal(true);
+        } catch (error) {
+            console.error("Gagal mengambil detail Pengajar:", error);
+        }
+    };
+
     const closeAddModal = () => {
         setShowAddModal(false);
     };
@@ -375,9 +385,9 @@ const TabWaliKelas = () => {
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setFeature(2);
+                                                // setFeature(2);
                                                 openAddModal();
-                                                // handleOpenAddModalWithDetail(khadam.id, 2);
+                                                handleOpenAddModalWithDetail(waliKelas.id, 2);
                                             }}
                                             className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                                             title="Pindah Khadam"

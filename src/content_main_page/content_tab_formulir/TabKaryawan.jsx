@@ -335,22 +335,20 @@ const TabKaryawan = () => {
 							<div className="flex items-center justify-between w-full">
 								<div>
 									<h5 className="text-lg font-bold">{karyawan.keterangan_jabatan}</h5>
-									<p className="text-gray-600 text-sm">
-										{/* Asumsi API list mengembalikan nama lembaga dan golongan, jika tidak, perlu find dari menuLembaga/menuGolonganJabatan */}
+									{/* <p className="text-gray-600 text-sm">
 										{karyawan.lembaga?.nama || menuLembaga.find(l => l.id === String(karyawan.lembaga_id))?.label || "-"} | {" "}
 										{karyawan.golongan_jabatan?.nama || menuGolonganJabatan.find(g => g.id === String(karyawan.golongan_jabatan_id))?.label || "-"}
 									</p>
-									{/* Tampilkan Jabatan Kontrak di Card */}
 									<p className="text-gray-600 text-sm">
 										{karyawan.jabatan_kontrak || "-"}
-									</p>
+									</p> */}
 									<p className="text-gray-600 text-sm">
 										Sejak: {formatDate(karyawan.tanggal_masuk)}
 										{karyawan.tanggal_keluar ? ` s/d ${formatDate(karyawan.tanggal_keluar)}` : " - Sekarang"}
 									</p>
 								</div>
 								<span
-									className={`text-sm font-semibold capitallize px-3 py-1 rounded-full ${karyawan.status == "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+									className={`text-sm font-semibold capitalize px-3 py-1 rounded-full ${karyawan.status == "aktif" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
 										}`}
 								>
 									{karyawan.status}

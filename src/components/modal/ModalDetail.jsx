@@ -170,7 +170,10 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 label: "Karyawan",
                 content: <DetailKaryawan karyawan={data.Karyawan} />
             },
-            data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan  || {}).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar || {}).length > 0)) && {
+            data?.Pengajar && (
+                (Array.isArray(data.Pengajar.Pangkalan) && data.Pengajar.Pangkalan.length > 0) ||
+                (Array.isArray(data.Pengajar.Mata_Pelajaran) && data.Pengajar.Mata_Pelajaran.length > 0)
+            ) && {
                 id: "pengajar",
                 label: "Pengajar",
                 content: <DetailPengajar pengajar={data.Pengajar} />
@@ -192,9 +195,17 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             },
             data?.Catatan_Progress 
             && (
-  (Object.keys(data?.Catatan_Progress?.Afektif || {}).length > 0 ||
-   Object.keys(data?.Catatan_Progress?.Kognitif || {}).length > 0)
-)
+                (
+                    Array.isArray(data.Catatan_Progress.Afektif)
+                        ? data.Catatan_Progress.Afektif.length > 0
+                        : Object.keys(data.Catatan_Progress.Afektif || {}).length > 0
+                ) ||
+                (
+                    Array.isArray(data.Catatan_Progress.Kognitif)
+                        ? data.Catatan_Progress.Kognitif.length > 0
+                        : Object.keys(data.Catatan_Progress.Kognitif || {}).length > 0
+                )
+            )
             &&
             {
                 id: "progress",
