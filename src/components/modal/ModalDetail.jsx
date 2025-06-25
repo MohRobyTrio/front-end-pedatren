@@ -170,7 +170,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 label: "Karyawan",
                 content: <DetailKaryawan karyawan={data.Karyawan} />
             },
-            data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar).length > 0)) && {
+            data?.Pengajar && ((Object.keys(data.Pengajar?.Pangkalan  || {}).length > 0) || (Object.keys(data.Pengajar?.Materi_Ajar || {}).length > 0)) && {
                 id: "pengajar",
                 label: "Pengajar",
                 content: <DetailPengajar pengajar={data.Pengajar} />
