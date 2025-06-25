@@ -9,13 +9,13 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { downloadFile } from "../../utils/downloadFile";
-import { API_BASE_URL } from "../../hooks/config";
-import { FaFileExport } from "react-icons/fa";
+// import { downloadFile } from "../../utils/downloadFile";
+// import { API_BASE_URL } from "../../hooks/config";
+// import { FaFileExport } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 
 const WaliKelas = () => {
-    const [exportLoading, setExportLoading] = useState(false);
+    // const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -113,7 +113,7 @@ const WaliKelas = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Wali Kelas</h1>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                     <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/walikelas`, setExportLoading)}
                         disabled={exportLoading}
@@ -131,7 +131,7 @@ const WaliKelas = () => {
                             </>
                         )}
                     </button>
-                </div>
+                </div> */}
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
