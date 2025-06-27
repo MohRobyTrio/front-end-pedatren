@@ -168,7 +168,7 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
             setSelectedAnakAsuhDetail(result.data);
             setEndDate(result.data.tanggal_akhir || "");
             setStartDate(result.data.tanggal_mulai || "");
-            setWaliAsuhId(result.data.wali_asuh || "");
+            setWaliAsuhId(result.data.id_wali_asuh || "");
             setNis(result.data.nis || "");
         } catch (error) {
             console.error("Gagal mengambil detail Anak Asuh:", error);
