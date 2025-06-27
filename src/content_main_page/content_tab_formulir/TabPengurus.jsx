@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddPengurusFormulir, ModalKeluarPengurusFormulir } from "../../components/modal/modal_formulir/ModalFormPengurus";
 import useDropdownGolonganJabatan from "../../hooks/hook_dropdown/DropdownGolonganJabatan";
-import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
+// import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerja";
 import useLogout from "../../hooks/Logout";
 import Swal from "sweetalert2";
 import { hasAccess } from "../../utils/hasAccess";
@@ -40,7 +40,7 @@ const TabPengurus = () => {
     const [selectedGolonganJabatanId, setSelectedGolonganJabatanId] = useState("");
 
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
-    const { menuSatuanKerja } = useDropdownSatuanKerja();
+    // const { menuSatuanKerja } = useDropdownSatuanKerja();
 
     // Dropdown hooks
     // const {
@@ -391,23 +391,18 @@ const TabPengurus = () => {
                             </div>
                         ) : selectedPengurusId == pengurus.id && selectedPengurusDetail && (
                             <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                <div className="flex flex-col gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Satuan Kerja *</label>
-                                        <select
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""
-                                                }`}
-                                            // onChange={(e) => handleSatuanKerjaChange({ satuan_kerja: e.target.value })}
-                                            value={selectedSatuanKerja || ""}
-                                            onChange={(e) => setSelectedSatuanKerja(e.target.value)}
-                                            disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
-                                        >
-                                            {menuSatuanKerja.map((option, idx) => (
-                                                <option key={idx} value={option.value}>{option.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
+                                    <div className="flex flex-col gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700">Satuan Kerja *</label>
+                                            <input
+                                                type="text"
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengurusDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                                value={selectedSatuanKerja || ""}
+                                                onChange={(e) => setSelectedSatuanKerja(e.target.value)}
+                                                maxLength={255}
+                                                disabled={!canEdit || selectedPengurusDetail?.status != "aktif"}
+                                            />
+                                        </div>
                                     <div>
                                         <label htmlFor="keteranganJabatan" className="block text-sm font-medium text-gray-700">
                                             Keterangan Jabatan *
