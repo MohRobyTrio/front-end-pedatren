@@ -168,7 +168,7 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
             setSelectedAnakAsuhDetail(result.data);
             setEndDate(result.data.tanggal_akhir || "");
             setStartDate(result.data.tanggal_mulai || "");
-            setWaliAsuhId(result.data.wali_asuh || "");
+            setWaliAsuhId(result.data.id_wali_asuh || "");
             setNis(result.data.nis || "");
         } catch (error) {
             console.error("Gagal mengambil detail Anak Asuh:", error);
@@ -181,7 +181,6 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
         if (!selectedAnakAsuhDetail || !santriId) return;
 
         const payload = {
-            // id_santri: santriId,
             id_wali_asuh: waliAsuhId,
             tanggal_mulai: startDate,
             nis: nis || null
@@ -199,6 +198,7 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     popup: 'p-0 shadow-none border-0 bg-transparent'
                 }
             });
+
             const response = await fetch(
                 `${API_BASE_URL}formulir/${selectedAnakAsuhId}/anakasuh`,
                 {
@@ -210,8 +210,11 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                     body: JSON.stringify(payload),
                 }
             );
+
+            const result = await response.json();
             Swal.close();
-            if (response.status == 401 && !window.sessionExpiredShown) {
+
+            if (response.status === 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
                 await Swal.fire({
                     title: "Sesi Berakhir",
@@ -223,34 +226,44 @@ export const useAnakAsuh = ({ biodata_id, setShowAddModal, setFeature }) => {
                 navigate("/login");
                 return;
             }
-            const result = await response.json();
-            if (response.ok) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Data berhasil diperbarui!',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
-                setSelectedAnakAsuhDetail(result.data || payload);
-                fetchAnakAsuh();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal update',
-                    text: result.message || 'Terjadi kesalahan saat memperbarui data',
-                });
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
+
+            if (!("data" in result)) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    html: `<div style="text-align: left;">${result.message}</div>`,
+                });
+                return;
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data berhasil diperbarui!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
+
+            setSelectedAnakAsuhDetail(result.data || payload);
+            fetchAnakAsuh();
+
         } catch (error) {
             console.error("Error saat update:", error);
-            Swal.fire({
+            Swal.close();
+            await Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan saat mengirim permintaan',
+                title: 'Oops!',
+                text: `Terjadi kesalahan saat mengirim data. ${error.message}`,
             });
         }
+
         console.log("Payload untuk update:", payload);
     };
+
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
         setSelectedAnakAsuhId(id);

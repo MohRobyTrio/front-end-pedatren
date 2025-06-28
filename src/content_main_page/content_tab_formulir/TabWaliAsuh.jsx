@@ -295,7 +295,7 @@ const TabWaliAsuh = () => {
                       <Access action={"edit"}>
                         <button
                           type="button"
-                          className="px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                          className="px-4 py-2 text-white rounded-lg focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
                           onClick={handleUpdate}
                         >
                           Update

@@ -6,7 +6,7 @@ import { getCookie } from "../../../utils/cookieUtils";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
-import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
+// import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
 import useLogout from "../../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
-    const { menuSatuanKerja } = useDropdownSatuanKerja();
+    // const { menuSatuanKerja } = useDropdownSatuanKerja();
 
     const isTambah = feature === 1;
     const endpoint = isTambah ? "pengurus" : "pengurus/pindah";
@@ -144,18 +144,15 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                     <div className="space-y-4">
                                         <div>
                                             <label className="block text-gray-700">Satuan Kerja *</label>
-                                            <select
+                                            <input
+                                                type="text"
                                                 className="w-full mt-1 border border-gray-300 rounded-md p-2"
                                                 value={formData.satuan_kerja}
                                                 onChange={(e) => setFormData({ ...formData, satuan_kerja: e.target.value })}
                                                 required
-                                            >
-                                                {menuSatuanKerja.map((option, idx) => (
-                                                    <option key={idx} value={option.value}>{option.label}</option>
-                                                ))}
-                                            </select>
+                                                maxLength={255}
+                                            />
                                         </div>
-
                                         <div>
                                             <label className="block text-gray-700">Keterangan Jabatan *</label>
                                             <input

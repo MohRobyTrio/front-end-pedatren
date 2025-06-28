@@ -55,9 +55,11 @@ const TabAnakAsuh = () => {
     const options = { year: "numeric", month: "short", day: "2-digit" };
     return new Date(dateStr).toLocaleDateString("id-ID", options);
   };
+  console.log('waliAsuhId', waliAsuhId);
+  
 
   useEffect(() => {
-    if (selectedAnakAsuhDetail?.wali_asuh && menuWaliAsuh.length > 0) {
+    if (selectedAnakAsuhDetail?.id_wali_asuh && menuWaliAsuh.length > 0) {
       const waliTerpilih = menuWaliAsuh.find(item => item.id == waliAsuhId);
       if (waliTerpilih) {
         setWaliSearch(waliTerpilih.nama);
@@ -277,7 +279,7 @@ const TabAnakAsuh = () => {
                       <Access action="edit">
                         <button
                           type="button"
-                          className="px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                          className="px-4 py-2 text-white rounded-lg focus:outline-none bg-blue-600 hover:bg-blue-700 cursor-pointer"
                           onClick={handleUpdate}
                         >
                           Update

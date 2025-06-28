@@ -236,6 +236,7 @@ const TabWaliKelas = () => {
                     confirmButtonText: "OK"
                 });
                 setSelectedWaliKelasDetail(result.data || payload);
+                fetchWaliKelas();
             } else {
                 await Swal.fire({
                     icon: "error",
