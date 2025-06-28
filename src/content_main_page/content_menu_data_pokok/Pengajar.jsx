@@ -181,9 +181,9 @@ const Pengajar = () => {
             { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
             { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
             { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Tidak Ada KK", value: "tidak ada kk" },
-            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
-            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+            { label: "Memiliki KK", value: "memiliki kk" },
+            { label: "Memiliki Akta Kelahiran", value: "memiliki akta kelahiran" },
+            { label: "Memiliki Ijazah", value: "memiliki ijazah" }
         ],
         umur: [
             { label: "Semua Umur", value: "" },
