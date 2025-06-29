@@ -272,7 +272,7 @@ const CatatanKognitif = () => {
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
                         ) : catatanKognitif.length > 0 ? (
-                                <SantriAfektifCard santri={catatanKognitif} menu={20} label="kognitif" />
+                                <SantriAfektifCard santri={catatanKognitif} menu={20} fetchData={fetchData} label="kognitif" />
                         ) : (
                         <p className="text-center py-8 text-gray-500">Tidak ada data</p>
                         )}
