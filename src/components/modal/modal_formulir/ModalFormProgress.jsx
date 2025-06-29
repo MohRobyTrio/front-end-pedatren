@@ -852,7 +852,8 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
 export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, endpoint }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    // console.log(endpoint);
+    // console.log("endpoint",endpoint);
+    // console.log("id",id);
     
     const [formData, setFormData] = useState({
         tanggal_selesai: ""
