@@ -85,7 +85,7 @@ const CatatanAfektif = () => {
         };
 
         fetchPeriode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [listPeriode, setListPeriode] = useState([]);
@@ -196,7 +196,7 @@ const CatatanAfektif = () => {
             </div>
 
             {showFormModal && (
-                <ModalAddProgressAfektif isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData}/>
+                <ModalAddProgressAfektif isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
             )}
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -226,7 +226,7 @@ const CatatanAfektif = () => {
                             nilai: filters.kategori
                                 ? filter3.nilai
                                 : [{ label: "Semua Score", value: "", disabled: true }],
-                                periode: filter3.periode
+                            periode: filter3.periode
                         }}
                         onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
                         selectedFilters={filters}
@@ -257,7 +257,7 @@ const CatatanAfektif = () => {
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
                         ) : data.length > 0 ? (
-                            <SantriAfektifCard santri={data} menu={19} />
+                            <SantriAfektifCard santri={data} menu={19} fetchData={fetchData} label="afektif" />
                         ) : (
                             <p className="text-center py-8 text-gray-500">Tidak ada data</p>
                         )}

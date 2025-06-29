@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import ModalDetail from './modal/ModalDetail';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { ModalKeluarProgressFormulir } from './modal/modal_formulir/ModalFormProgress';
+import { ModalEditCatatan } from './modal/ModalFormCatatan';
+import Access from '../components/Access';
 
-const SantriAfektifCard = ({ santri, menu }) => {
+const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
     // const [showDetails, setShowDetails] = useState(false);
 
     // Config nilai
@@ -11,12 +16,15 @@ const SantriAfektifCard = ({ santri, menu }) => {
         'C': { label: 'cukup', color: ' text-yellow-800' },
         'D': { label: 'kurang', color: ' text-red-800' },
         'E': { label: 'sangat kurang', color: ' text-pink-800' },
-
     };
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [titleModal, setTitleModal] = useState("");
+    const [showOutModal, setShowOutModal] = useState(false);
+    const [selectedDataId, setSelectedDataId] = useState(null);
+    const [editData, setEditData] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -28,13 +36,82 @@ const SantriAfektifCard = ({ santri, menu }) => {
         setIsModalOpen(false);
     };
 
+    const closeOutModal = () => {
+        setShowOutModal(false);
+    };
+
+    const openOutModal = (id) => {
+        console.log("id card", id);
+
+        setSelectedDataId(id);
+        setShowOutModal(true);
+    };
+
+    const openEditModal = (data) => {
+        setEditData({
+            id_catatan: data.id_catatan,
+            kategori: data.kategori,
+            nilai: data.nilai,
+            tindak_lanjut: data.tindak_lanjut
+        });
+        setShowEditModal(true);
+    };
+
+    const closeEditModal = () => {
+        setEditData(null);
+        setShowEditModal(false);
+    };
+
     return (
-        <div className="rounded-lg mb-4">
+        <div className="rounded-lg mb-4 relative">
+            <ModalKeluarProgressFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedDataId} refetchData={fetchData} endpoint={label} />
+            {showEditModal && (
+                <ModalEditCatatan
+                    isOpen={showEditModal}
+                    onClose={closeEditModal}
+                    id={editData?.id_catatan}
+                    endpoint={label}
+                    refetchData={fetchData}
+                    initialData={editData}
+                />
+            )}
             {santri?.map((data, i) => (
                 <div
                     key={i}
-                    className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4"
+                    className="grid grid-cols-12 p-4 rounded-lg shadow-sm gap-2 items-center bg-white mb-4"
                 >
+                    {/* Baris tombol kanan atas */}
+                    <div className="col-span-12 flex justify-end space-x-1">
+                        <Access action={'edit'}>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openEditModal(data);
+                            }}
+                            className="h-6 flex items-center gap-1 px-2 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                            title="Edit Catatan"
+                        >
+                            <FontAwesomeIcon icon={faPenToSquare} />
+                            <span>Edit</span>
+                        </button>
+                        </Access>
+                        <Access action={'keluar'}>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openOutModal(data.id_catatan); // ganti sesuai dengan data afektif/santri id
+                                // onClickSelesai?.(data.id);
+                            }}
+                            className="h-6 flex items-center gap-1 px-2 py-1 text-sm text-white bg-yellow-600 hover:bg-yellow-700 rounded shadow cursor-pointer"
+                            title="Keluar Afektif"
+                        >
+                            <FontAwesomeIcon icon={faRightFromBracket} />
+                            <span>Selesai</span>
+                        </button>
+                        </Access>
+                    </div>
                     {/* Foto Santri*/}
                     <div className="col-span-12 md:col-span-2 lg:col-span-2 flex justify-center h-24 w-24 rounded-md bg-gray-200 overflow-hidden cursor-pointer"
                         onClick={(e) => {

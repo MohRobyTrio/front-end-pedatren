@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
@@ -89,7 +89,7 @@ const TabBiodata = () => {
     // Gunakan komponen DropdownNegara
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
+    const { control, register, handleSubmit, formState: { errors }, setValue, reset, watch } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             kewarganegaraan: 'wni',
@@ -102,6 +102,13 @@ const TabBiodata = () => {
             }
         }
     });
+
+    const nilaiPenghasilan = watch('penghasilan');
+
+    useEffect(() => {
+        console.log(nilaiPenghasilan);
+
+    })
 
     // const kewarganegaraan = watch('kewarganegaraan');
 
@@ -189,7 +196,10 @@ const TabBiodata = () => {
                 nama_pendidikan: biodata.nama_pendidikan_terakhir || '',
                 jalan: biodata.jalan || '',
                 kode_pos: biodata.kode_pos || '',
-                wafat: biodata.wafat === false ? '0' : '1',
+                wafat: biodata.wafat == false ? '0' : '1',
+
+                pekerjaan: biodata.pekerjaan || '',
+                penghasilan: biodata.penghasilan || '',
 
                 negara: biodata.negara_id || '',
                 provinsi: biodata.provinsi_id || '',
@@ -331,6 +341,10 @@ const TabBiodata = () => {
             formData.append('nama_pendidikan_terakhir', data.nama_pendidikan);
             // formData.append('wafat', data.wafat === 'Ya' ? '1' : '0');
 
+            formData.append('pekerjaan', data.pekerjaan);
+            const cleanPenghasilan = data.penghasilan.replace(/\D/g, ''); // angka only
+            formData.append('penghasilan', cleanPenghasilan);
+
             [
                 'tempat_lahir', 'no_passport', 'nik',
                 'anak_keberapa', 'dari_saudara', 'tinggal_bersama',
@@ -404,12 +418,30 @@ const TabBiodata = () => {
             }
 
             if (!response.ok || result.errors) {
-                const errorMsg = result.message || "Terjadi kesalahan pada server.";
-                await Swal.fire({
-                    icon: "error",
-                    title: "Gagal",
-                    html: `<div style="text-align:center">${errorMsg}</div>`,
-                });
+                const backendErrors = result.errors;
+
+    const translateError = (key, value) => {
+        const translations = {
+            'validation.email': 'Format email tidak valid',
+            'validation.required': `${key} wajib diisi`,
+            // Tambah error lain sesuai backend
+        };
+        return translations[value] || value;
+    };
+
+    const errorList = Object.keys(backendErrors)
+        .map(key => {
+            const raw = backendErrors[key][0];
+            const translated = translateError(key, raw);
+            return `<li><strong>${key}</strong>: ${translated}</li>`;
+        })
+        .join("");
+
+    await Swal.fire({
+        icon: "error",
+        title: "Validasi Gagal",
+        html: `<ul style="text-align: center;">${errorList}</ul>`,
+    });
                 return;
             }
 
@@ -917,21 +949,13 @@ const TabBiodata = () => {
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                <select
+                                <input
+                                    type="text"
                                     id="pekerjaan"
+                                    placeholder="Masukkan Pekerjaan"
                                     className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    // value={pekerjaan}
                                     {...register('pekerjaan')}
-                                >
-                                    <option value="" >
-                                        Pilih Pekerjaan
-                                    </option>
-                                    <option>Petani</option>
-                                    <option>Pegawai Negeri</option>
-                                    <option>Karyawan Swasta</option>
-                                    <option>Wiraswasta</option>
-                                    <option>Lainnya</option>
-                                </select>
+                                />
                             </div>
                         </div>
                     </div>
@@ -941,25 +965,34 @@ const TabBiodata = () => {
                         <label htmlFor="penghasilan" className="lg:w-1/4 text-black">
                             Penghasilan
                         </label>
-                        <div className="lg:w-3/4 max-w-md">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                <select
-                                    id="penghasilan"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    // value={penghasilan}
-                                    {...register('penghasilan')}
-                                >
-                                    <option value="">
-                                        Pilih Penghasilan
-                                    </option>
-                                    <option>&lt; 1 Juta</option>
-                                    <option>1 - 3 Juta</option>
-                                    <option>3 - 5 Juta</option>
-                                    <option>&gt; 5 Juta</option>
-                                    <option>Lainnya</option>
-                                </select>
-                            </div>
-                        </div>
+                        <Controller
+                            name="penghasilan"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <div className="lg:w-3/4 max-w-md">
+                                    <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                        <input
+                                            type="text"
+                                            id="penghasilan"
+                                            placeholder="Masukkan Penghasilan"
+                                            inputMode="numeric"
+                                            spellCheck={false}
+                                            className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                            value={
+                                                field.value
+                                                    ? `Rp ${Number(field.value).toLocaleString('id-ID')}`
+                                                    : ''
+                                            }
+                                            onChange={(e) => {
+                                                const onlyNums = e.target.value.replace(/\D/g, '');
+                                                field.onChange(onlyNums);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        />
                     </div>
                     <hr className="border-t border-gray-300 my-4" />
 
