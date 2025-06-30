@@ -6,13 +6,13 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import { getCookie } from "../../utils/cookieUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightArrowLeft, faRightFromBracket, faTrash } from "@fortawesome/free-solid-svg-icons";
-import DropdownGolongan from "../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
 import { ModalAddPengajarFormulir, ModalKeluarPengajarFormulir } from "../../components/modal/modal_formulir/ModalFormPengajar";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
 import { hasAccess } from "../../utils/hasAccess";
 import Access from "../../components/Access";
+import DropdownGolonganGabungan from "../../hooks/hook_dropdown/DropdownGolonganGabungan";
 
 const TabPengajar = () => {
     const { biodata_id } = useParams();
@@ -37,7 +37,7 @@ const TabPengajar = () => {
     const [loadingDetailPengajar, setLoadingDetailPengajar] = useState(null);
 
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
-    const { allGolonganList } = DropdownGolongan();
+    const { gabunganList } = DropdownGolonganGabungan();
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0
@@ -610,12 +610,12 @@ const TabPengajar = () => {
                                                 Golongan
                                             </label>
                                             <select
-                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${gabunganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
                                                 onChange={(e) => setGolongan(e.target.value )}
                                                 value={golongan}
-                                                disabled={allGolonganList.length <= 1 || !canEdit || selectedPengajarDetail.status == "tidak aktif"}
+                                                disabled={gabunganList.length <= 1 || !canEdit || selectedPengajarDetail.status == "tidak aktif"}
                                             >
-                                                {allGolonganList.map((golongan, idx) => (
+                                                {gabunganList.map((golongan, idx) => (
                                                     <option key={idx} value={golongan.id}>
                                                         {golongan.GolonganNama}
                                                     </option>
