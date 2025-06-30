@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useMemo } from "react";
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
@@ -1019,6 +1019,257 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                 onClose={() => setShowSelectSantri(false)}
                 onSantriSelected={(santri) => setSantri(santri)}
             />
+        </Transition>
+    );
+};
+
+
+
+export const ModalEditCatatan = ({ isOpen, onClose, id, endpoint, refetchData, initialData }) => {
+    const kategoriOptionsKognitif = [
+        { label: "kebahasaan", value: "kebahasaan" },
+        { label: "baca kitab kuning", value: "baca_kitab_kuning" },
+        { label: "hafalan tahfidz", value: "hafalan_tahfidz" },
+        { label: "furudul ainiyah", value: "furudul_ainiyah" },
+        { label: "tulis al-quran", value: "tulis_alquran" },
+        { label: "baca al-quran", value: "baca_alquran" },
+    ];
+
+    const kategoriOptionsAfektif = [
+        { label: "Akhlak", value: "akhlak" },
+        { label: "Kepedulian", value: "kepedulian" },
+        { label: "Kebersihan", value: "kebersihan" },
+    ];
+
+    const nilaiOptions = ["A", "B", "C", "D", "E"];
+
+
+    // Tentukan mana yang dipakai berdasarkan endpoint
+    const kategoriOptions = useMemo(() => {
+        if (endpoint.includes("afektif")) return kategoriOptionsAfektif;
+        return kategoriOptionsKognitif;
+    }, [endpoint]);
+
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        kategori: "",
+        nilai: "",
+        tindak_lanjut: "",
+    });
+
+    useEffect(() => {
+        if (isOpen && initialData) {
+            const selectedKategori = kategoriOptions.find(
+                (opt) => opt.label.toLowerCase() === initialData.kategori.toLowerCase()
+            );
+            setFormData({
+                kategori: selectedKategori?.value || "",
+                nilai: initialData.nilai || "",
+                tindak_lanjut: initialData.tindak_lanjut || "",
+            });
+        }
+    }, [isOpen, initialData]);
+
+    const handleChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const confirm = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            Swal.fire({
+                background: "transparent",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+                customClass: { popup: "p-0 shadow-none border-0 bg-transparent" },
+            });
+
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const res = await fetch(`${API_BASE_URL}data-pokok/catatan-${endpoint}/${id}/kategori`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await res.json();
+            Swal.close();
+
+            if (res.status === 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Silakan login kembali.",
+                    icon: "warning",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
+            if (!res.ok || !result.data) {
+                throw new Error(result.message || "Terjadi kesalahan");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: "Data berhasil diperbarui.",
+            });
+
+            refetchData?.(endpoint);
+            onClose?.();
+        } catch (err) {
+            console.error("ERROR", err);
+            await Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: err.message || "Terjadi kesalahan saat mengirim data.",
+            });
+        }
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-300 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="inline-block overflow-y-auto align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            >
+                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                            </button>
+
+                            <form onSubmit={handleSubmit} className="w-full">
+                                <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <Dialog.Title className="text-lg font-medium text-center mb-6">
+                                        Edit Kategori Penilaian
+                                    </Dialog.Title>
+
+                                    <div className="space-y-4">
+                                        {/* Kategori */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Kategori *
+                                            </label>
+                                            <select
+                                                name="kategori"
+                                                value={formData.kategori}
+                                                onChange={handleChange}
+                                                required
+                                                disabled
+                                                className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 text-gray-500 cursor-not-allowed"
+                                            >
+                                                <option value="">Pilih Kategori</option>
+                                                {kategoriOptions.map((opt) => (
+                                                    <option key={opt.value} value={opt.value}>
+                                                        {opt.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+
+                                        {/* Nilai */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Nilai *
+                                            </label>
+                                            <select
+                                                name="nilai"
+                                                value={formData.nilai}
+                                                onChange={handleChange}
+                                                required
+                                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                                            >
+                                                <option value="">Pilih Nilai</option>
+                                                {nilaiOptions.map((opt) => (
+                                                    <option key={opt} value={opt}>
+                                                        {opt}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Tindak Lanjut */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Tindak Lanjut *
+                                            </label>
+                                            <textarea
+                                                name="tindak_lanjut"
+                                                value={formData.tindak_lanjut}
+                                                onChange={handleChange}
+                                                required
+                                                rows={3}
+                                                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Buttons */}
+                                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <button
+                                        type="submit"
+                                        className="w-full sm:w-auto inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                        Simpan
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={onClose}
+                                        className="mt-3 w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </form>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
         </Transition>
     );
 };
