@@ -1,11 +1,12 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { FaPlus} from "react-icons/fa";
 import useFetchJadwalPelajaran from "../../hooks/hooks_menu_kelembagaan/JadwalPelajaran";
 import { useEffect, useState } from "react";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownSemester from "../../hooks/hook_dropdown/DropdownSemester";
 import { ModalAddOrEditJadwalPelajaran } from "../../components/modal/modal_kelembagaan/ModalFormJadwalPelajaran";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook, faCalendar, faClock,  faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const getPreviousKey = (key) => {
     const order = ["lembaga", "jurusan", "kelas", "rombel"];
@@ -115,6 +116,25 @@ const JadwalPelajaran = () => {
 
     const shouldFetch = filters.lembaga_id != "" && filters.jurusan_id != "" && filters.kelas_id != "" && filters.rombel_id != "" && filters.semester_id != "";
 
+    const daysOfWeek = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
+
+    const formatTime = (time) => {
+        return time.slice(0, 5) // Remove seconds
+    }
+
+    const getSubjectColor = (index) => {
+        const colors = [
+            "bg-blue-100 border-blue-300 text-blue-800",
+            "bg-green-100 border-green-300 text-green-800",
+            "bg-purple-100 border-purple-300 text-purple-800",
+            "bg-orange-100 border-orange-300 text-orange-800",
+            "bg-pink-100 border-pink-300 text-pink-800",
+            "bg-indigo-100 border-indigo-300 text-indigo-800",
+            "bg-yellow-100 border-yellow-300 text-yellow-800",
+        ]
+        return colors[index % colors.length]
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -189,6 +209,7 @@ const JadwalPelajaran = () => {
                     </div>
                 </div>
                 {!shouldFetch ? (
+
                     <div className="text-center py-6 text-gray-500 italic">Silakan pilih dropdown di atas terlebih dahulu.</div>
                 ) : error ? (
                     <div className="text-center py-10">
@@ -200,62 +221,144 @@ const JadwalPelajaran = () => {
                             Muat Ulang
                         </button>
                     </div>
+                ) : loadingJadwalPelajaran ? (
+                    <div className="col-span-3 flex justify-center items-center">
+                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                    </div>
+                ) : !jadwalPelajaran?.meta || !jadwalPelajaran?.data || Object.keys(jadwalPelajaran.data).length === 0 ? (
+                    <div className="text-center py-10 text-gray-500 italic">
+                        Tidak ada jadwal yang tersedia.
+                    </div>
                 ) : (
-                    <DoubleScrollbarTable>
-                        <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                <tr>
-                                    <th className="px-3 py-2 border-b w-10">#</th>
-                                    <th className="px-3 py-2 border-b">Label</th>
-                                    <th className="px-3 py-2 border-b">Jadwal Ke</th>
-                                    <th className="px-3 py-2 border-b">Jadwal Mulai</th>
-                                    <th className="px-3 py-2 border-b">Jadwal Selesai</th>
-                                    <th className="px-3 py-2 border-b text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-800">
-                                {loadingJadwalPelajaran ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center p-4">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                        </td>
-                                    </tr>
-                                ) : jadwalPelajaran.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    jadwalPelajaran.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
-                                            <td className="px-3 py-2 border-b">{item.label}</td>
-                                            <td className="px-3 py-2 border-b">{item.jam_ke}</td>
-                                            <td className="px-3 py-2 border-b">{item.jam_mulai}</td>
-                                            <td className="px-3 py-2 border-b">{item.jam_selesai}</td>
-                                            <td className="px-3 py-2 border-b text-center space-x-2 w-20">
-                                                <button
-                                                    onClick={() => {
-                                                        setData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </DoubleScrollbarTable>
+                    <div className="w-full mt-8">
+                        {/* Header Information */}
+                        <div className="bg-white rounded-lg shadow-lg drop-shadow p-6 mb-8">
+                            {jadwalPelajaran?.meta && (
+                                <div className="flex items-center justify-between flex-wrap gap-4">
+                                    <div>
+                                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{jadwalPelajaran.meta.lembaga}</h1>
+                                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                            <div className="flex items-center gap-1">
+                                                <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
+                                                <span>{jadwalPelajaran.meta.jurusan}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <FontAwesomeIcon icon={faCalendar} className="w-4 h-4" />
+                                                <span>
+                                                    Kelas {jadwalPelajaran.meta.kelas} - {jadwalPelajaran.meta.rombel}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <FontAwesomeIcon icon={faClock} className="w-4 h-4" />
+                                                <span>{jadwalPelajaran.meta.semester}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+
+                        {/* Schedule Grid */}
+                        <div className="bg-white rounded-lg shadow-lg drop-shadow overflow-hidden">
+                            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                                <h2 className="text-xl font-semibold text-white">Jadwal Pelajaran</h2>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-1 p-1">
+                                {daysOfWeek.map((day, dayIndex) => (
+                                    <div key={`${day}-${dayIndex}`} className="bg-gray-50 rounded-lg p-4 min-h-[300px]">
+                                        <div className="text-center mb-4">
+                                            <h3 className="font-semibold text-lg text-gray-800 bg-white rounded-full py-2 px-4 shadow-sm">
+                                                {day}
+                                            </h3>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            {jadwalPelajaran.data[day] ? (
+                                                jadwalPelajaran.data[day]
+                                                    .sort((a, b) => a.jam_ke - b.jam_ke)
+                                                    .map((item, index) => (
+                                                        <div
+                                                            key={item.id}
+                                                            className={`rounded-lg border-2 p-3 ${getSubjectColor(index)} transition-all duration-200 hover:shadow-md group relative`}
+                                                        >
+                                                            {/* Action Buttons */}
+                                                            <div className="absolute top-2 right-2 flex gap-1">
+                                                                {/* <button
+                                                                    // onClick={() => handleEditClick(item)}
+                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                                                                    title="Edit Jadwal"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faEdit} className="w-6 h-3" />
+                                                                </button> */}
+                                                                <button
+                                                                    onClick={() => handleDelete(item.id)}
+                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                                                                    title="Hapus Jadwal"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faTrash} className="w-6 h-3" />
+                                                                </button>
+                                                            </div>
+
+                                                            <div className="text-xs font-medium mb-1">Jam ke-{item.jam_ke}</div>
+                                                            <div className="font-semibold text-sm mb-2 pr-8">{item.nama_mapel}</div>
+                                                            <div className="text-xs space-y-1">
+                                                                <div className="flex items-center gap-1">
+                                                                    <FontAwesomeIcon icon={faUser} className="w-3 h-3" />
+                                                                    <span className="truncate">{item.nama_pengajar}</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-1">
+                                                                    <FontAwesomeIcon icon={faClock} className="w-3 h-3" />
+                                                                    <span>
+                                                                        {formatTime(item.jam_mulai)} - {formatTime(item.jam_selesai)}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="text-xs opacity-75">{item.kode_mapel}</div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                            ) : (
+                                                <div className="text-center text-gray-500 py-8">
+                                                    <FontAwesomeIcon icon={faCalendar} className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                                    <p className="text-sm">Tidak ada jadwal</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Summary */}
+                        <div className="mt-8 bg-white rounded-lg shadow-lg drop-shadow p-6">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Ringkasan Jadwal</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                    <div className="text-2xl font-bold text-blue-600">
+                                        {Object.values(jadwalPelajaran.data).flat().length}
+                                    </div>
+                                    <div className="text-sm text-gray-600">Total Mata Pelajaran</div>
+                                </div>
+                                <div className="text-center p-4 bg-green-50 rounded-lg">
+                                    <div className="text-2xl font-bold text-green-600">{Object.keys(jadwalPelajaran.data).length}</div>
+                                    <div className="text-sm text-gray-600">Hari Aktif</div>
+                                </div>
+                                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                                    <div className="text-2xl font-bold text-purple-600">
+                                        {
+                                            new Set(
+                                                Object.values(jadwalPelajaran.data)
+                                                    .flat()
+                                                    .map((item) => item.nama_pengajar),
+                                            ).size
+                                        }
+                                    </div>
+                                    <div className="text-sm text-gray-600">Pengajar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

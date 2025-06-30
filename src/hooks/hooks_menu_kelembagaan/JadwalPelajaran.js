@@ -51,7 +51,7 @@ const useFetchJadwalPelajaran = (filters) => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const result = await response.json();
 
-            setJadwalPelajaran(Array.isArray(result.data) ? result.data : []);
+            setJadwalPelajaran(result);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
