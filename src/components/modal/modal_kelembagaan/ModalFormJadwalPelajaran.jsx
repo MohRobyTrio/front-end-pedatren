@@ -39,14 +39,13 @@ const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     );
 };
 
-export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchData, feature }) => {
+export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { menuSemester } = DropdownSemester();
     const { menuMataPelajaran } = useDropdownMataPelajaran();
     const { menuJamPelajaran } = useDropdownJamPelajaran();
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
-    const id = data?.id;
     const [formData, setFormData] = useState({
         lembaga_id: "",
         jurusan_id: '',
@@ -160,18 +159,12 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
             const token = sessionStorage.getItem("token") || getCookie("token");
 
             // Tentukan URL dan method berdasarkan feature
-            const isEdit = feature === 2;
-            const url = isEdit
-                ? `${API_BASE_URL}formulir/${id}/update`
-                : `${API_BASE_URL}crud/jadwal-pelajaran`;
+            const url = `${API_BASE_URL}crud/jadwal-pelajaran`;
 
-            const method = isEdit ? "PUT" : "POST";
+            const method = "POST";
 
             // Tentukan data yang dikirim
-            const payload = isEdit
-                ? {
-                    ...formData,
-                } : {
+            const payload = {
                     ...formData,
                     jadwal: materiList.map(item => ({
                         hari: item.hari || null,
@@ -285,7 +278,7 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                            <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={feature} />
+                            <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={1} />
 
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
@@ -418,9 +411,10 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
     );
 };
 
-export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, form, handleChange }) => {
+export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, form, handleChange, feature }) => {
     const { menuMataPelajaran } = useDropdownMataPelajaran();
     const { menuJamPelajaran } = useDropdownJamPelajaran();
+    
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -465,7 +459,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                             as="h3"
                                             className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                         >
-                                            Tambah Jadwal Pelajaran
+                                            {feature == 1 ? "Tambah" : "Edit"} Jadwal Pelajaran
                                         </Dialog.Title>
 
                                         {/* FORM ISI */}

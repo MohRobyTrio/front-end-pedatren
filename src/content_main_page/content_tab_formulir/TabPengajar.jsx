@@ -62,17 +62,17 @@ const TabPengajar = () => {
                 }
             });
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
             if (response.status === 403) {
                 throw new Error("403");
             }
@@ -95,7 +95,7 @@ const TabPengajar = () => {
         } finally {
             setLoadingPengajar(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [biodata_id]);
 
     useEffect(() => {
@@ -115,7 +115,7 @@ const TabPengajar = () => {
         if (selectedPengajarId) {
             handleCardClick(selectedPengajarId);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pengajarList]);
 
 
@@ -137,17 +137,17 @@ const TabPengajar = () => {
                 }
             );
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
             const result = await response.json();
             console.log(result);
 
@@ -163,7 +163,7 @@ const TabPengajar = () => {
                 nama_mapel: item.nama_mapel || "-",
                 status: item.status || "-"
             }));
-            setMateriList(formattedMateri || []);        
+            setMateriList(formattedMateri || []);
         } catch (error) {
             console.error("Gagal mengambil detail Pengajar:", error);
         } finally {
@@ -181,7 +181,7 @@ const TabPengajar = () => {
                 icon: 'warning',
                 title: 'Lembaga Belum Dipilih',
                 text: 'Dropdown Lembaga harus dipilih.',
-            });    
+            });
             return;
         }
 
@@ -190,9 +190,20 @@ const TabPengajar = () => {
                 icon: 'warning',
                 title: 'Materi Kosong',
                 text: 'Minimal satu materi harus ditambahkan.',
-            }); 
+            });
             return;
         }
+
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
 
         const payload = {
             lembaga_id: lembaga,
@@ -229,21 +240,21 @@ const TabPengajar = () => {
             );
             Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
             console.log(`${API_BASE_URL}formulir/${selectedPengajarId}/pengajar`);
             const result = await response.json();
             console.log(result);
-            
+
             if (response.ok) {
                 await Swal.fire({
                     icon: "success",
@@ -266,7 +277,7 @@ const TabPengajar = () => {
                 title: "Terjadi Kesalahan",
                 text: "Gagal menghubungi server. Silakan coba lagi.",
             });
-        } 
+        }
     };
 
     const [materiList, setMateriList] = useState([])
@@ -285,7 +296,7 @@ const TabPengajar = () => {
                 }
             });
             const pengajarId = selectedPengajarId; // asumsi ID pengajar tersedia
-            
+
             const payload = {
                 // ...formData,
                 mata_pelajaran: materiList.map(item => ({
@@ -294,9 +305,9 @@ const TabPengajar = () => {
                     // jumlah_menit: item.menit ? parseInt(item.menit) : null
                 })),
             };
-            
+
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
-            
+
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi`, {
                 method: 'POST',
@@ -309,17 +320,17 @@ const TabPengajar = () => {
 
             Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
             const result = await response.json();
             console.log(result);
@@ -378,10 +389,10 @@ const TabPengajar = () => {
             });
             const token = sessionStorage.getItem("token") || getCookie("token");
             console.log(token);
-            
+
 
             console.log(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`);
-            
+
             const response = await fetch(`${API_BASE_URL}formulir/${pengajarId}/pengajar/materi/${materiId}/nonaktifkan`, {
                 method: 'DELETE',
                 headers: {
@@ -392,24 +403,24 @@ const TabPengajar = () => {
 
             Swal.close();
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
             const result = await response.json();
             console.log(result);
 
             if (!response.ok) {
                 console.log("gagal");
-                
+
                 throw new Error("Gagal menonaktifkan materi");
             }
 
@@ -444,7 +455,7 @@ const TabPengajar = () => {
 
 
     const handleOpenAddModalWithDetail = async (id, featureNum) => {
-        try {            
+        try {
             setSelectedPengajarId(id);
             setFeature(featureNum);
             setShowAddModal(true);
@@ -498,7 +509,7 @@ const TabPengajar = () => {
                     </button>
                 </Access>
             </h1>
-            
+
             <ModalAddPengajarFormulir isOpen={showAddModal} onClose={closeAddModal} biodataId={biodata_id} cardId={selectedPengajarId} refetchData={fetchPengajar} feature={feature} handleAddAPI={handleAdd} />
 
             <ModalKeluarPengajarFormulir isOpen={showOutModal} onClose={closeOutModal} id={selectedPengajarId} refetchData={fetchPengajar} />
@@ -548,7 +559,7 @@ const TabPengajar = () => {
                             </div>
 
                             {!pengajar.tanggal_keluar && (
-                                                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
+                                <div className={`flex flex-wrap gap-2 gap-x-4 ${canPindah || canKeluar ? "" : "mt-2"}`}>
                                     <Access action="pindah">
                                         <button
                                             type="button"
@@ -611,7 +622,7 @@ const TabPengajar = () => {
                                             </label>
                                             <select
                                                 className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${gabunganList.length <= 1 || !canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                onChange={(e) => setGolongan(e.target.value )}
+                                                onChange={(e) => setGolongan(e.target.value)}
                                                 value={golongan}
                                                 disabled={gabunganList.length <= 1 || !canEdit || selectedPengajarDetail.status == "tidak aktif"}
                                             >
@@ -683,14 +694,14 @@ const TabPengajar = () => {
                                                 onClick={() => {
                                                     setFeature(3);
                                                     openAddModal();
-                                                    console.log("add");                                            
+                                                    console.log("add");
                                                 }}
                                                 className="bg-blue-500 text-white px-4 py-2 rounded w-12 hover:bg-blue-800 cursor-pointer"
                                             >
                                                 <FaPlus />
                                             </button>
                                         </Access>
-                                        )}
+                                    )}
                                 </h1>
 
                                 <div className="overflow-x-auto">

@@ -1,12 +1,17 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaPlus} from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import useFetchJadwalPelajaran from "../../hooks/hooks_menu_kelembagaan/JadwalPelajaran";
 import { useEffect, useState } from "react";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownSemester from "../../hooks/hook_dropdown/DropdownSemester";
-import { ModalAddOrEditJadwalPelajaran } from "../../components/modal/modal_kelembagaan/ModalFormJadwalPelajaran";
+import { ModalAddJadwalPelajaranFormulir, ModalAddOrEditJadwalPelajaran } from "../../components/modal/modal_kelembagaan/ModalFormJadwalPelajaran";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faCalendar, faClock,  faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faCalendar, faClock, faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { API_BASE_URL } from "../../hooks/config";
+import Swal from "sweetalert2";
+import { getCookie } from "../../utils/cookieUtils";
+import useLogout from "../../hooks/Logout";
+import { useNavigate } from "react-router-dom";
 
 const getPreviousKey = (key) => {
     const order = ["lembaga", "jurusan", "kelas", "rombel"];
@@ -46,9 +51,9 @@ const Filters = ({ filterOptions, onChange, selectedFilters, filters }) => {
 };
 
 const JadwalPelajaran = () => {
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
     const [openModal, setOpenModal] = useState(false);
-    const [data, setData] = useState("");
-    const [feature, setFeature] = useState("");
     const [filters, setFilters] = useState({
         lembaga_id: "",
         jurusan_id: "",
@@ -57,8 +62,15 @@ const JadwalPelajaran = () => {
         semester_id: "",
         hari: "",
     })
+    const [form, setForm] = useState({ hari: '', mata_pelajaran: '', jam_pelajaran: '' });
     const { jadwalPelajaran, loadingJadwalPelajaran, error, fetchJadwalPelajaran, handleDelete } = useFetchJadwalPelajaran(filters);
     const { menuSemester } = DropdownSemester();
+    const [showAddMateriModal, setShowAddMateriModal] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value })
+    }
 
     const {
         filterLembaga: filterLembagaFilter,
@@ -135,20 +147,144 @@ const JadwalPelajaran = () => {
         return colors[index % colors.length]
     }
 
+    const closeAddMateriModal = () => {
+        setShowAddMateriModal(false);
+    };
+
+    const openAddMateriModal = () => {
+        setShowAddMateriModal(true);
+    };
+
+    const fetchDetailJadwal = async (id) => {
+        try {
+            Swal.fire({
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
+            });
+            const response = await fetch(`${API_BASE_URL}crud/jadwal-pelajaran/${id}`);
+            const result = await response.json();
+            const data = result.data;
+
+            setForm({
+                hari: data.hari || '',
+                mata_pelajaran: data.mata_pelajaran_id?.toString() || '',
+                jam_pelajaran: data.jam_pelajaran_id?.toString() || '',
+            });
+        } catch (error) {
+            console.error("Gagal mengambil data jadwal:", error);
+        } finally {
+            Swal.close();
+        }
+    };
+
+    const handleUpdate = async () => {
+
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, kirim",
+            cancelButtonText: "Batal",
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        const payload = {
+            hari: form.hari,
+            mata_pelajaran_id: form.mata_pelajaran,
+            jam_pelajaran_id: form.jam_pelajaran
+        };
+
+        console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
+
+        try {
+            Swal.fire({
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
+            });
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(
+                `${API_BASE_URL}crud/jadwal-pelajaran/${selectedId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+            Swal.close();
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+            console.log(`${API_BASE_URL}crud/jadwal-pelajaran/${selectedId}`);
+            const result = await response.json();
+            console.log(result);
+
+            if (response.ok) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil!",
+                    text: result.message || "Data berhasil diperbarui.",
+                });
+                closeAddMateriModal();
+                fetchJadwalPelajaran();
+            } else {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal Memperbarui",
+                    text: result.message || "Terjadi kesalahan saat memperbarui data.",
+                });
+            }
+        } catch (error) {
+            console.error("Error saat update:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Terjadi Kesalahan",
+                text: "Gagal menghubungi server. Silakan coba lagi.",
+            });
+        }
+    };
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Jadwal Pelajaran</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
-                        setData(null)
-                        setFeature(1);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditJadwalPelajaran isOpen={openModal} onClose={() => setOpenModal(false)} data={data} refetchData={fetchJadwalPelajaran} feature={feature} />
+            <ModalAddOrEditJadwalPelajaran isOpen={openModal} onClose={() => setOpenModal(false)} refetchData={fetchJadwalPelajaran} />
+
+            <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleUpdate} form={form} handleChange={handleChange} feature={2} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className="w-full mb-4">
@@ -285,13 +421,17 @@ const JadwalPelajaran = () => {
                                                         >
                                                             {/* Action Buttons */}
                                                             <div className="absolute top-2 right-2 flex gap-1">
-                                                                {/* <button
-                                                                    // onClick={() => handleEditClick(item)}
-                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                                                                <button
+                                                                    onClick={async () => {
+                                                                        setSelectedId(item.id)
+                                                                        await fetchDetailJadwal(item.id);
+                                                                        openAddMateriModal();
+                                                                    }}
+                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
                                                                     title="Edit Jadwal"
                                                                 >
                                                                     <FontAwesomeIcon icon={faEdit} className="w-6 h-3" />
-                                                                </button> */}
+                                                                </button>
                                                                 <button
                                                                     onClick={() => handleDelete(item.id)}
                                                                     className="p-1 bg-white rounded-full shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer"
