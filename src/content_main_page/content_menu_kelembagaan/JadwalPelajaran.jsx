@@ -1,12 +1,11 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaPlus } from "react-icons/fa";
 import useFetchJadwalPelajaran from "../../hooks/hooks_menu_kelembagaan/JadwalPelajaran";
 import { useEffect, useState } from "react";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownSemester from "../../hooks/hook_dropdown/DropdownSemester";
 import { ModalAddJadwalPelajaranFormulir, ModalAddOrEditJadwalPelajaran } from "../../components/modal/modal_kelembagaan/ModalFormJadwalPelajaran";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faCalendar, faClock, faEdit, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faCalendar, faClock, faEdit, faPlus, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../hooks/config";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
@@ -122,9 +121,9 @@ const JadwalPelajaran = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedLembagaFilter]);
 
-    useEffect(() => {
-        console.log(filters);
-    }, [filters]);
+    // useEffect(() => {
+    //     console.log(filters);
+    // }, [filters]);
 
     const shouldFetch = filters.lembaga_id != "" && filters.jurusan_id != "" && filters.kelas_id != "" && filters.rombel_id != "" && filters.semester_id != "";
 
@@ -275,14 +274,14 @@ const JadwalPelajaran = () => {
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Jadwal Pelajaran</h1>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
-                </div>
+                </div> */}
             </div>
 
-            <ModalAddOrEditJadwalPelajaran isOpen={openModal} onClose={() => setOpenModal(false)} refetchData={fetchJadwalPelajaran} />
+            <ModalAddOrEditJadwalPelajaran isOpen={openModal} onClose={() => setOpenModal(false)} data={filters} refetchData={fetchJadwalPelajaran} />
 
             <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleUpdate} form={form} handleChange={handleChange} feature={2} />
 
@@ -390,6 +389,30 @@ const JadwalPelajaran = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                        setOpenModal(true);
+                    }}
+                className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+              >
+                <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+                <span className="font-medium">Tambah Jadwal</span>
+              </button>
+
+              {/* Refresh Button */}
+              {/* <button
+                onClick={fetchJadwalPelajaran}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                disabled={loadingJadwalPelajaran}
+              >
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className={`w-4 h-4 ${loadingJadwalPelajaran ? "animate-spin" : ""}`}
+                />
+                <span className="font-medium">Refresh</span>
+              </button> */}
+            </div>
                                 </div>
                             )}
 
