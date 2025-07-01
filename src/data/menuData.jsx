@@ -58,7 +58,7 @@ import Jurusan from "../content_main_page/content_menu_kelembagaan/Jurusan";
 import Kelas from "../content_main_page/content_menu_kelembagaan/Kelas";
 import Rombel from "../content_main_page/content_menu_kelembagaan/Rombel";
 import JamPelajaran from "../content_main_page/content_menu_kelembagaan/JamPelajaran";
-// import JadwalPelajaran from "../content_main_page/content_menu_kelembagaan/JadwalPelajaran";
+import JadwalPelajaran from "../content_main_page/content_menu_kelembagaan/JadwalPelajaran";
 import MataPelajaran from "../content_main_page/content_menu_kelembagaan/MataPelajaran";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
@@ -119,7 +119,7 @@ export const menuKelembagaanItems = [
     { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
     { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/mata-pelajaran", content: <MataPelajaran /> },
     { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
-    // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
+    { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
 ];
 
 export const menuKewilayahanItems = [

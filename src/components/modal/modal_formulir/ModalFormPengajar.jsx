@@ -6,11 +6,11 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
-import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FaPlus } from "react-icons/fa";
 import useLogout from "../../../hooks/Logout";
 import { jenisJabatan } from "../../../data/menuData";
 import { useNavigate } from "react-router-dom";
+import DropdownGolonganGabungan from "../../../hooks/hook_dropdown/DropdownGolonganGabungan";
 
 const Filters = ({ filterOptions, onChange, selectedFilters }) => {
     const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -43,7 +43,7 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
-    const { allGolonganList } = DropdownGolongan();
+    const { gabunganList } = DropdownGolonganGabungan();
 
     useEffect(() => {
         if (isOpen) {
@@ -335,13 +335,13 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                         <div>
                                                             <label htmlFor="golongan" className="block text-gray-700">Golongan *</label>
                                                             <select
-                                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${allGolonganList.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${gabunganList.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
                                                                 onChange={(e) => setFormData({ ...formData, golongan_id: e.target.value })}
                                                                 value={formData.golongan_id}
-                                                                disabled={allGolonganList.length <= 1}
+                                                                disabled={gabunganList.length <= 1}
                                                                 required
                                                             >
-                                                                {allGolonganList.map((golongan, idx) => (
+                                                                {gabunganList.map((golongan, idx) => (
                                                                     <option key={idx} value={golongan.id}>
                                                                         {golongan.GolonganNama}
                                                                     </option>

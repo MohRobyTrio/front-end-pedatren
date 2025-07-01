@@ -1,23 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
-import DropdownGolongan from "../../../hooks/hook_dropdown/DropdownGolongan";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FaPlus } from "react-icons/fa";
 import { jenisJabatan } from "../../../data/menuData";
+import DropdownGolonganGabungan from "../../../hooks/hook_dropdown/DropdownGolonganGabungan";
 
 const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const golongan = watch("modalPegawai.golongan_id_pengajar");
     const { filterLembaga } = DropdownLembaga();
-    const { allGolonganList } = DropdownGolongan();
+    const { gabunganList } = DropdownGolonganGabungan();
     const lembaga = watch("modalPegawai.lembaga_id_pengajar");
     const existingMateri = watch("modalPegawai.mata_pelajaran");
     const hydratedRef = useRef(false);
-
-    const listGolonganNama = allGolonganList.map(g => ({
-        value: g.id,
-        label: g.GolonganNama
-    }));
 
     useEffect(() => {
         if (golongan && golongan !== "") {
@@ -66,7 +61,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             setValue('modalPegawai.lembaga_id_pengajar', lembaga);
         }
-        if (golongan && allGolonganList.length >= 1) {
+        if (golongan && gabunganList.length >= 1) {
             console.log("golongan handle ",golongan);
             
             setValue('modalPegawai.golongan_id_pengajar', golongan)
@@ -79,7 +74,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             setMateriList(hydratedMateri);
             hydratedRef.current = true; // ✅ hanya lakukan sekali
         }
-    }, [activeTab, filterLembaga.lembaga, allGolonganList.length, materiList.length, lembaga, golongan, existingMateri, setValue]);
+    }, [activeTab, filterLembaga.lembaga, materiList.length, lembaga, golongan, existingMateri, setValue, gabunganList.length]);
 
     return (
         <div className="space-y-2">
@@ -89,15 +84,15 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                     Golongan
                 </label>
                 <div className="md:w-full md:max-w-md max-w-none">
-                    <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-300 border-gray-500  ${listGolonganNama?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}>
+                    <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-300 border-gray-500  ${gabunganList?.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}>
 
                         <select
                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                            disabled={listGolonganNama?.length <= 1}
+                            disabled={gabunganList?.length <= 1}
                             {...register('modalPegawai.golongan_id_pengajar')}
                         >
-                            {listGolonganNama?.map((option, idx) => (
-                                <option key={idx} value={option.value}>{option.label}</option>
+                            {gabunganList?.map((option, idx) => (
+                                <option key={idx} value={option.id}>{option.GolonganNama}</option>
                             ))}
                         </select>
                     </div>
