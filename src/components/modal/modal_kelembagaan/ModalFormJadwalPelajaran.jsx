@@ -8,44 +8,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
-import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
-import DropdownSemester from "../../../hooks/hook_dropdown/DropdownSemester";
 import useDropdownMataPelajaran from "../../../hooks/hook_dropdown/DropdownMataPelajaran";
 import useDropdownJamPelajaran from "../../../hooks/hook_dropdown/DropdownJamPelajaran";
 
-const Filters = ({ filterOptions, onChange, selectedFilters }) => {
-    const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-    return (
-        <div className="flex flex-col gap-4 w-full">
-            {Object.entries(filterOptions).map(([label, options], index) => (
-                <div key={`${label}-${index}`}>
-                    <label htmlFor={label} className="block text-gray-700">
-                        {capitalizeFirst(label)} *
-                    </label>
-                    <select
-                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
-                        onChange={(e) => onChange({ [label]: e.target.value })}
-                        value={selectedFilters[label] || ""}
-                        disabled={options.length <= 1}
-                        required
-                    >
-                        {options.map((option, idx) => (
-                            <option key={idx} value={option.value}>{option.label}</option>
-                        ))}
-                    </select>
-                </div>
-            ))}
-        </div>
-    );
-};
+// const Filters = ({ filterOptions, onChange, selectedFilters }) => {
+//     const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+//     return (
+//         <div className="flex flex-col gap-4 w-full">
+//             {Object.entries(filterOptions).map(([label, options], index) => (
+//                 <div key={`${label}-${index}`}>
+//                     <label htmlFor={label} className="block text-gray-700">
+//                         {capitalizeFirst(label)} *
+//                     </label>
+//                     <select
+//                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${options.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+//                         onChange={(e) => onChange({ [label]: e.target.value })}
+//                         value={selectedFilters[label] || ""}
+//                         disabled={options.length <= 1}
+//                         required
+//                     >
+//                         {options.map((option, idx) => (
+//                             <option key={idx} value={option.value}>{option.label}</option>
+//                         ))}
+//                     </select>
+//                 </div>
+//             ))}
+//         </div>
+//     );
+// };
 
-export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) => {
+export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { menuSemester } = DropdownSemester();
+    // const { menuSemester } = DropdownSemester();
     const { menuMataPelajaran } = useDropdownMataPelajaran();
     const { menuJamPelajaran } = useDropdownJamPelajaran();
-    const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
+    // const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
     const [formData, setFormData] = useState({
         lembaga_id: "",
         jurusan_id: '',
@@ -57,18 +55,32 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) 
     const [form, setForm] = useState({ hari: '', mata_pelajaran: '', jam_pelajaran: '' });
     const [showAddMateriModal, setShowAddMateriModal] = useState(false);
 
-    const updateFirstOptionLabel = (list, label) =>
-        list.length > 0
-            ? [{ ...list[0], label }, ...list.slice(1)]
-            : list;
+    // const updateFirstOptionLabel = (list, label) =>
+    //     list.length > 0
+    //         ? [{ ...list[0], label }, ...list.slice(1)]
+    //         : list;
 
     // Buat versi baru filterLembaga yang labelnya diubah
-    const updatedFilterLembaga = {
-        lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
-        jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
-        kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
-        rombel: updateFirstOptionLabel(filterLembaga.rombel, "Pilih Rombel"),
-    };
+    // const updatedFilterLembaga = {
+    //     lembaga: updateFirstOptionLabel(filterLembaga.lembaga, "Pilih Lembaga"),
+    //     jurusan: updateFirstOptionLabel(filterLembaga.jurusan, "Pilih Jurusan"),
+    //     kelas: updateFirstOptionLabel(filterLembaga.kelas, "Pilih Kelas"),
+    //     rombel: updateFirstOptionLabel(filterLembaga.rombel, "Pilih Rombel"),
+    // };
+
+    useEffect(() => {
+        setFormData({
+            lembaga_id: data.lembaga_id, 
+            jurusan_id: data.jurusan_id, 
+            kelas_id: data.kelas_id, 
+            rombel_id: data.rombel_id,
+            semester_id: data.semester_id
+        })
+    }, [data, isOpen])
+
+    useEffect(() => {
+        console.log("data modal",formData);
+    }, [formData]);
 
     const handleRemove = (indexToRemove) => {
         const updatedList = materiList.filter((_, index) => index !== indexToRemove)
@@ -114,15 +126,15 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) 
     //     }
     // }, [isOpen, feature, data]);
 
-    useEffect(() => {
-        setFormData((prev) => ({
-            ...prev,
-            lembaga_id: selectedLembaga.lembaga || "",
-            jurusan_id: selectedLembaga.jurusan || "",
-            kelas_id: selectedLembaga.kelas || "",
-            rombel_id: selectedLembaga.rombel || "",
-        }));
-    }, [selectedLembaga]);
+    // useEffect(() => {
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         lembaga_id: selectedLembaga.lembaga || "",
+    //         jurusan_id: selectedLembaga.jurusan || "",
+    //         kelas_id: selectedLembaga.kelas || "",
+    //         rombel_id: selectedLembaga.rombel || "",
+    //     }));
+    // }, [selectedLembaga]);
 
     useEffect(() => {
         console.log(formData);
@@ -289,14 +301,10 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) 
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                {/* {feature === 2
-                                                    ? "Edit Data"
-                                                    : pengajar && feature === 1
-                                                        ? "Tambah Data Baru"
-                                                        : null} */}
+                                                Tambah Data Baru
                                             </Dialog.Title>
                                             {/* FORM ISI */}
-                                            <div className="space-y-4">
+                                            {/* <div className="space-y-4">
                                                 <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                                                 <div>
                                                     <label htmlFor="semester_id" className="block text-gray-700">
@@ -314,11 +322,11 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, refetchData }) 
                                                         ))}
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
 
-                                    <h1 className={`text-black font-bold flex items-center justify-between w-full mb-2 mt-4`}>
+                                    <h1 className={`text-black font-bold flex items-center justify-between w-full mb-2`}>
                                         Jadwal Pelajaran
                                         <button
                                             type="button"
@@ -465,7 +473,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                         {/* FORM ISI */}
                                         <div className="space-y-4">
                                             <div>
-                                                <label htmlFor="hari" className="block text-gray-700">Kode Mapel *</label>
+                                                <label htmlFor="hari" className="block text-gray-700">Hari *</label>
                                                 <select
                                                     name="hari"
                                                     value={form.hari}
