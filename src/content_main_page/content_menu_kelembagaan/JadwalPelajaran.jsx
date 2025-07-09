@@ -419,7 +419,7 @@ const JadwalPelajaran = () => {
                         </div>
 
                         {/* Schedule Grid */}
-                        {jadwalPelajaran?.data && typeof jadwalPelajaran.data === 'object' && Object.keys(jadwalPelajaran.data).length > 0 ? (
+                        {jadwalPelajaran?.data && typeof jadwalPelajaran.data == 'object' && Object.keys(jadwalPelajaran.data).length > 0 ? (
                             <div className="bg-white rounded-lg shadow-lg drop-shadow overflow-hidden">
                                 <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
                                     <h2 className="text-xl font-semibold text-white">Jadwal Pelajaran</h2>
