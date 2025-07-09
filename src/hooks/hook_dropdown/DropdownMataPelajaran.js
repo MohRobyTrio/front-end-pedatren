@@ -51,7 +51,6 @@ const useDropdownMataPelajaran = () => {
       const filtered = resAllData.data.filter(item => item.status == "Aktif");
 
       const formatted = [
-        { label: "Pilih Mata Pelajaran", value: "", id: null },
         ...filtered.map(item => ({
           label: item.nama_mapel,
           value: item.id,

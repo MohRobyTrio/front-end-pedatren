@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import useLogout from "../../../hooks/Logout";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { getCookie } from "../../../utils/cookieUtils";
 import { API_BASE_URL } from "../../../hooks/config";
 import { Dialog, Transition } from "@headlessui/react";
@@ -70,16 +70,16 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
 
     useEffect(() => {
         setFormData({
-            lembaga_id: data.lembaga_id, 
-            jurusan_id: data.jurusan_id, 
-            kelas_id: data.kelas_id, 
+            lembaga_id: data.lembaga_id,
+            jurusan_id: data.jurusan_id,
+            kelas_id: data.kelas_id,
             rombel_id: data.rombel_id,
             semester_id: data.semester_id
         })
     }, [data, isOpen])
 
     useEffect(() => {
-        console.log("data modal",formData);
+        console.log("data modal", formData);
     }, [formData]);
 
     const handleRemove = (indexToRemove) => {
@@ -177,13 +177,13 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
 
             // Tentukan data yang dikirim
             const payload = {
-                    ...formData,
-                    jadwal: materiList.map(item => ({
-                        hari: item.hari || null,
-                        jam_pelajaran_id: item.jam_pelajaran || null,
-                        mata_pelajaran_id: item.mata_pelajaran || null,
-                    }))
-                };
+                ...formData,
+                jadwal: materiList.map(item => ({
+                    hari: item.hari || null,
+                    jam_pelajaran_id: item.jam_pelajaran || null,
+                    mata_pelajaran_id: item.mata_pelajaran || null,
+                }))
+            };
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
             const response = await fetch(url, {
@@ -248,6 +248,11 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
     };
 
     const closeAddMateriModal = () => {
+        setForm({
+            hari: "",
+            mata_pelajaran: "",
+            jam_pelajaran: ""
+        });
         setShowAddMateriModal(false);
     };
 
@@ -422,7 +427,79 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
 export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, form, handleChange, feature }) => {
     const { menuMataPelajaran } = useDropdownMataPelajaran();
     const { menuJamPelajaran } = useDropdownJamPelajaran();
-    
+
+    // Tambahkan state untuk input autocomplete mata pelajaran
+    const [mataPelajaranSearch, setMataPelajaranSearch] = useState("");
+    const [showDropdownMataPelajaran, setShowDropdownMataPelajaran] = useState(false);
+
+    // Ref untuk mendeteksi klik di luar dropdown mata pelajaran
+    const mataPelajaranWrapperRef = useRef(null);
+
+    const filteredMataPelajaran = menuMataPelajaran.filter((option) =>
+        option.label.toLowerCase().includes(mataPelajaranSearch.toLowerCase()) ||
+        (option.kode_mapel && option.kode_mapel.toLowerCase().includes(mataPelajaranSearch.toLowerCase()))
+    );
+
+
+    // Fungsi saat memilih mata pelajaran dari dropdown
+    const handleSelectMataPelajaran = (item) => {
+        // Misal, jika form.mata_pelajaran harus berisi value pilihan:
+        handleChange({
+            target: { name: "mata_pelajaran", value: item.value },
+        });
+        // Atau jika kamu ingin menyimpan label di form, sesuaikan saja
+
+
+
+        setMataPelajaranSearch(
+            item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label
+        );
+
+        setShowDropdownMataPelajaran(false);
+    };
+
+    useEffect(() => {
+        console.log("selected mapel", form.mata_pelajaran);
+    }, [form])
+
+    // useEffect untuk menangani klik di luar dropdown mata pelajaran
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                mataPelajaranWrapperRef.current &&
+                !mataPelajaranWrapperRef.current.contains(event.target)
+            ) {
+                setShowDropdownMataPelajaran(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+    useEffect(() => {
+        if (!isOpen) {
+            setMataPelajaranSearch("");
+        }
+    }, [isOpen]);
+
+
+    useEffect(() => {
+        const selected = menuMataPelajaran.find((opt) => opt.value == form.mata_pelajaran);
+
+        if (selected) {
+            setMataPelajaranSearch(
+                selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label}` : selected.label
+            );
+        }
+
+        // if (form) {
+        //     setMataPelajaranSearch("");
+        // }
+    }, [form.mata_pelajaran, menuMataPelajaran, isOpen, form]);
+
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -491,7 +568,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                     <option value="Minggu">Minggu</option>
                                                 </select>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <label htmlFor="mata_pelajaran" className="block text-gray-700">Mata Pelajaran *</label>
                                                 <select
                                                     name="mata_pelajaran"
@@ -506,7 +583,37 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                         </option>
                                                     ))}
                                                 </select>
+                                            </div> */}
+                                            <div className="relative" ref={mataPelajaranWrapperRef}>
+                                                <label htmlFor="mata_pelajaran" className="block text-gray-700">Mata Pelajaran *</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Cari Mata Pelajaran"
+                                                    value={mataPelajaranSearch}
+                                                    onChange={(e) => {
+                                                        setMataPelajaranSearch(e.target.value)
+                                                        setShowDropdownMataPelajaran(true)
+                                                    }}
+                                                    onFocus={() => setShowDropdownMataPelajaran(true)}
+                                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                    required
+                                                />
+
+                                                {showDropdownMataPelajaran && mataPelajaranSearch && filteredMataPelajaran.length > 0 && (
+                                                    <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                                                        {filteredMataPelajaran.map((item) => (
+                                                            <li
+                                                                key={item.id}
+                                                                onClick={() => handleSelectMataPelajaran(item)}
+                                                                className="p-2 cursor-pointer hover:bg-gray-50"
+                                                            >
+                                                                {item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
                                             </div>
+
                                             <div>
                                                 <label htmlFor="jam_pelajaran" className="block text-gray-700">Jam Pelajaran *</label>
                                                 <select
@@ -523,34 +630,6 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                     ))}
                                                 </select>
                                             </div>
-                                            {/* <div>
-                                                <label htmlFor="nama_mapel" className="block text-gray-700">Nama Mapel *</label>
-                                                <input
-                                                    type="text"
-                                                    name="nama_mapel"
-                                                    placeholder="Masukkan Nama Mapel"
-                                                    value={form.nama_mapel}
-                                                    onChange={handleChange}
-                                                    required
-                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                />
-                                            </div> */}
-                                            {/* {feature === 1 && (
-                                                    <>
-                                                <div>
-                                                    <label htmlFor="periode_akhir" className="block text-gray-700">Tahun Masuk Materi Ajar *</label>
-                                                    <input
-                                                        type="date"
-                                                        name="tahun_masuk"
-                                                        placeholder="Tahun Masuk Materi Ajar"
-                                                        value={form.tahun_masuk}
-                                                        onChange={handleChange}
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                                </>
-                                                )} */}
                                         </div>
                                     </div>
                                 </div>

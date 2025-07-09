@@ -147,6 +147,11 @@ const JadwalPelajaran = () => {
     }
 
     const closeAddMateriModal = () => {
+        setForm({
+            hari: "",
+            mata_pelajaran: "",
+            jam_pelajaran: ""
+        });
         setShowAddMateriModal(false);
     };
 
@@ -167,7 +172,14 @@ const JadwalPelajaran = () => {
                     popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
-            const response = await fetch(`${API_BASE_URL}crud/jadwal-pelajaran/${id}`);
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const response = await fetch(`${API_BASE_URL}crud/jadwal-pelajaran/${id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
             const result = await response.json();
             const data = result.data;
 
