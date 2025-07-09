@@ -65,11 +65,11 @@ const ForgotPasswordPage = () => {
           <h2 className="text-xl font-bold mb-1 text-white">Lupa Sandi</h2>
           <p className="text-xs text-gray-400 text-center">Masukkan email anda</p>
         </div>
-    <form onSubmit={handleSubmit} className="space-y-3">
-  <input
-    type="email"
-    placeholder="Email"
-    className="
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="email"
+            placeholder="Email"
+            className="
       w-full px-3 py-2
       rounded-lg border border-gray-300
       bg-white/80 text-gray-900 placeholder-gray-500
@@ -78,20 +78,20 @@ const ForgotPasswordPage = () => {
       transition-all duration-200
       outline-none text-sm
     "
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    disabled={isSubmitting}
-    required
-    autoFocus
-  />
-  <button
-    type="submit"
-    disabled={isSubmitting}
-    className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
-  >
-    {isSubmitting ? "Mengirim..." : "Kirim Link Reset"}
-  </button>
-</form>
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isSubmitting}
+            required
+            autoFocus
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
+          >
+            {isSubmitting ? "Mengirim..." : "Kirim Link Reset"}
+          </button>
+        </form>
 
         <div className="mt-6 flex justify-center">
           <Link
