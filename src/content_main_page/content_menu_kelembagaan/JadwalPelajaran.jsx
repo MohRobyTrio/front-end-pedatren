@@ -360,7 +360,7 @@ const JadwalPelajaran = () => {
                     <div className="col-span-3 flex justify-center items-center">
                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                     </div>
-                ) : !jadwalPelajaran?.meta || !jadwalPelajaran?.data || Object.keys(jadwalPelajaran.data).length === 0 ? (
+                ) : !jadwalPelajaran?.meta ? (
                     <div className="text-center py-10 text-gray-500 italic">
                         Tidak ada jadwal yang tersedia.
                     </div>
@@ -390,18 +390,18 @@ const JadwalPelajaran = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                        setOpenModal(true);
-                    }}
-                className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-              >
-                <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
-                <span className="font-medium">Tambah Jadwal</span>
-              </button>
+                                        <button
+                                            onClick={() => {
+                                                setOpenModal(true);
+                                            }}
+                                            className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                                        >
+                                            <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+                                            <span className="font-medium">Tambah Jadwal</span>
+                                        </button>
 
-              {/* Refresh Button */}
-              {/* <button
+                                        {/* Refresh Button */}
+                                        {/* <button
                 onClick={fetchJadwalPelajaran}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"
                 disabled={loadingJadwalPelajaran}
@@ -412,86 +412,92 @@ const JadwalPelajaran = () => {
                 />
                 <span className="font-medium">Refresh</span>
               </button> */}
-            </div>
+                                    </div>
                                 </div>
                             )}
 
                         </div>
 
                         {/* Schedule Grid */}
-                        <div className="bg-white rounded-lg shadow-lg drop-shadow overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                                <h2 className="text-xl font-semibold text-white">Jadwal Pelajaran</h2>
-                            </div>
+                        {Array.isArray(jadwalPelajaran?.data) && jadwalPelajaran.data.length > 0 ? (
+                            <div className="bg-white rounded-lg shadow-lg drop-shadow overflow-hidden">
+                                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                                    <h2 className="text-xl font-semibold text-white">Jadwal Pelajaran</h2>
+                                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-1 p-1">
-                                {daysOfWeek.map((day, dayIndex) => (
-                                    <div key={`${day}-${dayIndex}`} className="bg-gray-50 rounded-lg p-4 min-h-[300px]">
-                                        <div className="text-center mb-4">
-                                            <h3 className="font-semibold text-lg text-gray-800 bg-white rounded-full py-2 px-4 shadow-sm">
-                                                {day}
-                                            </h3>
-                                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-1 p-1">
+                                    {daysOfWeek.map((day, dayIndex) => (
+                                        <div key={`${day}-${dayIndex}`} className="bg-gray-50 rounded-lg p-4 min-h-[300px]">
+                                            <div className="text-center mb-4">
+                                                <h3 className="font-semibold text-lg text-gray-800 bg-white rounded-full py-2 px-4 shadow-sm">
+                                                    {day}
+                                                </h3>
+                                            </div>
 
-                                        <div className="space-y-3">
-                                            {jadwalPelajaran.data[day] ? (
-                                                jadwalPelajaran.data[day]
-                                                    .sort((a, b) => a.jam_ke - b.jam_ke)
-                                                    .map((item, index) => (
-                                                        <div
-                                                            key={item.id}
-                                                            className={`rounded-lg border-2 p-3 ${getSubjectColor(index)} transition-all duration-200 hover:shadow-md group relative`}
-                                                        >
-                                                            {/* Action Buttons */}
-                                                            <div className="absolute top-2 right-2 flex gap-1">
-                                                                <button
-                                                                    onClick={async () => {
-                                                                        setSelectedId(item.id)
-                                                                        await fetchDetailJadwal(item.id);
-                                                                        openAddMateriModal();
-                                                                    }}
-                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                                                                    title="Edit Jadwal"
-                                                                >
-                                                                    <FontAwesomeIcon icon={faEdit} className="w-6 h-3" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDelete(item.id)}
-                                                                    className="p-1 bg-white rounded-full shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer"
-                                                                    title="Hapus Jadwal"
-                                                                >
-                                                                    <FontAwesomeIcon icon={faTrash} className="w-6 h-3" />
-                                                                </button>
-                                                            </div>
-
-                                                            <div className="text-xs font-medium mb-1">Jam ke-{item.jam_ke}</div>
-                                                            <div className="font-semibold text-sm mb-2 pr-8">{item.nama_mapel}</div>
-                                                            <div className="text-xs space-y-1">
-                                                                <div className="flex items-center gap-1">
-                                                                    <FontAwesomeIcon icon={faUser} className="w-3 h-3" />
-                                                                    <span className="truncate">{item.nama_pengajar}</span>
+                                            <div className="space-y-3">
+                                                {jadwalPelajaran.data[day] ? (
+                                                    jadwalPelajaran.data[day]
+                                                        .sort((a, b) => a.jam_ke - b.jam_ke)
+                                                        .map((item, index) => (
+                                                            <div
+                                                                key={item.id}
+                                                                className={`rounded-lg border-2 p-3 ${getSubjectColor(index)} transition-all duration-200 hover:shadow-md group relative`}
+                                                            >
+                                                                {/* Action Buttons */}
+                                                                <div className="absolute top-2 right-2 flex gap-1">
+                                                                    <button
+                                                                        onClick={async () => {
+                                                                            setSelectedId(item.id)
+                                                                            await fetchDetailJadwal(item.id);
+                                                                            openAddMateriModal();
+                                                                        }}
+                                                                        className="p-1 bg-white rounded-full shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                                                                        title="Edit Jadwal"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faEdit} className="w-6 h-3" />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDelete(item.id)}
+                                                                        className="p-1 bg-white rounded-full shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                                                                        title="Hapus Jadwal"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faTrash} className="w-6 h-3" />
+                                                                    </button>
                                                                 </div>
-                                                                <div className="flex items-center gap-1">
-                                                                    <FontAwesomeIcon icon={faClock} className="w-3 h-3" />
-                                                                    <span>
-                                                                        {formatTime(item.jam_mulai)} - {formatTime(item.jam_selesai)}
-                                                                    </span>
+
+                                                                <div className="text-xs font-medium mb-1">Jam ke-{item.jam_ke}</div>
+                                                                <div className="font-semibold text-sm mb-2 pr-8">{item.nama_mapel}</div>
+                                                                <div className="text-xs space-y-1">
+                                                                    <div className="flex items-center gap-1">
+                                                                        <FontAwesomeIcon icon={faUser} className="w-3 h-3" />
+                                                                        <span className="truncate">{item.nama_pengajar}</span>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-1">
+                                                                        <FontAwesomeIcon icon={faClock} className="w-3 h-3" />
+                                                                        <span>
+                                                                            {formatTime(item.jam_mulai)} - {formatTime(item.jam_selesai)}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="text-xs opacity-75">{item.kode_mapel}</div>
                                                                 </div>
-                                                                <div className="text-xs opacity-75">{item.kode_mapel}</div>
                                                             </div>
-                                                        </div>
-                                                    ))
-                                            ) : (
-                                                <div className="text-center text-gray-500 py-8">
-                                                    <FontAwesomeIcon icon={faCalendar} className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                                    <p className="text-sm">Tidak ada jadwal</p>
-                                                </div>
-                                            )}
+                                                        ))
+                                                ) : (
+                                                    <div className="text-center text-gray-500 py-8">
+                                                        <FontAwesomeIcon icon={faCalendar} className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                                        <p className="text-sm">Tidak ada jadwal</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="text-center py-10 text-gray-500 italic">
+                                Tidak ada jadwal yang tersedia.
+                            </div>
+                        )}
 
                         {/* Summary */}
                         <div className="mt-8 bg-white rounded-lg shadow-lg drop-shadow p-6">
