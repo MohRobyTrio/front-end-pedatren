@@ -53,7 +53,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
   const [openModalUpdatePass, setOpenModalUpdatePass] = useState(false);
   const [openModalAddUser, setOpenModalAddUser] = useState(false);
   const userName = localStorage.getItem("name") || sessionStorage.getItem("name");
-  const [typedSipatren, isTyping, onSipatrenHover, onSipatrenOut] = useTypingOnHover("SIPATREN", 110);
+  const [typedPusdatren, isTyping, onPusdatrenHover, onPusdatrenOut] = useTypingOnHover("PUSDATREN", 110);
 
   const handleLogout = async () => {
     try {
@@ -93,7 +93,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
             }}>
             <img
               src={logo}
-              alt="Sipatren Logo"
+              alt="Pusdatren Logo"
               className="w-9 h-9 md:w-10 md:h-10 rounded-lg border border-gray-800 transition"
               style={{ minWidth: 36, minHeight: 36 }}
             />
@@ -103,14 +103,14 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
               select-none relative
             `}
               style={{
-                minWidth: "7ch",
+                minWidth: "8ch",
                 display: "inline-block",
                 whiteSpace: "nowrap",
               }}
-              onMouseEnter={onSipatrenHover}
-              onMouseLeave={onSipatrenOut}
+              onMouseEnter={onPusdatrenHover}
+              onMouseLeave={onPusdatrenOut}
             >
-              {typedSipatren}
+              {typedPusdatren}
               {isTyping && (
                 <span
                   className="ml-0.5 align-middle text-gray-400 animate-blink-cursor"

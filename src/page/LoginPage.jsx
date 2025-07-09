@@ -81,14 +81,14 @@ const LoginPage = () => {
   <div className="flex flex-col items-center mb-6">
     <img
       src={logo}
-      alt="Sipatren Logo"
+      alt="Pusdatren Logo"
       className="w-14 h-14 mb-2 drop-shadow"
     />
     <span className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-      SIPATREN
+      PUSDATREN
     </span>
     <span className="mt-1 text-sm sm:text-base text-gray-400 tracking-wide font-medium">
-      Sistem Informasi Pesantren
+      Pusat Data Pesantren
     </span>
   </div>
 
