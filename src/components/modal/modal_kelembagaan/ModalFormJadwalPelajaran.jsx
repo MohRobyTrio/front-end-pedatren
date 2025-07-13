@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import useLogout from "../../../hooks/Logout";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { getCookie } from "../../../utils/cookieUtils";
 import { API_BASE_URL } from "../../../hooks/config";
 import { Dialog, Transition } from "@headlessui/react";
@@ -429,75 +429,75 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
     const { menuJamPelajaran } = useDropdownJamPelajaran();
 
     // Tambahkan state untuk input autocomplete mata pelajaran
-    const [mataPelajaranSearch, setMataPelajaranSearch] = useState("");
-    const [showDropdownMataPelajaran, setShowDropdownMataPelajaran] = useState(false);
+    // const [mataPelajaranSearch, setMataPelajaranSearch] = useState("");
+    // const [showDropdownMataPelajaran, setShowDropdownMataPelajaran] = useState(false);
 
     // Ref untuk mendeteksi klik di luar dropdown mata pelajaran
-    const mataPelajaranWrapperRef = useRef(null);
+    // const mataPelajaranWrapperRef = useRef(null);
 
-    const filteredMataPelajaran = menuMataPelajaran.filter((option) =>
-        option.label.toLowerCase().includes(mataPelajaranSearch.toLowerCase()) ||
-        (option.kode_mapel && option.kode_mapel.toLowerCase().includes(mataPelajaranSearch.toLowerCase()))
-    );
+    // const filteredMataPelajaran = menuMataPelajaran.filter((option) =>
+    //     option.label.toLowerCase().includes(mataPelajaranSearch.toLowerCase()) ||
+    //     (option.kode_mapel && option.kode_mapel.toLowerCase().includes(mataPelajaranSearch.toLowerCase()))
+    // );
 
 
     // Fungsi saat memilih mata pelajaran dari dropdown
-    const handleSelectMataPelajaran = (item) => {
-        // Misal, jika form.mata_pelajaran harus berisi value pilihan:
-        handleChange({
-            target: { name: "mata_pelajaran", value: item.value },
-        });
-        // Atau jika kamu ingin menyimpan label di form, sesuaikan saja
+    // const handleSelectMataPelajaran = (item) => {
+    //     // Misal, jika form.mata_pelajaran harus berisi value pilihan:
+    //     handleChange({
+    //         target: { name: "mata_pelajaran", value: item.value },
+    //     });
+    //     // Atau jika kamu ingin menyimpan label di form, sesuaikan saja
 
 
 
-        setMataPelajaranSearch(
-            item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label
-        );
+    //     setMataPelajaranSearch(
+    //         item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label
+    //     );
 
-        setShowDropdownMataPelajaran(false);
-    };
+    //     setShowDropdownMataPelajaran(false);
+    // };
 
     useEffect(() => {
         console.log("selected mapel", form.mata_pelajaran);
     }, [form])
 
     // useEffect untuk menangani klik di luar dropdown mata pelajaran
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (
-                mataPelajaranWrapperRef.current &&
-                !mataPelajaranWrapperRef.current.contains(event.target)
-            ) {
-                setShowDropdownMataPelajaran(false);
-            }
-        };
+    // useEffect(() => {
+    //     const handleClickOutside = (event) => {
+    //         if (
+    //             mataPelajaranWrapperRef.current &&
+    //             !mataPelajaranWrapperRef.current.contains(event.target)
+    //         ) {
+    //             setShowDropdownMataPelajaran(false);
+    //         }
+    //     };
 
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-    useEffect(() => {
-        if (!isOpen) {
-            setMataPelajaranSearch("");
-        }
-    }, [isOpen]);
+    //     document.addEventListener("mousedown", handleClickOutside);
+    //     return () => {
+    //         document.removeEventListener("mousedown", handleClickOutside);
+    //     };
+    // }, []);
+    // useEffect(() => {
+    //     if (!isOpen) {
+    //         setMataPelajaranSearch("");
+    //     }
+    // }, [isOpen]);
 
 
-    useEffect(() => {
-        const selected = menuMataPelajaran.find((opt) => opt.value == form.mata_pelajaran);
+    // useEffect(() => {
+    //     const selected = menuMataPelajaran.find((opt) => opt.value == form.mata_pelajaran);
 
-        if (selected) {
-            setMataPelajaranSearch(
-                selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label}` : selected.label
-            );
-        }
+    //     if (selected) {
+    //         setMataPelajaranSearch(
+    //             selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label}` : selected.label
+    //         );
+    //     }
 
-        // if (form) {
-        //     setMataPelajaranSearch("");
-        // }
-    }, [form.mata_pelajaran, menuMataPelajaran, isOpen, form]);
+    //     // if (form) {
+    //     //     setMataPelajaranSearch("");
+    //     // }
+    // }, [form.mata_pelajaran, menuMataPelajaran, isOpen, form]);
 
 
     return (
@@ -568,7 +568,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                     <option value="Minggu">Minggu</option>
                                                 </select>
                                             </div>
-                                            {/* <div>
+                                            <div>
                                                 <label htmlFor="mata_pelajaran" className="block text-gray-700">Mata Pelajaran *</label>
                                                 <select
                                                     name="mata_pelajaran"
@@ -579,12 +579,14 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                 >
                                                     {menuMataPelajaran.map((option, idx) => (
                                                         <option key={idx} value={option.value}>
-                                                            {option.kode_mapel ? `(${option.kode_mapel}) ${option.label}` : option.label}
+                                                            {option.kode_mapel
+                                                                ? `(${option.kode_mapel}) ${option.label} - ${option.nama_pengajar}`
+                                                                : `${option.label} - ${option.nama_pengajar}`}
                                                         </option>
                                                     ))}
                                                 </select>
-                                            </div> */}
-                                            <div className="relative" ref={mataPelajaranWrapperRef}>
+                                            </div>
+                                            {/* <div className="relative" ref={mataPelajaranWrapperRef}>
                                                 <label htmlFor="mata_pelajaran" className="block text-gray-700">Mata Pelajaran *</label>
                                                 <input
                                                     type="text"
@@ -612,7 +614,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                         ))}
                                                     </ul>
                                                 )}
-                                            </div>
+                                            </div> */}
 
                                             <div>
                                                 <label htmlFor="jam_pelajaran" className="block text-gray-700">Jam Pelajaran *</label>
