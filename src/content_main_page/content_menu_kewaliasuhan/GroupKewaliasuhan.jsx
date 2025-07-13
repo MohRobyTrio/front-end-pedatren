@@ -274,7 +274,7 @@ const GroupKewaliasuhan = () => {
                                                         >
                                                             <FaEdit />
                                                         </button>
-                                                        {item.status === 1 ? (
+                                                        {item.status == 1 ? (
                                                             <button
                                                                 onClick={() => openStatusModal(item, false)}
                                                                 className="w-20 h-8 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"

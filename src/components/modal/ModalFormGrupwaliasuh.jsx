@@ -346,7 +346,7 @@ export const ModalConfirmationStatusGrup = ({
                 text: `Grup ${grupData.nama_grup} berhasil ${isActivate ? 'diaktifkan' : 'dinonaktifkan'}.`,
             });
 
-            refetchData?.();
+            refetchData?.(true);
             onClose?.();
         } catch (error) {
             console.error("Gagal mengubah status grup:", error);

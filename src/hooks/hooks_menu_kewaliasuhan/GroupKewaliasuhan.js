@@ -32,7 +32,7 @@ const useFetchGroupKewaliasuhan = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/kewaliasuhan/grup?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) {
@@ -46,7 +46,7 @@ const useFetchGroupKewaliasuhan = (filters) => {
         if (filters?.jenisGroup) url += `&grup_wali_asuh=${encodeURIComponent(filters.jenisGroup)}`;
 
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
