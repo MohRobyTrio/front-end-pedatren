@@ -55,6 +55,7 @@ const useDropdownMataPelajaran = () => {
           label: item.nama_mapel,
           value: item.id,
           id: item.id,
+          lembaga:item.lembaga,
           kode_mapel: item.kode_mapel,
           nama_pengajar: item.nama_pengajar,
           nik_pengajar: item.nik_pengajar,

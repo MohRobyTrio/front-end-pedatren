@@ -6,12 +6,17 @@ import useFetchMataPelajaran from "../../hooks/hooks_menu_kelembagaan/MataPelaja
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import ModalAddOrEditMataPelajaran from "../../components/modal/modal_kelembagaan/ModalFormMataPelajaran";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 
 const MataPelajaran = () => {
     const [openModal, setOpenModal] = useState(false);
     const [data, setData] = useState("");
     const [feature, setFeature] = useState("");
-    const { mataPelajaran, loadingMataPelajaran, error, searchTerm, setSearchTerm, fetchMataPelajaran, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataMaPel } = useFetchMataPelajaran();
+    const [filters, setFilters] = useState({
+        lembaga: "",
+    });
+    const { filterLembaga } = DropdownLembaga();
+    const { mataPelajaran, loadingMataPelajaran, error, searchTerm, setSearchTerm, fetchMataPelajaran, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataMaPel } = useFetchMataPelajaran(filters);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -47,6 +52,24 @@ const MataPelajaran = () => {
                     </div>
                 ) : (
                     <>
+                        <div className="mb-4">
+                            <select
+                                value={filters.lembaga}
+                                onChange={(e) =>
+                                    setFilters((prev) => ({ ...prev, lembaga: e.target.value }))
+                                }
+                                className={`border border-gray-300 rounded p-2 ${filterLembaga.lembaga.length <= 1
+                                        ? "bg-gray-200 text-gray-500"
+                                        : ""
+                                    }`}
+                            >
+                                {filterLembaga.lembaga.map((lembaga) => (
+                                    <option key={lembaga.value} value={lembaga.label}>
+                                        {lembaga.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <SearchBar
                             searchTerm={searchTerm}
                             setSearchTerm={setSearchTerm}
@@ -65,6 +88,7 @@ const MataPelajaran = () => {
                                         <th className="px-3 py-2 border-b">Nama Mapel</th>
                                         <th className="px-3 py-2 border-b">Nama Pengajar</th>
                                         <th className="px-3 py-2 border-b">NIK Pengajar</th>
+                                        <th className="px-3 py-2 border-b">Lembaga</th>
                                         <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
@@ -72,13 +96,13 @@ const MataPelajaran = () => {
                                 <tbody className="text-gray-800">
                                     {loadingMataPelajaran ? (
                                         <tr>
-                                            <td colSpan="6" className="text-center p-4">
+                                            <td colSpan="7" className="text-center p-4">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
                                     ) : mataPelajaran.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                            <td colSpan="7" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
                                         mataPelajaran.map((item, index) => (
@@ -88,36 +112,37 @@ const MataPelajaran = () => {
                                                 <td className="px-3 py-2 border-b">{item.nama_mapel}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_pengajar}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_pengajar}</td>
+                                                <td className="px-3 py-2 border-b">{item.lembaga}</td>
                                                 <td className="px-3 py-2 border-b">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == "Aktif"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status == "Aktif" ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td>
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == "Aktif"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status == "Aktif" ? "Aktif" : "Nonaktif"}
+                                                    </span>
+                                                </td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                     {item.status == "Aktif" && (
                                                         <>
-                                                    <button
-                                                        onClick={() => {
-                                                            setData(item);
-                                                            setFeature(2);
-                                                            setOpenModal(true);
-                                                        }}
-                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaEdit />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaTrash />
-                                                    </button>
-                                                    </>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setData(item);
+                                                                    setFeature(2);
+                                                                    setOpenModal(true);
+                                                                }}
+                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                            >
+                                                                <FaEdit />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(item.id)}
+                                                                className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                            >
+                                                                <FaTrash />
+                                                            </button>
+                                                        </>
                                                     )}
                                                 </td>
                                             </tr>

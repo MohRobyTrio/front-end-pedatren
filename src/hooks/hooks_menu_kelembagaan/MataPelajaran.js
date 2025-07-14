@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useFetchMataPelajaran = () => {
+const useFetchMataPelajaran = (filters) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [mataPelajaran, setMataPelajaran] = useState([]);
@@ -32,6 +32,8 @@ const useFetchMataPelajaran = () => {
         let url = `${API_BASE_URL}formulir/mata-pelajaran?page=${currentPage}&limit=${limit}`;
 
         if (debouncedSearchTerm) url += `&search=${encodeURIComponent(debouncedSearchTerm)}`;
+
+        if (filters?.lembaga && filters.lembaga !== "Semua Lembaga") url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
 
         try {
             const response = await fetch(url, {
@@ -67,7 +69,7 @@ const useFetchMataPelajaran = () => {
             setLoadingMataPelajaran(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ currentPage, debouncedSearchTerm, limit, navigate, token]);
+    }, [ currentPage, debouncedSearchTerm, limit, navigate, token, filters]);
 
     useEffect(() => {
         fetchMataPelajaran();

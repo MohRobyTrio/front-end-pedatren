@@ -10,12 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { ModalSelectPengajar } from "../../ModalSelectPengajar";
 import { PengajarInfoCard } from "../../CardInfo";
 import { FaPlus } from "react-icons/fa";
-import { ModalAddMateriPengajarFormulir } from "../modal_formulir/ModalFormPengajar";
 import useDropdownPengajar from "../../../hooks/hook_dropdown/DropdownPengajar";
 import useDropdownMataPelajaran from "../../../hooks/hook_dropdown/DropdownMataPelajaran";
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 
 const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout();
+    const { filterLembaga } = DropdownLembaga();
     const navigate = useNavigate();
     const { menuPengajar } = useDropdownPengajar();
     const { forceFetchDropdownMataPelajaran } = useDropdownMataPelajaran();
@@ -26,9 +27,10 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
         pengajar_id: "",
         kode_mapel: '',
         nama_mapel: '',
+        lembaga_id:'',
     });
     const [materiList, setMateriList] = useState([]);
-    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' });
+    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '', lembaga: '' });
     const [showAddMateriModal, setShowAddMateriModal] = useState(false);
 
     const handleRemove = (indexToRemove) => {
@@ -38,16 +40,17 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
 
     const handleAdd = () => {
         // e.preventDefault();
-        if (!form.nama_mapel && !form.kode_mapel) return
+        if (!form.nama_mapel && !form.kode_mapel && !form.lembaga) return
 
         setMateriList([
             ...materiList,
             {
                 kode_mapel: form.kode_mapel,
-                nama_mapel: form.nama_mapel
+                nama_mapel: form.nama_mapel,
+                lembaga: form.lembaga
             }
         ])
-        setForm({ kode_mapel: '', nama_mapel: '' })
+        setForm({ kode_mapel: '', nama_mapel: '', lembaga: '' })
         closeAddMateriModal();
     }
 
@@ -62,7 +65,8 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                 setFormData({
                     pengajar_id: data.pengajar_id || "",
                     kode_mapel: data.kode_mapel || "",
-                    nama_mapel: data.nama_mapel || ""
+                    nama_mapel: data.nama_mapel || "",
+                    lembaga_id: data.lembaga_id || ""
                 });
             } else {
                 // Reset saat tambah (feature === 1)
@@ -70,6 +74,7 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                 setFormData({
                     pengajar_id: "",
                 });
+                setMateriList([]);
             }
         }
     }, [isOpen, feature, data]);
@@ -141,6 +146,7 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                     mata_pelajaran: materiList.map(item => ({
                         kode_mapel: item.kode_mapel || null,
                         nama_mapel: item.nama_mapel || null,
+                        lembaga_id: item.lembaga || null,
                     }))
                 };
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
@@ -250,7 +256,7 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                            <ModalAddMateriPengajarFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={feature} />
+                            <ModalAddMateri isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={feature} filterLembaga={filterLembaga} />
 
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
@@ -314,6 +320,22 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                                                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         />
                                                     </div>
+                                                    <div className="mt-4">
+                                                        <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
+                                                        <select
+                                                            name="lembaga"
+                                                            value={formData.lembaga_id}
+                                                            onChange={(e) => setFormData({ ...formData, lembaga_id: e.target.value })}
+                                                            required
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        >
+                                                            {filterLembaga.lembaga.map((lembaga) => (
+                                                                <option key={lembaga.value} value={lembaga.value}>
+                                                                    {lembaga.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
@@ -340,6 +362,7 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                                                             <th className="px-3 py-2 border-b">No</th>
                                                             <th className="px-3 py-2 border-b">Kode Mapel</th>
                                                             <th className="px-3 py-2 border-b">Nama Mapel</th>
+                                                            <th className="px-3 py-2 border-b">Lembaga</th>
                                                             <th className="px-3 py-2 border-b">Aksi</th>
                                                         </tr>
                                                     </thead>
@@ -349,6 +372,9 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                                 <td className="px-3 py-2 border-b">{item.kode_mapel}</td>
                                                                 <td className="px-3 py-2 border-b">{item.nama_mapel}</td>
+                                                                <td className="px-3 py-2 border-b">{
+                                                                    filterLembaga.lembaga.find(opt => opt.value == item.lembaga)?.label || item.lembaga
+                                                                }</td>
                                                                 {/* <td className="px-3 py-2 border-b">{item.menit}</td> */}
                                                                 <td className="px-3 py-2 border-b">
                                                                     <button
@@ -398,6 +424,146 @@ const ModalAddOrEditMataPelajaran = ({ isOpen, onClose, data, refetchData, featu
                 onClose={() => setShowSelectPengajar(false)}
                 onPengajarSelected={(pengajar) => setPengajar(pengajar)}
             />
+        </Transition>
+    );
+};
+
+const ModalAddMateri = ({ isOpen, onClose, handleAdd, form, handleChange, filterLembaga }) => {
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                {/* Background overlay */}
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                {/* Modal content wrapper */}
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-300 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="inline-block overflow-y-auto align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            >
+                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                            </button>
+
+                            {/* <form className="w-full" onSubmit={handleAdd}> */}
+                            {/* Header */}
+                            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mt-2 sm:mt-0 text-left w-full">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
+                                        >
+                                            Tambah Materi Ajar
+                                        </Dialog.Title>
+
+                                        {/* FORM ISI */}
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label htmlFor="kode_mapel" className="block text-gray-700">Kode Mapel *</label>
+                                                <input
+                                                    type="text"
+                                                    name="kode_mapel"
+                                                    placeholder="Masukkan Kode Mapel"
+                                                    value={form.kode_mapel}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="nama_mapel" className="block text-gray-700">Nama Mapel *</label>
+                                                <input
+                                                    type="text"
+                                                    name="nama_mapel"
+                                                    placeholder="Masukkan Nama Mapel"
+                                                    value={form.nama_mapel}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div className="mt-4">
+                                                <label htmlFor="lembaga" className="block text-gray-700">Lembaga *</label>
+                                                <select
+                                                    name="lembaga"
+                                                    value={form.lembaga}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                >
+                                                    {filterLembaga.lembaga.map((lembaga) => (
+                                                        <option key={lembaga.value} value={lembaga.value}>
+                                                            {lembaga.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            {/* {feature === 1 && (
+                                                    <>
+                                                <div>
+                                                    <label htmlFor="periode_akhir" className="block text-gray-700">Tahun Masuk Materi Ajar *</label>
+                                                    <input
+                                                        type="date"
+                                                        name="tahun_masuk"
+                                                        placeholder="Tahun Masuk Materi Ajar"
+                                                        value={form.tahun_masuk}
+                                                        onChange={handleChange}
+                                                        required
+                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                    />
+                                                </div>
+                                                </>
+                                                )} */}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer Button */}
+                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAdd();
+                                    }}
+                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                >
+                                    Simpan
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                            {/* </form> */}
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
         </Transition>
     );
 };

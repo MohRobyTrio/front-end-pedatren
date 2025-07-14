@@ -439,6 +439,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
 
     const filteredMataPelajaran = menuMataPelajaran.filter((option) =>
         option.label.toLowerCase().includes(mataPelajaranSearch.toLowerCase()) ||
+        option.lembaga.toLowerCase().includes(mataPelajaranSearch.toLowerCase()) ||
         (option.kode_mapel && option.kode_mapel.toLowerCase().includes(mataPelajaranSearch.toLowerCase()))
     );
 
@@ -454,7 +455,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
 
 
         setMataPelajaranSearch(
-            item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label
+            item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label
         );
         setSelectedPengajar(item.nama_pengajar);
 
@@ -493,7 +494,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
 
         if (selected) {
             setMataPelajaranSearch(
-                selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label}` : selected.label
+                selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label} - ${selected.lembaga}` : selected.label
             );
             setSelectedPengajar(selected.nama_pengajar);
         }
@@ -611,7 +612,7 @@ export const ModalAddJadwalPelajaranFormulir = ({ isOpen, onClose, handleAdd, fo
                                                                 onClick={() => handleSelectMataPelajaran(item)}
                                                                 className="p-2 cursor-pointer hover:bg-gray-50"
                                                             >
-                                                                {item.kode_mapel ? `(${item.kode_mapel}) ${item.label}` : item.label}
+                                                                {item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label}
                                                             </li>
                                                         ))}
                                                     </ul>
