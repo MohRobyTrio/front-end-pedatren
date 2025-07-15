@@ -4,10 +4,12 @@ import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import useDropdownJamPelajaran from "../hook_dropdown/DropdownJamPelajaran";
 
 const useFetchJamPelajaran = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const { forceFetchDropdownJamPelajaran } = useDropdownJamPelajaran();
     const [jamPelajaran, setJamPelajaran] = useState([]);
     const [loadingJamPelajaran, setLoadingJamPelajaran] = useState(true);
     const [error, setError] = useState(null);
@@ -119,6 +121,7 @@ const useFetchJamPelajaran = () => {
                 text: "Data berhasil dihapus.",
             });
 
+            forceFetchDropdownJamPelajaran();
             fetchJamPelajaran();
         } catch (error) {
             console.error("Error saat menghapus:", error);

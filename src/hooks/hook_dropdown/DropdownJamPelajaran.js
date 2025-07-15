@@ -53,40 +53,40 @@ const useDropdownJamPelajaran = () => {
   }, []);
 
   const forceFetchDropdownJamPelajaran = async () => {
-  const token = sessionStorage.getItem("token") || getCookie("token");
+    const token = sessionStorage.getItem("token") || getCookie("token");
 
-  try {
-    const res = await fetch(`${API_BASE_URL}crud/jam-pelajaran`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const res = await fetch(`${API_BASE_URL}crud/jam-pelajaran`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const resData = await res.json();
+      const resData = await res.json();
 
-    if (!Array.isArray(resData.data)) {
-      throw new Error("Data dari API tidak valid");
+      if (!Array.isArray(resData.data)) {
+        throw new Error("Data dari API tidak valid");
+      }
+
+      const formatted = [
+        { label: "Pilih Jam Pelajaran", value: "", id: null },
+        ...resData.data.map((item) => ({
+          label: item.label,
+          value: item.id,
+          id: item.id,
+          jam_ke: item.jam_ke,
+          jam_mulai: item.jam_mulai?.slice(0, 5),  // Hilangkan detik
+          jam_selesai: item.jam_selesai?.slice(0, 5),
+        })),
+      ];
+
+      sessionStorage.setItem("menuJamPelajaran", JSON.stringify(formatted));
+      console.log("Berhasil update session menuJamPelajaran");
+      return formatted;
+    } catch (err) {
+      console.error("Gagal fetch ulang menuJamPelajaran:", err);
+      throw err;
     }
-
-    const formatted = [
-      { label: "Pilih Jam Pelajaran", value: "", id: null },
-      ...resData.data.map((item) => ({
-        label: item.label,
-        value: item.id,
-        id: item.id,
-        jam_ke: item.jam_ke,
-        jam_mulai: item.jam_mulai?.slice(0, 5),  // Hilangkan detik
-        jam_selesai: item.jam_selesai?.slice(0, 5),
-      })),
-    ];
-
-    sessionStorage.setItem("menuJamPelajaran", JSON.stringify(formatted));
-    console.log("Berhasil update session menuJamPelajaran");
-    return formatted;
-  } catch (err) {
-    console.error("Gagal fetch ulang menuJamPelajaran:", err);
-    throw err;
-  }
 };
 
   return { menuJamPelajaran, forceFetchDropdownJamPelajaran };
