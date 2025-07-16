@@ -305,7 +305,7 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
         if (isOpen && id) {
             const token = sessionStorage.getItem("token") || getCookie("token");
             setLoading(true);
-            fetch(`${API_BASE_URL}crud/kelas/${id}`, {
+            fetch(`${API_BASE_URL}data-pokok/tahun-ajaran/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -323,6 +323,11 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
                 .finally(() => setLoading(false));
         }
     }, [isOpen, id]);
+
+    useEffect(() => {
+        console.log(data);
+        
+    }, [data])
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -362,7 +367,7 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
 
                             {/* Header */}
                             <div className="pt-6">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail TahunAjaran</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Tahun Ajaran</Dialog.Title>
                             </div>
 
                             {/* Body */}
@@ -374,12 +379,10 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
                                 ) : data ? (
                                     <div className="space-y-2">
                                         {[
-                                            ["Nama TahunAjaran", data.tahun_ajaran],
-                                            ["Status", data.status == 1 ? "Aktif" : "Nonaktif"],
-                                            ["Nama Jurusan", data.nama_jurusan],
-                                            ["Nama Lembaga", data.nama_lembaga],
-                                            ["Total Rombel", data.total_rombel],
-                                            ["Total Siswa", data.total_siswa],
+                                            ["Tahun Ajaran", data.data.tahun_ajaran],
+                                            ["Tanggal Mulai", data.data.tanggal_mulai.split("T")[0]],
+                                            ["Tanggal Selesai", data.data.tanggal_selesai.split("T")[0]],
+                                            ["Status", data.data.status ? "Aktif" : "Nonaktif"],
                                         ].map(([label, value]) => (
                                             <div key={label} className="flex">
                                                 <div className="w-35 font-semibold text-gray-700">{label}</div>

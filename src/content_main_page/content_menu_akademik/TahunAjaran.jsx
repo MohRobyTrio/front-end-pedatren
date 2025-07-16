@@ -13,7 +13,7 @@ const TahunAjaran = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [tahunAjaranData, setTahunAjaranData] = useState("");
-    const { tahunAjaran, loadingTahunAjaran, error, fetchTahunAjaran, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataTahunAjaran } = useFetchTahunAjaran();
+    const { tahunAjaran, loadingTahunAjaran, error, fetchTahunAjaran, handleDelete } = useFetchTahunAjaran();
 
     // const handlePageChange = (page) => {
     //     if (page >= 1 && page <= totalPages) {
