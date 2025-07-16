@@ -117,7 +117,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
-            await Swal.fire({ icon: "error", title: "Oops!", text: "Terjadi kesalahan saat mengirim data." });
+            await Swal.fire({ icon: "error", title: "Oops!", text: error.message || "Terjadi kesalahan saat mengirim data." });
         }
     };
 
