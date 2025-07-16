@@ -3,7 +3,7 @@ import {
     menuAkademikItems,
     menuDataPokokItems,
     menuItems,
-    menuKelembagaanItems,
+    // menuKelembagaanItems,
     menuKepegawaianItems,
     menuKepesantrenanItems,
     menuKewaliasuhanItems,
@@ -12,6 +12,7 @@ import {
     subPesertaDidik
 } from "../data/menuData";
 import Access from "./Access";
+import { hasAccess } from "../utils/hasAccess";
 
 const Sidebar = ({
     submenuPesertaDidik,
@@ -26,8 +27,8 @@ const Sidebar = ({
     setDropdownKepesantrenan,
     dropdownDataMahrom,
     setDropdownMahrom,
-    dropdownDataKelembagaan,
-    setDropdownDataKelembagaan,
+    // dropdownDataKelembagaan,
+    // setDropdownDataKelembagaan,
     dropdownDataAkademik,
     setDropdownDataAkademik,
     dropdownDataKewilayahan,
@@ -61,6 +62,9 @@ const Sidebar = ({
         <ul className="mt-1 ml-2">
             {items.map((item) => {
                 const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
+                if (item.access && !hasAccess(item.access)) {
+                    return null; // Jangan tampilkan jika tidak ada akses
+                }
                 return (
                     <div key={item.id}>
                         <MenuItem
@@ -81,28 +85,28 @@ const Sidebar = ({
         </ul>
     );
 
-const SubMenuDropdownPesertaDidik = () => (
-    <ul className="ml-7 mt-1">
-        {subPesertaDidik.map((subItem) => {
-            const isActive = location.pathname === subItem.link;
-            return (
-                <li key={subItem.id} className="mb-0.5">
-                    <Link
-                        to={subItem.link}
-                        className={`flex items-center px-3 py-1.5 rounded-md text-xs transition
+    const SubMenuDropdownPesertaDidik = () => (
+        <ul className="ml-7 mt-1">
+            {subPesertaDidik.map((subItem) => {
+                const isActive = location.pathname === subItem.link;
+                return (
+                    <li key={subItem.id} className="mb-0.5">
+                        <Link
+                            to={subItem.link}
+                            className={`flex items-center px-3 py-1.5 rounded-md text-xs transition
                             ${isActive
-                                ? "bg-red-50 text-red-500 font-semibold"
-                                : "text-red-400 font-medium hover:bg-red-100 hover:text-red-500"
-                            }`}
-                    >
-                        <i className="fas fa-chevron-right mr-2 text-xs text-red-300"></i>
-                        {subItem.text}
-                    </Link>
-                </li>
-            );
-        })}
-    </ul>
-);
+                                    ? "bg-red-50 text-red-500 font-semibold"
+                                    : "text-red-400 font-medium hover:bg-red-100 hover:text-red-500"
+                                }`}
+                        >
+                            <i className="fas fa-chevron-right mr-2 text-xs text-red-300"></i>
+                            {subItem.text}
+                        </Link>
+                    </li>
+                );
+            })}
+        </ul>
+    );
 
 
 
@@ -210,7 +214,7 @@ const SubMenuDropdownPesertaDidik = () => (
                         </div>
                     </Access>
 
-                    <Access action="kelembagaan">
+                    {/* <Access action="kelembagaan">
                         <div className="mt-3 px-2">
                             <MenuHeader
                                 name="Kelembagaan"
@@ -219,7 +223,7 @@ const SubMenuDropdownPesertaDidik = () => (
                             />
                             {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
                         </div>
-                    </Access>
+                    </Access> */}
 
                     <Access action="akademik">
                         <div className="mt-3 px-2">

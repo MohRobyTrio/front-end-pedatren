@@ -14,7 +14,7 @@ const MainPage = () => {
     const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(() => sessionStorage.getItem("dropdownDataKepesantrenan") === "true");
     const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(() => sessionStorage.getItem("dropdownDataKepegawaian") === "true");
     const [dropdownDataMahrom, setDropdownMahrom] = useState(() => sessionStorage.getItem("dropdownDataMahrom") === "true");
-    const [dropdownDataKelembagaan, setDropdownDataKelembagaan] = useState(() => sessionStorage.getItem("dropdownDataKelembagaan") === "true");
+    // const [dropdownDataKelembagaan, setDropdownDataKelembagaan] = useState(() => sessionStorage.getItem("dropdownDataKelembagaan") === "true");
     const [dropdownDataAkademik, setDropdownDataAkademik] = useState(() => sessionStorage.getItem("dropdownDataAkademik") === "true");
     const [dropdownDataKewilayahan, setDropdownDataKewilayahan] = useState(() => sessionStorage.getItem("dropdownDataKewilayahan") === "true");
     // const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
@@ -26,11 +26,11 @@ const MainPage = () => {
         sessionStorage.setItem("dropdownDataKepesantrenan", dropdownDataKepesantrenan);
         sessionStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
         sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
-        sessionStorage.setItem("dropdownDataKelembagaan", dropdownDataKelembagaan);
+        // sessionStorage.setItem("dropdownDataKelembagaan", dropdownDataKelembagaan);
         sessionStorage.setItem("dropdownDataAkademik", dropdownDataAkademik);
         sessionStorage.setItem("dropdownDataKewilayahan", dropdownDataKewilayahan);
         // sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
-    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataKelembagaan, dropdownDataAkademik, dropdownDataKewilayahan]);
+    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataAkademik, dropdownDataKewilayahan]);
 
     const toggleDropdown = (setter) => setter((prev) => !prev);
 
@@ -107,8 +107,8 @@ const MainPage = () => {
                         setDropdownMahrom={setDropdownMahrom}
                         // dropdownDataRWS={dropdownDataRWS}
                         // setDropdownRWS={setDropdownRWS}
-                        dropdownDataKelembagaan={dropdownDataKelembagaan}
-                        setDropdownDataKelembagaan={setDropdownDataKelembagaan}
+                        // dropdownDataKelembagaan={dropdownDataKelembagaan}
+                        // setDropdownDataKelembagaan={setDropdownDataKelembagaan}
                         dropdownDataAkademik={dropdownDataAkademik}
                         setDropdownDataAkademik={setDropdownDataAkademik}
                         dropdownDataKewilayahan={dropdownDataKewilayahan}

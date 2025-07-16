@@ -3,7 +3,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../hooks/config";
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
@@ -11,6 +11,7 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
+import { hasAccess } from "../../utils/hasAccess";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (
@@ -26,7 +27,7 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
                         className={`w-full border border-gray-300 rounded p-2 ${options.length <= 1 ? "bg-gray-200 text-gray-500" : ""
                             }`}
                         onChange={(e) => onChange({ [label]: e.target.value })}
-                        value={selectedFilters[label] || ""}
+                        value={selectedFilters[label]}
                         disabled={options.length <= 1}
                         required={vertical}
                     >
@@ -234,6 +235,10 @@ const HubungkanWaliAsuh = () => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [santri]);
+
+    if (!hasAccess("kewaliasuhan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex flex-col lg:flex-row items-start gap-6 pl-6 pt-6 pb-6">

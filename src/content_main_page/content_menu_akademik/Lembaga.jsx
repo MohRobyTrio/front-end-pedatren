@@ -1,19 +1,20 @@
 import { OrbitProgress } from "react-loading-indicators";
+import useFetchLembaga from "../../hooks/hooks_menu_akademik/Lembaga";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { useState } from "react";
+import { ModalAddOrEditLembaga, ModalDetailLembaga } from "../../components/modal/modal_kelembagaan/ModalFormLembaga";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import ToggleStatus from "../../components/ToggleStatus";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
-import useFetchKelas from "../../hooks/hooks_menu_kelembagaan/Kelas";
-import { ModalAddOrEditKelas, ModalDetailKelas } from "../../components/modal/modal_kelembagaan/ModalFormKelas";
 
-const Kelas = () => {
+const Lembaga = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [kelasData, setKelasData] = useState("");
-    const { kelas, loadingKelas, error, fetchKelas, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataKelas } = useFetchKelas();
+    const [lembagaData, setLembagaData] = useState("");
+    const [feature, setFeature] = useState("");
+    const { lembaga, loadingLembaga, error, fetchLembaga, handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataLembaga } = useFetchLembaga();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -24,22 +25,22 @@ const Kelas = () => {
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Kelas</h1>
+                <h1 className="text-2xl font-bold">Data Lembaga</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
-                        setKelasData(null);
+                        setFeature(1);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditKelas isOpen={openModal} onClose={() => setOpenModal(false)} data={kelasData} refetchData={fetchKelas} />
+            <ModalAddOrEditLembaga isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchLembaga} feature={feature} />
 
-            <ModalDetailKelas
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                id={selectedId}
-            />
+            <ModalDetailLembaga
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            id={selectedId}
+                        />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -55,7 +56,7 @@ const Kelas = () => {
                 ) : (
                     <>
                     <SearchBar
-                            totalData={totalDataKelas}
+                            totalData={totalDataLembaga}
                             limit={limit}
                             toggleLimit={(e) => setLimit(Number(e.target.value))}
                             showFilterButtons={false}
@@ -67,34 +68,30 @@ const Kelas = () => {
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
                                     <th className="px-3 py-2 border-b">#</th>
-                                    <th className="px-3 py-2 border-b">Nama Kelas</th>
-                                    <th className="px-3 py-2 border-b">Jurusan</th>
-                                    <th className="px-3 py-2 border-b">Lembaga</th>
+                                    <th className="px-3 py-2 border-b">Nama Lembaga</th>
                                     <th className="px-3 py-2 border-b">Status</th>
                                     <th className="px-3 py-2 border-b text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800">
-                                {loadingKelas ? (
+                                {loadingLembaga ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center p-4">
+                                        <td colSpan="4" className="text-center p-4">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
                                     </tr>
-                                ) : kelas.length === 0 ? (
+                                ) : lembaga.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                        <td colSpan="4" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
-                                    kelas.map((item, index) => (
+                                    lembaga.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
                                                         setSelectedId(item.id);
                                                         setIsModalOpen(true);
                                                     }}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.nama_kelas}</td>
-                                            <td className="px-3 py-2 border-b">{item.jurusan}</td>
-                                            <td className="px-3 py-2 border-b">{item.lembaga}</td>
+                                            <td className="px-3 py-2 border-b">{item.nama_lembaga}</td>
                                             <td className="px-3 py-2 border-b">
                                                 <span
                                                     className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
@@ -110,7 +107,8 @@ const Kelas = () => {
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            setKelasData(item);
+                                                            setLembagaData(item);
+                                                            setFeature(2);
                                                             setOpenModal(true);
                                                         }}
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
@@ -120,7 +118,7 @@ const Kelas = () => {
                                                     <ToggleStatus
                                                             active={item.status}
                                                             onClick={() => handleToggleStatus(item)}
-                                                    />
+                                                        />
                                                 </div>
                                             </td>
                                         </tr>
@@ -139,4 +137,4 @@ const Kelas = () => {
     );
 };
 
-export default Kelas;
+export default Lembaga;

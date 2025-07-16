@@ -1,5 +1,5 @@
 import { OrbitProgress } from "react-loading-indicators";
-import useFetchJadwalPelajaran from "../../hooks/hooks_menu_kelembagaan/JadwalPelajaran";
+import useFetchJadwalPelajaran from "../../hooks/hooks_menu_akademik/JadwalPelajaran";
 import { useEffect, useState } from "react";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownSemester from "../../hooks/hook_dropdown/DropdownSemester";

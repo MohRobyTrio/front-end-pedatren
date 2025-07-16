@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
-import useFetchLulusSantri from "../../hooks/hooks_menu_akademik/AlumniSantri";
+import useFetchLulusSantri from "../../hooks/hooks_menu_kewilayahan/AlumniSantri";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
     return (

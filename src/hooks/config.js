@@ -11,4 +11,6 @@ export const rolesWithAccess = {
   pindah: ['admin', 'superadmin'],
   keluar: ['admin', 'superadmin'],
   approve: ['biktren', 'kamtib', 'pengasuh'],
+  golongan: ["admin", "superadmin"],
+  kewaliasuhan: ["admin", "superadmin"],
 };

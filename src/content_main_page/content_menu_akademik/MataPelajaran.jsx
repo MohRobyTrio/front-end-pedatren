@@ -2,7 +2,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { useState } from "react";
-import useFetchMataPelajaran from "../../hooks/hooks_menu_kelembagaan/MataPelajaran";
+import useFetchMataPelajaran from "../../hooks/hooks_menu_akademik/MataPelajaran";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import ModalAddOrEditMataPelajaran from "../../components/modal/modal_kelembagaan/ModalFormMataPelajaran";

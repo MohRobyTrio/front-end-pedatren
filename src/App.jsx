@@ -9,7 +9,7 @@ import NotFound from './content_main_page/NotFound';
 import Formulir from './content_main_page/Formulir';
 import {
   menuAkademikItems,
-  menuDataPokokItems, menuItems, menuKelembagaanItems, menuKepegawaianItems, menuKepesantrenanItems,
+  menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
   menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems, 
   // menuRWSItems, 
   subPesertaDidik, tabsFormulir
@@ -141,7 +141,7 @@ function App() {
               ...menuMahromItems,
               // ...menuRWSItems,
               ...subPesertaDidik,
-              ...menuKelembagaanItems,
+              // ...menuKelembagaanItems,
               ...menuAkademikItems,
               ...menuKewilayahanItems,
             ].map((tab) => (
