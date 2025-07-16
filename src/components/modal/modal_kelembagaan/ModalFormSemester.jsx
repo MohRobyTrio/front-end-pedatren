@@ -8,14 +8,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
+import useFetchTahunAjaran from "../../../hooks/hooks_menu_akademik/TahunAjaran";
 
-export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }) => {
+export const ModalAddOrEditSemester = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const { allTahunAjaran } = useFetchTahunAjaran();
     const [formData, setFormData] = useState({
-        tahun_ajaran: "",
-        tanggal_mulai: "",
-        tanggal_selesai: "",
+        tahun_ajaran_id: "",
+        semester: "",
         status: ""
     });
 
@@ -24,17 +25,16 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
         if (isOpen) {
             if (data) {
                 setFormData({
-                    tahun_ajaran: data.tahun_ajaran || "",
-                    tanggal_mulai: data.tanggal_mulai.split("T")[0] || "",
-                    tanggal_selesai: data.tanggal_selesai.split("T")[0] || "",
-                    status: data.status === 1 || data.status === true ? true : false,
+                    tahun_ajaran_id: data.tahun_ajaran_id || "",
+                    semester: data.semester,
+                    status: data.status == 1 || data.status == true ? true : false,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
                 setFormData({
-                    tahun_ajaran: "",
-                    tanggal_mulai: "",
-                    status: true,
+                    tahun_ajaran_id: "",
+                    semester: "",
+                    status: true
                 });
             }
         }
@@ -77,23 +77,21 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
             // Tentukan URL dan method berdasarkan feature
             const isEdit = data;
             const url = isEdit
-                ? `${API_BASE_URL}crud/tahun-ajaran/${data.id}`
-                : `${API_BASE_URL}crud/tahun-ajaran`;
+                ? `${API_BASE_URL}crud/semester/${data.id}`
+                : `${API_BASE_URL}crud/semester`;
 
             const method = isEdit ? "PUT" : "POST";
 
             // Tentukan data yang dikirim
             const payload = isEdit
                 ? {
-                    tahun_ajaran: formData.tahun_ajaran,
-                    tanggal_mulai: formData.tanggal_mulai,
-                    tanggal_selesai: formData.tanggal_selesai,
+                    tahun_ajaran_id: formData.tahun_ajaran_id,
+                    semester: formData.semester,
                     status: formData.status,
                 }
                 : {
-                    tahun_ajaran: formData.tahun_ajaran,
-                    tanggal_mulai: formData.tanggal_mulai,
-                    tanggal_selesai: formData.tanggal_selesai,
+                    tahun_ajaran_id: formData.tahun_ajaran_id,
+                    semester: formData.semester,
                     status: formData.status,
                 };
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
@@ -156,7 +154,6 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
                 text: "Data berhasil dikirim.",
             });
 
-            sessionStorage.removeItem("allTahunAjaran");
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -219,20 +216,35 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label htmlFor="tahun_ajaran" className="block text-gray-700">Tahun Ajaran *</label>
-                                                    <input
-                                                        type="text"
-                                                        id="tahun_ajaran"
-                                                        name="tahun_ajaran"
-                                                        value={formData.tahun_ajaran}
-                                                        onChange={(e) => setFormData({ ...formData, tahun_ajaran: e.target.value })}
-                                                        maxLength={255}
+                                                    <label htmlFor="tahun_ajaran_id" className="block text-gray-700">Tahun Ajaran *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                        onChange={(e) => setFormData({...formData, tahun_ajaran_id: e.target.value })}
+                                                        value={formData.tahun_ajaran_id}
                                                         required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan Tahun Ajaran"
-                                                    />
+                                                    >
+                                                        <option value="">Pilih Tahun Ajaran</option>
+                                                        {allTahunAjaran.map((item, idx) => (
+                                                            <option key={idx} value={item.id}>
+                                                                {item.tahun_ajaran}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                 </div>
                                                 <div>
+                                                    <label htmlFor="semester" className="block text-gray-700">Semester *</label>
+                                                    <select
+                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
+                                                        onChange={(e) => setFormData({...formData, semester: e.target.value })}
+                                                        value={formData.semester}
+                                                        required
+                                                    >
+                                                        <option value="">Pilih Semester</option>
+                                                        <option value="ganjil">Ganjil</option>                                                    
+                                                        <option value="genap">Genap</option>
+                                                    </select>
+                                                </div>
+                                                {/* <div>
                                                     <label htmlFor="tanggal_mulai" className="block text-gray-700">Tanggal Mulai *</label>
                                                     <input
                                                         type="date"
@@ -255,7 +267,7 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div>
                                                     <label className="block text-gray-700">Status Aktif *</label>
                                                     <div className="flex space-x-4 mt-1">
@@ -315,7 +327,7 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
     );
 };
 
-export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
+export const ModalDetailSemester = ({ isOpen, onClose, id }) => {
     console.log(id);
 
     const [data, setData] = useState(null);
@@ -327,7 +339,7 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
         if (isOpen && id) {
             const token = sessionStorage.getItem("token") || getCookie("token");
             setLoading(true);
-            fetch(`${API_BASE_URL}data-pokok/tahun-ajaran/${id}`, {
+            fetch(`${API_BASE_URL}data-pokok/semester/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -389,7 +401,7 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
 
                             {/* Header */}
                             <div className="pt-6">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Tahun Ajaran</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Semester</Dialog.Title>
                             </div>
 
                             {/* Body */}
@@ -401,14 +413,13 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
                                 ) : data ? (
                                     <div className="space-y-2">
                                         {[
-                                            ["Tahun Ajaran", data.data.tahun_ajaran],
-                                            ["Tanggal Mulai", data.data.tanggal_mulai.split("T")[0]],
-                                            ["Tanggal Selesai", data.data.tanggal_selesai.split("T")[0]],
+                                            ["Semester", data.data.semester],
+                                            ["Tahun Ajaran", data.data.tahun_ajaran.tahun_ajaran],
                                             ["Status", data.data.status ? "Aktif" : "Nonaktif"],
                                         ].map(([label, value]) => (
                                             <div key={label} className="flex">
                                                 <div className="w-35 font-semibold text-gray-700">{label}</div>
-                                                <div className="flex-1 text-gray-900">: {value}</div>
+                                                <div className="flex-1 text-gray-900 capitalize">: {value}</div>
                                             </div>
                                         ))}
                                     </div>

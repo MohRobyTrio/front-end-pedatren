@@ -5,25 +5,25 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useFetchTahunAjaran = () => {
+const useFetchSemester = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [tahunAjaran, setTahunAjaran] = useState([]);
-    const [loadingTahunAjaran, setLoadingTahunAjaran] = useState(true);
+    const [semester, setSemester] = useState([]);
+    const [loadingSemester, setLoadingSemester] = useState(true);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(25);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalDataTahunAjaran, setTotalDataTahunAjaran] = useState(0);
-    const [allTahunAjaran, setAllTahunAjaran] = useState([]);
+    const [totalDataSemester, setTotalDataSemester] = useState(0);
+    // const [allSemester, setAllSemester] = useState([]);
     const token = sessionStorage.getItem("token") || getCookie("token");
 
-    const fetchTahunAjaran = useCallback(async () => {
-        setLoadingTahunAjaran(true);
+    const fetchSemester = useCallback(async () => {
+        setLoadingSemester(true);
         setError(null);
 
         try {
-            const response = await fetch(`${API_BASE_URL}data-pokok/tahun-ajaran?page=${currentPage}&per_page=${limit}`, {
+            const response = await fetch(`${API_BASE_URL}data-pokok/semester?page=${currentPage}&per_page=${limit}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -46,84 +46,84 @@ const useFetchTahunAjaran = () => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const data = await response.json();
 
-            setTahunAjaran(data.data);
+            setSemester(data.data);
             setTotalPages(data.last_page || 1);
-            setTotalDataTahunAjaran(data.total || 0);
+            setTotalDataSemester(data.total || 0);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
-            setTahunAjaran([]);
+            setSemester([]);
         } finally {
-            setLoadingTahunAjaran(false);
+            setLoadingSemester(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, navigate, token]);
 
+    // useEffect(() => {
+    //     const storedSemester = sessionStorage.getItem("allSemester");
+    //     if (storedSemester) {
+    //         setAllSemester(JSON.parse(storedSemester));
+    //     } else {
+    //         const fetchAllSemester = async () => {
+    //             setError(null);
+
+    //             try {
+    //                 // Step 1: Ambil 1 data untuk dapatkan total
+    //                 const firstResponse = await fetch(`${API_BASE_URL}data-pokok/tahun-ajaran?page=1&per_page=1`, {
+    //                     headers: {
+    //                         "Content-Type": "application/json",
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 });
+
+    //                 if (firstResponse.status === 401) {
+    //                     await Swal.fire({
+    //                         title: "Sesi Berakhir",
+    //                         text: "Sesi anda telah berakhir, silakan login kembali.",
+    //                         icon: "warning",
+    //                         confirmButtonText: "OK",
+    //                     });
+    //                     clearAuthData();
+    //                     navigate("/login");
+    //                     return;
+    //                 }
+
+    //                 if (!firstResponse.ok) throw new Error(`Error ${firstResponse.status}`);
+    //                 const firstData = await firstResponse.json();
+
+    //                 const total = firstData.total || 0;
+
+    //                 // Step 2: Ambil semua data berdasarkan total
+    //                 const fullResponse = await fetch(`${API_BASE_URL}data-pokok/tahun-ajaran?page=1&per_page=${total}`, {
+    //                     headers: {
+    //                         "Content-Type": "application/json",
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 });
+
+    //                 if (!fullResponse.ok) throw new Error(`Error ${fullResponse.status}`);
+    //                 const fullData = await fullResponse.json();
+
+    //                 const kelasList = fullData.data || [];
+
+    //                 setAllSemester(kelasList);
+    //                 sessionStorage.setItem("allSemester", JSON.stringify(kelasList));
+    //             } catch (err) {
+    //                 console.error("Fetch ALL error:", err);
+    //                 setError(err.message);
+    //                 setAllSemester([]);
+    //             }
+    //         };
+
+    //         fetchAllSemester(); // panggil hanya jika belum ada di session
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []); // ⚠️ Dependency array kosong = hanya dijalankan sekali saat mount
+
+
     useEffect(() => {
-        const storedTahunAjaran = sessionStorage.getItem("allTahunAjaran");
-        if (storedTahunAjaran) {
-            setAllTahunAjaran(JSON.parse(storedTahunAjaran));
-        } else {
-            const fetchAllTahunAjaran = async () => {
-                setError(null);
-
-                try {
-                    // Step 1: Ambil 1 data untuk dapatkan total
-                    const firstResponse = await fetch(`${API_BASE_URL}data-pokok/tahun-ajaran?page=1&per_page=1`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    if (firstResponse.status === 401) {
-                        await Swal.fire({
-                            title: "Sesi Berakhir",
-                            text: "Sesi anda telah berakhir, silakan login kembali.",
-                            icon: "warning",
-                            confirmButtonText: "OK",
-                        });
-                        clearAuthData();
-                        navigate("/login");
-                        return;
-                    }
-
-                    if (!firstResponse.ok) throw new Error(`Error ${firstResponse.status}`);
-                    const firstData = await firstResponse.json();
-
-                    const total = firstData.total || 0;
-
-                    // Step 2: Ambil semua data berdasarkan total
-                    const fullResponse = await fetch(`${API_BASE_URL}data-pokok/tahun-ajaran?page=1&per_page=${total}`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    if (!fullResponse.ok) throw new Error(`Error ${fullResponse.status}`);
-                    const fullData = await fullResponse.json();
-
-                    const kelasList = fullData.data || [];
-
-                    setAllTahunAjaran(kelasList);
-                    sessionStorage.setItem("allTahunAjaran", JSON.stringify(kelasList));
-                } catch (err) {
-                    console.error("Fetch ALL error:", err);
-                    setError(err.message);
-                    setAllTahunAjaran([]);
-                }
-            };
-
-            fetchAllTahunAjaran(); // panggil hanya jika belum ada di session
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // ⚠️ Dependency array kosong = hanya dijalankan sekali saat mount
-
-
-    useEffect(() => {
-        fetchTahunAjaran();
-    }, [fetchTahunAjaran]);
+        fetchSemester();
+    }, [fetchSemester]);
 
     // const handleToggleStatus = async (data) => {
     //     const confirmResult = await Swal.fire({
@@ -196,7 +196,7 @@ const useFetchTahunAjaran = () => {
     //                 : "Data berhasil diaktifkan.",
     //         });
 
-    //         fetchTahunAjaran(); // refresh data
+    //         fetchSemester(); // refresh data
     //     } catch (error) {
     //         console.error("Error saat mengubah status:", error);
     //         await Swal.fire({
@@ -233,7 +233,7 @@ const useFetchTahunAjaran = () => {
                 });
     
                 const token = sessionStorage.getItem("token") || getCookie("token");
-                const response = await fetch(`${API_BASE_URL}crud/tahun-ajaran/${id}`, {
+                const response = await fetch(`${API_BASE_URL}crud/semester/${id}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -271,7 +271,7 @@ const useFetchTahunAjaran = () => {
                     text: "Data berhasil dihapus.",
                 });
     
-                fetchTahunAjaran();
+                fetchSemester();
             } catch (error) {
                 console.error("Error saat menghapus:", error);
                 await Swal.fire({
@@ -283,15 +283,15 @@ const useFetchTahunAjaran = () => {
         };
 
     return {
-        tahunAjaran,
-        allTahunAjaran,
-        loadingTahunAjaran,
+        semester,
+        // allSemester,
+        loadingSemester,
         error,
-        fetchTahunAjaran,
+        fetchSemester,
         // handleToggleStatus, 
         handleDelete,
-        limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataTahunAjaran
+        limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataSemester
     };
 };
 
-export default useFetchTahunAjaran;
+export default useFetchSemester;

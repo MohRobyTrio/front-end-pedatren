@@ -61,6 +61,8 @@ import JamPelajaran from "../content_main_page/content_menu_akademik/JamPelajara
 import JadwalPelajaran from "../content_main_page/content_menu_akademik/JadwalPelajaran";
 import MataPelajaran from "../content_main_page/content_menu_akademik/MataPelajaran";
 import TahunAjaran from "../content_main_page/content_menu_akademik/TahunAjaran";
+import Semester from "../content_main_page/content_menu_akademik/Semester";
+import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -150,6 +152,8 @@ export const menuAkademikItems =[
     { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
     { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
     { id: "tahunajaran", icon: "fa-calendar-check", text: "Tahun Ajaran", link: "/tahun-ajaran", content: <TahunAjaran /> },
+    { id: "semester", icon: "fa-layer-group", text: "Semester", link: "/semester", content: <Semester /> },
+    { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan /> },
 ];
 
 export const tabsFormulir = [
