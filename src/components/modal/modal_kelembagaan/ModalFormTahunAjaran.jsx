@@ -125,6 +125,27 @@ export const ModalAddOrEditTahunAjaran = ({ isOpen, onClose, data, refetchData }
                 return;
             }
 
+            if (response.status === 422) {
+                const validationErrors = result.error;
+                const formattedErrors = Object.values(validationErrors)
+                    .flat()
+                    .map(msg => `<div style="text-align:left">- ${msg}</div>`)
+                    .join("");
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    html: `
+                    <div style="text-align:left">
+                        ${result.message || "Validasi gagal."}
+                        <br /><br />
+                        ${formattedErrors}
+                    </div>
+                `
+                });
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -326,7 +347,7 @@ export const ModalDetailTahunAjaran = ({ isOpen, onClose, id }) => {
 
     useEffect(() => {
         console.log(data);
-        
+
     }, [data])
 
     return (
