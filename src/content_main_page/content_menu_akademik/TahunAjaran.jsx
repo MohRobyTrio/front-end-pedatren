@@ -68,8 +68,8 @@ const TahunAjaran = () => {
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">Tahun Ajaran</th>
-                                        <th className="px-3 py-2 border-b">Jurusan</th>
-                                        <th className="px-3 py-2 border-b">Lembaga</th>
+                                        <th className="px-3 py-2 border-b">Tanggal Mulai</th>
+                                        <th className="px-3 py-2 border-b">Tangal Selesai</th>
                                         <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
