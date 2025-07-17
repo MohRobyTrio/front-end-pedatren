@@ -10,38 +10,36 @@ import useLogout from "../../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 
 const initialFormData = {
-    // Alamat
-    negara: "",
-    provinsi: "",
-    kabupaten: "",
-    kecamatan: "",
-    jalan: "",
-    kode_pos: "",
+	// Biodata
+	negara_id: "",
+	provinsi_id: "",
+	kabupaten_id: "",
+	kecamatan_id: "",
+	jalan: "",
+	kode_pos: "",
+	nama: "",
+	no_passport: "",
+	tanggal_lahir: "",
+	jenis_kelamin: "",
+	tempat_lahir: "",
+	nik: "",
+	no_telepon: "",
+	no_telepon_2: "",
+	email: "",
+	jenjang_pendidikan_terakhir: "",
+	nama_pendidikan_terakhir: "",
+	anak_keberapa: "",
+	dari_saudara: "",
+	wafat: "0", // Default value
 
-    // Biodata
-    nama: "",
-    no_passport: "",
-    tanggal_lahir: "",
-    jenis_kelamin: "",
-    tempat_lahir: "",
-    nik: "",
-    no_telepon: "",
-    no_telepon_2: "",
-    email: "",
-    jenjang_pendidikan_terakhir: "",
-    nama_pendidikan_terakhir: "",
-    anak_keberapa: "",
-    dari_saudara: "",
-    wafat: "0", // Default value
+	// Keluarga
+	no_kk: "",
 
-    // Keluarga
-    no_kk: "",
-
-    // Orangtua
-    id_hubungan_keluarga: "",
-    wali: false, // Default value
-    pekerjaan: "",
-    penghasilan: ""
+	// Orangtua
+	id_hubungan_keluarga: "",
+	wali: false, // Default value
+	pekerjaan: "",
+	penghasilan: "",
 };
 
 export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
@@ -98,10 +96,10 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         if (isOpen) {
             setFormData(prev => ({
                 ...prev,
-                negara: selectedNegara.negara || "",
-                provinsi: selectedNegara.provinsi || "",
-                kabupaten: selectedNegara.kabupaten || "",
-                kecamatan: selectedNegara.kecamatan || ""
+                negara_id: selectedNegara.negara || "",
+                provinsi_id: selectedNegara.provinsi || "",
+                kabupaten_id: selectedNegara.kabupaten || "",
+                kecamatan_id: selectedNegara.kecamatan || ""
             }));
         }
     }, [selectedNegara, isOpen]);
@@ -118,7 +116,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         e.preventDefault();
 
         const requiredFields = [
-            'negara', 'jalan',
+            'negara_id', 'jalan',
             'nama', 'tanggal_lahir', 'jenis_kelamin', 'tempat_lahir', 'email',
             'id_hubungan_keluarga', 'wafat'
         ];
