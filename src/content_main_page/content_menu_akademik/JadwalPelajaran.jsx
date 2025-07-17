@@ -105,7 +105,6 @@ const JadwalPelajaran = () => {
 
             setFilters((prevFilters) => ({
                 ...prevFilters,
-                semester_id: "",
                 hari: ""
             }));
 
@@ -116,7 +115,7 @@ const JadwalPelajaran = () => {
             jurusan_id: selectedLembagaFilter.jurusan,
             kelas_id: selectedLembagaFilter.kelas,
             rombel_id: selectedLembagaFilter.rombel,
-            semester_id: filters.rombel_id ? "" : filters.semester_id
+            // semester_id: filters.rombel_id ? "" : menuSemester[0].value
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedLembagaFilter]);
@@ -282,6 +281,18 @@ const JadwalPelajaran = () => {
         }
     };
 
+    useEffect(() => {
+        console.log("semester",menuSemester);
+        
+        if (menuSemester.length == 1) {
+            setFilters((prev) => ({
+                ...prev,
+                semester_id: menuSemester[0].value
+            }));
+        }
+    }, [menuSemester, filters.rombel_id]);
+
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -313,7 +324,7 @@ const JadwalPelajaran = () => {
                         </div>
 
                         {/* Sort */}
-                        <div className="w-full">
+                        {/* <div className="w-full">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {filters.rombel_id && (
                                     <div className="w-full">
@@ -331,27 +342,14 @@ const JadwalPelajaran = () => {
                                         </select>
                                     </div>
                                 )}
-                                {/* {filters.semester_id && (
-                                    <div className="w-full">
-                                        <select
-                                            className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize"
-                                            value={filters.hari || ""}
-                                            onChange={(e) => setFilters({ ...filters, hari: e.target.value })}
-                                            required
-                                        >
-                                            <option value="">Pilih Hari</option>
-                                            <option value="Senin">Senin</option>
-                                            <option value="Selasa">Selasa</option>
-                                            <option value="Rabu">Rabu</option>
-                                            <option value="Kamis">Kamis</option>
-                                            <option value="Jumat">Jumat</option>
-                                            <option value="Sabtu">Sabtu</option>
-                                            <option value="Minggu">Minggu</option>
-                                        </select>
+                                {filters.rombel_id && menuSemester.length == 1 && (
+                                    <div className="text-gray-700 font-semibold">
+                                        Semester: {menuSemester[0].label}
                                     </div>
-                                )} */}
+                                )}
+
                             </div>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>
