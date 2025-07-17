@@ -104,7 +104,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
             }));
         }
     }, [selectedNegara, isOpen]);
-        useEffect(() => {
+    useEffect(() => {
         if (isOpen) {
             setFormData((prev) => ({
                 ...prev,
@@ -196,6 +196,32 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
 
             const result = await response.json();
 
+            if (response.status == 422 || !("data" in result)) {
+                const validationErrors = result.error;
+
+                let formattedErrors = "";
+
+                if (validationErrors && typeof validationErrors === "object") {
+                    formattedErrors = Object.values(validationErrors)
+                        .flat()
+                        .map(msg => `<div style="text-align:left">- ${msg}</div>`)
+                        .join("");
+                }
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    html: `
+                                    <div style="text-align:left">
+                                        ${result.message || "Validasi gagal."}
+                                        <br /><br />
+                                        ${formattedErrors}
+                                    </div>
+                                `
+                });
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -261,7 +287,6 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
         setFormData((prev) => ({
             ...prev,
             no_passport: value === "wni" ? "" : prev.no_passport,
-            no_kk: value === "wna" ? "" : prev.no_kk,
             nik: value === "wna" ? "" : prev.nik
         }));
     };
