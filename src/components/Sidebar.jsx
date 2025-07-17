@@ -3,91 +3,91 @@ import {
     menuAkademikItems,
     menuDataPokokItems,
     menuItems,
-    // menuKelembagaanItems,
     menuKepegawaianItems,
     menuKepesantrenanItems,
     menuKewaliasuhanItems,
     menuKewilayahanItems,
     menuMahromItems,
+    subKelembagaanItems,
     subPesertaDidik
 } from "../data/menuData";
 import Access from "./Access";
 import { hasAccess } from "../utils/hasAccess";
 
-const Sidebar = ({
-    submenuPesertaDidik,
-    setSubmenuPesertaDidik,
-    dropdownDataPokok,
-    setDropdownDataPokok,
-    dropdownDataKewaliasuhan,
-    setDropdownKewaliasuhan,
-    dropdownDataKepegawaian,
-    setDropdownKepegawaian,
-    dropdownDataKepesantrenan,
-    setDropdownKepesantrenan,
-    dropdownDataMahrom,
-    setDropdownMahrom,
-    // dropdownDataKelembagaan,
-    // setDropdownDataKelembagaan,
-    dropdownDataAkademik,
-    setDropdownDataAkademik,
-    dropdownDataKewilayahan,
-    setDropdownDataKewilayahan,
-    isSidebarOpen,
-    toggleDropdown
-}) => {
+const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const location = useLocation();
 
-    const MenuItem = ({ icon, text, link, onClick }) => {
+    const MenuItem = ({ icon, text, link, onClick, hasSubmenu, isOpen }) => {
         const isActive = location.pathname === link || location.pathname.startsWith(link + "/");
+
         return (
             <li className="mb-0.5 ml-2">
                 <Link
                     to={link}
-                    className={`flex items-center px-3 py-2 rounded-md text-sm transition
-                        ${isActive
+                    className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition
+                    ${isActive
                             ? "bg-blue-100 text-blue-700 font-semibold shadow"
                             : "text-gray-700 font-medium hover:bg-gray-100 hover:text-blue-600"
                         }`}
                     onClick={onClick}
                 >
-                    <i className={`fas ${icon} mr-3 text-base`} />
-                    {text}
+                    <div className="flex items-center">
+                        <i className={`fas ${icon} mr-3 text-base`} />
+                        {text}
+                    </div>
+
+                    {hasSubmenu && (
+                        <i
+                            className={`fas fa-chevron-${isOpen ? "down" : "right"} text-xs text-gray-500 ml-2`}
+                        />
+                    )}
                 </Link>
             </li>
         );
     };
 
+
+    const submenuMap = {
+        pesertadidik: subPesertaDidik,
+        kelembagaan: subKelembagaanItems,
+    };
+
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
-                const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
-                if (item.access && !hasAccess(item.access)) {
-                    return null; // Jangan tampilkan jika tidak ada akses
-                }
+                const isPeserta = item.id == "pesertadidik";
+                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan";
+                const isOpen = dropdowns[item.id];
+
+                if (item.access && !hasAccess(item.access)) return null;
+
                 return (
                     <div key={item.id}>
                         <MenuItem
                             icon={item.icon}
                             text={item.text}
                             link={item.link || `/${item.id}`}
-                            isActive={isActive}
-                            onClick={() => {
-                                if (item.id === "pesertadidik") {
-                                    setSubmenuPesertaDidik(!submenuPesertaDidik);
+                            onClick={(e) => {
+                                if (hasSubmenu && !isPeserta) {
+                                    e.preventDefault(); // Cegah navigasi untuk dropdown lain selain peserta didik
+                                }
+                                if (hasSubmenu) {
+                                    toggleDropdown(item.id);
                                 }
                             }}
+                            hasSubmenu={hasSubmenu}
+                            isOpen={isOpen}
                         />
-                        {item.id === "pesertadidik" && submenuPesertaDidik && <SubMenuDropdownPesertaDidik />}
+                        {hasSubmenu && isOpen && <SubMenuDropdownPesertaDidik subData={submenuMap[item.id]} />}
                     </div>
                 );
             })}
         </ul>
     );
 
-    const SubMenuDropdownPesertaDidik = () => (
+    const SubMenuDropdownPesertaDidik = ({ subData }) => (
         <ul className="ml-7 mt-1">
-            {subPesertaDidik.map((subItem) => {
+            {subData.map((subItem) => {
                 const isActive = location.pathname === subItem.link;
                 return (
                     <li key={subItem.id} className="mb-0.5">
@@ -108,8 +108,6 @@ const Sidebar = ({
         </ul>
     );
 
-
-
     const MenuHeader = ({ name, isOpen, onClick }) => (
         <h2
             className="text-gray-500 text-[11px] font-semibold uppercase tracking-wider flex items-center justify-between px-3 py-2 hover:bg-gray-100 rounded-md cursor-pointer transition"
@@ -122,7 +120,6 @@ const Sidebar = ({
 
     return (
         <aside
-            id="logo-sidebar"
             className={`
                 fixed top-0 left-0 z-40 w-56 h-screen pt-[56px]
                 transition-transform duration-300 ease-in-out
@@ -137,8 +134,7 @@ const Sidebar = ({
                     <nav className="mt-2 px-2">
                         <ul>
                             {menuItems.map((item) => {
-                                const isActive =
-                                    location.pathname === item.link || location.pathname.startsWith(item.link + "/");
+                                const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
                                 return (
                                     <li key={item.id} className="mb-0.5">
                                         <Link
@@ -161,78 +157,67 @@ const Sidebar = ({
                     <div className="mt-3 px-2">
                         <MenuHeader
                             name="Data Pokok"
-                            isOpen={dropdownDataPokok}
-                            onClick={() => toggleDropdown(setDropdownDataPokok)}
+                            isOpen={dropdowns.dataPokok}
+                            onClick={() => toggleDropdown("dataPokok")}
                         />
-                        {dropdownDataPokok && <DropdownMenu items={menuDataPokokItems} />}
+                        {dropdowns.dataPokok && <DropdownMenu items={menuDataPokokItems} />}
                     </div>
 
                     <div className="mt-3 px-2">
                         <MenuHeader
                             name="Kewaliasuhan"
-                            isOpen={dropdownDataKewaliasuhan}
-                            onClick={() => toggleDropdown(setDropdownKewaliasuhan)}
+                            isOpen={dropdowns.kewaliasuhan}
+                            onClick={() => toggleDropdown("kewaliasuhan")}
                         />
-                        {dropdownDataKewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
+                        {dropdowns.kewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
                     </div>
 
                     <div className="mt-3 px-2">
                         <MenuHeader
                             name="Kepesantrenan"
-                            isOpen={dropdownDataKepesantrenan}
-                            onClick={() => toggleDropdown(setDropdownKepesantrenan)}
+                            isOpen={dropdowns.kepesantrenan}
+                            onClick={() => toggleDropdown("kepesantrenan")}
                         />
-                        {dropdownDataKepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
+                        {dropdowns.kepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
                     </div>
 
                     <div className="mt-3 px-2">
                         <MenuHeader
                             name="Kepegawaian"
-                            isOpen={dropdownDataKepegawaian}
-                            onClick={() => toggleDropdown(setDropdownKepegawaian)}
+                            isOpen={dropdowns.kepegawaian}
+                            onClick={() => toggleDropdown("kepegawaian")}
                         />
-                        {dropdownDataKepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
+                        {dropdowns.kepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
                     </div>
 
                     <div className="mt-3 px-2">
                         <MenuHeader
                             name="Mahrom"
-                            isOpen={dropdownDataMahrom}
-                            onClick={() => toggleDropdown(setDropdownMahrom)}
+                            isOpen={dropdowns.mahrom}
+                            onClick={() => toggleDropdown("mahrom")}
                         />
-                        {dropdownDataMahrom && <DropdownMenu items={menuMahromItems} />}
+                        {dropdowns.mahrom && <DropdownMenu items={menuMahromItems} />}
                     </div>
 
                     <Access action="kewilayahan">
                         <div className="mt-3 px-2">
                             <MenuHeader
                                 name="Kewilayahan"
-                                isOpen={dropdownDataKewilayahan}
-                                onClick={() => toggleDropdown(setDropdownDataKewilayahan)}
+                                isOpen={dropdowns.kewilayahan}
+                                onClick={() => toggleDropdown("kewilayahan")}
                             />
-                            {dropdownDataKewilayahan && <DropdownMenu items={menuKewilayahanItems} />}
+                            {dropdowns.kewilayahan && <DropdownMenu items={menuKewilayahanItems} />}
                         </div>
                     </Access>
-
-                    {/* <Access action="kelembagaan">
-                        <div className="mt-3 px-2">
-                            <MenuHeader
-                                name="Kelembagaan"
-                                isOpen={dropdownDataKelembagaan}
-                                onClick={() => toggleDropdown(setDropdownDataKelembagaan)}
-                            />
-                            {dropdownDataKelembagaan && <DropdownMenu items={menuKelembagaanItems} />}
-                        </div>
-                    </Access> */}
 
                     <Access action="akademik">
                         <div className="mt-3 px-2">
                             <MenuHeader
                                 name="Akademik"
-                                isOpen={dropdownDataAkademik}
-                                onClick={() => toggleDropdown(setDropdownDataAkademik)}
+                                isOpen={dropdowns.akademik}
+                                onClick={() => toggleDropdown("akademik")}
                             />
-                            {dropdownDataAkademik && <DropdownMenu items={menuAkademikItems} />}
+                            {dropdowns.akademik && <DropdownMenu items={menuAkademikItems} />}
                         </div>
                     </Access>
                 </div>

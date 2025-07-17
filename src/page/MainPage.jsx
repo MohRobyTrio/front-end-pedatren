@@ -1,38 +1,35 @@
 import { useState, useEffect, useRef, Suspense, useMemo } from 'react';
 // import { Outlet } from "react-router-dom";
 import 'flowbite';
-import { subPesertaDidik } from '../data/menuData';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { KeepAlive, useKeepAliveRef } from 'keepalive-for-react';
 import { useLocation, useOutlet } from 'react-router-dom';
 
 const MainPage = () => {
-    const [dropdownDataPokok, setDropdownDataPokok] = useState(() => sessionStorage.getItem("dropdownDataPokok") === "true");
-    const [submenuPesertaDidik, setSubmenuPesertaDidik] = useState(() => sessionStorage.getItem("submenuPesertaDidik") === "true");
-    const [dropdownDataKewaliasuhan, setDropdownKewaliasuhan] = useState(() => sessionStorage.getItem("dropdownDataKewaliasuhan") === "true");
-    const [dropdownDataKepesantrenan, setDropdownKepesantrenan] = useState(() => sessionStorage.getItem("dropdownDataKepesantrenan") === "true");
-    const [dropdownDataKepegawaian, setDropdownKepegawaian] = useState(() => sessionStorage.getItem("dropdownDataKepegawaian") === "true");
-    const [dropdownDataMahrom, setDropdownMahrom] = useState(() => sessionStorage.getItem("dropdownDataMahrom") === "true");
-    // const [dropdownDataKelembagaan, setDropdownDataKelembagaan] = useState(() => sessionStorage.getItem("dropdownDataKelembagaan") === "true");
-    const [dropdownDataAkademik, setDropdownDataAkademik] = useState(() => sessionStorage.getItem("dropdownDataAkademik") === "true");
-    const [dropdownDataKewilayahan, setDropdownDataKewilayahan] = useState(() => sessionStorage.getItem("dropdownDataKewilayahan") === "true");
-    // const [dropdownDataRWS, setDropdownRWS] = useState(() => sessionStorage.getItem("dropdownDataRWS") === "true");
+    const [dropdowns, setDropdowns] = useState(() => ({
+        dataPokok: sessionStorage.getItem("dataPokok") === "true",
+        kewaliasuhan: sessionStorage.getItem("kewaliasuhan") === "true",
+        kepesantrenan: sessionStorage.getItem("kepesantrenan") === "true",
+        kepegawaian: sessionStorage.getItem("kepegawaian") === "true",
+        mahrom: sessionStorage.getItem("mahrom") === "true",
+        kewilayahan: sessionStorage.getItem("kewilayahan") === "true",
+        akademik: sessionStorage.getItem("akademik") === "true",
+        pesertadidik: sessionStorage.getItem("pesertadidik") === "true",
+    }));
 
     useEffect(() => {
-        sessionStorage.setItem("dropdownDataPokok", dropdownDataPokok);
-        sessionStorage.setItem("submenuPesertaDidik", submenuPesertaDidik);
-        sessionStorage.setItem("dropdownDataKewaliasuhan", dropdownDataKewaliasuhan);
-        sessionStorage.setItem("dropdownDataKepesantrenan", dropdownDataKepesantrenan);
-        sessionStorage.setItem("dropdownDataKepegawaian", dropdownDataKepegawaian);
-        sessionStorage.setItem("dropdownDataMahrom", dropdownDataMahrom);
-        // sessionStorage.setItem("dropdownDataKelembagaan", dropdownDataKelembagaan);
-        sessionStorage.setItem("dropdownDataAkademik", dropdownDataAkademik);
-        sessionStorage.setItem("dropdownDataKewilayahan", dropdownDataKewilayahan);
-        // sessionStorage.setItem("dropdownDataRWS", dropdownDataRWS);
-    }, [dropdownDataPokok, submenuPesertaDidik, dropdownDataKewaliasuhan, dropdownDataKepesantrenan, dropdownDataKepegawaian, dropdownDataMahrom, dropdownDataAkademik, dropdownDataKewilayahan]);
+        Object.entries(dropdowns).forEach(([key, value]) => {
+            sessionStorage.setItem(key, value);
+        });
+    }, [dropdowns]);
 
-    const toggleDropdown = (setter) => setter((prev) => !prev);
+    const toggleDropdown = (key) => {
+        setDropdowns(prev => ({
+            ...prev,
+            [key]: !prev[key]
+        }));
+    };
 
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -45,7 +42,7 @@ const MainPage = () => {
     const toggleSidebar = () => {
         console.log("klik");
         console.log(isSidebarOpen);
-        
+
         setIsSidebarOpen(prev => !prev)
         console.log(isSidebarOpen);
     };
@@ -92,7 +89,7 @@ const MainPage = () => {
                     toggleButtonRef={toggleButtonRef}
                 />
                 <div ref={sidebarRef}>
-                    <Sidebar
+                    {/* <Sidebar
                         submenuPesertaDidik={subPesertaDidik}
                         setSubmenuPesertaDidik={setSubmenuPesertaDidik}
                         dropdownDataPokok={dropdownDataPokok}
@@ -115,7 +112,13 @@ const MainPage = () => {
                         setDropdownDataKewilayahan={setDropdownDataKewilayahan}
                         isSidebarOpen={isSidebarOpen}
                         toggleDropdown={toggleDropdown}
+                    /> */}
+                    <Sidebar
+                        dropdowns={dropdowns}
+                        toggleDropdown={toggleDropdown}
+                        isSidebarOpen={isSidebarOpen}
                     />
+
                 </div>
 
                 <div className="pr-6 sm:ml-56 overflow-y-auto overflow-x-hidden w-full max-w-full">
