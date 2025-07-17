@@ -123,23 +123,28 @@ export const ModalAddOrEditSemester = ({ isOpen, onClose, data, refetchData }) =
                 return;
             }
 
-            if (response.status === 422) {
+            if (response.status == 422) {
                 const validationErrors = result.error;
-                const formattedErrors = Object.values(validationErrors)
-                    .flat()
-                    .map(msg => `<div style="text-align:left">- ${msg}</div>`)
-                    .join("");
+
+                let formattedErrors = "";
+
+                if (validationErrors && typeof validationErrors === "object") {
+                    formattedErrors = Object.values(validationErrors)
+                        .flat()
+                        .map(msg => `<div style="text-align:left">- ${msg}</div>`)
+                        .join("");
+                }
 
                 await Swal.fire({
                     icon: "error",
                     title: "Validasi Gagal",
                     html: `
-                    <div style="text-align:left">
-                        ${result.message || "Validasi gagal."}
-                        <br /><br />
-                        ${formattedErrors}
-                    </div>
-                `
+                        <div style="text-align:left">
+                            ${result.message || "Validasi gagal."}
+                            <br /><br />
+                            ${formattedErrors}
+                        </div>
+                    `
                 });
                 return;
             }
@@ -219,7 +224,7 @@ export const ModalAddOrEditSemester = ({ isOpen, onClose, data, refetchData }) =
                                                     <label htmlFor="tahun_ajaran_id" className="block text-gray-700">Tahun Ajaran *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({...formData, tahun_ajaran_id: e.target.value })}
+                                                        onChange={(e) => setFormData({ ...formData, tahun_ajaran_id: e.target.value })}
                                                         value={formData.tahun_ajaran_id}
                                                         required
                                                     >
@@ -235,12 +240,12 @@ export const ModalAddOrEditSemester = ({ isOpen, onClose, data, refetchData }) =
                                                     <label htmlFor="semester" className="block text-gray-700">Semester *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                                        onChange={(e) => setFormData({...formData, semester: e.target.value })}
+                                                        onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                                                         value={formData.semester}
                                                         required
                                                     >
                                                         <option value="">Pilih Semester</option>
-                                                        <option value="ganjil">Ganjil</option>                                                    
+                                                        <option value="ganjil">Ganjil</option>
                                                         <option value="genap">Genap</option>
                                                     </select>
                                                 </div>
