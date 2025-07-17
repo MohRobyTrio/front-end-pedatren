@@ -103,6 +103,15 @@ const TabBiodata = () => {
         }
     });
 
+    const [selectedTinggal, setSelectedTinggal] = useState('');
+    const [lainnyaValue, setLainnyaValue] = useState('');
+    const isLainnya = selectedTinggal === 'Lainnya';
+
+    useEffect(() => {
+        setValue("tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTinggal, lainnyaValue, setValue]);
+
     const nilaiPenghasilan = watch('penghasilan');
 
     useEffect(() => {
@@ -247,6 +256,32 @@ const TabBiodata = () => {
             }
             if (biodata.kecamatan_id) {
                 handleFilterChangeNegara({ kecamatan: biodata.kecamatan_id.toString() });
+            }
+
+            const tinggalOptions = [
+                "Bersama orang tua",
+                "Bersama kerabat",
+                "Bersama wali",
+                "Kos/kontrakan",
+                "Panti Asuhan",
+            ];
+
+            const tinggalBersama = biodata.tinggal_bersama || '';
+
+            if (tinggalOptions.includes(tinggalBersama)) {
+                setSelectedTinggal(tinggalBersama);
+                setLainnyaValue('');
+                setValue("tinggal_bersama", tinggalBersama); // langsung set ke form
+            } else if (tinggalBersama) {
+                setSelectedTinggal("Lainnya");
+                setLainnyaValue(tinggalBersama);
+                setValue("tinggal_bersama", tinggalBersama); // langsung set ke form
+                console.log(lainnyaValue);
+
+            } else {
+                setSelectedTinggal('');
+                setLainnyaValue('');
+                setValue("tinggal_bersama", '');
             }
 
             // Set photo preview jika ada
@@ -420,28 +455,28 @@ const TabBiodata = () => {
             if (!response.ok || result.errors) {
                 const backendErrors = result.errors;
 
-    const translateError = (key, value) => {
-        const translations = {
-            'validation.email': 'Format email tidak valid',
-            'validation.required': `${key} wajib diisi`,
-            // Tambah error lain sesuai backend
-        };
-        return translations[value] || value;
-    };
+                const translateError = (key, value) => {
+                    const translations = {
+                        'validation.email': 'Format email tidak valid',
+                        'validation.required': `${key} wajib diisi`,
+                        // Tambah error lain sesuai backend
+                    };
+                    return translations[value] || value;
+                };
 
-    const errorList = Object.keys(backendErrors)
-        .map(key => {
-            const raw = backendErrors[key][0];
-            const translated = translateError(key, raw);
-            return `<li><strong>${key}</strong>: ${translated}</li>`;
-        })
-        .join("");
+                const errorList = Object.keys(backendErrors)
+                    .map(key => {
+                        const raw = backendErrors[key][0];
+                        const translated = translateError(key, raw);
+                        return `<li><strong>${key}</strong>: ${translated}</li>`;
+                    })
+                    .join("");
 
-    await Swal.fire({
-        icon: "error",
-        title: "Validasi Gagal",
-        html: `<ul style="text-align: center;">${errorList}</ul>`,
-    });
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    html: `<ul style="text-align: center;">${errorList}</ul>`,
+                });
                 return;
             }
 
@@ -807,7 +842,7 @@ const TabBiodata = () => {
                     <hr className="border-t border-gray-300 my-4" />
 
                     {/* Tinggal Bersama */}
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    {/* <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="tinggal_bersama" className="lg:w-1/4 text-black">
                             Tinggal Bersama
                         </label>
@@ -821,6 +856,46 @@ const TabBiodata = () => {
                                     {...register('tinggal_bersama')}
                                 />
                             </div>
+                        </div>
+                    </div> */}
+                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <label htmlFor="tinggal_bersama" className="md:w-1/4 text-black">
+                            Tinggal Bersama
+                        </label>
+
+                        <div className="lg:w-3/4 max-w-md space-y-2">
+                            {/* Select Dropdown */}
+                            <div className="rounded-md shadow-md bg-white border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    className="w-full py-1.5 pr-3 pl-3 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                    value={selectedTinggal}
+                                    onChange={(e) => setSelectedTinggal(e.target.value)}
+                                >
+                                    <option value="">-- Pilih Tinggal Bersama --</option>
+                                    <option value="Bersama orang tua">Bersama orang tua</option>
+                                    <option value="Bersama kerabat">Bersama kerabat</option>
+                                    <option value="Bersama wali">Bersama wali</option>
+                                    <option value="Kos/kontrakan">Kos/kontrakan</option>
+                                    <option value="Panti Asuhan">Panti Asuhan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            {/* Input jika pilih "Lainnya" */}
+                            {isLainnya && (
+                                <div className="rounded-md shadow-md bg-white border border-gray-300 focus-within:border-gray-500">
+                                    <input
+                                        type="text"
+                                        placeholder="Tinggal bersama siapa?"
+                                        className="w-full py-1.5 pr-3 pl-3 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                        value={lainnyaValue}
+                                        onChange={(e) => setLainnyaValue(e.target.value)}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Hidden input untuk register */}
+                            <input type="hidden" {...register("tinggal_bersama")} />
                         </div>
                     </div>
 
@@ -892,7 +967,7 @@ const TabBiodata = () => {
                                 <input
                                     id="telepon1"
                                     type="text"
-                                    placeholder="+62"
+                                    placeholder="08"
                                     className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                     {...register('telepon1')}
                                 />
@@ -913,7 +988,7 @@ const TabBiodata = () => {
                                 <input
                                     id="telepon2"
                                     type="text"
-                                    placeholder="+62"
+                                    placeholder="08"
                                     className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                     {...register('telepon2')}
                                 />

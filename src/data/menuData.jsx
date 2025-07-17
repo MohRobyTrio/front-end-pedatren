@@ -145,9 +145,9 @@ export const menuAkademikItems =[
     // { id: "alumnisantri", icon: "fa-user-graduate", text: "Alumni Santri", link: "/alumni-santri", content: <AlumniSantri /> },
     // { id: "presensisantri", icon: "fa-calendar-check", text: "Presensi Santri", link: "/presensi-santri", content: <PresensiSantri /> }
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
-    { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/mata-pelajaran", content: <MataPelajaran /> },
-    { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
-    { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
+    { id: "pelajaran", icon: "fa-book-open", text: "Pelajaran", link: "/pelajaran", content: <MataPelajaran /> },
+    // { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
+    // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
     { id: "tahunajaran", icon: "fa-calendar-check", text: "Tahun Ajaran", link: "/tahun-ajaran", content: <TahunAjaran /> },
     { id: "semester", icon: "fa-layer-group", text: "Semester", link: "/semester", content: <Semester /> },
     { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan /> },
@@ -158,6 +158,12 @@ export const subKelembagaanItems = [
     { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/kelembagaan/jurusan", content: <Jurusan /> },
     { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelembagaan/kelas", content: <Kelas /> },
     { id: "rombel", icon: "fa-users", text: "Rombel", link: "/kelembagaan/rombel", content: <Rombel /> },
+];
+
+export const subPelajaranItems = [
+    { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/pelajaran/mata-pelajaran", content: <MataPelajaran /> },
+    { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/pelajaran/jam-pelajaran", content: <JamPelajaran /> },
+    { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/pelajaran/jadwal-pelajaran", content: <JadwalPelajaran /> },
 ];
 
 export const tabsFormulir = [

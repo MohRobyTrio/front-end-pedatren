@@ -23,6 +23,10 @@ export function useMultiStepFormKhadam(onClose, refetchData) {
         formState: { errors },
     } = useForm();
 
+    const [selectedTinggal, setSelectedTinggal] = useState('');
+    const [lainnyaValue, setLainnyaValue] = useState('');
+    const isLainnya = selectedTinggal === 'Lainnya';
+
     const watchedValues = watch();
 
     useEffect(() => {
@@ -157,6 +161,8 @@ export function useMultiStepFormKhadam(onClose, refetchData) {
 
     const resetData = () => {
         reset({ modalKhadam: {} });
+        setLainnyaValue('')
+        setSelectedTinggal('')
         setActiveTab(0);
         setUnlockedTabs([0]);
     };
@@ -176,5 +182,10 @@ export function useMultiStepFormKhadam(onClose, refetchData) {
         prevStep,
         onValidSubmit,
         onInvalidSubmit,
+        selectedTinggal,
+        setSelectedTinggal,
+        isLainnya,
+        setLainnyaValue,
+        lainnyaValue
     };
 }

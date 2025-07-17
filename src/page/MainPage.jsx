@@ -37,6 +37,7 @@ const MainPage = () => {
     const sidebarRef = useRef(null);
     const profilRef = useRef(null);
     const toggleButtonRef = useRef(null);
+    const contentRef = useRef(null);
 
     const toggleDropdownProfil = () => setIsOpen(prev => !prev);
     const toggleSidebar = () => {
@@ -76,6 +77,13 @@ const MainPage = () => {
     const currentCacheKey = useMemo(() => location.pathname, [location.pathname]);
 
     // console.log(location.pathname)
+        useEffect(() => {
+        if (contentRef.current) {
+            contentRef.current.scrollTo(0, 0);
+        } else {
+            window.scrollTo(0, 0);
+        }
+    }, [location.pathname]);
 
     return (
         <>
@@ -89,30 +97,6 @@ const MainPage = () => {
                     toggleButtonRef={toggleButtonRef}
                 />
                 <div ref={sidebarRef}>
-                    {/* <Sidebar
-                        submenuPesertaDidik={subPesertaDidik}
-                        setSubmenuPesertaDidik={setSubmenuPesertaDidik}
-                        dropdownDataPokok={dropdownDataPokok}
-                        setDropdownDataPokok={setDropdownDataPokok}
-                        dropdownDataKewaliasuhan={dropdownDataKewaliasuhan}
-                        setDropdownKewaliasuhan={setDropdownKewaliasuhan}
-                        dropdownDataKepegawaian={dropdownDataKepegawaian}
-                        setDropdownKepegawaian={setDropdownKepegawaian}
-                        dropdownDataKepesantrenan={dropdownDataKepesantrenan}
-                        setDropdownKepesantrenan={setDropdownKepesantrenan}
-                        dropdownDataMahrom={dropdownDataMahrom}
-                        setDropdownMahrom={setDropdownMahrom}
-                        // dropdownDataRWS={dropdownDataRWS}
-                        // setDropdownRWS={setDropdownRWS}
-                        // dropdownDataKelembagaan={dropdownDataKelembagaan}
-                        // setDropdownDataKelembagaan={setDropdownDataKelembagaan}
-                        dropdownDataAkademik={dropdownDataAkademik}
-                        setDropdownDataAkademik={setDropdownDataAkademik}
-                        dropdownDataKewilayahan={dropdownDataKewilayahan}
-                        setDropdownDataKewilayahan={setDropdownDataKewilayahan}
-                        isSidebarOpen={isSidebarOpen}
-                        toggleDropdown={toggleDropdown}
-                    /> */}
                     <Sidebar
                         dropdowns={dropdowns}
                         toggleDropdown={toggleDropdown}
@@ -121,7 +105,7 @@ const MainPage = () => {
 
                 </div>
 
-                <div className="pr-6 sm:ml-56 overflow-y-auto overflow-x-hidden w-full max-w-full">
+                <div ref={contentRef} className="pr-6 sm:ml-56 overflow-y-auto overflow-x-hidden w-full max-w-full">
                     <div className="pt-8 mt-8">
                         {/* <Outlet /> */}
                         <KeepAlive

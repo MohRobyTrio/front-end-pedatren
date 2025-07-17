@@ -12,6 +12,7 @@ import {
   menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
   menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems, 
   subKelembagaanItems, 
+  subPelajaranItems, 
   // menuRWSItems, 
   subPesertaDidik, tabsFormulir
 } from './data/menuData';
@@ -145,7 +146,8 @@ function App() {
               // ...menuKelembagaanItems,
               ...menuAkademikItems,
               ...menuKewilayahanItems,
-              ...subKelembagaanItems
+              ...subKelembagaanItems,
+              ...subPelajaranItems
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}

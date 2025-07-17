@@ -7,7 +7,7 @@ import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useMultiStepFormPegawai = ( onClose, refetchData ) => {
+const useMultiStepFormPegawai = (onClose, refetchData) => {
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0]);
   const { clearAuthData } = useLogout();
@@ -22,6 +22,10 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
     control,
     formState: { errors },
   } = useForm();
+
+  const [selectedTinggal, setSelectedTinggal] = useState("");
+  const [lainnyaValue, setLainnyaValue] = useState("");
+  const isLainnya = selectedTinggal === "Lainnya";
 
   const watchedValues = watch();
 
@@ -71,16 +75,16 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
 
       if (!confirmResult.isConfirmed) return;
       Swal.fire({
-                background: "transparent",    // tanpa bg putih box
-                showConfirmButton: false,     // tanpa tombol
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                customClass: {
-                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
-                }
-            });
+        background: "transparent", // tanpa bg putih box
+        showConfirmButton: false, // tanpa tombol
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        customClass: {
+          popup: "p-0 shadow-none border-0 bg-transparent", // hilangkan padding, shadow, border, bg
+        },
+      });
 
       const formData = new FormData();
 
@@ -129,15 +133,18 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
       });
 
       berkas.forEach((b, i) => {
-                formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
-                formData.append(`berkas[${i}][file_path]`, b.file);
-            });
+        formData.append(`berkas[${i}][jenis_berkas_id]`, b.jenis_berkas_id);
+        formData.append(`berkas[${i}][file_path]`, b.file);
+      });
 
-            for (var pair of formData.entries()) {
-                console.log(pair[0]+ ':', pair[1]);
-            }
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ":", pair[1]);
+      }
 
-            console.log("Payload yang dikirim ke API:", JSON.stringify(formData.mata_pelajaran, null, 2));
+      console.log(
+        "Payload yang dikirim ke API:",
+        JSON.stringify(formData.mata_pelajaran, null, 2)
+      );
       // === Eksekusi API ===
       const token = getCookie("token") || sessionStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}crud/pegawai`, {
@@ -155,17 +162,17 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
       Swal.close();
       // === Cek response ===
       if (response.status == 401 && !window.sessionExpiredShown) {
-                window.sessionExpiredShown = true;
-                await Swal.fire({
-                    title: "Sesi Berakhir",
-                    text: "Sesi anda telah berakhir, silakan login kembali.",
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                });
-                clearAuthData();
-                navigate("/login");
-                return;
-            }
+        window.sessionExpiredShown = true;
+        await Swal.fire({
+          title: "Sesi Berakhir",
+          text: "Sesi anda telah berakhir, silakan login kembali.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        clearAuthData();
+        navigate("/login");
+        return;
+      }
       if (!response.ok) {
         const errorMessages = [];
 
@@ -200,7 +207,6 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
           result.message || result.error || "Gagal mengirim data"
         );
       }
-
 
       await Swal.fire({
         icon: "success",
@@ -252,6 +258,8 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
 
   const resetData = () => {
     const currentModalPegawai = watch("modalPegawai") || {};
+    setLainnyaValue('')
+    setSelectedTinggal('')
 
     const allFields = {
       ...Object.fromEntries(
@@ -282,6 +290,11 @@ const useMultiStepFormPegawai = ( onClose, refetchData ) => {
     prevStep,
     onValidSubmit,
     onInvalidSubmit,
+    selectedTinggal,
+    setSelectedTinggal,
+    isLainnya,
+    setLainnyaValue,
+    lainnyaValue,
   };
 };
 

@@ -428,6 +428,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                                         placeholder="Masukkan No.Passport"
                                                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                                                         disabled={kewarganegaraan === 'wni'}
+                                                                        required={kewarganegaraan != 'wni'}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -464,12 +465,18 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                                         id="nik"
                                                                         name="nik"
                                                                         type="text"
+                                                                        minLength={16}
+                                                                        maxLength={16}
+                                                                        inputMode="numeric"
+                                                                        onInput={(e) => {
+                                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                                        }}
                                                                         value={formData.nik}
                                                                         onChange={handleChange}
-                                                                        maxLength={16}
                                                                         placeholder="Masukkan NIK"
                                                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                                                         disabled={kewarganegaraan === 'wna'}
+                                                                        required={kewarganegaraan != 'wna'}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -836,9 +843,13 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                                         id="kode_pos"
                                                                         name="kode_pos"
                                                                         type="text"
+                                                                        maxLength={10}
+                                                                        inputMode="numeric"
+                                                                        onInput={(e) => {
+                                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                                        }}
                                                                         value={formData.kode_pos}
                                                                         onChange={handleChange}
-                                                                        maxLength={10}
                                                                         placeholder="Masukkan Kode Pos"
                                                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                                                     />

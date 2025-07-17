@@ -11,9 +11,12 @@ import Pagination from "../../components/Pagination";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { FaFileExport } from "react-icons/fa";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 const WaliAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
     const openModal = (item) => {
@@ -173,14 +176,47 @@ const WaliAsuh = () => {
         ]
     };
 
+    const fieldsExports = [
+        { label: "No. KK", value: "no_kk" },
+        { label: "NIK", value: "nik" },
+        { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        { label: "Anak ke", value: "anak_ke" },
+        { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        { label: "Domisili Santri", value: "domisili_santri" },
+        // { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        { label: "Pendidikan", value: "pendidikan" },
+        { label: "Status", value: "status" },
+        { label: "Ibu Kandung", value: "ibu_kandung" },
+        // { label: "Ayah Kandung", value: "ayah_kandung" }
+    ];
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Wali Asuh</h1>
-                {/* <div className="flex items-center space-x-2">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                    <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
-                </div> */}
+                <div className="flex items-center space-x-2">
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                        <FaFileExport />
+                        <span>Export</span>
+                    </button>
+                    {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -306,6 +342,8 @@ const WaliAsuh = () => {
                         </DoubleScrollbarTable>
                     )
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/waliasuh" /> 
 
                 {isModalOpen && (
                     <ModalDetail

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
+const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTinggal, setSelectedTinggal, setLainnyaValue, isLainnya }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
@@ -30,19 +30,19 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
         console.log("handle");
 
         if (negara) {
-            console.log("negara handle ",negara);
+            console.log("negara handle ", negara);
             handleFilterChangeNegara({ negara: negara });
         }
         if (provinsi) {
-            console.log("provinsi handle ",provinsi);
+            console.log("provinsi handle ", provinsi);
             handleFilterChangeNegara({ provinsi: provinsi });
         }
         if (kabupaten) {
-            console.log("kabupaten handle ",kabupaten);
+            console.log("kabupaten handle ", kabupaten);
             handleFilterChangeNegara({ kabupaten: kabupaten });
         }
         if (kecamatan) {
-            console.log("kecamatan handle ",kecamatan);
+            console.log("kecamatan handle ", kecamatan);
             handleFilterChangeNegara({ kecamatan: kecamatan });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -257,7 +257,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
                                 name="tempatLahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
-                                {...register('modalPeserta.tempat_lahir', { required: true })} 
+                                {...register('modalPeserta.tempat_lahir', { required: true })}
                                 required
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -321,18 +321,36 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
                         Tinggal Bersama
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                        <select
+                            className="w-full py-1.5 px-2 text-base text-gray-900 placeholder:text-gray-400 border border-gray-300 rounded-md shadow-sm"
+                            value={selectedTinggal}
+                            onChange={(e) => setSelectedTinggal(e.target.value)}
+                        >
+                            <option value="">-- Pilih Tinggal Bersama --</option>
+                            <option value="Bersama orang tua">Bersama orang tua</option>
+                            <option value="Bersama kerabat">Bersama kerabat</option>
+                            <option value="Bersama wali">Bersama wali</option>
+                            <option value="Kos/kontrakan">Kos/kontrakan</option>
+                            <option value="Panti Asuhan">Panti Asuhan</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+
+                        {isLainnya && (
                             <input
-                                id="tinggal_bersama"
-                                name="tinggal_bersama"
                                 type="text"
-                                placeholder="Masukkan Tinggal Bersama"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.tinggal_bersama")}
+                                placeholder="Tinggal bersama siapa?"
+                                className="w-full mt-2 py-1.5 px-2 text-base text-gray-900 placeholder:text-gray-400 border border-gray-300 rounded-md shadow-sm"
+                                onChange={(e) => setLainnyaValue(e.target.value)}
                             />
-                        </div>
+                        )}
+
+                        <input
+                            type="hidden"
+                            {...register("modalPeserta.tinggal_bersama")}
+                        />
                     </div>
                 </div>
+
 
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
@@ -399,7 +417,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");
                                 }}
-                                placeholder="+62"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPeserta.no_telepon", { required: true })}
                                 required
@@ -424,7 +442,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab }) => {
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");
                                 }}
-                                placeholder="+62"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPeserta.no_telepon_2")}
                             />

@@ -22,6 +22,10 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
         formState: { errors },
     } = useForm();
 
+    const [selectedTinggal, setSelectedTinggal] = useState('');
+    const [lainnyaValue, setLainnyaValue] = useState('');
+    const isLainnya = selectedTinggal === 'Lainnya';
+
     const watchedValues = watch();
 
     useEffect(() => {
@@ -238,6 +242,8 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
     const resetData = () => {
         const currentModalPeserta = watch("modalPeserta") || {};
+        setLainnyaValue('')
+        setSelectedTinggal('')
 
         const allFields = {
             ...Object.fromEntries(Object.keys(currentModalPeserta).map(key => [key, ""])),
@@ -264,5 +270,10 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
         prevStep,
         onValidSubmit,
         onInvalidSubmit,
+        selectedTinggal,
+        setSelectedTinggal,
+        isLainnya,
+        setLainnyaValue,
+        lainnyaValue
     };
 }

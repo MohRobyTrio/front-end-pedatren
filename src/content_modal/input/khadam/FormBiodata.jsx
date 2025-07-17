@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab }) => {
+const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab, selectedTinggal, setSelectedTinggal, setLainnyaValue, isLainnya }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
@@ -321,16 +321,34 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab }) =>
                         Tinggal Bersama
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                        <select
+                            className="w-full py-1.5 px-2 text-base text-gray-900 placeholder:text-gray-400 border border-gray-300 rounded-md shadow-sm"
+                            value={selectedTinggal}
+                            onChange={(e) => setSelectedTinggal(e.target.value)}
+                        >
+                            <option value="">-- Pilih Tinggal Bersama --</option>
+                            <option value="Bersama orang tua">Bersama orang tua</option>
+                            <option value="Bersama kerabat">Bersama kerabat</option>
+                            <option value="Bersama wali">Bersama wali</option>
+                            <option value="Kos/kontrakan">Kos/kontrakan</option>
+                            <option value="Panti Asuhan">Panti Asuhan</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+
+                        {isLainnya && (
                             <input
-                                id="tinggal_bersama"
-                                name="tinggal_bersama"
                                 type="text"
-                                placeholder="Masukkan Tinggal Bersama"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalKhadam.tinggal_bersama")}
+                                placeholder="Tinggal bersama siapa?"
+                                className="w-full mt-2 py-1.5 px-2 text-base text-gray-900 placeholder:text-gray-400 border border-gray-300 rounded-md shadow-sm"
+                                onChange={(e) => setLainnyaValue(e.target.value)}
                             />
-                        </div>
+                        )}
+
+                        {/* Hidden input terdaftar ke register */}
+                        <input
+                            type="hidden"
+                            {...register("modalKhadam.tinggal_bersama")}
+                        />
                     </div>
                 </div>
 
@@ -399,7 +417,7 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab }) =>
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");
                                 }}
-                                placeholder="+62"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalKhadam.no_telepon", { required: true })}
                                 required
@@ -424,7 +442,7 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab }) =>
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");
                                 }}
-                                placeholder="+62"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalKhadam.no_telepon_2")}
                             />

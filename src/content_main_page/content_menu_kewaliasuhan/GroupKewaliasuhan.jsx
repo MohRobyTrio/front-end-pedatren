@@ -11,14 +11,16 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaPlus } from "react-icons/fa";
 import Access from "../../components/Access";
 import { useNavigate } from "react-router-dom";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 
 const GroupKewaliasuhan = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [filters, setFilters] = useState({
         wilayah: "",
         jenisKelamin: "",
@@ -186,6 +188,32 @@ const GroupKewaliasuhan = () => {
         ]
     };
 
+    const fieldsExports = [
+        { label: "No. KK Wali Asuh", value: "no_kk" },
+        { label: "NIK Wali Asuh", value: "nik" },
+        { label: "NIUP Wali Asuh", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        // { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        // { label: "Anak ke", value: "anak_ke" },
+        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        // { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        // { label: "Domisili Santri", value: "domisili_santri" },
+        // { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        // { label: "Pendidikan", value: "pendidikan" },
+        // { label: "Status", value: "status" },
+        // { label: "Ibu Kandung", value: "ibu_kandung" },
+        // { label: "Ayah Kandung", value: "ayah_kandung" }
+    ];
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -203,6 +231,14 @@ const GroupKewaliasuhan = () => {
                             <FaPlus /> Tambah Grup
                         </button>
                     </Access>
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                        <FaFileExport />
+                        <span>Export</span>
+                    </button>
                 </div>
             </div>
 
@@ -299,6 +335,8 @@ const GroupKewaliasuhan = () => {
                         </table>
                     </DoubleScrollbarTable>
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/grupwaliasuh" /> 
 
                 {/* Modal untuk tambah/edit grup */}
                 <ModalFormGrupWaliAsuh

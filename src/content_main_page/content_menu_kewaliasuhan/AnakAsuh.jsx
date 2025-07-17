@@ -11,20 +11,23 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { FaFileExport } from "react-icons/fa";
+import { ModalExport } from "../../components/modal/ModalExport";
 
 const AnakAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -96,68 +99,101 @@ const AnakAsuh = () => {
     const filterJenisKelamin = {
         // Sudah
         jenisKelamin: [
-          { label: "Pilih Jenis Kelamin", value: "" },
-          { label: "Laki-laki", value: "laki-laki" },
-          { label: "Perempuan", value: "perempuan" }
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" }
         ],
         // Sudah
         status: [
-          { label: "Semua Status", value: "" },
-          { label: "Santri", value: "santri" },
-          { label: "Santri Non Pelajar", value: "santri non pelajar" },
-          { label: "Pelajar", value: "pelajar" },
-          { label: "Pelajar Non Santri", value: "pelajar non santri" },
-          { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+            { label: "Semua Status", value: "" },
+            { label: "Santri", value: "santri" },
+            { label: "Santri Non Pelajar", value: "santri non pelajar" },
+            { label: "Pelajar", value: "pelajar" },
+            { label: "Pelajar Non Santri", value: "pelajar non santri" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
         angkatan: generateDropdownTahun({
             placeholder: "Semua Angkatan",
             labelTemplate: "Tahun {year}"
         }),
-      }
-    
-      const filter5 = {
+    }
+
+    const filter5 = {
         // Sudah
         wargaPesantren: [
-          { label: "Warga Pesantren", value: "" },
-          { label: "Memiliki NIUP", value: "memiliki niup" },
-          { label: "Tanpa NIUP", value: "tanpa niup" }
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" }
         ],
         // Sudah
         urutBerdasarkan: [
-          { label: "Urut Berdasarkan", value: "" },
-          { label: "Nama", value: "nama" },
-          { label: "NIUP", value: "niup" },
-          { label: "Jenis Kelamin", value: "jenis_kelamin" },
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIUP", value: "niup" },
+            { label: "Jenis Kelamin", value: "jenis_kelamin" },
         ],
         // Sudah
         urutSecara: [
-          { label: "Urut Secara", value: "" },
-          { label: "A-Z / 0-9 (Ascending)", value: "asc" },
-          { label: "Z-A / 9-0 (Descending)", value: "desc" }
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" }
         ]
-      }
-    
-      const filterSmartcardPhone = {
+    }
+
+    const filterSmartcardPhone = {
         smartcard: [
-          { label: "Smartcard", value: "" },
-          { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-          { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+            { label: "Smartcard", value: "" },
+            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
         phoneNumber: [
-          { label: "Phone Number", value: "" },
-          { label: "Memiliki Phone Number", value: "memiliki phone number" },
-          { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
-      };
+    };
+
+    const fieldsExports = [
+        { label: "No. KK", value: "no_kk" },
+        { label: "NIK", value: "nik" },
+        { label: "NIUP", value: "niup" },
+        // { label: "Nama", value: "nama" },
+        { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
+        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
+        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
+        { label: "Anak ke", value: "anak_ke" },
+        { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        { label: "Alamat", value: "alamat" },
+        // { label: "NIS", value: "nis" },
+        { label: "Domisili Santri", value: "domisili_santri" },
+        // { label: "Angkatan Santri", value: "angkatan_santri" },
+        // { label: "No Induk", value: "no_induk" },
+        // { label: "Lembaga", value: "lembaga" },
+        // { label: "Jurusan", value: "jurusan" },
+        // { label: "Kelas", value: "kelas" },
+        // { label: "Rombel", value: "rombel" },
+        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
+        { label: "Pendidikan", value: "pendidikan" },
+        { label: "Status", value: "status" },
+        { label: "Ibu Kandung", value: "ibu_kandung" },
+        // { label: "Ayah Kandung", value: "ayah_kandung" }
+    ];
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Anak Asuh</h1>
-                {/* <div className="flex items-center space-x-2">
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
-                    <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
-                </div> */}
+                <div className="flex items-center space-x-2">
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                    >
+                        <FaFileExport />
+                        <span>Export</span>
+                    </button>
+                    {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -196,7 +232,7 @@ const AnakAsuh = () => {
                             <p className="text-center col-span-3">Tidak ada data</p>
                         ) : (
                             anakAsuh.map((item, index) => (
-                                <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer"  onClick={() => openModal(item)}>
+                                <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                     <img
                                         alt={item.nama || "-"}
                                         className="w-20 h-24 object-cover"
@@ -251,7 +287,7 @@ const AnakAsuh = () => {
                                     <tr><td colSpan="9" className="py-6">Tidak ada data</td></tr>
                                 ) : (
                                     anakAsuh.map((item, index) => (
-                                        <tr key={item.id || index} className="hover:bg-gray-50 text-left cursor-pointer"  onClick={() => openModal(item)}>
+                                        <tr key={item.id || index} className="hover:bg-gray-50 text-left cursor-pointer" onClick={() => openModal(item)}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
@@ -268,6 +304,8 @@ const AnakAsuh = () => {
                         </table>
                     </DoubleScrollbarTable>
                 )}
+
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/anakasuh" /> 
 
                 {isModalOpen && (
                     <ModalDetail

@@ -1,7 +1,7 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from "react-icons/fa";
 import FormBiodata from "../../content_modal/input/pegawai/FormBiodata";
 import FormKaryawan from "../../content_modal/input/pegawai/FormKaryawan";
@@ -12,7 +12,11 @@ import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
 import { jenisBerkasList } from "../../data/menuData";
 
 const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
-    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit } = formState;
+    const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit, selectedTinggal,
+        setSelectedTinggal,
+        isLainnya,
+        setLainnyaValue,
+        lainnyaValue } = formState;
     const [biodataHandlers, setBiodataHandlers] = useState({});
 
     const handleReset = () => {
@@ -22,11 +26,24 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
         }
     };
 
+    const contentRef = useRef(null);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = 0;
+        }
+    }, [activeTab]);
+
+    useEffect(() => {
+        setValue("modalPegawai.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTinggal, lainnyaValue, setValue]);
+
     const tabs = [
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} exposeHandler={(handlers) => setBiodataHandlers(handlers)} />
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} exposeHandler={(handlers) => setBiodataHandlers(handlers)} selectedTinggal={selectedTinggal} setSelectedTinggal={setSelectedTinggal} isLainnya={isLainnya} setLainnyaValue={setLainnyaValue} />
         },
         {
             id: 1,
@@ -93,9 +110,10 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
                             <div className="pb-4">
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Pegawai</Dialog.Title>
                             </div>
-                            <form 
-                            onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
-                             className="flex-1 overflow-y-auto p-2">
+                            <form
+                                onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                                className="flex-1 overflow-y-auto p-2"
+                                ref={contentRef}>
                                 {/* {renderStep()} */}
                                 <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
                                     {tabs.map((tab) => (

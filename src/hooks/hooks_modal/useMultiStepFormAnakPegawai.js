@@ -21,6 +21,9 @@ export function useMultiStepFormAnakPegawai(onClose, jenisBerkasList, refetchDat
         control,
         formState: { errors },
     } = useForm();
+    const [selectedTinggal, setSelectedTinggal] = useState('');
+    const [lainnyaValue, setLainnyaValue] = useState('');
+    const isLainnya = selectedTinggal === 'Lainnya';
 
     const watchedValues = watch();
 
@@ -235,6 +238,8 @@ console.log(result);
 
     const resetData = () => {
         const currentModalPeserta = watch("modalAnakPegawai") || {};
+        setLainnyaValue('')
+        setSelectedTinggal('')
 
         const allFields = {
             ...Object.fromEntries(Object.keys(currentModalPeserta).map(key => [key, ""])),
@@ -261,5 +266,10 @@ console.log(result);
         prevStep,
         onValidSubmit,
         onInvalidSubmit,
+        selectedTinggal,
+        setSelectedTinggal,
+        isLainnya,
+        setLainnyaValue,
+        lainnyaValue
     };
 }

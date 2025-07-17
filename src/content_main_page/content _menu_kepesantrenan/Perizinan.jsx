@@ -160,7 +160,7 @@ const DataPerizinan = () => {
     }
 
     const fieldsExports = [
-        { label: "Wewenang", value: "" },
+        // { label: "Wewenang", value: "" },
         // { label: "No. KK", value: "no_kk" },
         // { label: "NIK", value: "nik" },
         // { label: "NIUP", value: "niup" },

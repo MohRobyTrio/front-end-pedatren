@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from 'react-icons/fa';
@@ -24,14 +24,32 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         nextStep,
         prevStep,
         onValidSubmit,
-        onInvalidSubmit
+        onInvalidSubmit,
+        selectedTinggal,
+        setSelectedTinggal,
+        isLainnya,
+        setLainnyaValue,
+        lainnyaValue
     } = formState;
+
+    const contentRef = useRef(null);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = 0;
+        }
+    }, [activeTab]);
+
+    useEffect(() => {
+        setValue("modalPeserta.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTinggal, lainnyaValue, setValue]);
 
     const tabs = [
         {
             id: 0,
             label: "Biodata",
-            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} />
+            content: <FormBiodata register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} selectedTinggal={selectedTinggal} setSelectedTinggal={setSelectedTinggal} isLainnya={isLainnya} setLainnyaValue={setLainnyaValue} />
         },
         {
             id: 1,
@@ -88,7 +106,11 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
                             <div className="pb-4">
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Peserta Didik</Dialog.Title>
                             </div>
-                            <form onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)} className="flex-1 overflow-y-auto p-2">
+                            <form
+                                onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                                className="flex-1 overflow-y-auto p-2"
+                                ref={contentRef} // Ref di sini
+                            >
                                 {/* {renderStep()} */}
                                 <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
                                     {tabs.map((tab) => (

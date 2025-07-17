@@ -5,7 +5,7 @@ import { getCookie } from "../../../utils/cookieUtils";
 import { API_BASE_URL } from "../../../hooks/config";
 import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import useDropdownMataPelajaran from "../../../hooks/hook_dropdown/DropdownMataPelajaran";
@@ -54,6 +54,8 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
     const [materiList, setMateriList] = useState([]);
     const [form, setForm] = useState({ hari: '', mata_pelajaran: '', jam_pelajaran: '' });
     const [showAddMateriModal, setShowAddMateriModal] = useState(false);
+    const [editIndex, setEditIndex] = useState(null); // -1 atau null = bukan edit mode
+
 
     // const updateFirstOptionLabel = (list, label) =>
     //     list.length > 0
@@ -87,21 +89,48 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
         setMateriList(updatedList)
     }
 
-    const handleAdd = () => {
-        // e.preventDefault();
-        if (!form.hari && !form.mata_pelajaran && !form.jam_pelajaran) return
+    const handleSaveMateri = () => {
+        if (!form.hari || !form.mata_pelajaran || !form.jam_pelajaran) return;
 
-        setMateriList([
-            ...materiList,
-            {
-                hari: form.hari,
-                mata_pelajaran: form.mata_pelajaran,
-                jam_pelajaran: form.jam_pelajaran,
-            }
-        ])
-        setForm({ hari: '', mata_pelajaran: '', jam_pelajaran: '' })
+        const isDuplicate = materiList.some((item, index) => {
+            // Jika dalam mode edit, abaikan index yang sedang diedit
+            if (editIndex !== null && index === editIndex) return false;
+
+            return (
+                item.hari === form.hari &&
+                item.mata_pelajaran === form.mata_pelajaran &&
+                item.jam_pelajaran === form.jam_pelajaran
+            );
+        });
+
+        if (isDuplicate) {
+            alert('Jadwal dengan kombinasi tersebut sudah ada.');
+            return;
+        }
+
+        if (editIndex !== null) {
+            const updatedList = [...materiList];
+            updatedList[editIndex] = { ...form };
+            setMateriList(updatedList);
+            setEditIndex(null);
+        } else {
+            setMateriList([
+                ...materiList,
+                { ...form }
+            ]);
+        }
+
+        setForm({ hari: '', mata_pelajaran: '', jam_pelajaran: '' });
         closeAddMateriModal();
-    }
+    };
+
+
+    const handleEdit = (index) => {
+        const item = materiList[index];
+        setForm(item);
+        setEditIndex(index);
+        setShowAddMateriModal(true);
+    };
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -239,26 +268,46 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
+            const message = error.message?.toLowerCase().includes("sql")
+                ? "Terjadi kesalahan saat mengirim data."
+                : error.message;
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: error.message || "Terjadi kesalahan saat mengirim data.",
+                text: message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };
 
     const closeAddMateriModal = () => {
-        setForm({
-            hari: "",
-            mata_pelajaran: "",
-            jam_pelajaran: ""
-        });
         setShowAddMateriModal(false);
+        setEditIndex(null);
+        setForm({ hari: '', mata_pelajaran: '', jam_pelajaran: '' });
     };
+
 
     const openAddMateriModal = () => {
         setShowAddMateriModal(true);
     };
+
+    const orderHari = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+
+    const sortedMateriList = [...materiList].sort((a, b) => {
+        // 1. Urutkan hari
+        const hariA = orderHari.indexOf(a.hari.toUpperCase());
+        const hariB = orderHari.indexOf(b.hari.toUpperCase());
+        if (hariA !== hariB) return hariA - hariB;
+
+        // 2. Urutkan jam pelajaran berdasarkan jam_mulai dari menuJamPelajaran
+        const jamA = menuJamPelajaran.find(opt => opt.value == a.jam_pelajaran);
+        const jamB = menuJamPelajaran.find(opt => opt.value == b.jam_pelajaran);
+
+        const waktuA = jamA ? jamA.jam_mulai : "00:00";
+        const waktuB = jamB ? jamB.jam_mulai : "00:00";
+
+        return waktuA.localeCompare(waktuB);
+    });
+
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -295,7 +344,7 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                            <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleAdd} form={form} handleChange={handleChange} feature={1} />
+                            <ModalAddJadwalPelajaranFormulir isOpen={showAddMateriModal} onClose={closeAddMateriModal} handleAdd={handleSaveMateri} form={form} handleChange={handleChange} feature={1} />
 
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
@@ -356,7 +405,7 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
                                                 </tr>
                                             </thead>
                                             <tbody className="text-gray-800">
-                                                {materiList.map((item, index) => {
+                                                {sortedMateriList.map((item, index) => {
                                                     const mataPelajaran = menuMataPelajaran.find((opt) => opt.value == item.mata_pelajaran);
                                                     const jamPelajaran = menuJamPelajaran.find((opt) => opt.value == item.jam_pelajaran);
 
@@ -376,7 +425,15 @@ export const ModalAddOrEditJadwalPelajaran = ({ isOpen, onClose, data, refetchDa
                                                                         : mataPelajaran.label
                                                                     : item.mata_pelajaran}
                                                             </td>
-                                                            <td className="px-3 py-2 border-b">
+                                                            <td className="px-3 py-2 border-b space-x-1">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleEdit(index)}
+                                                                    className="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faEdit} />
+                                                                </button>
+
                                                                 <button
                                                                     onClick={() => handleRemove(index)}
                                                                     className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"

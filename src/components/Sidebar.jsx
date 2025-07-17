@@ -9,6 +9,7 @@ import {
     menuKewilayahanItems,
     menuMahromItems,
     subKelembagaanItems,
+    subPelajaranItems,
     subPesertaDidik
 } from "../data/menuData";
 import Access from "./Access";
@@ -36,7 +37,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                         {text}
                     </div>
 
-                    {hasSubmenu && (
+                    {hasSubmenu && text !== "Peserta Didik" && (
                         <i
                             className={`fas fa-chevron-${isOpen ? "down" : "right"} text-xs text-gray-500 ml-2`}
                         />
@@ -50,14 +51,15 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const submenuMap = {
         pesertadidik: subPesertaDidik,
         kelembagaan: subKelembagaanItems,
+        pelajaran: subPelajaranItems,
     };
 
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
                 const isPeserta = item.id == "pesertadidik";
-                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan";
-                const isOpen = dropdowns[item.id];
+                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran";
+                const isOpen = isPeserta ? true : dropdowns[item.id];
 
                 if (item.access && !hasAccess(item.access)) return null;
 
@@ -78,28 +80,37 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                             hasSubmenu={hasSubmenu}
                             isOpen={isOpen}
                         />
-                        {hasSubmenu && isOpen && <SubMenuDropdownPesertaDidik subData={submenuMap[item.id]} />}
+                        {hasSubmenu && isOpen && <SubMenuDropdown subData={submenuMap[item.id]} parentId={item.id} />}
                     </div>
                 );
             })}
         </ul>
     );
 
-    const SubMenuDropdownPesertaDidik = ({ subData }) => (
+    const SubMenuDropdown = ({ subData, parentId }) => (
         <ul className="ml-7 mt-1">
             {subData.map((subItem) => {
                 const isActive = location.pathname === subItem.link;
+
+                // Gunakan warna merah untuk peserta didik, biru untuk lainnya
+                const activeBg = parentId === "pesertadidik" ? "bg-red-50" : "bg-blue-100";
+                const activeText = parentId === "pesertadidik" ? "text-red-500" : "text-blue-700";
+                const activeChevron = parentId === "pesertadidik" ? "text-red-300" : "text-blue-300";
+                const hoverText = parentId === "pesertadidik" ? "hover:text-red-500" : "hover:text-blue-600";
+                const hoverBg = parentId === "pesertadidik" ? "hover:bg-red-100" : "hover:bg-blue-50";
+                const defaultText = parentId === "pesertadidik" ? "text-red-400" : "text-gray-700";
+
                 return (
                     <li key={subItem.id} className="mb-0.5">
                         <Link
                             to={subItem.link}
                             className={`flex items-center px-3 py-1.5 rounded-md text-xs transition
                             ${isActive
-                                    ? "bg-red-50 text-red-500 font-semibold"
-                                    : "text-red-400 font-medium hover:bg-red-100 hover:text-red-500"
+                                    ? `${activeBg} ${activeText} font-semibold`
+                                    : `${defaultText} font-medium ${hoverBg} ${hoverText}`
                                 }`}
                         >
-                            <i className="fas fa-chevron-right mr-2 text-xs text-red-300"></i>
+                            <i className={`fas fa-chevron-right mr-2 text-xs ${activeChevron}`} />
                             {subItem.text}
                         </Link>
                     </li>
@@ -107,6 +118,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
             })}
         </ul>
     );
+
 
     const MenuHeader = ({ name, isOpen, onClick }) => (
         <h2
