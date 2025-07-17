@@ -10,44 +10,45 @@ import useLogout from "../../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 
 const initialFormData = {
-	// Biodata
-	negara_id: "",
-	provinsi_id: "",
-	kabupaten_id: "",
-	kecamatan_id: "",
-	jalan: "",
-	kode_pos: "",
-	nama: "",
-	no_passport: "",
-	tanggal_lahir: "",
-	jenis_kelamin: "",
-	tempat_lahir: "",
-	nik: "",
-	no_telepon: "",
-	no_telepon_2: "",
-	email: "",
-	jenjang_pendidikan_terakhir: "",
-	nama_pendidikan_terakhir: "",
-	anak_keberapa: "",
-	dari_saudara: "",
-	wafat: "0", // Default value
+    // Biodata
+    negara_id: "",
+    provinsi_id: "",
+    kabupaten_id: "",
+    kecamatan_id: "",
+    jalan: "",
+    kode_pos: "",
+    nama: "",
+    no_passport: "",
+    tanggal_lahir: "",
+    jenis_kelamin: "",
+    tempat_lahir: "",
+    nik: "",
+    no_telepon: "",
+    no_telepon_2: "",
+    email: "",
+    jenjang_pendidikan_terakhir: "",
+    nama_pendidikan_terakhir: "",
+    anak_keberapa: "",
+    dari_saudara: "",
+    wafat: "0", // Default value
 
-	// Keluarga
-	no_kk: "",
+    // Keluarga
+    no_kk: "",
 
-	// Orangtua
-	id_hubungan_keluarga: "",
-	wali: false, // Default value
-	pekerjaan: "",
-	penghasilan: "",
+    // Orangtua
+    id_hubungan_keluarga: "",
+    wali: false, // Default value
+    pekerjaan: "",
+    penghasilan: "",
 };
 
-export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
+export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
     const [formData, setFormData] = useState(initialFormData);
+    const [kewarganegaraan, setKewarganegaraan] = useState("wni");
     const [hubunganKeluargaOptions, setHubunganKeluargaOptions] = useState([]);
 
     // Fetch hubungan keluarga
@@ -61,17 +62,17 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                     }
                 });
                 if (response.status == 401 && !window.sessionExpiredShown) {
-                        window.sessionExpiredShown = true;
-                        await Swal.fire({
-                          title: "Sesi Berakhir",
-                          text: "Sesi anda telah berakhir, silakan login kembali.",
-                          icon: "warning",
-                          confirmButtonText: "OK",
-                        });
-                        clearAuthData();
-                        navigate("/login");
-                        return;
-                      }
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
                 if (response.ok) {
                     const data = await response.json();
                     setHubunganKeluargaOptions(data.map(item => ({
@@ -87,7 +88,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         if (isOpen) {
             fetchHubunganKeluarga();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Update formData untuk alamat ketika selectedNegara berubah
@@ -103,6 +104,14 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
             }));
         }
     }, [selectedNegara, isOpen]);
+        useEffect(() => {
+        if (isOpen) {
+            setFormData((prev) => ({
+                ...prev,
+                no_kk: nokk || ""
+            }));
+        }
+    }, [nokk, isOpen]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -173,17 +182,17 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
 
 
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                      title: "Sesi Berakhir",
-                      text: "Sesi anda telah berakhir, silakan login kembali.",
-                      icon: "warning",
-                      confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                  }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
             const result = await response.json();
 
@@ -242,6 +251,19 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
         provinsi: updateFirstOptionLabel(filterNegara.provinsi, "Pilih Provinsi"),
         kabupaten: updateFirstOptionLabel(filterNegara.kabupaten, "Pilih Kabupaten"),
         kecamatan: updateFirstOptionLabel(filterNegara.kecamatan, "Pilih Kecamatan")
+    };
+
+    const handleKewarganegaraanChange = (e) => {
+        const value = e.target.value;
+        setKewarganegaraan(value);
+
+        // Kosongkan field yang dinonaktifkan agar tidak ikut submit
+        setFormData((prev) => ({
+            ...prev,
+            no_passport: value === "wni" ? "" : prev.no_passport,
+            no_kk: value === "wna" ? "" : prev.no_kk,
+            nik: value === "wna" ? "" : prev.nik
+        }));
     };
 
     const Filters = ({ filterOptions, onChange, selectedFilters }) => {
@@ -337,11 +359,40 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                     <div className="space-y-4 pl-4">
                                                         {/* ... (input fields lainnya tetap sama) ... */}
                                                         <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                                                            <label htmlFor="kewarganegaraan" className="md:w-1/4 text-black">
+                                                                Kewarganegaraan *
+                                                            </label>
+                                                            <label className="flex items-center space-x-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="kewarganegaraan"
+                                                                    value="wni"
+                                                                    checked={kewarganegaraan === 'wni'}
+                                                                    onChange={handleKewarganegaraanChange}
+                                                                    className="w-4 h-4"
+                                                                    required
+                                                                />
+                                                                <span>WNI</span>
+                                                            </label>
+                                                            <label className="flex items-center space-x-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="kewarganegaraan"
+                                                                    value="wna"
+                                                                    checked={kewarganegaraan === 'wna'}
+                                                                    onChange={handleKewarganegaraanChange}
+                                                                    className="w-4 h-4"
+                                                                    required
+                                                                />
+                                                                <span>WNA</span>
+                                                            </label>
+                                                        </div>
+                                                        <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                                                             <label htmlFor="no_passport" className="md:w-1/4 text-black">
                                                                 Nomor Passport
                                                             </label>
                                                             <div className="md:w-full md:max-w-md max-w-none">
-                                                                <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                <div className={`flex items-center rounded-md shadow-md pl-1 border ${kewarganegaraan != 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                                                                     <input
                                                                         id="no_passport"
                                                                         name="no_passport"
@@ -351,6 +402,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                                         maxLength={16}
                                                                         placeholder="Masukkan No.Passport"
                                                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                        disabled={kewarganegaraan === 'wni'}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -361,16 +413,17 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                                 Nomor KK
                                                             </label>
                                                             <div className="md:w-full md:max-w-md max-w-none">
-                                                                <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                <div className={`flex items-center rounded-md shadow-md pl-1 border bg-gray-300 border-gray-200`}>
                                                                     <input
                                                                         id="no_kk"
                                                                         name="no_kk"
                                                                         type="text"
-                                                                        value={formData.no_kk}
+                                                                        value={nokk}
                                                                         onChange={handleChange}
                                                                         maxLength={16}
                                                                         placeholder="Masukkan No.KK"
-                                                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                        disabled
                                                                     />
                                                                 </div>
                                                             </div>
@@ -381,7 +434,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                                 NIK
                                                             </label>
                                                             <div className="md:w-full md:max-w-md max-w-none">
-                                                                <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                <div className={`flex items-center rounded-md shadow-md pl-1 border ${kewarganegaraan != 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                                                                     <input
                                                                         id="nik"
                                                                         name="nik"
@@ -391,6 +444,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                                         maxLength={16}
                                                                         placeholder="Masukkan NIK"
                                                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                        disabled={kewarganegaraan === 'wna'}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -912,17 +966,17 @@ export const ModalFormPindahKeluarga = ({
             });
 
             if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                      title: "Sesi Berakhir",
-                      text: "Sesi anda telah berakhir, silakan login kembali.",
-                      icon: "warning",
-                      confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login");
-                    return;
-                  }
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
 
             const result = await response.json();
             Swal.close();

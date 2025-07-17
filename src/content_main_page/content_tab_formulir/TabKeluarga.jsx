@@ -71,6 +71,7 @@ const TabKeluarga = () => {
                 isOpen={showAddModal}
                 onClose={() => setShowAddModal(false)}
                 refetchData={fetchKeluargaList}
+                nokk={nokk}
             />
             <ModalFormPindahKeluarga
                 isOpen={showPindahModal}
