@@ -703,7 +703,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData }) => {
                                                                     <input
                                                                         id="penghasilan"
                                                                         name="penghasilan"
-                                                                        type="text"
+                                                                        type="number"
                                                                         value={formData.penghasilan}
                                                                         onChange={handleChange}
                                                                         placeholder="Masukkan Penghasilan"
