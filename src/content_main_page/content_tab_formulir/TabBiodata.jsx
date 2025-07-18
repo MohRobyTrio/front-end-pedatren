@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import DropdownNegara from '../../hooks/hook_dropdown/DropdownNegara';
@@ -89,7 +89,7 @@ const TabBiodata = () => {
     // Gunakan komponen DropdownNegara
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const { control, register, handleSubmit, formState: { errors }, setValue, reset, watch } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, reset, watch } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             kewarganegaraan: 'wni',
@@ -103,6 +103,27 @@ const TabBiodata = () => {
         }
     });
 
+    const [dropdownValuePekerjaan, setDropdownValuePekerjaan] = useState('');
+    const [inputLainnyaPekerjaan, setInputLainnyaPekerjaan] = useState('');
+
+    const isLainnyaPekerjaan = dropdownValuePekerjaan == "Lainnya";
+
+    useEffect(() => {
+        if (isLainnyaPekerjaan) {
+            setValue("pekerjaan", inputLainnyaPekerjaan);
+        } else {
+            setValue("pekerjaan", dropdownValuePekerjaan);
+            setInputLainnyaPekerjaan("");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dropdownValuePekerjaan, inputLainnyaPekerjaan]);
+
+    const allFields = watch(); // menangkap semua data form
+
+    useEffect(() => {
+        console.log("Data Form Saat Ini:", allFields);
+    }, [allFields]);
+
     const [selectedTinggal, setSelectedTinggal] = useState('');
     const [lainnyaValue, setLainnyaValue] = useState('');
     const isLainnya = selectedTinggal === 'Lainnya';
@@ -112,12 +133,12 @@ const TabBiodata = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTinggal, lainnyaValue, setValue]);
 
-    const nilaiPenghasilan = watch('penghasilan');
+    // const nilaiPenghasilan = watch('penghasilan');
 
-    useEffect(() => {
-        console.log(nilaiPenghasilan);
+    // useEffect(() => {
+    //     console.log(nilaiPenghasilan);
 
-    })
+    // })
 
     // const kewarganegaraan = watch('kewarganegaraan');
 
@@ -126,6 +147,21 @@ const TabBiodata = () => {
         const { value } = e.target;
         setValue(level, value);
         handleFilterChangeNegara({ [level]: value });
+    };
+
+    const getPenghasilanRange = (nilai) => {
+        if (!nilai || isNaN(nilai)) return "Tidak Menentu";
+
+        const income = parseInt(nilai, 10);
+
+        if (income < 500000) return "< Rp 500.000";
+        if (income >= 500000 && income <= 1000000) return "Rp 500.000 - Rp 1.000.000";
+        if (income > 1000000 && income <= 2000000) return "Rp 1.000.000 - Rp 2.000.000";
+        if (income > 2000000 && income <= 5000000) return "Rp 2.000.000 - Rp 5.000.000";
+        if (income > 5000000 && income <= 10000000) return "Rp 5.000.000 - Rp 10.000.000";
+        if (income > 10000000) return "> Rp 10.000.000";
+
+        return "Tidak Menentu";
     };
 
     // Load data peserta jika dalam mode update
@@ -207,13 +243,15 @@ const TabBiodata = () => {
                 kode_pos: biodata.kode_pos || '',
                 wafat: biodata.wafat == false ? '0' : '1',
 
-                pekerjaan: biodata.pekerjaan || '',
-                penghasilan: biodata.penghasilan || '',
+                // pekerjaan: biodata.pekerjaan || '',
+                // penghasilan: biodata.penghasilan || '',
 
                 negara: biodata.negara_id || '',
                 provinsi: biodata.provinsi_id || '',
                 kabupaten: biodata.kabupaten_id || '',
-                kecamatan: biodata.kecamatan_id || ''
+                kecamatan: biodata.kecamatan_id || '',
+
+                smartcard: biodata.smartcard || ''
             };
 
             // Parse tanggal lahir jika ada
@@ -256,6 +294,51 @@ const TabBiodata = () => {
             }
             if (biodata.kecamatan_id) {
                 handleFilterChangeNegara({ kecamatan: biodata.kecamatan_id.toString() });
+            }
+
+            // Daftar opsi pekerjaan dari dropdown
+            const opsiPekerjaan = [
+                "Tidak Bekerja", "Petani", "Buruh", "Pedagang", "PNS", "TNI/Polri",
+                "Karyawan Swasta", "Wiraswasta", "Guru", "Dosen", "Dokter", "Perawat", "Pengemudi"
+            ];
+
+            // Cek dan set pekerjaan
+            if (biodata.pekerjaan) {
+                if (opsiPekerjaan.includes(biodata.pekerjaan)) {
+                    setDropdownValuePekerjaan(biodata.pekerjaan); // set dropdown
+                    setInputLainnyaPekerjaan(""); // kosongkan input lainnya
+                } else {
+                    setDropdownValuePekerjaan("Lainnya"); // pilih "Lainnya"
+                    setInputLainnyaPekerjaan(biodata.pekerjaan); // isi input "Lainnya"
+                }
+            } else {
+                setDropdownValuePekerjaan("");
+                setInputLainnyaPekerjaan("");
+            }
+
+            // Proses penghasilan
+            const penghasilanFromAPI = biodata.penghasilan;
+
+            if (penghasilanFromAPI) {
+                const opsiPenghasilan = [
+                    "< Rp 500.000",
+                    "Rp 500.000 - Rp 1.000.000",
+                    "Rp 1.000.000 - Rp 2.000.000",
+                    "Rp 2.000.000 - Rp 5.000.000",
+                    "Rp 5.000.000 - Rp 10.000.000",
+                    "> Rp 10.000.000",
+                    "Tidak Menentu"
+                ];
+
+                let selectedPenghasilan;
+
+                if (opsiPenghasilan.includes(penghasilanFromAPI)) {
+                    selectedPenghasilan = penghasilanFromAPI;
+                } else {
+                    selectedPenghasilan = getPenghasilanRange(penghasilanFromAPI);
+                }
+
+                setValue("penghasilan", selectedPenghasilan);
             }
 
             const tinggalOptions = [
@@ -1018,7 +1101,7 @@ const TabBiodata = () => {
                     </div>
 
                     {/* Pekerjaan */}
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    {/* <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="pekerjaan" className="lg:w-1/4 text-black">
                             Pekerjaan
                         </label>
@@ -1033,10 +1116,57 @@ const TabBiodata = () => {
                                 />
                             </div>
                         </div>
+                    </div> */}
+
+                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
+                        <div className="lg:w-3/4 max-w-md">
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    id="pekerjaan"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    value={dropdownValuePekerjaan}
+                                    onChange={(e) => setDropdownValuePekerjaan(e.target.value)}
+                                    required
+                                >
+                                    <option value="">-- Pilih Pekerjaan --</option>
+                                    <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                    <option value="Petani">Petani</option>
+                                    <option value="Buruh">Buruh</option>
+                                    <option value="Pedagang">Pedagang</option>
+                                    <option value="PNS">PNS</option>
+                                    <option value="TNI/Polri">TNI/Polri</option>
+                                    <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                    <option value="Wiraswasta">Wiraswasta</option>
+                                    <option value="Guru">Guru</option>
+                                    <option value="Dosen">Dosen</option>
+                                    <option value="Dokter">Dokter</option>
+                                    <option value="Perawat">Perawat</option>
+                                    <option value="Pengemudi">Pengemudi</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            {isLainnyaPekerjaan && (
+                                <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                    <input
+                                        type="text"
+                                        placeholder="Masukkan Pekerjaan Lainnya"
+                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                        value={inputLainnyaPekerjaan}
+                                        onChange={(e) => setInputLainnyaPekerjaan(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            {/* tetap daftarkan register hanya sekali */}
+                            <input type="hidden" {...register("pekerjaan", { required: true })} />
+                        </div>
                     </div>
 
                     {/* Penghasilan */}
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    {/* <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="penghasilan" className="lg:w-1/4 text-black">
                             Penghasilan
                         </label>
@@ -1068,6 +1198,29 @@ const TabBiodata = () => {
                                 </div>
                             )}
                         />
+                    </div> */}
+
+                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <label htmlFor="penghasilan" className="md:w-1/4 text-black">Penghasilan *</label>
+                        <div className="lg:w-3/4 max-w-md">
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                <select
+                                    id="penghasilan"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
+                                    {...register("penghasilan", { required: true })}
+                                    required
+                                >
+                                    <option value="">-- Pilih Penghasilan --</option>
+                                    <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                    <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                    <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                    <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                    <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                    <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                    <option value="Tidak Menentu">Tidak Menentu</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <hr className="border-t border-gray-300 my-4" />
 
@@ -1229,6 +1382,26 @@ const TabBiodata = () => {
                         )}
                     </div>
 
+                    <hr className="border-t border-gray-300 my-4" />
+
+                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <label htmlFor="smartcard" className="md:w-1/4 text-black">
+                            SmartCard
+                        </label>
+                        <div className="lg:w-3/4 max-w-md">
+                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                <input
+                                    id="smartcard"
+                                    name="smartcard"
+                                    type="text"
+                                    maxLength={255}
+                                    // placeholder="Masukkan Nama Jalan"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    {...register("smartcard")}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     <br />
                     {/* Tombol Simpan */}

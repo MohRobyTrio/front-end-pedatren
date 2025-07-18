@@ -26,6 +26,17 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
     const [lainnyaValue, setLainnyaValue] = useState('');
     const isLainnya = selectedTinggal === 'Lainnya';
 
+    const [inputLainnyaAyah, setInputLainnyaAyah] = useState("");
+    const [dropdownValueAyah, setDropdownValueAyah] = useState("");
+
+    
+    const [inputLainnyaIbu, setInputLainnyaIbu] = useState("");
+    const [dropdownValueIbu, setDropdownValueIbu] = useState("");
+    
+    
+    const [inputLainnyaWali, setInputLainnyaWali] = useState("");
+    const [dropdownValueWali, setDropdownValueWali] = useState("");
+
     const watchedValues = watch();
 
     useEffect(() => {
@@ -244,6 +255,12 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
         const currentModalPeserta = watch("modalPeserta") || {};
         setLainnyaValue('')
         setSelectedTinggal('')
+        setDropdownValueAyah('')
+        setDropdownValueIbu('')
+        setDropdownValueWali('')
+        setInputLainnyaAyah('')
+        setInputLainnyaIbu('')
+        setInputLainnyaWali('')
 
         const allFields = {
             ...Object.fromEntries(Object.keys(currentModalPeserta).map(key => [key, ""])),
@@ -274,6 +291,26 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
         setSelectedTinggal,
         isLainnya,
         setLainnyaValue,
-        lainnyaValue
+        lainnyaValue,
+        dropdownValue: {
+            ayah: dropdownValueAyah,
+            ibu: dropdownValueIbu,
+            wali: dropdownValueWali
+        },
+        setDropdownValue: {
+            ayah: setDropdownValueAyah,
+            ibu: setDropdownValueIbu,
+            wali: setDropdownValueWali
+        },
+        inputLainnya: {
+            ayah: inputLainnyaAyah,
+            ibu: inputLainnyaIbu,
+            wali: inputLainnyaWali
+        },
+        setInputLainnya: {
+            ayah: setInputLainnyaAyah,
+            ibu: setInputLainnyaIbu,
+            wali: setInputLainnyaWali
+        }
     };
 }

@@ -1,4 +1,44 @@
-const FormKeluargaAnakPegawai = ({ register }) => {
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from "react";
+
+const FormKeluargaAnakPegawai = ({ register, setValue, keluargaForm }) => {
+    const {
+            dropdownValue,
+            setDropdownValue,
+            inputLainnya,
+            setInputLainnya
+        } = keluargaForm;
+        const isLainnyaAyah = dropdownValue.ayah == "Lainnya";
+        const isLainnyaIbu = dropdownValue.ibu == "Lainnya";
+        const isLainnyaWali = dropdownValue.wali == "Lainnya";
+    
+        // Salin nilai input lainnya ke pekerjaan_ayah
+        useEffect(() => {
+            if (isLainnyaAyah) {
+                setValue("modalAnakPegawai.pekerjaan_ayah", inputLainnya.ayah);
+            } else {
+                setValue("modalAnakPegawai.pekerjaan_ayah", dropdownValue.ayah);
+                setInputLainnya.ayah("");
+            }
+        }, [dropdownValue.ayah, inputLainnya.ayah]);
+    
+        useEffect(() => {
+            if (isLainnyaIbu) {
+                setValue("modalAnakPegawai.pekerjaan_ibu", inputLainnya.ibu);
+            } else {
+                setValue("modalAnakPegawai.pekerjaan_ibu", dropdownValue.ibu);
+                setInputLainnya.ibu("");
+            }
+        }, [dropdownValue.ibu, inputLainnya.ibu]);
+    
+        useEffect(() => {
+            if (isLainnyaWali) {
+                setValue("modalAnakPegawai.pekerjaan_wali", inputLainnya.wali);
+            } else {
+                setValue("modalAnakPegawai.pekerjaan_wali", dropdownValue.wali);
+                setInputLainnya.wali("");
+            }
+        }, [dropdownValue.wali, inputLainnya.wali]);
     return (
         <>
             <div className="space-y-2">
@@ -138,7 +178,7 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="pekerjaan_ayah" className="md:w-1/4 text-black">
                         Pekerjaan *
                     </label>
@@ -172,6 +212,78 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                                 {...register("modalAnakPegawai.penghasilan_ayah", { required: true })}
                                 required
                             />
+                        </div>
+                    </div>
+                </div> */}
+
+                {/* Pekerjaan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="pekerjaan_ayah" className="md:w-1/4 text-black">Pekerjaan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="pekerjaan_ayah"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                value={dropdownValue.ayah}
+                                onChange={(e) => setDropdownValue.ayah(e.target.value)}
+                                required
+                            >
+                                <option value="">-- Pilih Pekerjaan --</option>
+                                <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                <option value="Petani">Petani</option>
+                                <option value="Buruh">Buruh</option>
+                                <option value="Pedagang">Pedagang</option>
+                                <option value="PNS">PNS</option>
+                                <option value="TNI/Polri">TNI/Polri</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Wiraswasta">Wiraswasta</option>
+                                <option value="Guru">Guru</option>
+                                <option value="Dosen">Dosen</option>
+                                <option value="Dokter">Dokter</option>
+                                <option value="Perawat">Perawat</option>
+                                <option value="Pengemudi">Pengemudi</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        {isLainnyaAyah && (
+                            <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                <input
+                                    type="text"
+                                    placeholder="Masukkan Pekerjaan Lainnya"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    value={inputLainnya.ayah}
+                                    onChange={(e) => setInputLainnya.ayah(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        )}
+
+                        {/* tetap daftarkan register hanya sekali */}
+                        <input type="hidden" {...register("modalAnakPegawai.pekerjaan_ayah", { required: true })} />
+                    </div>
+                </div>
+
+                {/* Penghasilan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4">
+                    <label htmlFor="penghasilan_ayah" className="md:w-1/4 text-black">Penghasilan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="penghasilan_ayah"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("modalAnakPegawai.penghasilan_ayah", { required: true })}
+                                required
+                            >
+                                <option value="">-- Pilih Penghasilan --</option>
+                                <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                <option value="Tidak Menentu">Tidak Menentu</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -329,7 +441,7 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="pekerjaan_ibu" className="md:w-1/4 text-black">
                         Pekerjaan *
                     </label>
@@ -363,6 +475,78 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                                 {...register("modalAnakPegawai.penghasilan_ibu", { required: true })}
                                 required
                             />
+                        </div>
+                    </div>
+                </div> */}
+
+                {/* Pekerjaan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="pekerjaan_ibu" className="md:w-1/4 text-black">Pekerjaan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="pekerjaan_ibu"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                value={dropdownValue.ibu}
+                                onChange={(e) => setDropdownValue.ibu(e.target.value)}
+                                required
+                            >
+                                <option value="">-- Pilih Pekerjaan --</option>
+                                <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                <option value="Petani">Petani</option>
+                                <option value="Buruh">Buruh</option>
+                                <option value="Pedagang">Pedagang</option>
+                                <option value="PNS">PNS</option>
+                                <option value="TNI/Polri">TNI/Polri</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Wiraswasta">Wiraswasta</option>
+                                <option value="Guru">Guru</option>
+                                <option value="Dosen">Dosen</option>
+                                <option value="Dokter">Dokter</option>
+                                <option value="Perawat">Perawat</option>
+                                <option value="Pengemudi">Pengemudi</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        {isLainnyaIbu && (
+                            <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                <input
+                                    type="text"
+                                    placeholder="Masukkan Pekerjaan Lainnya"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    value={inputLainnya.ibu}
+                                    onChange={(e) => setInputLainnya.ibu(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        )}
+
+                        {/* tetap daftarkan register hanya sekali */}
+                        <input type="hidden" {...register("modalAnakPegawai.pekerjaan_ibu", { required: true })} />
+                    </div>
+                </div>
+
+                {/* Penghasilan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4">
+                    <label htmlFor="penghasilan_ibu" className="md:w-1/4 text-black">Penghasilan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="penghasilan_ibu"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("modalAnakPegawai.penghasilan_ibu", { required: true })}
+                                required
+                            >
+                                <option value="">-- Pilih Penghasilan --</option>
+                                <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                <option value="Tidak Menentu">Tidak Menentu</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -521,7 +705,7 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="pekerjaan_wali" className="md:w-1/4 text-black">
                         Pekerjaan *
                     </label>
@@ -557,8 +741,78 @@ const FormKeluargaAnakPegawai = ({ register }) => {
                             />
                         </div>
                     </div>
+                </div> */}
+
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="pekerjaan_wali" className="md:w-1/4 text-black">Pekerjaan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="pekerjaan_wali"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                value={dropdownValue.wali}
+                                onChange={(e) => setDropdownValue.wali(e.target.value)}
+                                required
+                            >
+                                <option value="">-- Pilih Pekerjaan --</option>
+                                <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                <option value="Petani">Petani</option>
+                                <option value="Buruh">Buruh</option>
+                                <option value="Pedagang">Pedagang</option>
+                                <option value="PNS">PNS</option>
+                                <option value="TNI/Polri">TNI/Polri</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Wiraswasta">Wiraswasta</option>
+                                <option value="Guru">Guru</option>
+                                <option value="Dosen">Dosen</option>
+                                <option value="Dokter">Dokter</option>
+                                <option value="Perawat">Perawat</option>
+                                <option value="Pengemudi">Pengemudi</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        {isLainnyaWali && (
+                            <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                <input
+                                    type="text"
+                                    placeholder="Masukkan Pekerjaan Lainnya"
+                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    value={inputLainnya.wali}
+                                    onChange={(e) => setInputLainnya.wali(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        )}
+
+                        {/* tetap daftarkan register hanya sekali */}
+                        <input type="hidden" {...register("modalAnakPegawai.pekerjaan_wali", { required: true })} />
+                    </div>
                 </div>
 
+                {/* Penghasilan */}
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4">
+                    <label htmlFor="penghasilan_wali" className="md:w-1/4 text-black">Penghasilan *</label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <select
+                                id="penghasilan_wali"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("modalAnakPegawai.penghasilan_wali", { required: true })}
+                                required
+                            >
+                                <option value="">-- Pilih Penghasilan --</option>
+                                <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                <option value="Tidak Menentu">Tidak Menentu</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     )

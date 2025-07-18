@@ -51,6 +51,34 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
     const [kewarganegaraan, setKewarganegaraan] = useState("wni");
     const [hubunganKeluargaOptions, setHubunganKeluargaOptions] = useState([]);
 
+    const [dropdownValuePekerjaan, setDropdownValuePekerjaan] = useState('');
+    const [inputLainnyaPekerjaan, setInputLainnyaPekerjaan] = useState('');
+
+    const isLainnyaPekerjaan = dropdownValuePekerjaan == "Lainnya";
+
+    const handlePekerjaanChange = (e) => {
+        const value = e.target.value;
+        setDropdownValuePekerjaan(value);
+
+        if (value === "Lainnya") {
+            setInputLainnyaPekerjaan(""); // kosongkan input lainnya
+            setFormData((prev) => ({ ...prev, pekerjaan: "" }));
+        } else {
+            setFormData((prev) => ({ ...prev, pekerjaan: value }));
+        }
+    };
+
+    const handleInputLainnyaChange = (e) => {
+        const val = e.target.value;
+        setInputLainnyaPekerjaan(val);
+        setFormData((prev) => ({ ...prev, pekerjaan: val }));
+    };
+
+    useEffect(() => {
+        console.log(formData);
+
+    }, [formData])
+
     // Fetch hubungan keluarga
     useEffect(() => {
         const fetchHubunganKeluarga = async () => {
@@ -761,7 +789,7 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                             </div>
                                                         </div>
 
-                                                        <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                                                        {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                                                             <label htmlFor="pekerjaan" className="md:w-1/4 text-black">
                                                                 Pekerjaan
                                                             </label>
@@ -778,9 +806,53 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                                     />
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
 
                                                         <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                                                            <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
+                                                            <div className="md:w-full md:max-w-md max-w-none">
+                                                                <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                    <select
+                                                                        id="pekerjaan"
+                                                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                        value={dropdownValuePekerjaan}
+                                                                        onChange={handlePekerjaanChange}
+                                                                        required
+                                                                    >
+                                                                        <option value="">-- Pilih Pekerjaan --</option>
+                                                                        <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                                                        <option value="Petani">Petani</option>
+                                                                        <option value="Buruh">Buruh</option>
+                                                                        <option value="Pedagang">Pedagang</option>
+                                                                        <option value="PNS">PNS</option>
+                                                                        <option value="TNI/Polri">TNI/Polri</option>
+                                                                        <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                                                        <option value="Wiraswasta">Wiraswasta</option>
+                                                                        <option value="Guru">Guru</option>
+                                                                        <option value="Dosen">Dosen</option>
+                                                                        <option value="Dokter">Dokter</option>
+                                                                        <option value="Perawat">Perawat</option>
+                                                                        <option value="Pengemudi">Pengemudi</option>
+                                                                        <option value="Lainnya">Lainnya</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                {isLainnyaPekerjaan && (
+                                                                    <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Masukkan Pekerjaan Lainnya"
+                                                                            className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                                            value={inputLainnyaPekerjaan}
+                                                                            onChange={handleInputLainnyaChange}
+                                                                            required
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                                                             <label htmlFor="penghasilan" className="md:w-1/4 text-black">
                                                                 Penghasilan
                                                             </label>
@@ -797,7 +869,33 @@ export const ModalAddOrangtuaFormulir = ({ isOpen, onClose, refetchData, nokk })
                                                                     />
                                                                 </div>
                                                             </div>
+                                                        </div> */}
+                                                        <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                                                            <label htmlFor="penghasilan" className="md:w-1/4 text-black">
+                                                                Penghasilan
+                                                            </label>
+                                                            <div className="md:w-full md:max-w-md max-w-none">
+                                                                <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                                                                    <select
+                                                                        id="penghasilan"
+                                                                        name="penghasilan"
+                                                                        value={formData.penghasilan}
+                                                                        onChange={handleChange}
+                                                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm bg-white"
+                                                                    >
+                                                                        <option value="">-- Pilih Penghasilan --</option>
+                                                                        <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                                                        <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                                                        <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                                                        <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                                                        <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                                                        <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                                                        <option value="Tidak Menentu">Tidak Menentu</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
 

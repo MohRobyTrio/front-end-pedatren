@@ -271,6 +271,7 @@ const useFetchSemester = () => {
                     text: "Data berhasil dihapus.",
                 });
     
+                sessionStorage.removeItem("menuSemester");
                 fetchSemester();
             } catch (error) {
                 console.error("Error saat menghapus:", error);

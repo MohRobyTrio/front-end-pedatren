@@ -523,6 +523,25 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                         </div>
                     </div>
                 </div>
+
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="smartcard" className="md:w-1/4 text-black">
+                        SmartCard
+                    </label>
+                    <div className="md:w-full md:max-w-md max-w-none">
+                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
+                            <input
+                                id="smartcard"
+                                name="smartcard"
+                                type="text"
+                                maxLength={255}
+                                // placeholder="Masukkan Nama Jalan"
+                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                {...register("modalPeserta.smartcard")}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     )

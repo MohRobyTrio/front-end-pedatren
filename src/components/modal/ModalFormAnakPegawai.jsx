@@ -29,7 +29,11 @@ export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }
         setSelectedTinggal,
         isLainnya,
         lainnyaValue,
-        setLainnyaValue
+        setLainnyaValue,
+        dropdownValue,
+        setDropdownValue,
+        inputLainnya,
+        setInputLainnya
     } = formState;
 
     const contentRef = useRef(null);
@@ -55,7 +59,12 @@ export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }
         {
             id: 1,
             label: "Keluarga",
-            content: <FormKeluargaAnakPegawai register={register} errors={errors} />
+            content: <FormKeluargaAnakPegawai register={register} errors={errors} watch={watch} setValue={setValue} keluargaForm={{
+                dropdownValue,
+                setDropdownValue,
+                inputLainnya,
+                setInputLainnya
+            }} />
         },
         {
             id: 2,

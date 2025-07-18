@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const useMultiStepFormPegawai = (onClose, refetchData) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [unlockedTabs, setUnlockedTabs] = useState([0]);
+  const [unlockedTabs, setUnlockedTabs] = useState([0, 1, 2, 3, 4, 5]);
   const { clearAuthData } = useLogout();
   const navigate = useNavigate();
   const {
@@ -34,8 +34,8 @@ const useMultiStepFormPegawai = (onClose, refetchData) => {
   }, [watchedValues]);
 
   const nextStep = async () => {
-    const form = document.querySelector("form");
-    if (form && !form.reportValidity()) return;
+    // const form = document.querySelector("form");
+    // if (form && !form.reportValidity()) return;
 
     const valid = await trigger(getFieldsForTab(activeTab));
     if (!valid) return;
@@ -258,8 +258,8 @@ const useMultiStepFormPegawai = (onClose, refetchData) => {
 
   const resetData = () => {
     const currentModalPegawai = watch("modalPegawai") || {};
-    setLainnyaValue('')
-    setSelectedTinggal('')
+    setLainnyaValue("");
+    setSelectedTinggal("");
 
     const allFields = {
       ...Object.fromEntries(

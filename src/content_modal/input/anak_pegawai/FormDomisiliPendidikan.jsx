@@ -27,6 +27,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
             setValue("modalAnakPegawai.blok_id", "");
             setValue("modalAnakPegawai.kamar_id", "");
             setValue("modalAnakPegawai.tanggal_masuk_domisili", "");
+            setValue("modalAnakPegawai.tanggal_masuk_santri", "");
             setValue("modalAnakPegawai.nis", "");
             setValue("modalAnakPegawai.angkatan_santri_id", "");
         }
@@ -193,6 +194,24 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                     </option>
                                 ))}
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <label htmlFor="tanggal_masuk_santri" className="md:w-1/4 text-black">
+                        Tanggal Masuk Santri *
+                    </label>
+                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
+                        <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
+                            <input
+                                type="date"
+                                id="tanggal_masuk_santri"
+                                name="tanggal_masuk_santri"
+                                disabled={isDomisiliDisabled}
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
+                                {...register("modalAnakPegawai.tanggal_masuk_santri")}
+                            />
                         </div>
                     </div>
                 </div>

@@ -159,6 +159,7 @@ export const ModalAddOrEditSemester = ({ isOpen, onClose, data, refetchData }) =
                 text: "Data berhasil dikirim.",
             });
 
+            sessionStorage.removeItem("menuSemester");
             refetchData?.();
             onClose?.();
         } catch (error) {

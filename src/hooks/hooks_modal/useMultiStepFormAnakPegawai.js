@@ -24,6 +24,17 @@ export function useMultiStepFormAnakPegawai(onClose, jenisBerkasList, refetchDat
     const [selectedTinggal, setSelectedTinggal] = useState('');
     const [lainnyaValue, setLainnyaValue] = useState('');
     const isLainnya = selectedTinggal === 'Lainnya';
+    
+    const [inputLainnyaAyah, setInputLainnyaAyah] = useState("");
+    const [dropdownValueAyah, setDropdownValueAyah] = useState("");
+
+    
+    const [inputLainnyaIbu, setInputLainnyaIbu] = useState("");
+    const [dropdownValueIbu, setDropdownValueIbu] = useState("");
+    
+    
+    const [inputLainnyaWali, setInputLainnyaWali] = useState("");
+    const [dropdownValueWali, setDropdownValueWali] = useState("");
 
     const watchedValues = watch();
 
@@ -240,6 +251,12 @@ console.log(result);
         const currentModalPeserta = watch("modalAnakPegawai") || {};
         setLainnyaValue('')
         setSelectedTinggal('')
+        setDropdownValueAyah('')
+        setDropdownValueIbu('')
+        setDropdownValueWali('')
+        setInputLainnyaAyah('')
+        setInputLainnyaIbu('')
+        setInputLainnyaWali('')
 
         const allFields = {
             ...Object.fromEntries(Object.keys(currentModalPeserta).map(key => [key, ""])),
@@ -270,6 +287,26 @@ console.log(result);
         setSelectedTinggal,
         isLainnya,
         setLainnyaValue,
-        lainnyaValue
+        lainnyaValue,
+        dropdownValue: {
+            ayah: dropdownValueAyah,
+            ibu: dropdownValueIbu,
+            wali: dropdownValueWali
+        },
+        setDropdownValue: {
+            ayah: setDropdownValueAyah,
+            ibu: setDropdownValueIbu,
+            wali: setDropdownValueWali
+        },
+        inputLainnya: {
+            ayah: inputLainnyaAyah,
+            ibu: inputLainnyaIbu,
+            wali: inputLainnyaWali
+        },
+        setInputLainnya: {
+            ayah: setInputLainnyaAyah,
+            ibu: setInputLainnyaIbu,
+            wali: setInputLainnyaWali
+        }
     };
 }
