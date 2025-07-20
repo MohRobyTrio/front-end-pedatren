@@ -13,6 +13,8 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const lembaga = watch("modalPegawai.lembaga_id_pengajar");
     const existingMateri = watch("modalPegawai.mata_pelajaran");
     const hydratedRef = useRef(false);
+    const [materiList, setMateriList] = useState([])
+    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' })
 
     // useEffect(() => {   
     //     if (golongan && golongan !== "") {
@@ -35,12 +37,9 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
             hasMateri;
 
         setValue("modalPegawai.pengajar", isPengajarDiisi ? "1" : "0");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [golongan, lembaga, materiList.length, watch("modalPegawai.jabatan_pengajar"), watch("modalPegawai.tanggal_mulai_pengajar"), setValue]);
 
-
-    const [materiList, setMateriList] = useState([])
-    const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' })
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
