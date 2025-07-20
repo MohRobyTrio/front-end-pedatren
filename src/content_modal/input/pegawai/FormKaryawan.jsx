@@ -5,35 +5,45 @@ import { jenisJabatan } from "../../../data/menuData";
 
 const FormKaryawan = ({ register, watch, setValue, activeTab }) => {
     const golonganJabatan = watch("modalPegawai.golongan_jabatan_id_karyawan");
+    const lembaga = watch("modalPegawai.lembaga_id_karyawan");
+    const jabatan = watch("modalPegawai.jabatan_karyawan");
+    const keterangan = watch("modalPegawai.keterangan_jabatan_karyawan");
+    const tglMulai = watch("modalPegawai.tanggal_mulai_karyawan");
     const { filterLembaga } = DropdownLembaga();
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
 
-    const lembaga = watch("modalPegawai.lembaga_id_karyawan");
 
     useEffect(() => {
-        if (golonganJabatan && golonganJabatan != "") {
+        console.log("cek:", { golonganJabatan, jabatan, keterangan, lembaga, tglMulai });
+
+        const adaIsian = [
+            golonganJabatan,
+            lembaga,
+            jabatan,
+            keterangan,
+            tglMulai,
+        ].some(val => val && val !== "" && val !== "Pilih Golongan Jabatan");
+
+        if (adaIsian) {
             setValue("modalPegawai.karyawan", "1");
-        } else if (golonganJabatan == "Pilih Golongan Jabatan") {
-            setValue("modalPegawai.karyawan", "0");
-        } 
-        else {
+        } else {
             setValue("modalPegawai.karyawan", "0");
         }
-    }, [golonganJabatan, setValue]);
+    }, [golonganJabatan, jabatan, keterangan, lembaga, setValue, tglMulai]);
 
     useEffect(() => {
         // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
         // console.log("handle", activeTab);
         if (activeTab !== 1) return;
         // console.log("handle change", activeTab);
-        
+
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             setValue('modalPegawai.lembaga_id_karyawan', lembaga);
         }
         if (golonganJabatan && menuGolonganJabatan.length >= 1) {
             setValue('modalPegawai.golongan_jabatan_id_karyawan', golonganJabatan);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, filterLembaga.lembaga, menuGolonganJabatan]);
 
     return (

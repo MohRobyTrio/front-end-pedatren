@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import { Controller } from "react-hook-form";
@@ -9,17 +10,42 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
     const rombel = watch("modalPegawai.rombel");
     const { filterLembaga, handleFilterChangeLembaga, selectedLembaga } = DropdownLembaga();
 
+    // useEffect(() => {
+    //     if (lembaga && lembaga !== "") {
+    //         setValue("modalPegawai.karyawan", "1");
+    //     } else {
+    //         setValue("modalPegawai.karyawan", "0");
+    //     }
+    // }, [lembaga, setValue]);
+
     useEffect(() => {
-        if (lembaga && lembaga !== "") {
-            setValue("modalPegawai.karyawan", "1");
+        const isWaliKelasDiisi =
+            (lembaga && lembaga !== "") ||
+            (jurusan && jurusan !== "") ||
+            (kelas && kelas !== "") ||
+            (rombel && rombel !== "") ||
+            (watch("modalPegawai.jumlah_murid_wali") && watch("modalPegawai.jumlah_murid_wali") !== "") ||
+            (watch("modalPegawai.periode_awal_wali") && watch("modalPegawai.periode_awal_wali") !== "");
+
+        if (isWaliKelasDiisi) {
+            setValue("modalPegawai.wali_kelas", "1");
         } else {
-            setValue("modalPegawai.karyawan", "0");
+            setValue("modalPegawai.wali_kelas", "0");
         }
-    }, [lembaga, setValue]);
+    }, [
+        lembaga,
+        jurusan,
+        kelas,
+        rombel,
+        watch("modalPegawai.jumlah_murid_wali"),
+        watch("modalPegawai.periode_awal_wali"),
+        setValue
+    ]);
+
 
     useEffect(() => {
         if (activeTab !== 4) return;
-        
+
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             handleFilterChangeLembaga({ lembaga: lembaga });
         }
@@ -32,7 +58,6 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
         if (rombel && filterLembaga.rombel.length >= 1) {
             handleFilterChangeLembaga({ rombel: rombel });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);

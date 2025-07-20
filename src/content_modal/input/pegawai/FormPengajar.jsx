@@ -14,13 +14,30 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
     const existingMateri = watch("modalPegawai.mata_pelajaran");
     const hydratedRef = useRef(false);
 
+    // useEffect(() => {   
+    //     if (golongan && golongan !== "") {
+    //         setValue("modalPegawai.pengajar", "1");
+    //     } else {
+    //         setValue("modalPegawai.pengajar", "0");
+    //     }
+    // }, [golongan, setValue]);
+
     useEffect(() => {
-        if (golongan && golongan !== "") {
-            setValue("modalPegawai.pengajar", "1");
-        } else {
-            setValue("modalPegawai.pengajar", "0");
-        }
-    }, [golongan, setValue]);
+        const jabatan = watch("modalPegawai.jabatan_pengajar");
+        const tanggalMulai = watch("modalPegawai.tanggal_mulai_pengajar");
+        const hasMateri = materiList.length > 0;
+
+        const isPengajarDiisi =
+            (golongan && golongan !== "") ||
+            (lembaga && lembaga !== "") ||
+            (jabatan && jabatan !== "") ||
+            (tanggalMulai && tanggalMulai !== "") ||
+            hasMateri;
+
+        setValue("modalPegawai.pengajar", isPengajarDiisi ? "1" : "0");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [golongan, lembaga, materiList.length, watch("modalPegawai.jabatan_pengajar"), watch("modalPegawai.tanggal_mulai_pengajar"), setValue]);
+
 
     const [materiList, setMateriList] = useState([])
     const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' })
@@ -57,13 +74,13 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
         console.log("handle", activeTab);
         if (activeTab != 2) return;
         console.log("handle change", activeTab);
-        
+
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             setValue('modalPegawai.lembaga_id_pengajar', lembaga);
         }
         if (golongan && gabunganList.length >= 1) {
-            console.log("golongan handle ",golongan);
-            
+            console.log("golongan handle ", golongan);
+
             setValue('modalPegawai.golongan_id_pengajar', golongan)
         }
         if (!hydratedRef.current && existingMateri && existingMateri.length > 0) {
@@ -218,7 +235,7 @@ const FormPengajar = ({ register, watch, setValue, activeTab }) => {
                 </button>
             </div>
 
-            
+
             {/* <input type="hidden" {...register("mata_pelajaran")} /> */}
             <div className="overflow-x-auto">
                 <table className="min-w-full text-sm text-left">

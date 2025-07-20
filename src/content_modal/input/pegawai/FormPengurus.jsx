@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import useDropdownGolonganJabatan from "../../../hooks/hook_dropdown/DropdownGolonganJabatan";
 import useDropdownSatuanKerja from "../../../hooks/hook_dropdown/DropdownSatuanKerja";
@@ -9,13 +10,36 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
     const { menuGolonganJabatan } = useDropdownGolonganJabatan();
     const { menuSatuanKerja } = useDropdownSatuanKerja();
 
+    // useEffect(() => {
+    //     if (golonganJabatan && golonganJabatan !== "") {
+    //         setValue("modalPegawai.pengurus", "1");
+    //     } else {
+    //         setValue("modalPegawai.pengurus", "0");
+    //     }
+    // }, [golonganJabatan, setValue]);
+
     useEffect(() => {
-        if (golonganJabatan && golonganJabatan !== "") {
-            setValue("modalPegawai.pengurus", "1");
-        } else {
-            setValue("modalPegawai.pengurus", "0");
-        }
-    }, [golonganJabatan, setValue]);
+        const jabatan = watch("modalPegawai.jabatan_pengurus");
+        const keterangan = watch("modalPegawai.keterangan_jabatan_pengurus");
+        const tanggalMulai = watch("modalPegawai.tanggal_mulai_pengurus");
+
+        const isPengurusDiisi =
+            (golonganJabatan && golonganJabatan !== "") ||
+            (jabatan && jabatan !== "") ||
+            (keterangan && keterangan !== "") ||
+            (satuanKerja && satuanKerja !== "") ||
+            (tanggalMulai && tanggalMulai !== "");
+
+        setValue("modalPegawai.pengurus", isPengurusDiisi ? "1" : "0");
+    }, [
+        golonganJabatan,
+        satuanKerja,
+        watch("modalPegawai.jabatan_pengurus"),
+        watch("modalPegawai.keterangan_jabatan_pengurus"),
+        watch("modalPegawai.tanggal_mulai_pengurus"),
+        setValue
+    ]);
+
 
     useEffect(() => {
         // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
@@ -25,12 +49,12 @@ const FormPengurus = ({ register, watch, setValue, activeTab }) => {
 
         if (golonganJabatan && menuGolonganJabatan.length >= 1) {
             // console.log("golongan jabatan handle", golonganJabatan);
-            
+
             setValue('modalPegawai.golongan_jabatan_id_pengurus', golonganJabatan);
         }
         if (satuanKerja && menuSatuanKerja.length >= 1) {
             // console.log("golongan jabatan handle", golonganJabatan);
-            
+
             setValue('modalPegawai.satuan_kerja_pengurus', satuanKerja);
         }
     }, [activeTab, golonganJabatan, menuGolonganJabatan.length, menuSatuanKerja.length, satuanKerja, setValue]);
