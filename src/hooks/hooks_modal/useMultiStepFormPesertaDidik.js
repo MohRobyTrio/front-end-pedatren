@@ -194,7 +194,9 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
                     ([field, messages]) =>
                         `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
                     )
-                : [result.message || "Gagal mengirim data"];
+                : result.error
+                    ? [`- ${result.error}`]
+                        : [result.message || "Gagal mengirim data"];
 
                 await Swal.fire({
                     icon: "error",
@@ -205,9 +207,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
                 });
 
                 throw new Error(result.message);
-            }
-
-            
+            }            
             
 
             await Swal.fire({

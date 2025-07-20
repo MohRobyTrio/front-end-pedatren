@@ -53,8 +53,38 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab, sele
             ? [{ ...list[0], label }, ...list.slice(1)]
             : list;
 
+    // const updatedFilterNegara = {
+    //     negara: updateFirstOptionLabel(filterNegara.negara, "Pilih Negara"),
+    //     provinsi: updateFirstOptionLabel(filterNegara.provinsi, "Pilih Provinsi"),
+    //     kabupaten: updateFirstOptionLabel(filterNegara.kabupaten, "Pilih Kabupaten"),
+    //     kecamatan: updateFirstOptionLabel(filterNegara.kecamatan, "Pilih Kecamatan")
+    // };
+
+    const getFilteredNegara = () => {
+        const negaraList = filterNegara.negara || [];
+
+        // Pisahkan default option (biasanya value === "")
+        const defaultOption = { value: "", label: "Pilih Negara" };
+
+        let filtered = [];
+
+        if (kewarganegaraan === "wna") {
+            filtered = negaraList.filter(n =>
+                n.value !== "" && n.label.toLowerCase() !== "indonesia"
+            );
+        } else if (kewarganegaraan === "wni") {
+            filtered = negaraList.filter(n =>
+                n.value !== "" && n.label.toLowerCase() === "indonesia"
+            );
+        } else {
+            filtered = negaraList.filter(n => n.value !== "");
+        }
+
+        return [defaultOption, ...filtered];
+    };
+
     const updatedFilterNegara = {
-        negara: updateFirstOptionLabel(filterNegara.negara, "Pilih Negara"),
+        negara: updateFirstOptionLabel(getFilteredNegara(), "Pilih Negara"),
         provinsi: updateFirstOptionLabel(filterNegara.provinsi, "Pilih Provinsi"),
         kabupaten: updateFirstOptionLabel(filterNegara.kabupaten, "Pilih Kabupaten"),
         kecamatan: updateFirstOptionLabel(filterNegara.kecamatan, "Pilih Kecamatan")
