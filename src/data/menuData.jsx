@@ -63,6 +63,7 @@ import MataPelajaran from "../content_main_page/content_menu_akademik/MataPelaja
 import TahunAjaran from "../content_main_page/content_menu_akademik/TahunAjaran";
 import Semester from "../content_main_page/content_menu_akademik/Semester";
 import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
+import Users from "../content_main_page/content_menu_manage/Users";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -151,6 +152,10 @@ export const menuAkademikItems =[
     { id: "tahunajaran", icon: "fa-calendar-check", text: "Tahun Ajaran", link: "/tahun-ajaran", content: <TahunAjaran /> },
     { id: "semester", icon: "fa-layer-group", text: "Semester", link: "/semester", content: <Semester /> },
     { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan /> },
+];
+
+export const menuManageItems =[
+    { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users /> },
 ];
 
 export const subKelembagaanItems = [

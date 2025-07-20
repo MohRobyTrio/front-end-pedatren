@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/Logout";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
 
@@ -477,7 +477,7 @@ export const ModalUpdatePassword = ({ isOpen, onClose }) => {
     );
 };
 
-export const ModalAddUser = ({ isOpen, onClose }) => {
+export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -491,10 +491,32 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
         role: "",
     });
 
+    useEffect(() => {
+        if (isOpen) {
+            if (data) {
+                setFormData({
+                    name: data.name || "",
+                    email: data.email || "",
+                    password: "",
+                    confirm_password: "",
+                    role: data.roles[0].name || "",
+                })
+            } else {
+                setFormData({
+                    name: "",
+                    email: "",
+                    password: "",
+                    confirm_password: "",
+                    role: "",
+                });
+            }
+        }
+    }, [isOpen, data])
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.password.length < 8) {
+        if (formData.password.length < 8 && !data) {
             await Swal.fire({
                 title: "Oops!",
                 text: "Password minimal 8 karakter",
@@ -502,7 +524,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                 confirmButtonText: "OK",
             });
             return;
-        } else if (formData.password != formData.confirm_password) {
+        } else if ((formData.password != formData.confirm_password) && !data) {
             await Swal.fire({
                 title: "Oops!",
                 text: "Password tidak sama",
@@ -548,17 +570,39 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                 password_confirmation: formData.confirm_password,
                 role: formData.role,
             };
-            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
 
-            const response = await fetch(`${API_BASE_URL}register`, {
-                method: "POST",
-                credentials: "include",
+            const isEditing = !!data?.id;
+            if (isEditing && !formData.password) {
+                delete payload.password;
+                delete payload.password_confirmation;
+            }
+
+            const url = isEditing
+                ? `${API_BASE_URL}users/${data.id}`
+                : `${API_BASE_URL}register`;
+
+            const method = isEditing ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+                method,
+                // credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(payload),
             });
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
+
+            // const response = await fetch(`${API_BASE_URL}register`, {
+            //     method: "POST",
+            //     credentials: "include",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            //     body: JSON.stringify(payload),
+            // });
 
             const result = await response.json();
             Swal.close();
@@ -588,6 +632,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                 text: "Data berhasil dikirim.",
             });
 
+            refetchData?.();
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -643,7 +688,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                                                 as="h3"
                                                 className="text-lg leading-6 font-medium text-gray-900 text-center mb-8"
                                             >
-                                                Tambah Akun Baru
+                                                {data ? "Update Akun" : "Tambah Akun Baru"}
                                             </Dialog.Title>
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
@@ -681,7 +726,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
 
                                                 {/* Password */}
                                                 <div>
-                                                    <label htmlFor="password" className="block text-gray-700">Password *</label>
+                                                    <label htmlFor="password" className="block text-gray-700">Password {!data && "*"}</label>
                                                     <div className="relative">
                                                         <input
                                                             type={showPassword ? "text" : "password"}
@@ -690,7 +735,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                                                             value={formData.password}
                                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                             maxLength={255}
-                                                            required
+                                                            required={!data}
                                                             className="mt-1 block w-full pr-10 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                             placeholder="Masukkan Password"
                                                         />
@@ -706,7 +751,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
 
                                                 {/* Confirm Password */}
                                                 <div>
-                                                    <label htmlFor="confirm_password" className="block text-gray-700">Konfirmasi Password *</label>
+                                                    <label htmlFor="confirm_password" className="block text-gray-700">Konfirmasi Password {!data && "*"}</label>
                                                     <div className="relative">
                                                         <input
                                                             type={showConfirmPassword ? "text" : "password"}
@@ -715,7 +760,7 @@ export const ModalAddUser = ({ isOpen, onClose }) => {
                                                             value={formData.confirm_password}
                                                             onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
                                                             maxLength={255}
-                                                            required
+                                                            required={!data}
                                                             className="mt-1 block w-full pr-10 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                             placeholder="Konfirmasi Password"
                                                         />

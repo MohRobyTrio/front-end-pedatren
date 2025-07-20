@@ -119,6 +119,7 @@ const TabBiodata = () => {
     }, [dropdownValuePekerjaan, inputLainnyaPekerjaan]);
 
     const allFields = watch(); // menangkap semua data form
+    const kewarganegaraan = watch("kewarganegaraan");
 
     useEffect(() => {
         console.log("Data Form Saat Ini:", allFields);
@@ -714,13 +715,14 @@ const TabBiodata = () => {
                             No Passport *
                         </label>
                         <div className="lg:w-3/4 max-w-md">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <div className={`flex items-center rounded-md shadow-md pl-3 border focus-within:border-gray-500 ${kewarganegaraan !== 'wni' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                                 <input
                                     id="no_passport"
                                     name="no_passport"
                                     type="text"
+                                    disabled={kewarganegaraan === "wni"}
                                     placeholder="Masukkan No Passport"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    className={`w-full py-1.5 pr-3 pl-1 text-base placeholder:text-gray-400 focus:outline-none sm:text-sm ${kewarganegaraan === 'wni' ? 'text-gray-500' : 'text-gray-900'}`}
                                     {...register('no_passport')}
                                 />
 
@@ -734,12 +736,13 @@ const TabBiodata = () => {
                             Nomor KK
                         </label>
                         <div className="lg:w-3/4 max-w-md">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <div className={`flex items-center rounded-md shadow-md pl-3 border focus-within:border-gray-500 ${kewarganegaraan !== 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                                 <input
                                     id="nomor_kk"
                                     type="text"
                                     placeholder="Masukkan No KK"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    disabled={kewarganegaraan === "wna"}
+                                    className={`w-full py-1.5 pr-3 pl-1 text-base placeholder:text-gray-400 focus:outline-none sm:text-sm ${kewarganegaraan === 'wna' ? 'text-gray-500' : 'text-gray-900'}`}
                                     {...register('nomor_kk')}
                                 />
                             </div>
@@ -755,12 +758,13 @@ const TabBiodata = () => {
                             NIK *
                         </label>
                         <div className="lg:w-3/4 max-w-md">
-                            <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                            <div className={`flex flex-col rounded-md shadow-md pl-3 border focus-within:border-gray-500 ${kewarganegaraan !== 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                                 <input
                                     id="nik"
                                     type="text"
                                     placeholder="Masukkan NIK"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                    disabled={kewarganegaraan === "wna"}
+                                    className={`w-full py-1.5 pr-3 pl-1 text-base placeholder:text-gray-400 focus:outline-none sm:text-sm ${kewarganegaraan === 'wna' ? 'text-gray-500' : 'text-gray-900'}`}
                                     {...register('nik')}
                                 />
                             </div>
@@ -1127,7 +1131,6 @@ const TabBiodata = () => {
                                     className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                     value={dropdownValuePekerjaan}
                                     onChange={(e) => setDropdownValuePekerjaan(e.target.value)}
-                                    required
                                 >
                                     <option value="">-- Pilih Pekerjaan --</option>
                                     <option value="Tidak Bekerja">Tidak Bekerja</option>
@@ -1155,7 +1158,6 @@ const TabBiodata = () => {
                                         className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                         value={inputLainnyaPekerjaan}
                                         onChange={(e) => setInputLainnyaPekerjaan(e.target.value)}
-                                        required
                                     />
                                 </div>
                             )}
@@ -1208,7 +1210,6 @@ const TabBiodata = () => {
                                     id="penghasilan"
                                     className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
                                     {...register("penghasilan", { required: true })}
-                                    required
                                 >
                                     <option value="">-- Pilih Penghasilan --</option>
                                     <option value="< Rp 500.000">&lt; Rp 500.000</option>

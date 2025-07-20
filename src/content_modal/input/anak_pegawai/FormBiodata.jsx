@@ -136,8 +136,8 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab,
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className={`flex items-center rounded-md shadow-md pl-1 border border-gray-500 ${kewarganegaraan === 'wna' ? 'bg-white border-gray-300 ' : 'bg-gray-300 border-gray-200'}`}>
                             <input
-                                id="no_passport"
-                                name="no_passport"
+                                id="passport"
+                                name="passport"
                                 type="text"
                                 maxLength={20}
                                 inputMode="numeric"
@@ -147,7 +147,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab,
                                 disabled={kewarganegaraan !== 'wna'}
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalAnakPegawai.no_passport', { required: kewarganegaraan === "wna" ? true : false })}
+                                {...register('modalAnakPegawai.passport', { required: kewarganegaraan === "wna" ? true : false })}
                                 required={kewarganegaraan === 'wna'}
                             />
                             {/* {errors.nama && <span>Nama wajib diisi</span>} */}

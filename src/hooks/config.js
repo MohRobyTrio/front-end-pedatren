@@ -13,4 +13,5 @@ export const rolesWithAccess = {
   approve: ['biktren', 'kamtib', 'pengasuh'],
   golongan: ["admin", "superadmin"],
   kewaliasuhan: ["admin", "superadmin"],
+  manage: ["admin", "superadmin"],
 };

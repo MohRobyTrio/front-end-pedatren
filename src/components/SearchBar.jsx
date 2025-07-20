@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 
-const SearchBar = ({ 
-    searchTerm, 
-    setSearchTerm, 
-    totalData, 
-    toggleFilters, 
+const SearchBar = ({
+    searchTerm,
+    setSearchTerm,
+    totalData,
+    toggleFilters,
     // totalFiltered, 
-    toggleView, 
-    limit, 
+    toggleView,
+    limit,
     toggleLimit,
     showViewButtons = true, // Prop baru dengan default true
     showFilterButtons = true,
-    showSearch = true
+    showSearch = true,
+    showLimit = true
 }) => {
     const [viewMode, setViewMode] = useState("table");
 
@@ -40,7 +41,7 @@ const SearchBar = ({
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 )}
-                
+
                 {showViewButtons && (
                     <div className="flex border rounded-sm overflow-hidden">
                         <button aria-label="list"
@@ -60,7 +61,7 @@ const SearchBar = ({
                         </button>
                     </div>
                 )}
-                
+
                 {showFilterButtons && (
                     <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
                         <i className="fas fa-filter text-lg"></i>
@@ -69,12 +70,14 @@ const SearchBar = ({
             </div>
 
             <div>
-                <select aria-label="limit" className="border border-gray-300 rounded p-2 mr-4" value={limit} onChange={toggleLimit}>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+                {showLimit && (
+                    <select aria-label="limit" className="border border-gray-300 rounded p-2 mr-4" value={limit} onChange={toggleLimit}>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                )}
                 <span>Total Data: {totalData || 0}</span>
             </div>
         </div>

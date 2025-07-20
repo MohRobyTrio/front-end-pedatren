@@ -11,6 +11,7 @@ import {
   menuAkademikItems,
   menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
   menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems, 
+  menuManageItems, 
   subKelembagaanItems, 
   subPelajaranItems, 
   // menuRWSItems, 
@@ -147,7 +148,8 @@ function App() {
               ...menuAkademikItems,
               ...menuKewilayahanItems,
               ...subKelembagaanItems,
-              ...subPelajaranItems
+              ...subPelajaranItems,
+              ...menuManageItems
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}

@@ -8,6 +8,7 @@ import {
     menuKewaliasuhanItems,
     menuKewilayahanItems,
     menuMahromItems,
+    menuManageItems,
     subKelembagaanItems,
     subPelajaranItems,
     subPesertaDidik
@@ -230,6 +231,17 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                                 onClick={() => toggleDropdown("akademik")}
                             />
                             {dropdowns.akademik && <DropdownMenu items={menuAkademikItems} />}
+                        </div>
+                    </Access>
+
+                    <Access action="manage">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Manage"
+                                isOpen={dropdowns.manage}
+                                onClick={() => toggleDropdown("manage")}
+                            />
+                            {dropdowns.manage && <DropdownMenu items={menuManageItems} />}
                         </div>
                     </Access>
                 </div>

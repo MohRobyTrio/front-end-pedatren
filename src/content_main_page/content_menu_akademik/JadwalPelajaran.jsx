@@ -5,12 +5,13 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import DropdownSemester from "../../hooks/hook_dropdown/DropdownSemester";
 import { ModalAddJadwalPelajaranFormulir, ModalAddOrEditJadwalPelajaran } from "../../components/modal/modal_kelembagaan/ModalFormJadwalPelajaran";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faCalendar, faClock, faEdit, faPlus, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faCalendar, faClock, faEdit, faFileExport, faPlus, faSpinner, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../hooks/config";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
+import { downloadFile } from "../../utils/downloadFile";
 
 const getPreviousKey = (key) => {
     const order = ["lembaga", "jurusan", "kelas", "rombel"];
@@ -66,6 +67,34 @@ const JadwalPelajaran = () => {
     const { menuSemester } = DropdownSemester();
     const [showAddMateriModal, setShowAddMateriModal] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleExport = () => {
+        const requiredFields = ['lembaga_id', 'jurusan_id', 'kelas_id', 'rombel_id', 'semester_id'];
+        const isAnyEmpty = requiredFields.some(key => !filters[key]);
+
+        if (isAnyEmpty) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Filter tidak lengkap',
+                text: 'Semua filter wajib diisi sebelum mengekspor PDF.',
+                confirmButtonColor: '#3085d6',
+            });
+            return;
+        }
+
+        const params = new URLSearchParams({
+            lembaga_id: filters.lembaga_id,
+            jurusan_id: filters.jurusan_id,
+            kelas_id: filters.kelas_id,
+            rombel_id: filters.rombel_id,
+            semester_id: filters.semester_id,
+        });
+
+        const fileUrl = `${API_BASE_URL}export/jadwal/download-pdf?${params.toString()}`;
+        downloadFile(fileUrl, setLoading);
+    };
+
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -282,8 +311,8 @@ const JadwalPelajaran = () => {
     };
 
     useEffect(() => {
-        console.log("semester",menuSemester);
-        
+        console.log("semester", menuSemester);
+
         if (menuSemester.length == 1) {
             setFilters((prev) => ({
                 ...prev,
@@ -400,6 +429,26 @@ const JadwalPelajaran = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={handleExport}
+                                            disabled={loading}
+                                            className={`
+        flex items-center gap-2 px-4 py-2 rounded-lg text-white shadow-sm transition-colors duration-200
+        ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'}
+      `}
+                                        >
+                                            {loading ? (
+                                                <>
+                                                    <FontAwesomeIcon icon={faSpinner} spin className="w-4 h-4" />
+                                                    <span className="font-medium">Mengunduh...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <FontAwesomeIcon icon={faFileExport} className="w-4 h-4" />
+                                                    <span className="font-medium">Export</span>
+                                                </>
+                                            )}
+                                        </button>
                                         <button
                                             onClick={() => {
                                                 setOpenModal(true);
