@@ -328,6 +328,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPeserta.anak_keberapa")}
+                                required
                             />
                         </div>
                         <span>Dari</span>
@@ -339,6 +340,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPeserta.dari_saudara")}
+                                required
                             />
                         </div>
                     </div>
@@ -385,7 +387,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                 {/* Jenjang Pendidikan Terakhir */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="jenjang_pendidikan_terakhir" className="md:w-1/4 text-black">
-                        Jenjang Pendidikan Terakhir *
+                        Jenjang Pendidikan Terakhir
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
@@ -434,7 +436,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                 {/* Nomor Telepon 1 */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="no_telepon" className="md:w-1/4 text-black">
-                        Nomor Telepon 1
+                        Nomor Telepon 1 *
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
@@ -494,8 +496,7 @@ const FormBiodata = ({ register, watch, setValue, control, activeTab, selectedTi
                                 maxLength={100}
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.email", { required: true })}
-                                required
+                                {...register("modalPeserta.email")}
                             />
                         </div>
                     </div>
