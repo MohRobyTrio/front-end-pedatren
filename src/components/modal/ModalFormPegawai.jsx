@@ -10,6 +10,7 @@ import FormPengurus from "../../content_modal/input/pegawai/FormPengurus";
 import FormWaliKelas from "../../content_modal/input/pegawai/FormWaliKelas";
 import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
 import { jenisBerkasList } from "../../data/menuData";
+import Swal from "sweetalert2";
 
 const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
     const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit, selectedTinggal,
@@ -19,12 +20,39 @@ const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
         lainnyaValue } = formState;
     const [biodataHandlers, setBiodataHandlers] = useState({});
 
-    const handleReset = () => {
-        resetData();
-        if (activeTab === 0 && biodataHandlers?.handleFilterChangeNegara) {
-            biodataHandlers.handleFilterChangeNegara({ negara: null, provinsi: null, kabupaten: null, kecamatan: null });
+    const handleReset = async () => {
+        const result = await Swal.fire({
+            title: 'Yakin ingin mereset data?',
+            text: 'Semua data yang telah diisi akan dihapus.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Reset!',
+            cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+            resetData();
+
+            if (activeTab === 0 && biodataHandlers?.handleFilterChangeNegara) {
+                biodataHandlers.handleFilterChangeNegara({
+                    negara: null,
+                    provinsi: null,
+                    kabupaten: null,
+                    kecamatan: null
+                });
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Data berhasil direset',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     };
+
 
     const contentRef = useRef(null);
 

@@ -8,6 +8,7 @@ import FormKeluarga from '../../content_modal/input/peserta_didik/FormKeluarga';
 import FormDomisiliPendidikan from '../../content_modal/input/peserta_didik/FormDomisiliPendidikan';
 import { jenisBerkasList } from '../../data/menuData';
 import FormBerkasPeserta from '../../content_modal/input/peserta_didik/FormBerkas';
+import Swal from 'sweetalert2';
 
 export default function MultiStepModal({ isOpen, onClose, formState }) {
     const {
@@ -48,6 +49,29 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
         setValue("modalPeserta.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTinggal, lainnyaValue, setValue]);
+
+    const handleResetClick = async () => {
+        const result = await Swal.fire({
+            title: 'Yakin ingin mereset data?',
+            text: "Semua data yang sudah diisi akan dihapus.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Reset!',
+            cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+            resetData();
+            Swal.fire({
+                icon: 'success',
+                title: 'Data berhasil direset',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    };
 
     const tabs = [
         {
@@ -171,7 +195,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
                                     {activeTab < tabs.length && (
                                         <button
                                             type="button"
-                                            onClick={resetData}
+                                            onClick={handleResetClick}
                                             className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
                                         >
                                             <FaUndo />

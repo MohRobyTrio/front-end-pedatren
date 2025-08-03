@@ -148,14 +148,21 @@ const Pengurus = () => {
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
         { label: "NIK", value: "nik" },
-        // { label: "NIUP", value: "niup" },
+        { label: "NIUP", value: "niup" },
         // { label: "Nama", value: "nama" },
-        // { label: "Tempat Lahir", value: "tempat_lahir" },
+        { label: "Tempat dan Tanggal Lahir", value: "tempat_tanggal_lahir" },
         // { label: "Tanggal Lahir", value: "tanggal_lahir" },
         // { label: "Jenis Kelamin", value: "jenis_kelamin" },
-        { label: "Anak ke", value: "anak_ke" },
-        { label: "Jumlah Saudara", value: "jumlah_saudara" },
+        // { label: "Anak ke", value: "anak_ke" },
+        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
         { label: "Alamat", value: "alamat" },
+        { label: "Pendidikan Terakhir", value: "pendidikan_terakhir" },
+        { label: "Email", value: "email" },
+        { label: "No Handphone", value: "no_hp" },
+        { label: "Satuan Kerja", value: "satuan_kerja" },
+        { label: "Golongan Jabatan", value: "golongan_jabatan" },
+        { label: "Jabatan", value: "jabatan" },
+        { label: "Keterangan Jabatan", value: "keterangan_jabatan" },
         // { label: "NIS", value: "nis" },
         // { label: "Domisili Santri", value: "domisili_santri" },
         // { label: "Angkatan Santri", value: "angkatan_santri" },
@@ -166,7 +173,7 @@ const Pengurus = () => {
         // { label: "Rombel", value: "rombel" },
         // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
         // { label: "Status", value: "status" },
-        { label: "Ibu Kandung", value: "ibu_kandung" }
+        // { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
 
     return (

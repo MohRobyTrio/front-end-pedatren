@@ -8,6 +8,7 @@ import FormBiodataAnakPegawai from '../../content_modal/input/anak_pegawai/FormB
 import FormKeluargaAnakPegawai from '../../content_modal/input/anak_pegawai/FormKeluarga';
 import FormDomisiliPendidikanAnakPegawai from '../../content_modal/input/anak_pegawai/FormDomisiliPendidikan';
 import FormBerkasAnakPegawai from '../../content_modal/input/anak_pegawai/FormBerkas';
+import Swal from 'sweetalert2';
 
 export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }) {
     const {
@@ -49,6 +50,30 @@ export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }
         setValue("modalAnakPegawai.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTinggal, lainnyaValue, setValue]);
+
+    const handleResetClick = async () => {
+        const result = await Swal.fire({
+            title: 'Yakin ingin mereset data?',
+            text: "Semua data yang sudah diisi akan dihapus.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Reset!',
+            cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+            resetData();
+            Swal.fire({
+                icon: 'success',
+                title: 'Data berhasil direset',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    };
+
 
     const tabs = [
         {
@@ -159,7 +184,7 @@ export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }
                                     {activeTab < tabs.length && (
                                         <button
                                             type="button"
-                                            onClick={resetData}
+                                            onClick={handleResetClick}
                                             className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
                                         >
                                             <FaUndo />

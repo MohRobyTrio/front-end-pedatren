@@ -5,7 +5,7 @@ import logoUser from "../assets/user.png";
 import { getRolesString } from "../utils/getRolesString";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faRightFromBracket, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
 import { ModalAddUser, ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil";
 import Access from "./Access";
 
@@ -185,7 +185,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                     Edit Password
                   </button>
                 </li>
-                <li>
+                {/* <li>
                   <button
                     onClick={() => setOpenModalAddUser(true)}
                     className="flex items-center gap-3 w-full px-4 py-2
@@ -195,7 +195,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                     <FontAwesomeIcon icon={faUserPlus} />
                     Tambah Akun
                   </button>
-                </li>
+                </li> */}
                 <li>
                   <button
                     onClick={handleLogout}
