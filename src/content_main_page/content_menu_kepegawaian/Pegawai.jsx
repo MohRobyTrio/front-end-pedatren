@@ -13,12 +13,13 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ModalDetail from '../../components/modal/ModalDetail';
 // import { downloadFile } from '../../utils/downloadFile';
 // import { API_BASE_URL } from '../../hooks/config';
-import { FaFileExport, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import Access from '../../components/Access';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
+import { Link } from 'react-router-dom';
 
 const Pegawai = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -288,13 +289,14 @@ const Pegawai = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
-                                        <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Umur</th>
                                         <th className="px-3 py-2 border-b">Pengurus</th>
                                         <th className="px-3 py-2 border-b">Karyawan</th>
                                         <th className="px-3 py-2 border-b">Pengajar</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -312,13 +314,26 @@ const Pegawai = () => {
                                         pegawai.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(item.pengurus)}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(item.karyawan)}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(item.pengajar)}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td>
+                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
+
                                             </tr>
                                         ))
                                     )}

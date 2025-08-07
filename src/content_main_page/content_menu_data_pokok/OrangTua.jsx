@@ -8,20 +8,22 @@ import useFetchOrangTua from "../../hooks/hooks_menu_data_pokok/Orangtua";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import ModalDetail from "../../components/modal/ModalDetail";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
 
 const OrangTua = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -140,71 +142,82 @@ const OrangTua = () => {
                     </div>
                 ) : (
                     viewMode === "list" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
-                        {loadingOrangtua ? (
-                            <div className="col-span-3 flex justify-center items-center">
-                                <OrbitProgress variant="disc" color="#2a6999" size="small" />
-                            </div>
-                        ) : orangtua.length === 0 ? (
-                            <p className="text-center col-span-3">Tidak ada data</p>
-                        ) : (
-                            orangtua.map((item, index) => (
-                                <div key={item.id_orangtua || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
-                                    <img
-                                        alt={item.nama || "-"}
-                                        className="w-20 h-24 object-cover"
-                                        src={item.foto_profil}
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = blankProfile;
-                                        }}
-                                    />
-                                    <div>
-                                        <h2 className="font-semibold text-xl">{item.nama || "-"}</h2>
-                                        <p className="text-gray-600">NIK: {item.nik_or_passport || "-"}</p>
-                                        <p className="text-gray-600">Phone: {item.telepon_1 || item.telepon_2 || "-"}</p>
-                                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3">
+                            {loadingOrangtua ? (
+                                <div className="col-span-3 flex justify-center items-center">
+                                    <OrbitProgress variant="disc" color="#2a6999" size="small" />
                                 </div>
-                            ))
-                        )}
-                    </div>
-                ) : (
-                    <DoubleScrollbarTable>
-                        <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                <tr>
-                                    <th className="px-3 py-2 border-b">#</th>
-                                    <th className="px-3 py-2 border-b">NIK</th>
-                                    <th className="px-3 py-2 border-b">Nama</th>
-                                    <th className="px-3 py-2 border-b">Telepon 1</th>
-                                    <th className="px-3 py-2 border-b">Telepon 2</th>
-                                    <th className="px-3 py-2 border-b">Kota Asal</th>
-                                    <th className="px-3 py-2 border-b">Tgl Update Bio</th>
-                                    <th className="px-3 py-2 border-b">Tgl Input Bio</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-800">
-                                {loadingOrangtua ? (
+                            ) : orangtua.length === 0 ? (
+                                <p className="text-center col-span-3">Tidak ada data</p>
+                            ) : (
+                                orangtua.map((item, index) => (
+                                    <div key={item.id_orangtua || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
+                                        <img
+                                            alt={item.nama || "-"}
+                                            className="w-20 h-24 object-cover"
+                                            src={item.foto_profil}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = blankProfile;
+                                            }}
+                                        />
+                                        <div>
+                                            <h2 className="font-semibold text-xl">{item.nama || "-"}</h2>
+                                            <p className="text-gray-600">NIK: {item.nik_or_passport || "-"}</p>
+                                            <p className="text-gray-600">Phone: {item.telepon_1 || item.telepon_2 || "-"}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    ) : (
+                        <DoubleScrollbarTable>
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <td colSpan="8" className="text-center py-6">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" />
-                                        </td>
+                                        <th className="px-3 py-2 border-b">#</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">NIK</th>
+                                        <th className="px-3 py-2 border-b">Telepon 1</th>
+                                        <th className="px-3 py-2 border-b">Telepon 2</th>
+                                        <th className="px-3 py-2 border-b">Kota Asal</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
-                                ) : orangtua.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="8" className="text-center py-6">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    orangtua.map((item, index) => (
-                                        <tr key={item.id_orangtua || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer" onClick={() => openModal(item)}>
-                                            <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.telepon_1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.telepon_2 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingOrangtua ? (
+                                        <tr>
+                                            <td colSpan="8" className="text-center py-6">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" />
+                                            </td>
+                                        </tr>
+                                    ) : orangtua.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="8" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        orangtua.map((item, index) => (
+                                            <tr key={item.id_orangtua || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
+                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.telepon_1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.telepon_2 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
 
                                             </tr>
                                         ))

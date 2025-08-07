@@ -12,7 +12,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaFileExport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaPlus } from "react-icons/fa";
 // import ModalForm from "../../components/ModalFormPesertaDidik";
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
@@ -21,6 +21,7 @@ import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import Access from "../../components/Access";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { Link } from "react-router-dom";
 
 const PesertaDidik = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -36,7 +37,7 @@ const PesertaDidik = () => {
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -187,7 +188,7 @@ const PesertaDidik = () => {
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     };
-    
+
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
         { label: "NIK", value: "nik" },
@@ -247,8 +248,8 @@ const PesertaDidik = () => {
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                                <FaFileExport />
-                                <span>Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
 
                 </div>
@@ -298,14 +299,13 @@ const PesertaDidik = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-16">#</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIK / No. Passport</th>
-                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Lembaga</th>
                                         <th className="px-3 py-2 border-b">Wilayah</th>
                                         <th className="px-3 py-2 border-b">Kota Asal</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Bio</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -323,14 +323,44 @@ const PesertaDidik = () => {
                                         pesertaDidik.map((item, index) => (
                                             <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">
+                                                <div className="flex items-start">
+                                                    <img
+                                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTabOgeMNrSqYJ4c2-kMg0I_QreIqbVVfgvWQ&s"
+                                                        alt={item.name}
+                                                        className="h-10 min-w-10 max-w-12 rounded-lg object-cover shadow-sm shrink-0"
+                                                    />
+
+                                                    <div className="ml-4 max-w-xs self-center">
+                                                        <div className="text-sm font-medium text-gray-900 break-words">{item.nama}</div>
+                                                        {/* <div className="text-sm text-gray-500">ID: {item.id}</div>
+                                                    </div>
+                                                </div>
+                                                </td> */}
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                    {/* <button
+                                                        onClick={() => handleDelete(item.id)}
+                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaTrash />
+                                                    </button> */}
+                                                </td>
                                             </tr>
                                         ))
                                     )}

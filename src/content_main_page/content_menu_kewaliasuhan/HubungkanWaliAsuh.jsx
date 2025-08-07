@@ -322,8 +322,8 @@ const HubungkanWaliAsuh = () => {
                                     />
                                 </th>
                                 <th className="px-3 py-2 border-b text-center w-10">No</th>
-                                <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                 <th className="px-3 py-2 border-b">Nama</th>
+                                <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                 <th className="px-3 py-2 border-b">Wilayah</th>
                             </tr>
                         </thead>
@@ -366,8 +366,8 @@ const HubungkanWaliAsuh = () => {
                                             />
                                         </td>
                                         <td className="px-3 py-2 border-b">{index + 1}</td>
-                                        <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.nama}</td>
+                                        <td className="px-3 py-2 border-b">{item.nis}</td>
                                         <td className="px-3 py-2 border-b text-left">{item.wilayah}</td>
                                     </tr>
                                 ))

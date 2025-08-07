@@ -9,16 +9,18 @@ import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
 import { useEffect, useMemo, useState } from 'react';
 import ModalDetail from '../../components/modal/ModalDetail';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
+import { Link } from 'react-router-dom';
+import { FaEdit } from 'react-icons/fa';
 
 const Wali = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
@@ -188,12 +190,12 @@ const Wali = () => {
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                 <tr>
                                     <th className="px-3 py-2 border-b">#</th>
-                                    <th className="px-3 py-2 border-b">NIK</th>
                                     <th className="px-3 py-2 border-b">Nama</th>
+                                    <th className="px-3 py-2 border-b">NIK</th>
                                     <th className="px-3 py-2 border-b">Telepon 1</th>
                                     <th className="px-3 py-2 border-b">Telepon 2</th>
-                                    <th className="px-3 py-2 border-b">Tgl Update</th>
-                                    <th className="px-3 py-2 border-b">Tgl Input</th>
+                                    <th className="px-3 py-2 border-b">Aksi</th>
+                                    {/* <th className="px-3 py-2 border-b">Tgl Input</th> */}
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800">
@@ -211,12 +213,25 @@ const Wali = () => {
                                     wali.map((item, index) => (
                                         <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.telepon_1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.telepon_2 || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                            <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                </Link>
+                                            </td>
+
+                                            {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                            <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                         </tr>
                                     ))
                                 )}

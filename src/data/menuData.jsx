@@ -5,18 +5,14 @@ import Perizinan from "../content_main_page/content _menu_kepesantrenan/Perizina
 // import PresensiPesantren from "../content_main_page/content _menu_kepesantrenan/PresensiPesantren";
 // import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
 import Alumni from "../content_main_page/content_menu_data_pokok/Alumni";
-import Karyawan from "../content_main_page/content_menu_data_pokok/Karyawan";
 import Khadam from "../content_main_page/content_menu_data_pokok/Khadam";
 import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
-import Pengajar from "../content_main_page/content_menu_data_pokok/Pengajar";
-import Pengurus from "../content_main_page/content_menu_data_pokok/Pengurus";
 import PesertaDidik from "../content_main_page/content_menu_data_pokok/PesertaDidik";
 import BersaudaraKandung from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/BersaudaraKandung";
 import Pelajar from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Pelajar";
 import Santri from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Santri";
 import SantriNonDomisili from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/SantriNonDomisili";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
-import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import Golongan from "../content_main_page/content_menu_kepegawaian/Golongan";
 import PindahKelas from "../content_main_page/content_menu_akademik/PindahKelas";
 import GolonganJabatan from "../content_main_page/content_menu_kepegawaian/GolonganJabatan";
@@ -76,10 +72,10 @@ export const menuDataPokokItems = [
     { id: "pesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik /> },
     { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
-    { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
-    { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
-    { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
-    { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/wali-kelas", content: <WaliKelas /> },
+    // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
+    // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
+    // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
+    // { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/wali-kelas", content: <WaliKelas /> },
     { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
     { id: "alumni", icon: "fa-user-graduate", text: "Alumni", link: "/alumni", content: <Alumni /> },
 ];

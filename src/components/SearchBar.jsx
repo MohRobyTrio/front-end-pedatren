@@ -42,7 +42,7 @@ const SearchBar = ({
                     />
                 )}
 
-                {showViewButtons && (
+                {/* {showViewButtons && (
                     <div className="flex border rounded-sm overflow-hidden">
                         <button aria-label="list"
                             className={`p-3 flex items-center justify-center cursor-pointer ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
@@ -60,7 +60,7 @@ const SearchBar = ({
                             <i className="fas fa-table text-lg"></i>
                         </button>
                     </div>
-                )}
+                )} */}
 
                 {showFilterButtons && (
                     <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>

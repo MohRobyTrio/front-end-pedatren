@@ -12,12 +12,13 @@ import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import ModalDetail from '../../components/modal/ModalDetail';
 import { generateDropdownTahun } from '../../utils/generateDropdownTahun';
 import Access from '../../components/Access';
-import { FaFileExport, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepModalAnakPegawai from '../../components/modal/ModalFormAnakPegawai';
 import { useMultiStepFormAnakPegawai } from '../../hooks/hooks_modal/useMultiStepFormAnakPegawai';
 import { jenisBerkasList } from '../../data/menuData';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
+import { Link } from 'react-router-dom';
 
 const AnakPegawai = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -302,10 +303,10 @@ const AnakPegawai = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIS</th>
                                         <th className="px-3 py-2 border-b">NIK / No. Passport</th>
-                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Lembaga</th>
                                         <th className="px-3 py-2 border-b">Jurusan</th>
                                         <th className="px-3 py-2 border-b">Kelas</th>
@@ -314,8 +315,8 @@ const AnakPegawai = () => {
                                         <th className="px-3 py-2 border-b">Kamar</th>
                                         <th className="px-3 py-2 border-b">Kota Asal</th>
                                         <th className="px-3 py-2 border-b">Orang Tua</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Khadam</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Khadam</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Input Khadam</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -331,12 +332,12 @@ const AnakPegawai = () => {
                                         </tr>
                                     ) : (
                                         anakPegawai.map((item, index) => (
-                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center hover:cursor-pointer" onClick={() => openModal(item)}>
+                                            <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left hover:cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.jurusan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
@@ -345,8 +346,20 @@ const AnakPegawai = () => {
                                                 <td className="px-3 py-2 border-b">{item.kamar || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_ortu || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
+                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}

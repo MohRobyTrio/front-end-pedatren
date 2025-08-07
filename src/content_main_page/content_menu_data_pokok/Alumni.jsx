@@ -11,26 +11,27 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaFileExport } from "react-icons/fa";
+import { FaEdit, FaFileExport } from "react-icons/fa";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { Link } from "react-router-dom";
 
 const Alumni = () => {
     const [openModalExport, setOpenModalExport] = useState(false);
     // const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -79,11 +80,11 @@ const Alumni = () => {
     const [viewMode, setViewMode] = useState("");
 
     useEffect(() => {
-            const savedViewMode = sessionStorage.getItem("viewMode");
-            if (savedViewMode) {
-                setViewMode(savedViewMode);
-            }
-        }, []);
+        const savedViewMode = sessionStorage.getItem("viewMode");
+        if (savedViewMode) {
+            setViewMode(savedViewMode);
+        }
+    }, []);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -163,9 +164,9 @@ const Alumni = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Alumni</h1>
                 <div className="flex items-center space-x-2">
-                {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}
-                {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
-                {/* <button
+                    {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/alumni`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}
+                    {/* <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button> */}
+                    {/* <button
                     onClick={() => downloadFile(`${API_BASE_URL}export/alumni`, setExportLoading)}
                     disabled={exportLoading}
                     className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -182,15 +183,15 @@ const Alumni = () => {
                         </>
                     )}
                 </button> */}
-                <button
+                    <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                                <FaFileExport />
-                                <span>Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
-                    </div>
+                </div>
 
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-10">
@@ -269,14 +270,14 @@ const Alumni = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
-                                        <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Status Santri Terakhir</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
                                         {/* <th className="px-3 py-2 border-b">Status</th> */}
                                         <th className="px-3 py-2 border-b">Kota Asal</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Bio</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Input Bio</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -294,8 +295,8 @@ const Alumni = () => {
                                         alumni.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">
                                                     Masuk: {item.tahun_masuk_santri || "-"}<br />
                                                     Bayang: {item.tahun_keluar_santri || "-"}
@@ -315,8 +316,21 @@ const Alumni = () => {
                                                     </span>
                                                 </td> */}
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
+
                                             </tr>
                                         ))
                                     )}

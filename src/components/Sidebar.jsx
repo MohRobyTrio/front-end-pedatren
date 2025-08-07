@@ -11,7 +11,7 @@ import {
     menuManageItems,
     subKelembagaanItems,
     subPelajaranItems,
-    subPesertaDidik
+    // subPesertaDidik
 } from "../data/menuData";
 import Access from "./Access";
 import { hasAccess } from "../utils/hasAccess";
@@ -50,7 +50,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
 
 
     const submenuMap = {
-        pesertadidik: subPesertaDidik,
+        // pesertadidik: subPesertaDidik,
         kelembagaan: subKelembagaanItems,
         pelajaran: subPelajaranItems,
     };
@@ -58,9 +58,10 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
-                const isPeserta = item.id == "pesertadidik";
+                // const isPeserta = item.id == "pesertadidik";
                 const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran";
-                const isOpen = isPeserta ? true : dropdowns[item.id];
+                // const isOpen = isPeserta ? true : dropdowns[item.id];
+                const isOpen = dropdowns[item.id];
 
                 if (item.access && !hasAccess(item.access)) return null;
 
@@ -71,7 +72,8 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                             text={item.text}
                             link={item.link || `/${item.id}`}
                             onClick={(e) => {
-                                if (hasSubmenu && !isPeserta) {
+                                // if (hasSubmenu && !isPeserta) {
+                                if (hasSubmenu) {
                                     e.preventDefault(); // Cegah navigasi untuk dropdown lain selain peserta didik
                                 }
                                 if (hasSubmenu) {
@@ -88,7 +90,9 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
         </ul>
     );
 
-    const SubMenuDropdown = ({ subData, parentId }) => (
+    const SubMenuDropdown = ({ subData, parentId }) => {
+        if (!Array.isArray(subData)) return null;
+        return (
         <ul className="ml-7 mt-1">
             {subData.map((subItem) => {
                 const isActive = location.pathname === subItem.link;
@@ -118,7 +122,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                 );
             })}
         </ul>
-    );
+    )};
 
 
     const MenuHeader = ({ name, isOpen, onClick }) => (

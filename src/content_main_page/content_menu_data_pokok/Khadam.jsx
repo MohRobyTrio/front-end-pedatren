@@ -11,24 +11,25 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaFileExport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
 import Access from "../../components/Access";
 import MultiStepModalKhadam from "../../components/modal/ModalFormKhadam";
 import { useMultiStepFormKhadam } from "../../hooks/hooks_modal/useMultiStepFormKhadam";
+import { Link } from "react-router-dom";
 
 const Khadam = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
@@ -193,10 +194,10 @@ const Khadam = () => {
                             </>
                         )}
                     </button> */}
-                    <div className="flex items-center space-x-2">
-                        <Access action="tambah">
-                            <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
-                        </Access>
+                <div className="flex items-center space-x-2">
+                    <Access action="tambah">
+                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
+                    </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
@@ -253,7 +254,7 @@ const Khadam = () => {
                                             className="w-20 h-24 object-cover"
                                             src={item.foto_profil}
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = blankProfile;
                                             }}
                                         />
@@ -271,12 +272,12 @@ const Khadam = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
+                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">NIK</th>
-                                        <th className="px-3 py-2 border-b">Nama</th>
                                         <th className="px-3 py-2 border-b">Deskripsi</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Khadam</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Khadam</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Input Khadam</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -294,12 +295,25 @@ const Khadam = () => {
                                         khadam.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit     />
+                                                        </button>
+                                                    </Link>
+                                                </td>
+
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                             </tr>
                                         ))
                                     )}
@@ -310,7 +324,7 @@ const Khadam = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/khadam" /> 
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/khadam" />
 
                 <MultiStepModalKhadam isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 

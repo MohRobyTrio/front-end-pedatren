@@ -11,8 +11,9 @@ import Pagination from "../../components/Pagination";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
-import { FaFileExport } from "react-icons/fa";
+import { FaEdit, FaFileExport } from "react-icons/fa";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { Link } from "react-router-dom";
 
 const WaliAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -299,15 +300,16 @@ const WaliAsuh = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
-                                        <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">No. Induk Santri</th>
                                         <th className="px-3 py-2 border-b">Kamar</th>
                                         <th className="px-3 py-2 border-b">Blok</th>
                                         <th className="px-3 py-2 border-b">Wilayah</th>
                                         <th className="px-3 py-2 border-b">Kota Asal</th>
                                         <th className="px-3 py-2 border-b">Angkatan</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update WA</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input WA</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Update WA</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input WA</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800 text-center">
@@ -325,15 +327,29 @@ const WaliAsuh = () => {
                                         waliAsuh.map((item, index) => (
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kamar || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.blok || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.angkatan || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
+
+
+                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}
