@@ -253,7 +253,7 @@ const Formulir = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex items-center gap-3 text-gray-600">
+                                                {/* <div className="flex items-center gap-3 text-gray-600">
                                                     <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                                                         <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                                                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -264,6 +264,20 @@ const Formulir = () => {
                                                         <p className="text-sm font-medium text-gray-900">Email</p>
                                                         <p className="text-sm text-gray-600">
                                                             {pesertaData?.email || '-'}
+                                                        </p>
+                                                    </div>
+                                                </div> */}
+
+                                                <div className="flex items-center gap-3 text-gray-600">
+                                                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                                        <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-medium text-gray-900">Tempat Lahir</p>
+                                                        <p className="text-sm text-gray-600">
+                                                            {pesertaData?.tempat_lahir || '-'}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -282,21 +296,9 @@ const Formulir = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex items-center gap-3 text-gray-600">
-                                                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                                        <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm font-medium text-gray-900">Tempat Lahir</p>
-                                                        <p className="text-sm text-gray-600">
-                                                            {pesertaData?.tempat_lahir || '-'}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                
 
-                                                <div className="flex items-center gap-3 text-gray-600">
+                                                {/* <div className="flex items-center gap-3 text-gray-600">
                                                     <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
                                                         <svg className="w-4 h-4 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fillRule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clipRule="evenodd" />
@@ -309,7 +311,7 @@ const Formulir = () => {
                                                             {pesertaData?.no_telepon || '-'}
                                                         </p>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
