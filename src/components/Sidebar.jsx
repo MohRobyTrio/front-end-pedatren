@@ -8,7 +8,7 @@ import {
     menuKepesantrenanItems,
     menuKewaliasuhanItems,
     menuKewilayahanItems,
-    menuMahromItems,
+    // menuMahromItems,
     menuManageItems,
     subKelembagaanItems,
     subPelajaranItems,

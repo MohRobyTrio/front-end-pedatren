@@ -52,7 +52,7 @@ const Pegawai = () => {
         lembaga: "",
         jurusan: "",
         kelas: "",
-        rombel: ""
+        rombel: "",
     })
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
@@ -113,6 +113,11 @@ const Pegawai = () => {
             { label: "Pengurus-Karyawan", value: "pengurus karyawan" },
             { label: "Pengajar-Pengurus-Karyawan", value: "pengajar pengurus karyawan" },
         ],
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Aktif", value: "aktif" },
+            { label: "Tidak Aktif", value: "tidak_aktif" },
+        ],
     }
 
     const filter5 = {
@@ -149,7 +154,7 @@ const Pegawai = () => {
         ]
     }
 
-    const filter4 = {
+    // const filter4 = {
         // smartcard: [
         //     { label: "Smartcard", value: "" },
         //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
@@ -160,7 +165,7 @@ const Pegawai = () => {
         //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
         //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         // ]
-    };
+    // };
 
     const hasStatus = (status, keyword) => {
         if (!status) return false;
@@ -307,12 +312,15 @@ const Pegawai = () => {
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
+                                        <th className="px-3 py-2 border-b">NIK/No. Passport</th>
+                                        <th className="px-3 py-2 border-b">Jenis Kelamin</th>
                                         {/* <th className="px-3 py-2 border-b">NIUP</th>
                                         <th className="px-3 py-2 border-b">Umur</th> */}
                                         <th className="px-3 py-2 border-b">Pengurus</th>
                                         <th className="px-3 py-2 border-b">Karyawan</th>
                                         <th className="px-3 py-2 border-b">Pengajar</th>
                                         <th className="px-3 py-2 border-b">Wali Kelas</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
                                         {/* <th className="px-3 py-2 border-b">Pendidikan Terakhir</th> */}
                                         <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
@@ -333,12 +341,24 @@ const Pegawai = () => {
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jenis_kelamin || "-"}</td>
                                                 {/* <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Pengurus"))}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Karyawan"))}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Pengajar"))}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Wali Kelas"))}</td>
+                                                <td className="px-3 py-2 border-b w-30">
+                                                <span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status_aktif == "aktif"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status_aktif == "aktif" ? "Aktif" : "Nonaktif"}
+                                                </span>
+                                            </td>
                                                 {/* <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}

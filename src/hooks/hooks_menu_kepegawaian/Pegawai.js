@@ -49,6 +49,7 @@ const useFetchPegawai = (filters) => {
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
         if (filters?.smartcard) url += `&smartcard=${encodeURIComponent(filters.smartcard)}`;
         if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
+        if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
 
         if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama");
