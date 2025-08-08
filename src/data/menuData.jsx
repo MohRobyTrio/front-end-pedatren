@@ -69,7 +69,7 @@ export const menuItems = [
 ];
 
 export const menuDataPokokItems = [
-    { id: "pesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik /> },
+    { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
     { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
@@ -114,16 +114,16 @@ export const menuRWSItems = [
 ];
 
 // export const menuKelembagaanItems = [
-    // { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/lembaga", content: <Lembaga /> },
-    // { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/jurusan", content: <Jurusan /> },
-    // { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelas", content: <Kelas /> },
-    // { id: "rombel", icon: "fa-users", text: "Rombel", link: "/rombel", content: <Rombel /> },
-    // { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
-    // { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
-    // { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
-    // { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/mata-pelajaran", content: <MataPelajaran /> },
-    // { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
-    // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
+// { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/lembaga", content: <Lembaga /> },
+// { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/jurusan", content: <Jurusan /> },
+// { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelas", content: <Kelas /> },
+// { id: "rombel", icon: "fa-users", text: "Rombel", link: "/rombel", content: <Rombel /> },
+// { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan /> },
+// { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan /> },
+// { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan /> },
+// { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/mata-pelajaran", content: <MataPelajaran /> },
+// { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
+// { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
 // ];
 
 export const menuKewilayahanItems = [
@@ -134,7 +134,7 @@ export const menuKewilayahanItems = [
     { id: "alumnisantri", icon: "fa-user-graduate", text: "Alumni Santri", link: "/alumni-santri", content: <AlumniSantri /> },
 ];
 
-export const menuAkademikItems =[
+export const menuAkademikItems = [
     { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
     // { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
     // { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh /> },
@@ -150,7 +150,7 @@ export const menuAkademikItems =[
     { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan /> },
 ];
 
-export const menuManageItems =[
+export const menuManageItems = [
     { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users /> },
 ];
 
@@ -168,21 +168,24 @@ export const subPelajaranItems = [
 ];
 
 export const tabsFormulir = [
-  { id: "biodata", label: "Biodata", link: "biodata", content: <TabBiodata /> },
-  { id: "keluarga", label: "Keluarga", link: "keluarga", content: <TabKeluarga /> },
-  { id: "santri", label: "Santri", link: "santri", content: <TabSantri /> },
-  { id: "domisili", label: "Domisili Santri", link: "domisili-santri", content: <TabDomisiliSantri /> },
-  { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh", content: <TabWaliAsuh /> },
-  { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh", content: <TabAnakAsuh /> },
-  { id: "pendidikan", label: "Pendidikan", link: "pendidikan", content: <TabPendidikan /> },
-  { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
-  { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
-  { id: "pengurus", label: "Pengurus", link: "pengurus", content: <TabPengurus /> },
-  { id: "walikelas", label: "Wali Kelas", link: "wali-kelas", content: <TabWaliKelas /> },
-  { id: "khadam", label: "Khadam", link: "khadam", content: <TabKhadam /> },
-  { id: "berkas", label: "Berkas", link: "berkas", content: <TabBerkas /> },
-  { id: "warpes", label: "Warga Pesantren", link: "warga-pesantren", content: <TabWarPes /> },
-  { id: "progress", label: "Progress Report", link: "progress-report", content: <TabProgress /> },
+    { id: "biodata", label: "Biodata", link: "biodata", content: <TabBiodata /> },
+    { id: "keluarga", label: "Keluarga", link: "keluarga", content: <TabKeluarga /> },
+    { id: "santri", label: "Santri", link: "santri", content: <TabSantri /> },
+    { id: "domisili", label: "Domisili Santri", link: "domisili-santri", content: <TabDomisiliSantri /> },
+    { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh", content: <TabWaliAsuh /> },
+    { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh", content: <TabAnakAsuh /> },
+    { id: "pendidikan", label: "Pendidikan", link: "pendidikan", content: <TabPendidikan /> },
+    { id: "khadam", label: "Khadam", link: "khadam", content: <TabKhadam /> },
+    { id: "berkas", label: "Berkas", link: "berkas", content: <TabBerkas /> },
+    { id: "warpes", label: "Warga Pesantren", link: "warga-pesantren", content: <TabWarPes /> },
+    { id: "progress", label: "Progress Report", link: "progress-report", content: <TabProgress /> },
+];
+
+export const tabsFormulirPegawai = [
+    { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
+    { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
+    { id: "pengurus", label: "Pengurus", link: "pengurus", content: <TabPengurus /> },
+    { id: "walikelas", label: "Wali Kelas", link: "wali-kelas", content: <TabWaliKelas /> },
 ];
 
 export const subPesertaDidik = [

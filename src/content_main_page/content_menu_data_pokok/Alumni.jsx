@@ -319,7 +319,7 @@ const Alumni = () => {
                                                 {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                    <Link to={`/formulir/s/${item.biodata_id || item.id || item}/biodata`}>
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
