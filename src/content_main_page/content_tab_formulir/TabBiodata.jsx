@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -55,6 +55,7 @@ const schema = yup.object({
 });
 
 const TabBiodata = () => {
+    const location = useLocation();
     const { biodata_id } = useParams();
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
@@ -391,6 +392,13 @@ const TabBiodata = () => {
     //         loadPesertaData(biodata_id);
     //     }
     // }, [biodata_id]);
+
+        const kondisiFormState = location.state?.kondisiTabFormulir;
+
+        useEffect(() => {
+            console.log("data state",kondisiFormState);
+            
+        }, [kondisiFormState])
 
     // Trigger update mode when biodata_id is present in URL
     useEffect(() => {
@@ -1122,107 +1130,75 @@ const TabBiodata = () => {
                         </div>
                     </div> */}
 
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                        <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
-                        <div className="lg:w-3/4 max-w-md">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                <select
-                                    id="pekerjaan"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                    value={dropdownValuePekerjaan}
-                                    onChange={(e) => setDropdownValuePekerjaan(e.target.value)}
-                                >
-                                    <option value="">-- Pilih Pekerjaan --</option>
-                                    <option value="Tidak Bekerja">Tidak Bekerja</option>
-                                    <option value="Petani">Petani</option>
-                                    <option value="Buruh">Buruh</option>
-                                    <option value="Pedagang">Pedagang</option>
-                                    <option value="PNS">PNS</option>
-                                    <option value="TNI/Polri">TNI/Polri</option>
-                                    <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                    <option value="Wiraswasta">Wiraswasta</option>
-                                    <option value="Guru">Guru</option>
-                                    <option value="Dosen">Dosen</option>
-                                    <option value="Dokter">Dokter</option>
-                                    <option value="Perawat">Perawat</option>
-                                    <option value="Pengemudi">Pengemudi</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-
-                            {isLainnyaPekerjaan && (
-                                <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                    <input
-                                        type="text"
-                                        placeholder="Masukkan Pekerjaan Lainnya"
-                                        className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                        value={inputLainnyaPekerjaan}
-                                        onChange={(e) => setInputLainnyaPekerjaan(e.target.value)}
-                                    />
-                                </div>
-                            )}
-
-                            {/* tetap daftarkan register hanya sekali */}
-                            <input type="hidden" {...register("pekerjaan", { required: true })} />
-                        </div>
-                    </div>
-
-                    {/* Penghasilan */}
-                    {/* <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                        <label htmlFor="penghasilan" className="lg:w-1/4 text-black">
-                            Penghasilan
-                        </label>
-                        <Controller
-                            name="penghasilan"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
+                    {kondisiFormState == "kondisi1" && (
+                        <>
+                            <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                                <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
                                 <div className="lg:w-3/4 max-w-md">
                                     <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                        <input
-                                            type="text"
+                                        <select
+                                            id="pekerjaan"
+                                            className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                            value={dropdownValuePekerjaan}
+                                            onChange={(e) => setDropdownValuePekerjaan(e.target.value)}
+                                        >
+                                            <option value="">-- Pilih Pekerjaan --</option>
+                                            <option value="Tidak Bekerja">Tidak Bekerja</option>
+                                            <option value="Petani">Petani</option>
+                                            <option value="Buruh">Buruh</option>
+                                            <option value="Pedagang">Pedagang</option>
+                                            <option value="PNS">PNS</option>
+                                            <option value="TNI/Polri">TNI/Polri</option>
+                                            <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                            <option value="Wiraswasta">Wiraswasta</option>
+                                            <option value="Guru">Guru</option>
+                                            <option value="Dosen">Dosen</option>
+                                            <option value="Dokter">Dokter</option>
+                                            <option value="Perawat">Perawat</option>
+                                            <option value="Pengemudi">Pengemudi</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+
+                                    {isLainnyaPekerjaan && (
+                                        <div className="mt-1 flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                            <input
+                                                type="text"
+                                                placeholder="Masukkan Pekerjaan Lainnya"
+                                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
+                                                value={inputLainnyaPekerjaan}
+                                                onChange={(e) => setInputLainnyaPekerjaan(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+
+                                    <input type="hidden" {...register("pekerjaan", { required: true })} />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                                <label htmlFor="penghasilan" className="md:w-1/4 text-black">Penghasilan *</label>
+                                <div className="lg:w-3/4 max-w-md">
+                                    <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
+                                        <select
                                             id="penghasilan"
-                                            placeholder="Masukkan Penghasilan"
-                                            inputMode="numeric"
-                                            spellCheck={false}
                                             className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                            value={
-                                                field.value
-                                                    ? `Rp ${Number(field.value).toLocaleString('id-ID')}`
-                                                    : ''
-                                            }
-                                            onChange={(e) => {
-                                                const onlyNums = e.target.value.replace(/\D/g, '');
-                                                field.onChange(onlyNums);
-                                            }}
-                                        />
+                                            {...register("penghasilan", { required: true })}
+                                        >
+                                            <option value="">-- Pilih Penghasilan --</option>
+                                            <option value="< Rp 500.000">&lt; Rp 500.000</option>
+                                            <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
+                                            <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                                            <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
+                                            <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                                            <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                                            <option value="Tidak Menentu">Tidak Menentu</option>
+                                        </select>
                                     </div>
                                 </div>
-                            )}
-                        />
-                    </div> */}
-
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                        <label htmlFor="penghasilan" className="md:w-1/4 text-black">Penghasilan *</label>
-                        <div className="lg:w-3/4 max-w-md">
-                            <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
-                                <select
-                                    id="penghasilan"
-                                    className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
-                                    {...register("penghasilan", { required: true })}
-                                >
-                                    <option value="">-- Pilih Penghasilan --</option>
-                                    <option value="< Rp 500.000">&lt; Rp 500.000</option>
-                                    <option value="Rp 500.000 - Rp 1.000.000">Rp 500.000 - Rp 1.000.000</option>
-                                    <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
-                                    <option value="Rp 2.000.000 - Rp 5.000.000">Rp 2.000.000 - Rp 5.000.000</option>
-                                    <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
-                                    <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
-                                    <option value="Tidak Menentu">Tidak Menentu</option>
-                                </select>
                             </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                     <hr className="border-t border-gray-300 my-4" />
 
                     {/* Negara */}

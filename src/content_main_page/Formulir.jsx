@@ -17,10 +17,13 @@ const Formulir = () => {
     // Definisi tab berdasarkan kondisi
     const tabsKondisi1 = [
         { id: "biodata", label: "Biodata", link: "biodata" },
+        { id: "keluarga", label: "Keluarga", link: "keluarga" },
         { id: "pengajar", label: "Pengajar", link: "pengajar" },
         { id: "karyawan", label: "Karyawan", link: "karyawan" },
         { id: "pengurus", label: "Pengurus", link: "pengurus" },
-        { id: "walikelas", label: "Wali Kelas", link: "wali-kelas" }
+        { id: "walikelas", label: "Wali Kelas", link: "wali-kelas" },
+        { id: "berkas", label: "Berkas", link: "berkas" },
+        { id: "warpes", label: "Warga Pesantren", link: "warga-pesantren" },
     ];
 
     const tabsKondisi2 = [
@@ -126,7 +129,7 @@ const Formulir = () => {
 
     // Effect untuk handle routing dan kondisi tab
     useEffect(() => {
-        const kondisiFromState = location.state?.kondisi;
+        const kondisiFromState = location.state?.kondisiTabFormulir;
         if (['kondisi1', 'kondisi2', 'kondisi3'].includes(kondisiFromState)) {
             setTabKondisi(kondisiFromState);
         }
