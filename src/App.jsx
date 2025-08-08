@@ -9,6 +9,7 @@ import NotFound from './content_main_page/NotFound';
 import Formulir from './content_main_page/Formulir';
 import {
   menuAkademikItems,
+  menuAlumni,
   menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
   menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems, 
   menuManageItems, 
@@ -149,7 +150,8 @@ function App() {
               ...menuKewilayahanItems,
               ...subKelembagaanItems,
               ...subPelajaranItems,
-              ...menuManageItems
+              ...menuManageItems,
+              ...menuAlumni
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}

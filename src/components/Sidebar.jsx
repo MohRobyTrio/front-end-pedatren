@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import {
     menuAkademikItems,
+    menuAlumni,
     menuDataPokokItems,
     menuItems,
     menuKepegawaianItems,
@@ -52,14 +53,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const submenuMap = {
         // pesertadidik: subPesertaDidik,
         kelembagaan: subKelembagaanItems,
+        kewilayahan: menuKewilayahanItems,
         pelajaran: subPelajaranItems,
+        alumni: menuAlumni,
     };
 
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
                 // const isPeserta = item.id == "pesertadidik";
-                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran";
+                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran" || item.id == "kewilayahan" || item.id == "alumni";
                 // const isOpen = isPeserta ? true : dropdowns[item.id];
                 const isOpen = dropdowns[item.id];
 
@@ -207,16 +210,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                         {dropdowns.kepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
                     </div>
 
-                    <div className="mt-3 px-2">
+                    {/* <div className="mt-3 px-2">
                         <MenuHeader
-                            name="Mahrom"
+                            name="Kepengasuhan"
                             isOpen={dropdowns.mahrom}
                             onClick={() => toggleDropdown("mahrom")}
                         />
                         {dropdowns.mahrom && <DropdownMenu items={menuMahromItems} />}
-                    </div>
+                    </div> */}
 
-                    <Access action="kewilayahan">
+                    {/* <Access action="kewilayahan">
                         <div className="mt-3 px-2">
                             <MenuHeader
                                 name="Kewilayahan"
@@ -225,7 +228,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                             />
                             {dropdowns.kewilayahan && <DropdownMenu items={menuKewilayahanItems} />}
                         </div>
-                    </Access>
+                    </Access> */}
 
                     <Access action="akademik">
                         <div className="mt-3 px-2">

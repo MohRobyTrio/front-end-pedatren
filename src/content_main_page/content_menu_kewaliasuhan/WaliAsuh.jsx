@@ -162,21 +162,26 @@ const WaliAsuh = () => {
             { label: "Urut Secara", value: "" },
             { label: "A-Z / 0-9 (Ascending)", value: "asc" },
             { label: "Z-A / 9-0 (Descending)", value: "desc" }
-        ]
-    }
-
-    const filterSmartcardPhone = {
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
-    };
+    }
+
+    // const filterSmartcardPhone = {
+        // smartcard: [
+        //     { label: "Smartcard", value: "" },
+        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        // ],
+        // phoneNumber: [
+        //     { label: "Phone Number", value: "" },
+        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        // ]
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
@@ -234,7 +239,7 @@ const WaliAsuh = () => {
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filterJenisKelamin} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filterSmartcardPhone} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filterSmartcardPhone} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
 
                 <SearchBar

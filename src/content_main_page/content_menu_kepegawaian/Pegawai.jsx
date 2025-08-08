@@ -27,16 +27,16 @@ const Pegawai = () => {
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -123,15 +123,15 @@ const Pegawai = () => {
             { label: "Tanpa NIUP", value: "tanpa niup" }
         ],
         // Sudah
-        pemberkasan: [
-            { label: "Pemberkasan", value: "" },
-            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Memiliki KK", value: "memiliki kk" },
-            { label: "Memiliki Akta Kelahiran", value: "memiliki akta kelahiran" },
-            { label: "Memiliki Ijazah", value: "memiliki ijazah" }
-        ],
+        // pemberkasan: [
+        //     { label: "Pemberkasan", value: "" },
+        //     { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+        //     { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+        //     { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+        //     { label: "Memiliki KK", value: "memiliki kk" },
+        //     { label: "Memiliki Akta Kelahiran", value: "memiliki akta kelahiran" },
+        //     { label: "Memiliki Ijazah", value: "memiliki ijazah" }
+        // ],
         umur: [
             { label: "Semua Umur", value: "" },
             { label: "< 20 Tahun", value: "0-20" },
@@ -141,20 +141,30 @@ const Pegawai = () => {
             { label: "50-59 Tahun", value: "50-49" },
             { label: "60-65 Tahun", value: "60-65" },
             { label: "> 65 Tahun", value: "65-200" }
-        ]
-    }
-
-    const filter4 = {
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
+    }
+
+    const filter4 = {
+        // smartcard: [
+        //     { label: "Smartcard", value: "" },
+        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        // ],
+        // phoneNumber: [
+        //     { label: "Phone Number", value: "" },
+        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+        // ]
+    };
+
+    const hasStatus = (status, keyword) => {
+        if (!status) return false;
+        return status.toLowerCase().includes(keyword.toLowerCase());
     };
 
     const renderStatus = (value) => {
@@ -174,7 +184,7 @@ const Pegawai = () => {
         // { label: "Anak ke", value: "anak_ke" },
         // { label: "Jumlah Saudara", value: "jumlah_saudara" },
         { label: "Alamat", value: "alamat" },
-        { label: "Pendidikan Terakhir", value: "pendidikan_terakhir"}
+        { label: "Pendidikan Terakhir", value: "pendidikan_terakhir" }
         // { label: "NIS", value: "nis" },
         // { label: "Domisili Santri", value: "domisili_santri" },
         // { label: "Angkatan Santri", value: "angkatan_santri" },
@@ -187,7 +197,7 @@ const Pegawai = () => {
         // { label: "Status", value: "status" },
         // { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
-      
+
     const [showFormModal, setShowFormModal] = useState(false);
 
     const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
@@ -228,8 +238,8 @@ const Pegawai = () => {
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                                <FaFileExport />
-                                <span>Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
@@ -239,7 +249,7 @@ const Pegawai = () => {
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
@@ -278,7 +288,7 @@ const Pegawai = () => {
                                             className="w-20 h-24 object-cover"
                                             src={item.foto_profil}
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = blankProfile;
                                             }}
                                         />
@@ -297,12 +307,13 @@ const Pegawai = () => {
                                     <tr>
                                         <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">Nama</th>
-                                        <th className="px-3 py-2 border-b">NIUP</th>
-                                        <th className="px-3 py-2 border-b">Umur</th>
+                                        {/* <th className="px-3 py-2 border-b">NIUP</th>
+                                        <th className="px-3 py-2 border-b">Umur</th> */}
                                         <th className="px-3 py-2 border-b">Pengurus</th>
                                         <th className="px-3 py-2 border-b">Karyawan</th>
                                         <th className="px-3 py-2 border-b">Pengajar</th>
-                                        <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Wali Kelas</th>
+                                        {/* <th className="px-3 py-2 border-b">Pendidikan Terakhir</th> */}
                                         <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
                                 </thead>
@@ -322,23 +333,24 @@ const Pegawai = () => {
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{renderStatus(item.pengurus)}</td>
-                                                <td className="px-3 py-2 border-b">{renderStatus(item.karyawan)}</td>
-                                                <td className="px-3 py-2 border-b">{renderStatus(item.pengajar)}</td>
-                                                <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td>
-                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                {/* <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.umur === 0 ? 0 : item.umur || "-"}</td> */}
+                                                <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Pengurus"))}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Karyawan"))}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Pengajar"))}</td>
+                                                <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Wali Kelas"))}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td> */}
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
 

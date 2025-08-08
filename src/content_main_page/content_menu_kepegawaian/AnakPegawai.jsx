@@ -147,15 +147,15 @@ const AnakPegawai = () => {
             { label: "Tanpa NIUP", value: "tanpa niup" }
         ],
         // Sudah
-        pemberkasan: [
-            { label: "Pemberkasan", value: "" },
-            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Tidak Ada KK", value: "tidak ada kk" },
-            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
-            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
-        ],
+        // pemberkasan: [
+        //     { label: "Pemberkasan", value: "" },
+        //     { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+        //     { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+        //     { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+        //     { label: "Tidak Ada KK", value: "tidak ada kk" },
+        //     { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+        //     { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+        // ],
         // Sudah
         urutBerdasarkan: [
             { label: "Urut Berdasarkan", value: "" },
@@ -168,15 +168,20 @@ const AnakPegawai = () => {
             { label: "Urut Secara", value: "" },
             { label: "A-Z / 0-9 (Ascending)", value: "asc" },
             { label: "Z-A / 9-0 (Descending)", value: "desc" }
+        ],
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     }
     const filter6 = {
         // Sudah
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        ],
+        // smartcard: [
+        //     { label: "Smartcard", value: "" },
+        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        // ],
         // Sudah
         phoneNumber: [
             { label: "Phone Number", value: "" },
@@ -252,7 +257,7 @@ const AnakPegawai = () => {
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
