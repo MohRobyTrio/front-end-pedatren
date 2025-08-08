@@ -147,7 +147,7 @@ const AnakAsuh = () => {
         ]
     }
 
-    const filterSmartcardPhone = {
+    // const filterSmartcardPhone = {
         // smartcard: [
         //     { label: "Smartcard", value: "" },
         //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
@@ -158,7 +158,7 @@ const AnakAsuh = () => {
         //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
         //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         // ]
-    };
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },

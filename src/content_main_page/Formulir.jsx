@@ -12,7 +12,6 @@ const Formulir = () => {
     const [tabKondisi, setTabKondisi] = useState('kondisi2'); // default kondisi2
     const [pesertaData, setPesertaData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const loadedBiodataId = useRef(null); // Track which biodata_id has been loaded
 
     // Definisi tab berdasarkan kondisi
     const tabsKondisi1 = [
@@ -63,6 +62,7 @@ const Formulir = () => {
         }
     };
 
+
     const loadPesertaData = useCallback(async (id) => {
         if (!id || id.trim() === "") {
             console.warn("ID tidak valid");
@@ -77,7 +77,6 @@ const Formulir = () => {
             if (cachedData) {
                 console.log("Menggunakan data dari sessionStorage untuk ID:", id);
                 setPesertaData(JSON.parse(cachedData));
-                loadedBiodataId.current = id;
                 return;
             }
 
@@ -117,7 +116,6 @@ const Formulir = () => {
             const biodata = responseData.data;
             setPesertaData(biodata);
             sessionStorage.setItem(`data_formulir_profile_${id}`, JSON.stringify(biodata));
-            loadedBiodataId.current = id;
         } catch (error) {
             console.error('Error loading data:', error);
             alert('Gagal memuat data peserta');
@@ -148,19 +146,39 @@ const Formulir = () => {
     }, [biodata_id, navigate, location.pathname, location.state]);
 
     // Effect terpisah untuk load data - hanya ketika biodata_id berubah
+    const key = `data_formulir_profile_${biodata_id}`;
+    const cachedData = sessionStorage.getItem(key);
     useEffect(() => {
-        if (biodata_id && loadedBiodataId.current !== biodata_id) {
-            loadPesertaData(biodata_id);
-        }
-    }, []);
+        const id = biodata_id; // ambil dari props, route, atau state
 
-    // Reset data ketika biodata_id berubah ke ID yang berbeda
-    useEffect(() => {
-        if (biodata_id && loadedBiodataId.current && loadedBiodataId.current !== biodata_id) {
-            setPesertaData(null);
-            loadedBiodataId.current = null;
+        if (!cachedData) {
+            // Tidak ada cache → lakukan fetch ulang
+            console.log("Cache hilang, fetching ulang...");
+            loadPesertaData(id);
+        } else {
+            // Cache masih ada → pakai cache
+            setPesertaData(JSON.parse(cachedData));
         }
-    }, [biodata_id]);
+    }, [cachedData]); // jalankan saat id berubah
+
+// Tambahkan useEffect untuk listen event dari child component
+    useEffect(() => {
+        const handleBiodataUpdate = (event) => {
+            const { biodata_id: updatedId } = event.detail;
+            if (updatedId === biodata_id) {
+                console.log("Refreshing profile data after biodata update");
+                // Clear cache dan reload data
+                sessionStorage.removeItem(`data_formulir_profile_${biodata_id}`);
+                loadPesertaData(biodata_id);
+            }
+        };
+
+        window.addEventListener('biodataUpdated', handleBiodataUpdate);
+
+        return () => {
+            window.removeEventListener('biodataUpdated', handleBiodataUpdate);
+        };
+    }, [biodata_id, loadPesertaData]);
 
     // Format tanggal
     const formatTanggal = (tanggal) => {
@@ -299,7 +317,7 @@ const Formulir = () => {
                                                     </div>
                                                 </div>
 
-                                                
+
 
                                                 {/* <div className="flex items-center gap-3 text-gray-600">
                                                     <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">

@@ -374,6 +374,7 @@ const TabBiodata = () => {
                 setPhotoPreview(biodata.pas_foto_url);
             }
 
+            // sessionStorage.setItem(`data_formulir_profile_${id}`, JSON.stringify(biodata));
             setIsUpdateMode(true);
 
         } catch (error) {
@@ -393,12 +394,12 @@ const TabBiodata = () => {
     //     }
     // }, [biodata_id]);
 
-        const kondisiFormState = location.state?.kondisiTabFormulir;
+    const kondisiFormState = location.state?.kondisiTabFormulir;
 
-        useEffect(() => {
-            console.log("data state",kondisiFormState);
-            
-        }, [kondisiFormState])
+    useEffect(() => {
+        console.log("data state", kondisiFormState);
+
+    }, [kondisiFormState])
 
     // Trigger update mode when biodata_id is present in URL
     useEffect(() => {
@@ -468,9 +469,12 @@ const TabBiodata = () => {
             formData.append('nama_pendidikan_terakhir', data.nama_pendidikan);
             // formData.append('wafat', data.wafat === 'Ya' ? '1' : '0');
 
-            formData.append('pekerjaan', data.pekerjaan);
-            const cleanPenghasilan = data.penghasilan.replace(/\D/g, ''); // angka only
-            formData.append('penghasilan', cleanPenghasilan);
+            if (kondisiFormState === "kondisi1") {
+                formData.append('pekerjaan', data.pekerjaan);
+
+                const cleanPenghasilan = data.penghasilan.replace(/\D/g, ''); // angka only
+                formData.append('penghasilan', cleanPenghasilan);
+            }
 
             [
                 'tempat_lahir', 'no_passport', 'nik',
@@ -588,8 +592,18 @@ const TabBiodata = () => {
             });
 
             if (biodata_id && biodata_id.trim() != "") {
+                console.log("fetch");
+                
                 loadPesertaData(biodata_id);
             }
+
+            // Clear cache untuk memaksa refresh data di parent component
+            sessionStorage.removeItem(`data_formulir_profile_${biodata_id}`);
+
+            // Trigger refresh pada parent component dengan mengirim event custom
+            window.dispatchEvent(new CustomEvent('biodataUpdated', { 
+                detail: { biodata_id } 
+            }));
 
             if (!isUpdateMode) {
                 // Reset form jika mode tambah data
