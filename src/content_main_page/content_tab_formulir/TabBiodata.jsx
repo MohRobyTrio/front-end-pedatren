@@ -9,7 +9,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import Swal from "sweetalert2";
 import Access from "../../components/Access";
-import blankProfile from "../../assets/blank_profile.png";
+// import blankProfile from "../../assets/blank_profile.png";
 
 // Skema validasi form
 const schema = yup.object({
@@ -665,7 +665,7 @@ const TabBiodata = () => {
                 />
             </div> */}
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
-                <div className="flex-shrink-0">
+                {/* <div className="flex-shrink-0">
                     <img
                         src={photoPreview || blankProfile}
                         alt="Foto Profil"
@@ -675,7 +675,7 @@ const TabBiodata = () => {
                             e.target.src = blankProfile;
                         }}
                     />
-                </div>
+                </div> */}
 
                 <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2 space-y-4 w-full">
                     {/* Debug Info - untuk development, bisa dihapus di production */}
@@ -1034,14 +1034,14 @@ const TabBiodata = () => {
                         </div>
                     </div>
 
-                    <br />
+                    {/* <br />
                     <p className="text-red-500 text-bold timesnewroman">
                         Untuk nomor telepon milik orang tua/wali jangan diinputkan pada data peserta didik!
                         <span className="text-red-500 text-sm italic">
                             Karena manajemen nomor telepon Pedatren untuk sending bulk sms ortu, akan melihat nomor telepon pada entitas ortu/wali
                             dengan priority urutan dimulai dari ayah kandung, ibu kandung kemudian yang dijadikan sebagai wali (jika tidak ada ayah & ibu kandung)
                         </span>
-                    </p>
+                    </p> */}
 
 
                     {/* Nomor Telepon 1 */}

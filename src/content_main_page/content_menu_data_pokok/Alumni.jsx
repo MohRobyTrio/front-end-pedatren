@@ -15,9 +15,10 @@ import { FaEdit, FaFileExport } from "react-icons/fa";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Alumni = () => {
+    const navigate = useNavigate();
     const [openModalExport, setOpenModalExport] = useState(false);
     // const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -158,6 +159,12 @@ const Alumni = () => {
         { label: "Tahun Keluar Santri", value: "tahun_keluar_santri" },
         { label: "Tahun Keluar Pelajar", value: "tahun_keluar_pelajar" }
     ];
+
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -319,16 +326,15 @@ const Alumni = () => {
                                                 {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/s/${item.biodata_id || item.id || item}/biodata`}>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
-                                                    </Link>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                 </td>
 
                                             </tr>

@@ -9,10 +9,11 @@ import useFetchWali from '../../hooks/hooks_menu_data_pokok/Wali';
 import { useEffect, useMemo, useState } from 'react';
 import ModalDetail from '../../components/modal/ModalDetail';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
 
 const Wali = () => {
+    const navigate = useNavigate();
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -123,6 +124,12 @@ const Wali = () => {
         ]
     };
 
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
@@ -218,16 +225,17 @@ const Wali = () => {
                                             <td className="px-3 py-2 border-b">{item.telepon_1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.telepon_2 || "-"}</td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi3')
                                                         }}
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                     >
                                                         <FaEdit />
                                                     </button>
-                                                </Link>
+                                                {/* </Link> */}
                                             </td>
 
                                             {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>

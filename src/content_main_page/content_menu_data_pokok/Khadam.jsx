@@ -17,9 +17,10 @@ import { ModalExport } from "../../components/modal/ModalExport";
 import Access from "../../components/Access";
 import MultiStepModalKhadam from "../../components/modal/ModalFormKhadam";
 import { useMultiStepFormKhadam } from "../../hooks/hooks_modal/useMultiStepFormKhadam";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Khadam = () => {
+    const navigate = useNavigate();
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -172,6 +173,12 @@ const Khadam = () => {
 
     const formState = useMultiStepFormKhadam(() => setShowFormModal(false), fetchData);
 
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -300,16 +307,17 @@ const Khadam = () => {
                                                 <td className="px-3 py-2 border-b">{item.nik || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/s/${item.biodata_id || item.id || item}/biodata`}>
+                                                    {/* <Link to={`/formulir/s/${item.biodata_id || item.id || item}/biodata`}> */}
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
+                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >
-                                                            <FaEdit     />
+                                                            <FaEdit />
                                                         </button>
-                                                    </Link>
+                                                    {/* </Link> */}
                                                 </td>
 
                                                 {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>

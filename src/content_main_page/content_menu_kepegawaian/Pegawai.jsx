@@ -19,9 +19,10 @@ import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPeg
 import Access from '../../components/Access';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Pegawai = () => {
+    const navigate = useNavigate();
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -191,6 +192,12 @@ const Pegawai = () => {
 
     const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
 
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -322,16 +329,17 @@ const Pegawai = () => {
                                                 <td className="px-3 py-2 border-b">{renderStatus(item.pengajar)}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td>
                                                  <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                    {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
+                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >
                                                             <FaEdit />
                                                         </button>
-                                                    </Link>
+                                                    {/* </Link> */}
                                                 </td>
 
                                             </tr>

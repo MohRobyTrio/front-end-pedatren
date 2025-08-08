@@ -173,7 +173,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
 
                     <div className="mt-3 px-2">
                         <MenuHeader
-                            name="Data Pokok"
+                            name="Kesantrian"
                             isOpen={dropdowns.dataPokok}
                             onClick={() => toggleDropdown("dataPokok")}
                         />
