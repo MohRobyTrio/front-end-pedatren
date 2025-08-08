@@ -278,7 +278,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                                             <option value="">Pilih Status</option>
                                                             <option value="Belum diproses">Belum Diproses</option>
                                                             <option value="Sedang diproses">Sedang Diproses</option>
-                                                            <option value="Rombongan">Sudah Diproses</option>
+                                                            <option value="Sudah diproses">Sudah Diproses</option>
                                                         </select>
                                                     </div>        
 
@@ -393,18 +393,34 @@ const SantriInfoCard = ({ santri }) => {
     if (!santri) return null;
 
     return (
-        <div className=" p-4 rounded-md bg-gray-50 shadow-sm mb-6">
-            <div className="flex items-start space-x-12">
-                {santri.foto_profil ? (
-                    <img src={santri.foto_profil}
-                        alt={santri.value}
-                        className="w-24 h-24 rounded object-cover" />
-                ) : (
-                    <div className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center">
-                        <i className="fas fa-user text-gray-400 text-4xl"></i>
-                    </div>
-                )}
-                <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+        <div className="p-4 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200 relative">
+            {/* Keterangan */}
+            <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+                Data Santri
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
+                {/* Foto */}
+                <div className="flex justify-center sm:justify-start">
+                    {santri.foto_profil ? (
+                        <img
+                            src={santri.foto_profil}
+                            alt={santri.value}
+                            className="w-24 h-24 sm:w-32 sm:h-40 object-cover rounded"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/placeholder.svg";
+                            }}
+                        />
+                    ) : (
+                        <div className="w-24 h-24 sm:w-32 sm:h-40 bg-gray-200 rounded-md flex items-center justify-center">
+                            <i className="fas fa-user text-gray-400 text-4xl"></i>
+                        </div>
+                    )}
+                </div>
+
+                {/* Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
                     {/* Kolom Pertama */}
                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
                         <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
@@ -426,6 +442,7 @@ const SantriInfoCard = ({ santri }) => {
         </div>
     );
 };
+
 
 export const ModalAddBerkasPelanggaran = ({ isOpen, onClose, id, close }) => {
     const { clearAuthData } = useLogout();
