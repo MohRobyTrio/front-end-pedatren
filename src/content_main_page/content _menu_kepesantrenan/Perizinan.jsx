@@ -10,7 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaFileExport, FaPlus } from "react-icons/fa";
+import { FaFileExport, FaPlus, FaChevronDown, FaChevronUp, FaMapMarkerAlt, FaSchool, FaClipboardList, FaClock, FaUsers, FaCheckCircle, FaHome } from "react-icons/fa";
 import { ModalAddPerizinan, ModalApprove } from "../../components/modal/ModalFormPerizinan";
 import Access from "../../components/Access";
 import { getRolesString } from "../../utils/getRolesString";
@@ -21,7 +21,6 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 
-
 const DataPerizinan = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModalExport, setOpenModalExport] = useState(false);
@@ -29,10 +28,9 @@ const DataPerizinan = () => {
     const [selectedId, setSelectedId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [feature, setFeature] = useState("");
-
-    const capitalizeFirstLetter = getRolesString(); 
-    console.log("Roles:", capitalizeFirstLetter);
+    const capitalizeFirstLetter = getRolesString();
     
+    console.log("Roles:", capitalizeFirstLetter);
     
     const openModal = (item) => {
         setSelectedItem(item);
@@ -43,6 +41,7 @@ const DataPerizinan = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
     };
+
     const [filters, setFilters] = useState({
         negara: "",
         provinsi: "",
@@ -63,11 +62,9 @@ const DataPerizinan = () => {
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
     const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
     const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
-
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.nama || "";
     const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
     const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
-
     const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
     const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
     const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
@@ -106,7 +103,6 @@ const DataPerizinan = () => {
         searchTerm,
         setSearchTerm,
         fetchData,
-        // filterOptions
     } = useFetchPerizinan(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
@@ -159,32 +155,7 @@ const DataPerizinan = () => {
         ]
     }
 
-    const fieldsExports = [
-        // { label: "Wewenang", value: "" },
-        // { label: "No. KK", value: "no_kk" },
-        // { label: "NIK", value: "nik" },
-        // { label: "NIUP", value: "niup" },
-        // { label: "Nama", value: "nama" },
-        // { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
-        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
-        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
-        // { label: "Anak ke", value: "anak_ke" },
-        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
-        // { label: "Alamat", value: "alamat" },
-        // { label: "NIS", value: "nis" },
-        // { label: "Domisili Santri", value: "domisili_santri" },
-        // { label: "Angkatan Santri", value: "angkatan_santri" },
-        // { label: "No Induk", value: "no_induk" },
-        // { label: "Lembaga", value: "lembaga" },
-        // { label: "Jurusan", value: "jurusan" },
-        // { label: "Kelas", value: "kelas" },
-        // { label: "Rombel", value: "rombel" },
-        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
-        // { label: "Pendidikan", value: "pendidikan" },
-        // { label: "Status", value: "status" },
-        // { label: "Ibu Kandung", value: "ibu_kandung" },
-        // { label: "Ayah Kandung", value: "ayah_kandung" }
-    ];
+    const fieldsExports = [];
 
     const [showFormModal, setShowFormModal] = useState(false);
 
@@ -201,7 +172,6 @@ const DataPerizinan = () => {
                     </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
-                        // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
                         <FaFileExport />
@@ -244,9 +214,7 @@ const DataPerizinan = () => {
                         onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
                         selectedFilters={filters}
                     />
-
                 </div>
-
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -264,7 +232,7 @@ const DataPerizinan = () => {
                         </div>
                     )}
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {loading ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
@@ -280,6 +248,7 @@ const DataPerizinan = () => {
                         )}
                     </div>
                 </div>
+
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -287,8 +256,8 @@ const DataPerizinan = () => {
                     className="mt-6"
                 />
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/perizinan" /> 
-
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/perizinan" />
+                 
                 {isModalOpen && (
                     <ModalDetail
                         title="Perizinan"
@@ -302,35 +271,27 @@ const DataPerizinan = () => {
     );
 };
 
-// Komponen Card untuk Perizinan
+// Compact Enhanced Perizinan Card Component
 const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName, refetchData}) => {
-
-    // Dapatkan role user dari sistem
     const userRole = getRolesString().toLowerCase();
-
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-
     const { approvePerizinan, isApproving, error } = useApprovePerizinan();
-
     const [showApproveModal, setShowApproveModal] = useState(false);
     const [showKeluarModal, setShowKeluarModal] = useState(false);
     const [showKembaliModal, setShowKembaliModal] = useState(false);
     const [showLoadingKeluarModal, setShowLoadingKeluarModal] = useState(false);
     const [showLoadingKembaliModal, setShowLoadingKembaliModal] = useState(false);
     const [approveError, setApproveError] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
 
-    // Cek apakah user dapat melakukan approval untuk role ini
     const canApprove = useMemo(() => {
         if (!userRole) return false;
-
-        // Cek status approval berdasarkan role
         const approvalStatus = {
             biktren: !data.approved_by_biktren,
             kamtib: !data.approved_by_kamtib,
             pengasuh: !data.approved_by_pengasuh
         };
-
         return approvalStatus[userRole];
     }, [userRole, data]);
 
@@ -338,11 +299,10 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
     const handleApprove = async () => {
         setApproveError(null);
         const success = await approvePerizinan(data.id, userRole);
-
         if (success) {
             setShowApproveModal(false);
             try {
-                await refetchData(true); // Tambahkan await & try-catch
+                await refetchData(true);
             } catch (err) {
                 console.error("Gagal refetch:", err);
             }
@@ -351,11 +311,6 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
         }
     };
 
-    console.log(refetchData);
-    console.log("role user:", userRole);
-    // console.log("approvalStatus:", approvalStatus);
-    console.log("canApprove:", canApprove);
-    console.log("data:", data);
     const token = sessionStorage.getItem("token") || getCookie("token");
     
 
@@ -398,7 +353,6 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
 
             const result = await response.json();
             console.log(result);
-
             if (!("data" in result)) {
                 await Swal.fire({
                     text: result.message,
@@ -407,13 +361,11 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                 });
                 return;
             }
-
             if (!response.ok) throw new Error(`Gagal set keluar (${response.status})`);
 
-            
             Swal.fire("Berhasil!", "success");
             setShowKeluarModal(false);
-            refetchData(true); // misalnya kamu punya fungsi untuk refresh data
+            refetchData(true);
         } catch (err) {
             console.error(err);
             Swal.fire("Gagal", err.message, "error");
@@ -443,7 +395,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                     Authorization: `Bearer ${token}`,
                 },
             });
-            // Swal.close();
+
             if (response.status == 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
                 await Swal.fire({
@@ -456,6 +408,7 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                 navigate("/login");
                 return;
             }
+
             const result = await response.json();
             console.log(result);
             if (!("data" in result)) {
@@ -468,10 +421,9 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
             }
             if (!response.ok) throw new Error(`Gagal set kembali (${response.status})`);
 
-            
             Swal.fire("Berhasil!", "success");
             setShowKembaliModal(false);
-            refetchData(true); // misalnya kamu punya fungsi untuk refresh data
+            refetchData(true);
         } catch (err) {
             console.error(err);
             Swal.fire("Gagal", err.message, "error");
@@ -480,57 +432,116 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
         }
     };
 
+    const getStatusConfig = (status) => {
+        switch (status) {
+            case 'sedang proses izin':
+                return { 
+                    bg: 'bg-amber-100', 
+                    text: 'text-amber-800',
+                    border: 'border-amber-300',
+                    icon: '⏳'
+                };
+            case 'perizinan diterima':
+                return { 
+                    bg: 'bg-emerald-100', 
+                    text: 'text-emerald-800',
+                    border: 'border-emerald-300',
+                    icon: '✅'
+                };
+            case 'sudah berada diluar pondok':
+                return { 
+                    bg: 'bg-blue-100', 
+                    text: 'text-blue-800',
+                    border: 'border-blue-300',
+                    icon: '🚪'
+                };
+            case 'kembali tepat waktu':
+                return { 
+                    bg: 'bg-green-100', 
+                    text: 'text-green-800',
+                    border: 'border-green-300',
+                    icon: '🏠'
+                };
+            case 'perizinan ditolak':
+            case 'dibatalkan':
+                return { 
+                    bg: 'bg-red-100', 
+                    text: 'text-red-800',
+                    border: 'border-red-300',
+                    icon: '❌'
+                };
+            case 'telat(sudah kembali)':
+            case 'telat(belum kembali)':
+                return { 
+                    bg: 'bg-orange-100', 
+                    text: 'text-orange-800',
+                    border: 'border-orange-300',
+                    icon: '⚠️'
+                };
+            default:
+                return { 
+                    bg: 'bg-gray-100', 
+                    text: 'text-gray-800',
+                    border: 'border-gray-300',
+                    icon: '📋'
+                };
+        }
+    };
+
+    const statusConfig = getStatusConfig(data.status);
+
     return (
-        <div key={data.id} className="max-w-6xl mx-auto cursor-pointer" onClick={() => openModal(data)}>
-            <div className="bg-white rounded border border-gray-200 p-1 shadow-sm mb-4">
-                <div className="flex justify-end space-x-1">
-                    {/* Tombol Approve */}
-                    {canApprove ? (
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 mb-3 overflow-hidden hover:shadow-lg transition-shadow duration-200">
+            {/* Compact Header */}
+            <div className="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+                    {/* <span className="text-sm">{statusConfig.icon}</span> */}
+                    <span className="capitalize">{data.status}</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                    {canApprove && (
                         <Access action="approve">
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setShowApproveModal(true);
                                 }}
-                                className="w-24 h-6 flex items-center gap-2 px-3 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded shadow cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-medium"
                             >
-                                <i className="fas fa-check-circle"></i>
+                                <FaCheckCircle className="text-xs" />
                                 <span>Approve</span>
                             </button>
                         </Access>
-                    ) : (
-                        <div className="w-24 h-6"></div> // Elemen kosong dengan ukuran tombol
                     )}
+                    
                     <Access action="edit">
-                        {data.status == "perizinan diterima" ? (
+                        {data.status == "perizinan diterima" && (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setShowKeluarModal(true)
-                                    // Set status menjadi "Keluar" atau panggil fungsi yang sesuai
-                                    // handleSetKeluar(data.id);
                                 }}
-                                className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-yellow-600 hover:bg-yellow-700 rounded shadow cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-medium"
                             >
-                                <i className="fas fa-sign-out-alt"></i>
+                                <i className="fas fa-sign-out-alt text-xs"></i>
                                 <span>Keluar</span>
                             </button>
-                        ) : data.status == "sudah berada diluar pondok" ? (
+                        )}
+                        {data.status == "sudah berada diluar pondok" && (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setShowKembaliModal(true)
-                                    // Set status menjadi "Kembali" atau panggil fungsi yang sesuai
-                                    // handleSetKembali(data.id);
                                 }}
-                                className="h-6 flex items-center gap-2 px-2 py-1 text-sm text-white bg-green-600 hover:bg-green-700 rounded shadow cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-medium"
                             >
-                                <i className="fas fa-sign-in-alt"></i>
+                                <i className="fas fa-sign-in-alt text-xs"></i>
                                 <span>Kembali</span>
                             </button>
-                        ) : null}
+                        )}
                     </Access>
-
+                    
                     <Access action="edit">
                         <button
                             onClick={(e) => {
@@ -540,276 +551,291 @@ const PerizinanCard = ({ data, openModal, setShowFormModal, setFeature, setSelec
                                 setSelectedName(data.nama_santri);
                                 setShowFormModal(true);
                             }}
-                            className="w-20 h-6 flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium"
                         >
-                            <i className="fas fa-edit"></i>
+                            <i className="fas fa-edit text-xs"></i>
                             <span>Edit</span>
                         </button>
                     </Access>
                 </div>
-               
+            </div>
 
-                {/* Modal Approval */}
-                <ModalApprove
-                    isOpen={showApproveModal}
-                    onClose={() => setShowApproveModal(false)}
-                    onConfirm={handleApprove}
-                    isLoading={isApproving}
-                    roleName={userRole}
-                />
-
-                <ModalApprove
-                    isOpen={showKeluarModal}
-                    onClose={() => setShowKeluarModal(false)}
-                    onConfirm={handleSetKeluar}
-                    isLoading={showLoadingKeluarModal}
-                    mode="keluar"
-                />
-
-                <ModalApprove
-                    isOpen={showKembaliModal}
-                    onClose={() => setShowKembaliModal(false)}
-                    onConfirm={handleSetKembali}
-                    isLoading={showLoadingKembaliModal}
-                    mode="kembali"
-                />
-
-
-                {approveError && (
-                    <div className="mt-2 text-red-600 text-sm">
-                        Error: {approveError}
-                    </div>
-                )}
-
-                <div className="flex flex-col md:flex-row">
-                    {/* Left Section - Student Photo */}
-                    <div className="md:w-1/7 mb-4 md:mb-0 flex item-center justify-center rounded-md">
-                        <img
-                            alt={data.nama_santri || "-"}
-                            className="w-24 h-24 object-cover rounded-md"
-                            src={data.foto_profil}
-                            onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = blankProfile;
-                            }}
-                        />
-                    </div>
-
-                    {/* Middle Section - Student Details */}
-                    <div className="md:w-3/5 p-1/5">
-                        <div className="flex items-center mb-4">
-                            <h2 className="text-xl font-semibold text-gray-800 mr-2">{data.nama_santri}</h2>
-                            <span className="text-blue-800">{data.jenis_kelamin === 'p' ? '♀' : '♂'}</span>
-                        </div>
-
-                        <div className="space-y-1/4">
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Domisili</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.kamar} - {data.blok} - {data.wilayah}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Lembaga</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.lembaga}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Alamat</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.kecamatan} - Kab. {data.kabupaten}, {data.provinsi}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex mt-1">
-                                <div className="w-24 font-medium text-gray-800">Alasan Izin</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-800 font-medium">: {data.alasan_izin}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Alamat Tujuan</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.alamat_tujuan}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Lama Izin</div>
-                                <div className="flex-1">
-                                    <div className="text-gray-600">: Sejak <span className="ml-8">{data.tanggal_mulai}</span></div>
-                                    <div className="text-gray-600">&nbsp;&nbsp;Sampai <span className="ml-4">{data.tanggal_akhir}</span></div>
-                                    <div className="text-gray-600">&nbsp;&nbsp;( {data.bermalam} | {data.lama_izin} )</div>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Jenis Izin</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.jenis_izin}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-24 text-gray-700">Status</div>
-                                <div className="flex-1">
-                                    <span className={`font-medium ${data.status === 'telat(sudah kembali)'
-                                        ? 'text-red-600'
-                                        : data.status === 'telat(belum kembali)'
-                                            ? 'text-red-600'
-                                            : 'text-blue-600'
-                                        }`}>
-                                        : {data.status}
-                                    </span>
-                                </div>
-                            </div>
+            {/* Compact Main Content */}
+            <div className="p-4" onClick={() => openModal(data)}>
+                <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Compact Photo - Top on mobile, left on desktop */}
+                    <div className="flex-shrink-0 flex justify-center sm:justify-start">
+                        <div className="relative">
+                            <img
+                                alt={data.nama_santri || "-"}
+                                className="w-24 h-24 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm border-2 border-white"
+                                src={data.foto_profil || "/placeholder.svg"}
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = blankProfile;
+                                }}
+                            />
+                            {/* <div className="absolute top-1 right-1 w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm border border-white">
+                                {data.jenis_kelamin === 'p' ? '♀' : '♂'}
+                            </div> */}
                         </div>
                     </div>
 
-                    {/* Right Section - Permission Details */}
-                    <div className="md:w-2/5 md:pl-2 p-1/5 border-gray-200 mt-6 md:mt-0">
-                    <br />
-                    <br />
-                        <div className="space-y-1/4">
-                            <div className="flex">
-                                <div className="w-32 text-gray-700">Pembuat Izin</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.pembuat}</span>
+                    {/* Compact Information */}
+                    <div className="flex-1 min-w-0 text-center sm:text-left">
+                        {/* Compact Information */}
+                        <div className="flex-1 min-w-0 text-center sm:text-left">
+                            {/* Name and Basic Info */}
+                            <div className="mb-2 flex items-center justify-center sm:justify-start gap-2">
+                                <h3 className="text-lg font-bold text-gray-900 truncate">
+                                    {data.nama_santri}
+                                </h3>
+                                <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm border border-white flex-shrink-0">
+                                    {data.jenis_kelamin === "p" ? "♀" : "♂"}
                                 </div>
                             </div>
 
-                            <div className="flex items-center">
-                                <div className="w-32 text-gray-700">Biktren</div>
-                                <div className="flex-1 flex items-center">
-                                    <span className="text-gray-600">: {data.nama_biktren}</span>
-                                    {/* <span className="text-green-500 ml-2">✓</span> */}
+                            <div className="flex items-center justify-center sm:justify-start gap-3 text-xs text-gray-600">
+                                <div className="flex items-center gap-1">
+                                    <FaSchool className="text-blue-500" />
+                                    <span className="font-medium">{data.lembaga}</span>
                                 </div>
-                            </div>
-
-                            <div className="flex">
-                                <div className="w-32 text-gray-700">Pengasuh</div>
-                                <div className="flex-1">
-                                    <span className="text-gray-600">: {data.nama_pengasuh}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center">
-                                <div className="w-32 text-gray-700">Kamtib</div>
-                                <div className="flex-1 flex items-center">
-                                    <span className="text-gray-600">: {data.nama_kamtib}</span>
-                                    {/* <span className="text-green-500 ml-2">✓</span> */}
+                                <div className="flex items-center gap-1">
+                                    <FaMapMarkerAlt className="text-green-500" />
+                                    <span>{data.kamar} - {data.blok}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-2">
-                            <div className="text-gray-700 font-medium">Keterangan:</div>
-                            <div className="mt-1 text-gray-600">
-                                {data.keterangan}
-                            </div>
-                        </div>
 
-                        <div className="mt-2">
+                        {/* Compact Grid Information */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <div className="flex items-center gap-1.5">
+                                <FaMapMarkerAlt className="text-red-500 text-xs flex-shrink-0" />
+                                <span className="text-gray-600 truncate">{data.kecamatan}, {data.kabupaten}</span>
+                            </div>
+                            
                             {(data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (
-                                <>
-                                    <div className="text-gray-700 font-medium">
-                                        Sudah berada di Pondok :
-                                    </div>
-                                    <div className="mt-1 font-medium text-blue-800">
-                                        {data.tanggal_kembali}
-                                    </div>
-                                </>
+                                <div className="flex items-center gap-1.5 justify-self-end">
+                                    <FaHome className="text-green-500 text-xs flex-shrink-0" />
+                                    <span className="text-green-700 font-medium text-xs">Kembali: {data.tanggal_kembali}</span>
+                                </div>
                             )}
                         </div>
-                    </div>
 
-                    
-                </div>
-
-                {/* Status Steps */}
-                <div className="mt-8 border-t pt-4">
-                    <div className="flex flex-wrap items-center">
-                        <div className="flex items-center mr-6 mb-2">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center bg-blue-500 text-white mr-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
+                        {/* Compact Permission Reason */}
+                        <div className="mt-2">
+                            <div className="bg-blue-50 p-2 rounded border border-blue-200">
+                                <div className="flex items-start gap-1.5">
+                                    <FaClipboardList className="text-blue-600 text-xs mt-0.5 flex-shrink-0" />
+                                    <div className="min-w-0">
+                                        <span className="font-medium text-blue-800 text-xs">Alasan:</span>
+                                        <p className="text-gray-800 text-sm mt-0.5 line-clamp-2">{data.alasan_izin}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <span className="text-gray-700">Sedang proses izin</span>
                         </div>
 
-                        <div className="flex items-center mr-6 mb-2">
-                            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
-            ${(data.status === "perizinan ditolak" || data.status === "dibatalkan")
-                                    ? 'border-red-500 bg-red-500 text-white'
+                        {/* Compact Destination */}
+                        <div className="mt-2 text-sm">
+                            <div className="flex items-start gap-1.5">
+                                <i className="fas fa-map-pin text-purple-500 text-xs mt-0.5 flex-shrink-0"></i>
+                                <span className="text-gray-600 truncate">
+                                    <span className="font-medium">Tujuan:</span> {data.alamat_tujuan}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Compact Additional Info */}
+                        {data.keterangan && (
+                            <div className="mt-2">
+                                <div className="bg-yellow-50 p-2 rounded border border-yellow-200">
+                                    <div className="flex items-start gap-1.5">
+                                        <i className="fas fa-info-circle text-yellow-600 text-xs mt-0.5 flex-shrink-0"></i>
+                                        <p className="text-yellow-700 text-xs line-clamp-1">{data.keterangan}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Compact Progress Timeline */}
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                        <div className="flex flex-col items-center">
+                            <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                            <span className="text-xs text-gray-600 mt-1">Proses</span>
+                        </div>
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1"></div>
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                (data.status === "perizinan ditolak" || data.status === "dibatalkan")
+                                    ? 'bg-red-500 text-white'
                                     : (data.status !== "sedang proses izin")
-                                        ? 'border-blue-500 bg-blue-500 text-white'
-                                        : 'border-gray-400 text-gray-400'}`}>
-                                {(data.status === "perizinan diterima" || data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                )}
-                                {(data.status === "perizinan ditolak" || data.status === "dibatalkan") && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                )}
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-gray-300 text-gray-600'
+                            }`}>
+                                {(data.status === "perizinan ditolak" || data.status === "dibatalkan") ? '✗' : 
+                                 (data.status !== "sedang proses izin") ? '✓' : '2'}
                             </div>
-                            <span className="text-gray-700">{data.status === "dibatalkan" ? "Perizinan dibatalkan" : data.status === "perizinan ditolak" ? "Perizinan ditolak" : " Perizinan diterima"}</span>
+                            <span className="text-xs text-gray-600 mt-1">
+                                {data.status === "dibatalkan" ? "Batal" : 
+                                 data.status === "perizinan ditolak" ? "Tolak" : "Terima"}
+                            </span>
                         </div>
-
-                        <div className="flex items-center mr-6 mb-2">
-                            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
-            ${(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)")
-                                    ? 'border-blue-500 bg-blue-500 text-white'
-                                    : 'border-gray-400 text-gray-400'}`}>
-                                {(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") && (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                                )}
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1"></div>
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                (data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || 
+                                 data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)")
+                                    ? 'bg-blue-500 text-white'
+                                    : 'bg-gray-300 text-gray-600'
+                            }`}>
+                                {(data.status === "sudah berada diluar pondok" || data.status === "kembali tepat waktu" || 
+                                  data.status === "telat(sudah kembali)" || data.status === "telat(belum kembali)") ? '✓' : '3'}
                             </div>
-                            <span className="text-gray-700">Sudah berada di luar pondok</span>
+                            <span className="text-xs text-gray-600 mt-1">Keluar</span>
                         </div>
-
-                        <div className="flex items-center mb-2">
-                            <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 
-            ${data.status === "kembali tepat waktu"
-                                    ? 'border-blue-500 bg-blue-500 text-white'
-                                    : data.status === "telat(belum kembali)"
-                                        ? 'border-red-500 bg-red-500 text-white'
-                                        : data.status === "telat(sudah kembali)"
-                                            ? 'border-red-500 bg-red-500 text-white'
-                                            : 'border-gray-400 text-gray-400'}`}>
-                                {data.status === "telat(belum kembali)"
-                                    ? <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                    : data.status === "kembali tepat waktu" && <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                }{
-                                    data.status === "telat(sudah kembali)" && <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                }
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1"></div>
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                data.status === "kembali tepat waktu"
+                                    ? 'bg-green-500 text-white'
+                                    : (data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)")
+                                        ? 'bg-red-500 text-white'
+                                        : 'bg-gray-300 text-gray-600'
+                            }`}>
+                                {data.status === "kembali tepat waktu" ? '✓' :
+                                 (data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)") ? '!' : '4'}
                             </div>
-                            <span className="text-gray-700">{data.status === "telat(belum kembali)" ? " Telat" : data.status === "telat(sudah kembali)" ? " Telat" : " Kembali tepat waktu"}</span>
-                        </div>
-                        <div className="justify-end ml-auto">
-                            <div className="text-right text-gray-500 text-sm mt-2">
-                                <div>Tgl dibuat : {data.tgl_input}</div>
-                                <div>Tgl diubah : {data.tgl_update}</div>
-                            </div>
+                            <span className="text-xs text-gray-600 mt-1">Kembali</span>
                         </div>
                     </div>
-
                 </div>
+
+                {/* Compact Extended Toggle */}
+                <div className="mt-3 pt-2 border-t border-gray-200">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsExpanded(!isExpanded);
+                        }}
+                        className="w-full flex items-center justify-center gap-1 py-1.5 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded text-gray-700 hover:text-gray-900 text-sm font-medium transition-all duration-200"
+                    >
+                        {isExpanded ? <FaChevronUp className="text-xs" /> : <FaChevronDown className="text-xs" />}
+                        <span>{isExpanded ? 'Tutup Detail' : 'Lihat Detail'}</span>
+                    </button>
+                </div>
+
+                {/* Compact Extended Information */}
+                {isExpanded && (
+                    <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {/* Compact Duration Info */}
+                            <div className="bg-white rounded p-3 shadow-sm">
+                                <h4 className="flex items-center gap-1.5 font-semibold text-gray-800 mb-2 text-sm">
+                                    <FaClock className="text-blue-500 text-xs" />
+                                    Durasi Izin
+                                </h4>
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Mulai:</span>
+                                        <span className="font-medium">{data.tanggal_mulai}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Sampai:</span>
+                                        <span className="font-medium">{data.tanggal_akhir}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Durasi:</span>
+                                        <span className="font-medium text-purple-700">{data.lama_izin}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Bermalam:</span>
+                                        <span className="font-medium text-indigo-700">{data.bermalam}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Jenis:</span>
+                                        <span className="font-medium text-orange-700">{data.jenis_izin}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Compact Approval Team */}
+                            <div className="bg-white rounded p-3 shadow-sm">
+                                <h4 className="flex items-center gap-1.5 font-semibold text-gray-800 mb-2 text-sm">
+                                    <FaUsers className="text-emerald-500 text-xs" />
+                                    Persetujuan
+                                </h4>
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600">Pembuat:</span>
+                                        <span className="font-medium">{data.pembuat}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600">Biktren:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-medium">{data.nama_biktren || '-'}</span>
+                                            {data.approved_by_biktren && <FaCheckCircle className="text-green-500 text-xs" />}
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600">Pengasuh:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-medium">{data.nama_pengasuh || '-'}</span>
+                                            {data.approved_by_pengasuh && <FaCheckCircle className="text-green-500 text-xs" />}
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600">Kamtib:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-medium">{data.nama_kamtib || '-'}</span>
+                                            {data.approved_by_kamtib && <FaCheckCircle className="text-green-500 text-xs" />}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Compact Timestamps */}
+                        <div className="mt-3 pt-2 border-t border-gray-200 flex justify-between text-xs text-gray-500">
+                            <span>Dibuat: {data.tgl_input}</span>
+                            <span>Diubah: {data.tgl_update}</span>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* Modals */}
+            <ModalApprove
+                isOpen={showApproveModal}
+                onClose={() => setShowApproveModal(false)}
+                onConfirm={handleApprove}
+                isLoading={isApproving}
+                roleName={userRole}
+            />
+            <ModalApprove
+                isOpen={showKeluarModal}
+                onClose={() => setShowKeluarModal(false)}
+                onConfirm={handleSetKeluar}
+                isLoading={showLoadingKeluarModal}
+                mode="keluar"
+            />
+            <ModalApprove
+                isOpen={showKembaliModal}
+                onClose={() => setShowKembaliModal(false)}
+                onConfirm={handleSetKembali}
+                isLoading={showLoadingKembaliModal}
+                mode="kembali"
+            />
+
+            {approveError && (
+                <div className="mx-4 mb-2 bg-red-50 border border-red-200 text-red-700 p-2 rounded text-xs flex items-center gap-1">
+                    <i className="fas fa-exclamation-triangle text-red-500"></i>
+                    <span>Error: {approveError}</span>
+                </div>
+            )}
         </div>
     );
 };

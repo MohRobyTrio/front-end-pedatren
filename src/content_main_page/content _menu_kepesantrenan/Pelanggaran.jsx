@@ -10,7 +10,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import ModalDetail from "../../components/modal/ModalDetail";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
-import { FaFileExport, FaPlus } from "react-icons/fa";
+import { FaFileExport, FaPlus, FaMapMarkerAlt, FaSchool, FaClipboardList, FaUsers, FaGavel, FaCalendarAlt } from "react-icons/fa";
 import { ModalAddPelanggaran } from "../../components/modal/ModalFormPelanggaran";
 import Access from "../../components/Access";
 import { ModalExport } from "../../components/modal/ModalExport";
@@ -34,13 +34,13 @@ const DataPelanggaran = () => {
     };
 
     const [filters, setFilters] = useState({
-        provinsi: " ",
+        provinsi: "",
         lembaga: "",
         jurusan: "",
         kelas: "",
         rombel: "",
-        jenis_pelanggaran: " ",
-        status_pelanggaran: " "
+        jenis_pelanggaran: "",
+        status_pelanggaran: ""
     });
 
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
@@ -49,7 +49,6 @@ const DataPelanggaran = () => {
     const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.nama || "";
     const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
     const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
-
     const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
     const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
     const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
@@ -66,9 +65,6 @@ const DataPelanggaran = () => {
         rombel: rombelTerpilih
     }), [blokTerpilih, filters, jurusanTerpilih, kamarTerpilih, kelasTerpilih, lembagaTerpilih, rombelTerpilih, wilayahTerpilih]);
 
-
-    // const [page, setPage] = useState(1);
-
     const {
         data,
         loading,
@@ -82,12 +78,10 @@ const DataPelanggaran = () => {
         searchTerm,
         setSearchTerm,
         fetchData,
-        // filterOptions
     } = useFetchPelanggaran(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
 
-    // Fetch data saat filter/page berubah
     useEffect(() => {
         fetchData(updatedFilters, filters);
     }, [updatedFilters, filters, fetchData]);
@@ -125,33 +119,7 @@ const DataPelanggaran = () => {
     }
 
     const [showFormModal, setShowFormModal] = useState(false);
-
-    const fieldsExports = [
-        // { label: "Wewenang", value: "" },
-        // { label: "No. KK", value: "no_kk" },
-        // { label: "NIK", value: "nik" },
-        // { label: "NIUP", value: "niup" },
-        // { label: "Nama", value: "nama" },
-        // { label: "Tempat Tgl Lahir", value: "tempat_tanggal_lahir" },
-        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
-        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
-        // { label: "Anak ke", value: "anak_ke" },
-        // { label: "Jumlah Saudara", value: "jumlah_saudara" },
-        // { label: "Alamat", value: "alamat" },
-        // { label: "NIS", value: "nis" },
-        // { label: "Domisili Santri", value: "domisili_santri" },
-        // { label: "Angkatan Santri", value: "angkatan_santri" },
-        // { label: "No Induk", value: "no_induk" },
-        // { label: "Lembaga", value: "lembaga" },
-        // { label: "Jurusan", value: "jurusan" },
-        // { label: "Kelas", value: "kelas" },
-        // { label: "Rombel", value: "rombel" },
-        // { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
-        // { label: "Pendidikan", value: "pendidikan" },
-        // { label: "Status", value: "status" },
-        // { label: "Ibu Kandung", value: "ibu_kandung" },
-        // { label: "Ayah Kandung", value: "ayah_kandung" }
-    ];
+    const fieldsExports = [];
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
@@ -166,7 +134,6 @@ const DataPelanggaran = () => {
                     </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
-                        // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
                         <FaFileExport />
@@ -178,16 +145,6 @@ const DataPelanggaran = () => {
             <ModalAddPelanggaran isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} nama={selectedName} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                {/* {showFilters && (
-                    <Filters
-                        filters={filters}
-                        filterOptions={filterOptions}
-                        onChange={(newFilters) => {
-                            setFilters(newFilters);
-                            setPage(1);
-                        }}
-                    />
-                )} */}
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
@@ -200,7 +157,6 @@ const DataPelanggaran = () => {
                     totalData={totalData}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    // totalFiltered={data.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
                 />
@@ -212,7 +168,7 @@ const DataPelanggaran = () => {
                         </div>
                     )}
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {loading ? (
                             <div className="col-span-3 flex justify-center items-center">
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
@@ -229,8 +185,8 @@ const DataPelanggaran = () => {
                     </div>
                 </div>
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pelanggaran" /> 
-
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pelanggaran" />
+                 
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -251,186 +207,184 @@ const DataPelanggaran = () => {
     );
 };
 
-// Komponen Card untuk Pelanggaran
+// Clean and Informative Pelanggaran Card Component
 const PelanggaranCard = ({ data, openModal, setShowFormModal, setFeature, setSelectedId, setSelectedName }) => {
-    return (
-        <div key={data.id} className="relative w-full">
-            {/* Tombol Edit */}
-            <div className="absolute top-2 right-2 z-10">
-                <Access action="edit">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setFeature(2);
-                            setSelectedId(data.id);
-                            setSelectedName(data.nama_santri);
-                            setShowFormModal(true);
-                        }}
-                        className="flex items-center gap-2 px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded shadow cursor-pointer"
-                    >
-                        <i className="fas fa-edit"></i>
-                        <span>Edit</span>
-                    </button>
-                </Access>
-            </div>
-            <div className="flex flex-wrap p-4 rounded-lg shadow-sm gap-4 items-center bg-white mb-4 cursor-pointer" onClick={() => openModal(data)}>
+    const getStatusConfig = (status) => {
+        switch (status) {
+            case 'Sudah diproses':
+                return { 
+                    bg: 'bg-green-100', 
+                    text: 'text-green-800',
+                    border: 'border-green-300'
+                };
+            case 'Sedang diproses':
+                return { 
+                    bg: 'bg-blue-100', 
+                    text: 'text-blue-800',
+                    border: 'border-blue-300'
+                };
+            case 'Belum diproses':
+                return { 
+                    bg: 'bg-gray-100', 
+                    text: 'text-gray-800',
+                    border: 'border-gray-300'
+                };
+            default:
+                return { 
+                    bg: 'bg-gray-100', 
+                    text: 'text-gray-800',
+                    border: 'border-gray-300'
+                };
+        }
+    };
 
-                {/* Foto Santri */}
-                <div className="w-24 h-24 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
-                    {data.foto_profil ? (
+    const getSeverityColor = (jenis) => {
+        switch (jenis) {
+            case 'Berat': return 'text-red-600 bg-red-50 border-red-200';
+            case 'Sedang': return 'text-orange-600 bg-orange-50 border-orange-200';
+            case 'Ringan': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+            default: return 'text-gray-600 bg-gray-50 border-gray-200';
+        }
+    };
+
+    const statusConfig = getStatusConfig(data.status_pelanggaran);
+
+    return (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3 overflow-hidden hover:shadow-md transition-shadow duration-200">
+            {/* Simple Header */}
+            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+                    {data.status_pelanggaran}
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className={`px-2 py-1 rounded text-xs font-medium border ${getSeverityColor(data.jenis_pelanggaran)}`}>
+                        {data.jenis_pelanggaran}
+                    </span>
+                    <Access action="edit">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setFeature(2);
+                                setSelectedId(data.id);
+                                setSelectedName(data.nama_santri);
+                                setShowFormModal(true);
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium"
+                        >
+                            <i className="fas fa-edit text-xs"></i>
+                            <span>Edit</span>
+                        </button>
+                    </Access>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="p-4" onClick={() => openModal(data)}>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Photo Section */}
+                    <div className="flex-shrink-0 flex justify-center sm:justify-start">
                         <img
-                            src={data.foto_profil}
-                            alt={data.nama_santri}
-                            className="w-full h-full object-cover"
+                            alt={data.nama_santri || "-"}
+                            className="w-24 h-24 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm border-2 border-white"
+                            src={data.foto_profil || "/placeholder.svg"}
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = blankProfile;
                             }}
                         />
-                    ) : (
-                        <i className="fas fa-user text-gray-400 text-4xl"></i>
-                    )}
-                </div>
-
-                {/* Info Santri */}
-                <div className="flex-1 space-y-2 min-w-[200px]">
-                    <h2 className="text-lg font-semibold">{data.nama_santri}</h2>
-                    <div className="flex">
-                        <div className="w-24 text-black-700">Domisili</div>
-                        <div className="flex-1">
-                            <span className="text-black-600">: {data.wilayah} - {data.blok} {data.kamar}</span>
-                        </div>
                     </div>
 
-                    <div className="flex">
-                        <div className="w-24 text-black-700">Pendidikan</div>
-                        <div className="flex-1">
-                            <span className="text-black-600">: {data.lembaga}</span>
-                        </div>
-                    </div>
-
-                    <div className="flex">
-                        <div className="w-24 text-black-700">Alamat</div>
-                        <div className="flex-1">
-                            <span className="text-black-600">: {data.kabupaten}, {data.provinsi}</span>
-                        </div>
-                    </div>
-
-                    <br />
-
-                    <div className="flex">
-                        <div className="w-24 text-black-700">Pencatat</div>
-                        <div className="flex-1">
-                            <span className="text-black-600">: ({data.pencatat})</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Detail Pelanggaran */}
-                <div className="mt-6 md:mt-0 md:pl-8 md:w-1/2">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
-
-                    <div className="space-y-2">
-                        <div className="flex">
-                            <div className="w-40 text-black-700">Kategori</div>
-                            <div className="flex-1">
-                                <span className={`text-black-600 ${data.jenis_pelanggaran === 'Berat'
-                                    ? 'text-red-600'
-                                    : data.jenis_pelanggaran === 'Sedang'
-                                        ? 'text-orange-600'
-                                        : 'text-yellow-600'
-                                    }`}>
-                                    : {data.jenis_pelanggaran}
-                                </span>
+                    {/* Information Section */}
+                    <div className="flex-1 min-w-0">
+                        {/* Student Name */}
+                        <h3 className="text-lg text-center sm:text-left font-bold text-gray-900 mb-3">{data.nama_santri}</h3>
+                        {/* Name and Basic Info */}
+                        {/* <div className="mb-2 flex items-center justify-center sm:justify-start gap-2">
+                            <h3 className="text-lg font-bold text-gray-900 truncate">
+                                {data.nama_santri}
+                            </h3>
+                            <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm border border-white flex-shrink-0">
+                                {data.jenis_kelamin === "p" ? "♀" : "♂"}
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="flex">
-                            <div className="w-40 text-black-700">Diproses Mahkamah</div>
-                            <div className="flex-1 flex items-center">
-                                <span className="text-black-600">
-                                    : {data.diproses_mahkamah ? (
-                                        <>
-                                            Ya <FontAwesomeIcon icon={faCheck} className="text-green-600" size="md" />
-                                        </>
+                        {/* Information Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Left Column */}
+                            <div className="space-y-2 text-sm">
+                                {/* Domisili */}
+                                <div className="flex items-center gap-2">
+                                    <FaMapMarkerAlt className="text-green-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[70px]">Domisili</span>
+                                    <span className="font-medium text-gray-800">
+                                        : {data.wilayah} - {data.blok} {data.kamar}
+                                    </span>
+                                </div>
+
+                                {/* Lembaga */}
+                                <div className="flex items-center gap-2">
+                                    <FaSchool className="text-blue-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[70px]">Lembaga</span>
+                                    <span className="font-medium text-gray-800">: {data.lembaga}</span>
+                                </div>
+
+                                {/* Alamat */}
+                                <div className="flex items-center gap-2">
+                                    <FaMapMarkerAlt className="text-red-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[70px]">Alamat</span>
+                                    <span className="font-medium text-gray-800">
+                                        : {data.kabupaten}, {data.provinsi}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            {/* Right Column */}
+                            <div className="space-y-2 text-sm">
+                                {/* Mahkamah */}
+                                <div className="flex items-center gap-2">
+                                    <FaGavel className="text-indigo-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Mahkamah</span>
+                                    {data.diproses_mahkamah ? (
+                                        <span className="text-green-600 font-medium flex items-center gap-1">
+                                            : Ya <FontAwesomeIcon icon={faCheck} className="text-green-600 text-xs" />
+                                        </span>
                                     ) : (
-                                        <>
-                                            Tidak <FontAwesomeIcon icon={faX} className="text-red-600" size="sm" />
-                                        </>
+                                        <span className="text-red-600 font-medium flex items-center gap-1">
+                                            : Tidak <FontAwesomeIcon icon={faX} className="text-red-600 text-xs" />
+                                        </span>
                                     )}
-                                </span>
+                                </div>
+
+                                {/* Tanggal */}
+                                <div className="flex items-center gap-2">
+                                    <FaCalendarAlt className="text-gray-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Tanggal</span>
+                                    <span className="font-medium text-gray-800">: {data.tgl_input}</span>
+                                </div>
+
+                                {/* Pencatat */}
+                                <div className="flex items-center gap-2">
+                                    <FaUsers className="text-purple-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Pencatat</span>
+                                    <span className="font-medium text-gray-800">: {data.pencatat}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex">
-                            <div className="w-40 text-black-700">Status</div>
-                            <div className="flex-1">
-                                <span className={`text-black-600 font-medium ${data.status_pelanggaran === 'Sudah diproses'
-                                        ? 'text-green-600'
-                                        : data.status_pelanggaran === 'Sedang diproses'
-                                            ? 'text-yellow-600'
-                                            : 'text-gray-600'
-                                    }`}>
-                                    : {data.status_pelanggaran}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="flex">
-                            <div className="w-40 text-black-700">Jenis</div>
-                            <div className="flex-1">
-                                <span className="text-black-600">: {data.keterangan}</span>
+                        {/* Keterangan Section */}
+                        <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex items-start gap-2">
+                                <FaClipboardList className="text-gray-600 text-sm mt-0.5 flex-shrink-0" />
+                                <div className="min-w-0">
+                                    <span className="text-gray-600 text-sm font-medium block mb-1">Keterangan Pelanggaran:</span>
+                                    <p className="text-gray-800 text-sm leading-relaxed">{data.keterangan}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="mt-4 text-right text-gray-500 text-sm">
-                        {data.tgl_input}
-                    </div>
                 </div>
-                {/* <div className="flex-1 space-y-2 min-w-[200px]">
-                <h2 className="text-xl font-semibold text-gray-800 mb-3">Pelanggaran</h2>
-                <div className="flex gap-2 items-center">
-                    <p className="font-semibold">Kategori: </p>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                        data.jenis_pelanggaran === 'Berat' 
-                            ? 'bg-red-100 text-red-800' 
-                            : data.jenis_pelanggaran === 'Sedang'
-                            ? 'bg-orange-100 text-orange-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                        {data.jenis_pelanggaran}
-                    </span>
-                </div>
-
-                <div className="flex gap-2 items-center">
-                    <p className="font-semibold">Putusan:</p>
-                    <p className="text-sm">{data.jenis_putusan}</p>
-                </div>
-                
-                <div className="flex gap-2 items-center">
-                    <p className="font-semibold">Status:</p>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                        data.status_pelanggaran === 'Selesai' 
-                            ? 'bg-green-100 text-green-800' 
-                            : data.status_pelanggaran === 'Sedang diproses'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-gray-100 text-gray-800'
-                    }`}>
-                        {data.status_pelanggaran}
-                    </span>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <p className="text-sm">Keteragan    :{data.keterangan}</p>
-                </div>
-                
-                
-            </div> */}
-
-                {/* Pencatat */}
-                {/* <div className="text-center space-y-2 flex flex-col items-center min-w-[120px]">
-                <p className="text-xs text-gray-500">{data.tgl_input}</p>
-            </div> */}
             </div>
         </div>
     );
