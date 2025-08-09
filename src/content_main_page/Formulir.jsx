@@ -124,13 +124,34 @@ const Formulir = () => {
         }
     }, []);
 
-
-    // Effect untuk handle routing dan kondisi tab
     useEffect(() => {
         const kondisiFromState = location.state?.kondisiTabFormulir;
         if (['kondisi1', 'kondisi2', 'kondisi3'].includes(kondisiFromState)) {
             setTabKondisi(kondisiFromState);
+            sessionStorage.setItem("last_kondisi_formulir", kondisiFromState);
+        } else {
+            const lastKondisi = sessionStorage.getItem("last_kondisi_formulir");
+            if (lastKondisi) {
+                setTabKondisi(lastKondisi);
+            }
         }
+    }, [location.state]);
+
+    useEffect(() => {
+        // Kalau route sudah bukan /formulir atau turunannya
+        if (!location.pathname.startsWith("/formulir")) {
+            setTabKondisi("kondisi2"); // balik ke default
+            sessionStorage.removeItem("last_kondisi_formulir"); // kalau pakai sessionStorage
+        }
+    }, [location.pathname]);
+
+
+    // Effect untuk handle routing dan kondisi tab
+    useEffect(() => {
+        // const kondisiFromState = location.state?.kondisiTabFormulir;
+        // if (['kondisi1', 'kondisi2', 'kondisi3'].includes(kondisiFromState)) {
+        //     setTabKondisi(kondisiFromState);
+        // }
 
         if (biodata_id) {
             sessionStorage.setItem("last_biodata_id", biodata_id);
@@ -161,7 +182,7 @@ const Formulir = () => {
         }
     }, [cachedData]); // jalankan saat id berubah
 
-// Tambahkan useEffect untuk listen event dari child component
+    // Tambahkan useEffect untuk listen event dari child component
     useEffect(() => {
         const handleBiodataUpdate = (event) => {
             const { biodata_id: updatedId } = event.detail;
