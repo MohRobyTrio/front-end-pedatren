@@ -272,9 +272,11 @@ const Formulir = () => {
                                                         </svg>
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-medium text-gray-900">NIK</p>
+                                                        <p className="text-sm font-medium text-gray-900">
+                                                            {pesertaData?.nik ? "NIK" : "No Passport"}
+                                                        </p>
                                                         <p className="text-sm text-gray-600">
-                                                            {pesertaData?.nik || '-'}
+                                                            {pesertaData?.nik || pesertaData?.no_passport || "-"}
                                                         </p>
                                                     </div>
                                                 </div>

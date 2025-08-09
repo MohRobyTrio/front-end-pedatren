@@ -91,8 +91,8 @@ const Profile = () => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}profile/update`, {
-                method: "PUT",
+            const response = await fetch(`${API_BASE_URL}profile`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -116,8 +116,8 @@ const Profile = () => {
 
             if (response.ok) {
                 // Update local storage
-                localStorage.setItem("name", profileForm.name)
-                localStorage.setItem("email", profileForm.email)
+                // localStorage.setItem("name", profileForm.name)
+                // localStorage.setItem("email", profileForm.email)
                 sessionStorage.setItem("name", profileForm.name)
                 sessionStorage.setItem("email", profileForm.email)
 
@@ -175,8 +175,8 @@ const Profile = () => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}profile/change-password`, {
-                method: "PUT",
+            const response = await fetch(`${API_BASE_URL}password`, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -299,7 +299,7 @@ const Profile = () => {
                                 <FontAwesomeIcon icon={faLock} />
                                 Keamanan
                             </button>
-                            <button
+                            {/* <button
                                 onClick={() => setActiveTab("activity")}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${activeTab === "activity"
                                         ? "bg-blue-100 text-blue-700 border border-blue-200"
@@ -308,7 +308,7 @@ const Profile = () => {
                             >
                                 <FontAwesomeIcon icon={faClock} />
                                 Aktivitas
-                            </button>
+                            </button> */}
                         </nav>
                     </div>
                 </div>

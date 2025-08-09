@@ -30,9 +30,11 @@ const useLogin = () => {
           setTokenCookie(data.token);
           localStorage.setItem("name", data.user.name);
           localStorage.setItem("roles", JSON.stringify(roles));
+          localStorage.setItem("email", data.user.email);
         } else {
           sessionStorage.setItem("token", data.token);
           sessionStorage.setItem("name", data.user.name);
+          sessionStorage.setItem("email", data.user.email);
           sessionStorage.setItem("roles", JSON.stringify(roles));
         }
       }

@@ -92,7 +92,7 @@ const Dashboard = () => {
             {/* Header Section */}
             <div className="mb-8">
                 <div className="flex flex-col space-y-2">
-                    <h1 className="text-4xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
+                    <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
                     <p className="text-gray-600 text-lg">Selamat datang di sistem manajemen pesantren</p>
                 </div>
             </div>
@@ -100,7 +100,7 @@ const Dashboard = () => {
             {/* Main Content */}
             <div className="space-y-8">
                 {/* Welcome Card */}
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+                {/* <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-semibold text-gray-800 mb-2">Ringkasan Data Pesantren</h2>
@@ -112,7 +112,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
