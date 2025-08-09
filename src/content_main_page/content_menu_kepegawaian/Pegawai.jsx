@@ -110,6 +110,7 @@ const Pegawai = () => {
             { label: "Pengurus", value: "pengurus" },
             { label: "Karyawan", value: "karyawan" },
             { label: "Pengajar", value: "pengajar" },
+            { label: "Wali Kelas", value: "wali kelas" },
             // { label: "Pengajar-Pengurus", value: "pengajar pengurus" },
             // { label: "Pengajar-Karyawan", value: "pengajar karyawan" },
             // { label: "Pengurus-Karyawan", value: "pengurus karyawan" },
