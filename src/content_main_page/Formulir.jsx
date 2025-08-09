@@ -122,6 +122,7 @@ const Formulir = () => {
         } finally {
             setIsLoading(false);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -180,6 +181,7 @@ const Formulir = () => {
             // Cache masih ada → pakai cache
             setPesertaData(JSON.parse(cachedData));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cachedData]); // jalankan saat id berubah
 
     // Tambahkan useEffect untuk listen event dari child component

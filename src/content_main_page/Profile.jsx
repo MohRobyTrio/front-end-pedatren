@@ -83,6 +83,7 @@ const Profile = () => {
         }
 
         loadUserProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleProfileUpdate = async (e) => {

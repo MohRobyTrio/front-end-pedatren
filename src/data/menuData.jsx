@@ -6,13 +6,11 @@ import Perizinan from "../content_main_page/content _menu_kepesantrenan/Perizina
 // import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
 import Alumni from "../content_main_page/content_menu_data_pokok/Alumni";
 import Khadam from "../content_main_page/content_menu_data_pokok/Khadam";
-import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import PesertaDidik from "../content_main_page/content_menu_data_pokok/PesertaDidik";
 import BersaudaraKandung from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/BersaudaraKandung";
 import Pelajar from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Pelajar";
 import Santri from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Santri";
 import SantriNonDomisili from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/SantriNonDomisili";
-import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import Golongan from "../content_main_page/content_menu_kepegawaian/Golongan";
 import PindahKelas from "../content_main_page/content_menu_akademik/PindahKelas";
 import GolonganJabatan from "../content_main_page/content_menu_kepegawaian/GolonganJabatan";
