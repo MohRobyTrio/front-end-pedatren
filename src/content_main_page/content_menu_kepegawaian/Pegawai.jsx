@@ -13,17 +13,19 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ModalDetail from '../../components/modal/ModalDetail';
 // import { downloadFile } from '../../utils/downloadFile';
 // import { API_BASE_URL } from '../../hooks/config';
-import { FaEdit, FaFileExport, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaFileExport, FaFileImport, FaPlus } from 'react-icons/fa';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import Access from '../../components/Access';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
 import { useNavigate } from 'react-router-dom';
+import ModalImport from '../../components/modal/ModalImport';
 
 const Pegawai = () => {
     const navigate = useNavigate();
     // const [exportLoading, setExportLoading] = useState(false);
+    const [openModalImport, setOpenModalImport] = useState(false)
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -155,16 +157,16 @@ const Pegawai = () => {
     }
 
     // const filter4 = {
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        // phoneNumber: [
-        //     { label: "Phone Number", value: "" },
-        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
-        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        // ]
+    // smartcard: [
+    //     { label: "Smartcard", value: "" },
+    //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    // ],
+    // phoneNumber: [
+    //     { label: "Phone Number", value: "" },
+    //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    // ]
     // };
 
     const hasStatus = (status, keyword) => {
@@ -213,6 +215,10 @@ const Pegawai = () => {
         });
     };
 
+    const handleImportSuccess = () => {
+        fetchData() // Refresh data setelah import berhasil
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -238,6 +244,13 @@ const Pegawai = () => {
                             </>
                         )}
                     </button> */}
+                    <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
+                    >
+                        <FaFileImport />
+                        Import
+                    </button>
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
@@ -350,15 +363,15 @@ const Pegawai = () => {
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Pengajar"))}</td>
                                                 <td className="px-3 py-2 border-b">{renderStatus(hasStatus(item.status, "Wali Kelas"))}</td>
                                                 <td className="px-3 py-2 border-b w-30">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status_aktif == "aktif"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status_aktif == "aktif" ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td>
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status_aktif == "aktif"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status_aktif == "aktif" ? "Aktif" : "Nonaktif"}
+                                                    </span>
+                                                </td>
                                                 {/* <td className="px-3 py-2 border-b">{item.pendidikanTerkahir || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
@@ -385,6 +398,23 @@ const Pegawai = () => {
                 )}
 
                 <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pegawai" />
+
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data Pegawai"
+                    endpoint="import/pegawai"
+                    templateUrl="/template/pegawai_import_template_v2.xlsx"
+                    templateName="template_pegawai.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
 
                 {isModalOpen && (
                     <ModalDetail

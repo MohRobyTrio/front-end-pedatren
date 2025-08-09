@@ -12,7 +12,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { downloadFile } from "../../utils/downloadFile";
 import ModalDetail from "../../components/modal/ModalDetail";
-import { FaEdit, FaFileExport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
 // import ModalForm from "../../components/ModalFormPesertaDidik";
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
@@ -22,10 +22,12 @@ import Access from "../../components/Access";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
 import { Link } from "react-router-dom";
+import ModalImport from "../../components/modal/ModalImport";
 
 const PesertaDidik = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
+    const [openModalImport, setOpenModalImport] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -187,7 +189,7 @@ const PesertaDidik = () => {
         //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         // ],
         // Sudah
-        
+
     };
 
     const fieldsExports = [
@@ -213,6 +215,10 @@ const PesertaDidik = () => {
         { label: "Status", value: "status" },
         { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
+
+    const handleImportSuccess = () => {
+        fetchData() // Refresh data setelah import berhasil
+    }
 
     const [showFormModal, setShowFormModal] = useState(false);
 
@@ -244,6 +250,15 @@ const PesertaDidik = () => {
                             </>
                         )}
                     </button> */}
+                    {/* <Access action="import"> */}
+                    <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
+                    >
+                        <FaFileImport />
+                        Import
+                    </button>
+                    {/* </Access> */}
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
@@ -373,6 +388,23 @@ const PesertaDidik = () => {
                 )}
 
                 <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pesertadidik" />
+
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data Santri"
+                    endpoint="import/santri"
+                    templateUrl="/template/santri_import_test.xlsx"
+                    templateName="template_santri.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
 
                 {isModalOpen && (
                     <ModalDetail
