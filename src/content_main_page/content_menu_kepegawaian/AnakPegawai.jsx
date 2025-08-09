@@ -175,7 +175,7 @@ const AnakPegawai = () => {
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     }
-    const filter6 = {
+    // const filter6 = {
         // Sudah
         // smartcard: [
         //     { label: "Smartcard", value: "" },
@@ -183,12 +183,12 @@ const AnakPegawai = () => {
         //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         // ],
         // Sudah
-        phoneNumber: [
-            { label: "Phone Number", value: "" },
-            { label: "Memiliki Phone Number", value: "memiliki phone number" },
-            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        ]
-    };
+    //     phoneNumber: [
+    //         { label: "Phone Number", value: "" },
+    //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //         { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    //     ]
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },

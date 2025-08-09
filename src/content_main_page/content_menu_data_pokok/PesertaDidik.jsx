@@ -254,14 +254,14 @@ const PesertaDidik = () => {
                         </>
                     )}
 
-                    <button
+                    {/* <button
                         onClick={() => setShowStatistik(!showStatistik)}
                         className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
                             } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
                     >
                         {showStatistik ? <FaTable /> : <FaChartLine />}
                         {showStatistik ? "Data" : "Statistik"}
-                    </button>
+                    </button> */}
                 </div>
             </div>
 
