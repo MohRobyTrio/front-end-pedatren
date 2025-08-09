@@ -62,6 +62,7 @@ const TabBiodata = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [photo, setPhoto] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [photoPreview, setPhotoPreview] = useState(null);
     const [umur, setUmur] = useState(null);
     const [bulanOptions] = useState([

@@ -429,7 +429,7 @@ const PesertaDidik = () => {
                 onSuccess={handleImportSuccess}
                 title="Import Data Santri"
                 endpoint="import/santri"
-                templateUrl="/template/santri_import_test.xlsx"
+                templateUrl="/template/pesertadidik_template_pusdatren.xlsx"
                 templateName="template_santri.xlsx"
                 instructions={[
                     "Download template terlebih dahulu",

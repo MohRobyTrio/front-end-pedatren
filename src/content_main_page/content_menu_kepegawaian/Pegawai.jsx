@@ -403,7 +403,7 @@ const Pegawai = () => {
                     onSuccess={handleImportSuccess}
                     title="Import Data Pegawai"
                     endpoint="import/pegawai"
-                    templateUrl="/template/pegawai_import_template_v2.xlsx"
+                    templateUrl="/template/kepegawaian_template_pusdatren.xlsx"
                     templateName="template_pegawai.xlsx"
                     instructions={[
                         "Download template terlebih dahulu",
