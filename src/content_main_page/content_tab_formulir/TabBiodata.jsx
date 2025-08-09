@@ -253,7 +253,8 @@ const TabBiodata = () => {
                 kabupaten: biodata.kabupaten_id || '',
                 kecamatan: biodata.kecamatan_id || '',
 
-                smartcard: biodata.smartcard || ''
+                smartcard: biodata.smartcard || '',
+                status: biodata.status ? '1' : '0',
             };
 
             // Parse tanggal lahir jika ada
@@ -467,6 +468,7 @@ const TabBiodata = () => {
             formData.append('kecamatan_id', data.kecamatan);
             formData.append('jenjang_pendidikan_terakhir', data.jenjang_pendidikan);
             formData.append('nama_pendidikan_terakhir', data.nama_pendidikan);
+            formData.append('status', data.status);
             // formData.append('wafat', data.wafat === 'Ya' ? '1' : '0');
 
             if (kondisiFormState === "kondisi1") {
@@ -1392,6 +1394,33 @@ const TabBiodata = () => {
                                 />
                             </div>
                         </div>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <label className="lg:w-1/4 text-black">
+                            Status *
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="0"
+                                {...register('status')}
+                                className="w-4 h-4"
+                            />
+                            <span>Tidak Aktif</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                value="1"
+                                {...register('status')}
+                                className="w-4 h-4"
+                            />
+                            <span>Aktif</span>
+                        </label>
+                        {errors.status && (
+                            <p className="text-red-500 text-sm">{errors.status.message}</p>
+                        )}
                     </div>
 
                     <br />
