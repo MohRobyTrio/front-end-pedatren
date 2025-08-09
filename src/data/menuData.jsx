@@ -69,16 +69,16 @@ export const menuItems = [
 ];
 
 export const menuDataPokokItems = [
+    { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
     { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah /> },
-    { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
     // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
     // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
     // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
     // { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/wali-kelas", content: <WaliKelas /> },
-    { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
+    // { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
 
 export const menuKewaliasuhanItems = [
@@ -96,6 +96,7 @@ export const menuKepesantrenanItems = [
     // { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pesantren", content: <PresensiPesantren /> },
     // { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung /> },
+    { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
 
 export const menuKepegawaianItems = [

@@ -1,45 +1,45 @@
-import { useEffect, useMemo, useState } from "react";
-import useFetchPeserta from "../../hooks/hooks_menu_data_pokok/PesertaDidik";
-import PesertaItem from "../../components/PesertaItem";
-import SearchBar from "../../components/SearchBar";
-import Filters from "../../components/Filters";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import { OrbitProgress } from "react-loading-indicators";
-import Pagination from "../../components/Pagination";
-import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
-import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
-import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
-// import { API_BASE_URL } from "../../hooks/config";
-// import { downloadFile } from "../../utils/downloadFile";
-import ModalDetail from "../../components/modal/ModalDetail";
-import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
-// import ModalForm from "../../components/ModalFormPesertaDidik";
-import MultiStepModal from "../../components/modal/ModalFormPesertaDidik";
-import { useMultiStepFormPesertaDidik } from '../../hooks/hooks_modal/useMultiStepFormPesertaDidik';
-import { jenisBerkasList } from "../../data/menuData";
-import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
-import Access from "../../components/Access";
-import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
-import { ModalExport } from "../../components/modal/ModalExport";
-import { Link } from "react-router-dom";
-import ModalImport from "../../components/modal/ModalImport";
+"use client"
+
+import { useEffect, useMemo, useState } from "react"
+import useFetchPeserta from "../../hooks/hooks_menu_data_pokok/PesertaDidik"
+import PesertaItem from "../../components/PesertaItem"
+import SearchBar from "../../components/SearchBar"
+import Filters from "../../components/Filters"
+import "@fortawesome/fontawesome-free/css/all.min.css"
+import { OrbitProgress } from "react-loading-indicators"
+import Pagination from "../../components/Pagination"
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
+import ModalDetail from "../../components/modal/ModalDetail"
+import { FaChartLine, FaEdit, FaFileExport, FaFileImport, FaPlus, FaTable, FaArrowLeft } from "react-icons/fa"
+import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
+import { useMultiStepFormPesertaDidik } from "../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
+import { jenisBerkasList } from "../../data/menuData"
+import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
+import Access from "../../components/Access"
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
+import { ModalExport } from "../../components/modal/ModalExport"
+import { Link } from "react-router-dom"
+import ModalImport from "../../components/modal/ModalImport"
+import StatistikChart from "../../components/StatistikChart"
 
 const PesertaDidik = () => {
-    // const [exportLoading, setExportLoading] = useState(false);
-    const [openModalExport, setOpenModalExport] = useState(false);
+    const [openModalExport, setOpenModalExport] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [showStatistik, setShowStatistik] = useState(false)
 
     const openModal = (item) => {
-        setSelectedItem(item);
-        setIsModalOpen(true);
-    };
+        setSelectedItem(item)
+        setIsModalOpen(true)
+    }
 
     const closeModal = () => {
-        setSelectedItem(null);
-        setIsModalOpen(false);
-    };
+        setSelectedItem(null)
+        setIsModalOpen(false)
+    }
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -50,7 +50,7 @@ const PesertaDidik = () => {
         pemberkasan: "",
         urutBerdasarkan: "",
         urutSecara: "",
-        negara: "",       // Tambahkan default value
+        negara: "",
         provinsi: "",
         kabupaten: "",
         kecamatan: "",
@@ -58,374 +58,395 @@ const PesertaDidik = () => {
         blok: "",
         kamar: "",
         angkatanPelajar: "",
-        angkatanSantri: ""
+        angkatanSantri: "",
     })
 
-    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
-    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
-    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
 
-    const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
-    const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
-    const kabupatenTerpilih = filterNegara.kabupaten.find(k => k.value == selectedNegara.kabupaten)?.label || "";
-    const kecamatanTerpilih = filterNegara.kecamatan.find(kec => kec.value == selectedNegara.kecamatan)?.label || "";
+    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
+    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
+    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
+    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
 
-    const wilayahTerpilih = filterWilayah.wilayah.find(n => n.value == selectedWilayah.wilayah)?.nama || "";
-    const blokTerpilih = filterWilayah.blok.find(p => p.value == selectedWilayah.blok)?.label || "";
-    const kamarTerpilih = filterWilayah.kamar.find(k => k.value == selectedWilayah.kamar)?.label || "";
+    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
+    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
+    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
 
-    const lembagaTerpilih = filterLembaga.lembaga.find(n => n.value == selectedLembaga.lembaga)?.label || "";
-    const jurusanTerpilih = filterLembaga.jurusan.find(n => n.value == selectedLembaga.jurusan)?.label || "";
-    const kelasTerpilih = filterLembaga.kelas.find(n => n.value == selectedLembaga.kelas)?.label || "";
-    const rombelTerpilih = filterLembaga.rombel.find(n => n.value == selectedLembaga.rombel)?.label || "";
+    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
+    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
+    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
+    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
 
     // Gabungkan filter tambahan sebelum dipakai
-    const updatedFilters = useMemo(() => ({
-        ...filters,
-        negara: negaraTerpilih,
-        provinsi: provinsiTerpilih,
-        kabupaten: kabupatenTerpilih,
-        kecamatan: kecamatanTerpilih,
-        wilayah: wilayahTerpilih,
-        blok: blokTerpilih,
-        kamar: kamarTerpilih,
-        lembaga: lembagaTerpilih,
-        jurusan: jurusanTerpilih,
-        kelas: kelasTerpilih,
-        rombel: rombelTerpilih
-    }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
+    const updatedFilters = useMemo(
+        () => ({
+            ...filters,
+            negara: negaraTerpilih,
+            provinsi: provinsiTerpilih,
+            kabupaten: kabupatenTerpilih,
+            kecamatan: kecamatanTerpilih,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih,
+        }),
+        [
+            blokTerpilih,
+            filters,
+            jurusanTerpilih,
+            kabupatenTerpilih,
+            kamarTerpilih,
+            kecamatanTerpilih,
+            kelasTerpilih,
+            lembagaTerpilih,
+            negaraTerpilih,
+            provinsiTerpilih,
+            rombelTerpilih,
+            wilayahTerpilih,
+        ],
+    )
 
-    const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage, fetchData } = useFetchPeserta(updatedFilters);
-    const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("table");
+    const {
+        pesertaDidik,
+        loadingPesertaDidik,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalDataPesertaDidik,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        fetchData,
+    } = useFetchPeserta(updatedFilters)
+    const [showFilters, setShowFilters] = useState(false)
+    const [viewMode, setViewMode] = useState("table")
 
     useEffect(() => {
-        const savedViewMode = sessionStorage.getItem("viewMode");
+        const savedViewMode = sessionStorage.getItem("viewMode")
         if (savedViewMode) {
-            setViewMode(savedViewMode);
+            setViewMode(savedViewMode)
         }
-    }, []);
-
-    // const totalPages = Math.ceil(totalDataPesertaDidik / limit);
-
-    // console.log(totalPages);
+    }, [])
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
+            setCurrentPage(page)
         }
-    };
+    }
 
     const filter4 = {
-        // Sudah
         jenisKelamin: [
             { label: "Pilih Jenis Kelamin", value: "" },
             { label: "Laki-laki", value: "laki-laki" },
-            { label: "Perempuan", value: "perempuan" }
+            { label: "Perempuan", value: "perempuan" },
         ],
-        // Sudah
         status: [
             { label: "Semua Status", value: "" },
             { label: "Santri", value: "santri" },
             { label: "Santri Non Pelajar", value: "santri non pelajar" },
             { label: "Pelajar", value: "pelajar" },
             { label: "Pelajar Non Santri", value: "pelajar non santri" },
-            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" },
         ],
-
         angkatanPelajar: generateDropdownTahun({
             placeholder: "Semua Angkatan Pelajar",
-            labelTemplate: "Masuk Tahun {year}"
+            labelTemplate: "Masuk Tahun {year}",
         }),
-
         angkatanSantri: generateDropdownTahun({
             placeholder: "Semua Angkatan Santri",
-            labelTemplate: "Masuk Tahun {year}"
+            labelTemplate: "Masuk Tahun {year}",
         }),
     }
+
     const filter5 = {
-        // Sudah
         wargaPesantren: [
             { label: "Warga Pesantren", value: "" },
             { label: "Memiliki NIUP", value: "memiliki niup" },
-            { label: "Tanpa NIUP", value: "tanpa niup" }
+            { label: "Tanpa NIUP", value: "tanpa niup" },
         ],
-        // Sudah
-        // pemberkasan: [
-        //     { label: "Pemberkasan", value: "" },
-        //     { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-        //     { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-        //     { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-        //     { label: "Tidak Ada KK", value: "tidak ada kk" },
-        //     { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
-        //     { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
-        // ],
-        // Sudah
         urutBerdasarkan: [
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
             { label: "NIUP", value: "niup" },
             { label: "Angkatan", value: "angkatan" },
             { label: "Jenis Kelamin", value: "jenis kelamin" },
-            { label: "Tempat Lahir", value: "tempat lahir" }
+            { label: "Tempat Lahir", value: "tempat lahir" },
         ],
-        // Sudah
         urutSecara: [
             { label: "Urut Secara", value: "" },
             { label: "A-Z / 0-9 (Ascending)", value: "asc" },
-            { label: "Z-A / 9-0 (Descending)", value: "desc" }
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
         ],
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
-            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        ]
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" },
+        ],
     }
-    const filter6 = {
-        // Sudah
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        // Sudah
 
-    };
+    const filter6 = {}
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
         { label: "NIK", value: "nik" },
         { label: "NIUP", value: "niup" },
-        // { label: "Nama", value: "nama" },
-        // { label: "Tempat Lahir", value: "tempat_lahir" },
-        // { label: "Tanggal Lahir", value: "tanggal_lahir" },
-        // { label: "Jenis Kelamin", value: "jenis_kelamin" },
         { label: "Anak ke", value: "anak_ke" },
         { label: "Jumlah Saudara", value: "jumlah_saudara" },
         { label: "Alamat", value: "alamat" },
-        // { label: "NIS", value: "nis" },
         { label: "Domisili Santri", value: "domisili_santri" },
         { label: "Angkatan Santri", value: "angkatan_santri" },
-        // { label: "No Induk", value: "no_induk" },
-        // { label: "Lembaga", value: "lembaga" },
-        // { label: "Jurusan", value: "jurusan" },
-        // { label: "Kelas", value: "kelas" },
-        // { label: "Rombel", value: "rombel" },
         { label: "Angkatan Pelajar", value: "angkatan_pelajar" },
         { label: "Status", value: "status" },
-        { label: "Ibu Kandung", value: "ibu_kandung" }
-    ];
+        { label: "Ibu Kandung", value: "ibu_kandung" },
+    ]
 
     const handleImportSuccess = () => {
-        fetchData() // Refresh data setelah import berhasil
+        fetchData()
     }
 
-    const [showFormModal, setShowFormModal] = useState(false);
-
-    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData);
+    const [showFormModal, setShowFormModal] = useState(false)
+    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Santri</h1>
-                <div className="flex items-center space-x-2">
-                    <Access action="tambah">
-                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah </button>
-                    </Access>
-                    {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`)} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaFileExport />Export</button> */}
-                    {/* <button
-                        onClick={() => downloadFile(`${API_BASE_URL}export/pesertadidik`, setExportLoading)}
-                        disabled={exportLoading}
-                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
-                    >
-                        {exportLoading ? (
-                            <>
-                                <i className="fas fa-spinner fa-spin text-white"></i>
-                                <span>Loading...</span>
-                            </>
-                        ) : (
-                            <>
-                                <FaFileExport />
-                                <span>Export</span>
-                            </>
-                        )}
-                    </button> */}
-                    {/* <Access action="import"> */}
-                    <button
-                        onClick={() => setOpenModalImport(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
-                    >
-                        <FaFileImport />
-                        Import
-                    </button>
-                    {/* </Access> */}
-                    <button
-                        onClick={() => setOpenModalExport(true)}
-                        // disabled={exportLoading}
-                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
-                    >
-                        <FaFileExport />
-                        <span>Export</span>
-                    </button>
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold">{showStatistik ? "Statistik Data Santri" : "Data Santri"}</h1>
 
+                <div className="flex flex-wrap items-center gap-2">
+                    {showStatistik ? (
+                        <button
+                            onClick={() => setShowStatistik(false)}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaArrowLeft /> Kembali ke Data
+                        </button>
+                    ) : (
+                        <>
+                            <Access action="tambah">
+                                <button
+                                    onClick={() => setShowFormModal(true)}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                >
+                                    <FaPlus /> Tambah
+                                </button>
+                            </Access>
+
+                            <button
+                                onClick={() => setOpenModalImport(true)}
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileImport /> Import
+                            </button>
+
+                            <button
+                                onClick={() => setOpenModalExport(true)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileExport /> Export
+                            </button>
+                        </>
+                    )}
+
+                    <button
+                        onClick={() => setShowStatistik(!showStatistik)}
+                        className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
+                            } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
+                    >
+                        {showStatistik ? <FaTable /> : <FaChartLine />}
+                        {showStatistik ? "Data" : "Statistik"}
+                    </button>
                 </div>
             </div>
+
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
-                    <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
-                    <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
-                    <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
-                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                </div>
-
-                <SearchBar
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    totalData={totalDataPesertaDidik}
-                    limit={limit}
-                    toggleLimit={(e) => setLimit(Number(e.target.value))}
-                    // totalFiltered={pesertaDidik.length}
-                    toggleFilters={() => setShowFilters(!showFilters)}
-                    toggleView={setViewMode}
-                />
-
-                {error ? (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <strong className="font-bold">Error!</strong>
-                        <span className="block sm:inline"> {error}</span>
-                    </div>
+                {showStatistik ? (
+                    <StatistikChart data={pesertaDidik} loading={loadingPesertaDidik} totalData={totalDataPesertaDidik} />
                 ) : (
-                    viewMode === "list" ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                            {loadingPesertaDidik ? (
-                                <div className="col-span-3 flex justify-center items-center">
-                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                </div>
-                            ) : pesertaDidik.length === 0 ? (
-                                <p className="text-center col-span-3">Tidak ada data</p>
-                            ) : (
-                                pesertaDidik.map((item, index) => <PesertaItem key={index} data={item} title="Peserta Didik" menu={1} />)
-                            )}
+                    <>
+                        <div
+                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                        >
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterNegara}
+                                onChange={handleFilterChangeNegara}
+                                selectedFilters={selectedNegara}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterWilayah}
+                                onChange={handleFilterChangeWilayah}
+                                selectedFilters={selectedWilayah}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterLembaga}
+                                onChange={handleFilterChangeLembaga}
+                                selectedFilters={selectedLembaga}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter4}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter5}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter6}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
                         </div>
-                    ) : (
-                        <DoubleScrollbarTable>
-                            <table className="min-w-full text-sm text-left">
-                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                    <tr>
-                                        <th className="px-3 py-2 border-b w-16">#</th>
-                                        <th className="px-3 py-2 border-b">Nama</th>
-                                        <th className="px-3 py-2 border-b">NIUP</th>
-                                        <th className="px-3 py-2 border-b">NIK / No. Passport</th>
-                                        <th className="px-3 py-2 border-b">Lembaga</th>
-                                        <th className="px-3 py-2 border-b">Wilayah</th>
-                                        <th className="px-3 py-2 border-b">Kota Asal</th>
-                                        <th className="px-3 py-2 border-b">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-gray-800">
-                                    {loadingPesertaDidik ? (
-                                        <tr>
-                                            <td colSpan="9" className="text-center py-6">
-                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                            </td>
-                                        </tr>
-                                    ) : pesertaDidik.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="9" className="text-center py-6">Tidak ada data</td>
-                                        </tr>
-                                    ) : (
-                                        pesertaDidik.map((item, index) => (
-                                            <tr key={item.id_pengajar || index} className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left" onClick={() => openModal(item)}>
-                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                {/* <td className="px-3 py-2 border-b">
-                                                <div className="flex items-start">
-                                                    <img
-                                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTabOgeMNrSqYJ4c2-kMg0I_QreIqbVVfgvWQ&s"
-                                                        alt={item.name}
-                                                        className="h-10 min-w-10 max-w-12 rounded-lg object-cover shadow-sm shrink-0"
-                                                    />
 
-                                                    <div className="ml-4 max-w-xs self-center">
-                                                        <div className="text-sm font-medium text-gray-900 break-words">{item.nama}</div>
-                                                        {/* <div className="text-sm text-gray-500">ID: {item.id}</div>
-                                                    </div>
-                                                </div>
-                                                </td> */}
-                                                <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
-                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
-                                                    </Link>
-                                                    {/* <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaTrash />
-                                                    </button> */}
+                        <SearchBar
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            totalData={totalDataPesertaDidik}
+                            limit={limit}
+                            toggleLimit={(e) => setLimit(Number(e.target.value))}
+                            toggleFilters={() => setShowFilters(!showFilters)}
+                            toggleView={setViewMode}
+                        />
+
+                        {error ? (
+                            <div
+                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                role="alert"
+                            >
+                                <strong className="font-bold">Error!</strong>
+                                <span className="block sm:inline"> {error}</span>
+                            </div>
+                        ) : viewMode === "list" ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                {loadingPesertaDidik ? (
+                                    <div className="col-span-3 flex justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </div>
+                                ) : pesertaDidik.length === 0 ? (
+                                    <p className="text-center col-span-3">Tidak ada data</p>
+                                ) : (
+                                    pesertaDidik.map((item, index) => (
+                                        <PesertaItem key={index} data={item} title="Peserta Didik" menu={1} />
+                                    ))
+                                )}
+                            </div>
+                        ) : (
+                            <DoubleScrollbarTable>
+                                <table className="min-w-full text-sm text-left">
+                                    <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                        <tr>
+                                            <th className="px-3 py-2 border-b w-16">#</th>
+                                            <th className="px-3 py-2 border-b">Nama</th>
+                                            <th className="px-3 py-2 border-b">NIUP</th>
+                                            <th className="px-3 py-2 border-b">NIK / No. Passport</th>
+                                            <th className="px-3 py-2 border-b">Lembaga</th>
+                                            <th className="px-3 py-2 border-b">Wilayah</th>
+                                            <th className="px-3 py-2 border-b">Kota Asal</th>
+                                            <th className="px-3 py-2 border-b">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-gray-800">
+                                        {loadingPesertaDidik ? (
+                                            <tr>
+                                                <td colSpan="9" className="text-center py-6">
+                                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                                 </td>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </DoubleScrollbarTable>
+                                        ) : pesertaDidik.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="9" className="text-center py-6">
+                                                    Tidak ada data
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            pesertaDidik.map((item, index) => (
+                                                <tr
+                                                    key={item.id_pengajar || index}
+                                                    className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                    onClick={() => openModal(item)}
+                                                >
+                                                    <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nik_or_passport || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.wilayah || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
+                                                    <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                        <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation()
+                                                                }}
+                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                            >
+                                                                <FaEdit />
+                                                            </button>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </DoubleScrollbarTable>
+                        )}
 
-                    )
-                )}
-
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pesertadidik" />
-
-                <ModalImport
-                    isOpen={openModalImport}
-                    onClose={() => setOpenModalImport(false)}
-                    onSuccess={handleImportSuccess}
-                    title="Import Data Santri"
-                    endpoint="import/santri"
-                    templateUrl="/template/santri_import_test.xlsx"
-                    templateName="template_santri.xlsx"
-                    instructions={[
-                        "Download template terlebih dahulu",
-                        "Isi data sesuai format template (header di baris 2)",
-                        "Jangan mengubah nama kolom/header",
-                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
-                        "Upload file yang sudah diisi dan klik 'Import Data'",
-                    ]}
-                />
-
-                {isModalOpen && (
-                    <ModalDetail
-                        title="Peserta Didik"
-                        menu={1}
-                        item={selectedItem}
-                        onClose={closeModal}
-                    />
-                )}
-
-                {showFormModal && (
-                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
-
-                )}
-
-                {totalPages > 1 && (
-                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                        {totalPages > 1 && (
+                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                        )}
+                    </>
                 )}
             </div>
-        </div>
-    );
-};
 
-export default PesertaDidik;
+            <ModalExport
+                isOpen={openModalExport}
+                onClose={() => setOpenModalExport(false)}
+                filters={updatedFilters}
+                searchTerm={searchTerm}
+                limit={limit}
+                currentPage={currentPage}
+                fields={fieldsExports}
+                endpoint="export/pesertadidik"
+            />
+
+            <ModalImport
+                isOpen={openModalImport}
+                onClose={() => setOpenModalImport(false)}
+                onSuccess={handleImportSuccess}
+                title="Import Data Santri"
+                endpoint="import/santri"
+                templateUrl="/template/santri_import_test.xlsx"
+                templateName="template_santri.xlsx"
+                instructions={[
+                    "Download template terlebih dahulu",
+                    "Isi data sesuai format template (header di baris 2)",
+                    "Jangan mengubah nama kolom/header",
+                    "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                    "Upload file yang sudah diisi dan klik 'Import Data'",
+                ]}
+            />
+
+            {isModalOpen && <ModalDetail title="Peserta Didik" menu={1} item={selectedItem} onClose={closeModal} />}
+
+            {showFormModal && (
+                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
+            )}
+        </div>
+    )
+}
+
+export default PesertaDidik

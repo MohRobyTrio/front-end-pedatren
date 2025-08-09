@@ -221,46 +221,43 @@ const Pegawai = () => {
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Pegawai</h1>
-                <div className="flex items-center space-x-2">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                {/* Judul */}
+                <h1 className="text-xl md:text-2xl font-bold">Pegawai</h1>
+
+                {/* Semua tombol di satu div */}
+                <div className="flex items-center gap-2">
                     <Access action="tambah">
-                        <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
+                        <button
+                            onClick={() => setShowFormModal(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus />
+                            Tambah
+                        </button>
                     </Access>
-                    {/* <button
-                        onClick={() => downloadFile(`${API_BASE_URL}export/pegawai`, setExportLoading)}
-                        disabled={exportLoading}
-                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
-                    >
-                        {exportLoading ? (
-                            <>
-                                <i className="fas fa-spinner fa-spin text-white"></i>
-                                <span>Loading...</span>
-                            </>
-                        ) : (
-                            <>
-                                <FaFileExport />
-                                <span>Export</span>
-                            </>
-                        )}
-                    </button> */}
+
                     <button
                         onClick={() => setOpenModalImport(true)}
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                     >
                         <FaFileImport />
                         Import
                     </button>
+
                     <button
                         onClick={() => setOpenModalExport(true)}
-                        // disabled={exportLoading}
-                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                        className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                     >
                         <FaFileExport />
-                        <span>Export</span>
+                        Export
                     </button>
                 </div>
             </div>
+
+
+
+
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />

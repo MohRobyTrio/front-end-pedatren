@@ -456,7 +456,7 @@ const JadwalPelajaran = () => {
                                             className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md"
                                         >
                                             <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
-                                            <span className="font-medium">Tambah Jadwal</span>
+                                            <span className="font-medium">Tambah</span>
                                         </button>
 
                                         {/* Refresh Button */}

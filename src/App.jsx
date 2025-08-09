@@ -23,6 +23,7 @@ import { getCookie, removeTokenCookie } from './utils/cookieUtils';
 import Swal from 'sweetalert2';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage';
+import Profile from './content_main_page/Profile';
 
 window.sessionExpiredShown = false;
 
@@ -155,6 +156,7 @@ function App() {
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
 
