@@ -791,6 +791,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                                                     >
                                                         <option value="">Pilih Role</option>
                                                         <option value="superadmin">Super Admin</option>
+                                                        <option value="admin">Admin</option>
                                                         <option value="supervisor">Supervisor</option>
                                                         <option value="staff">Staff</option>
                                                         <option value="santri">Santri</option>
