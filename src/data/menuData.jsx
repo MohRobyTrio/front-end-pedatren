@@ -107,8 +107,8 @@ export const menuKepegawaianItems = [
 ];
 
 export const menuAlumni = [
-    { id: "dataalumni", icon: "fa-user-graduate", text: "Data Alumni", link: "/data-alumni", content: <Alumni /> },
-    { id: "prosesalumni", icon: "fa-user-graduate", text: "Proses Alumni Santri", link: "/proses-alumni", content: <AlumniSantri /> },
+    { id: "dataalumni", icon: "fa-user-graduate", text: "Data Alumni", link: "/alumni/data-alumni", content: <Alumni /> },
+    { id: "prosesalumni", icon: "fa-user-graduate", text: "Proses Alumni Santri", link: "/alumni/proses-alumni", content: <AlumniSantri /> },
 ]
 
 export const menuMahromItems = [
@@ -133,10 +133,9 @@ export const menuRWSItems = [
 // ];
 
 export const menuKewilayahanItems = [
-    { id: "wilayah", icon: "fa-map", text: "Wilayah", link: "/wilayah", content: <Wilayah /> },
-    { id: "blok", icon: "fa-th-large", text: "Blok", link: "/blok", content: <Blok /> },
-    { id: "kamar", icon: "fa-bed", text: "Kamar", link: "/kamar", content: <Kamar /> },
-    
+    { id: "wilayah", icon: "fa-map", text: "Wilayah", link: "/kewilayahan/wilayah", content: <Wilayah /> },
+    { id: "blok", icon: "fa-th-large", text: "Blok", link: "/kewilayahan/blok", content: <Blok /> },
+    { id: "kamar", icon: "fa-bed", text: "Kamar", link: "/kewilayahan/kamar", content: <Kamar /> },
 ];
 
 export const menuAkademikItems =[
