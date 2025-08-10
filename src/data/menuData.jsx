@@ -58,6 +58,8 @@ import TahunAjaran from "../content_main_page/content_menu_akademik/TahunAjaran"
 import Semester from "../content_main_page/content_menu_akademik/Semester";
 import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
 import Users from "../content_main_page/content_menu_manage/Users";
+import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
+import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -68,10 +70,10 @@ export const menuItems = [
 
 export const menuDataPokokItems = [
     { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
+    { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
+    { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
     { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah /> },
-    // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
-    // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
     // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
     // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
@@ -80,9 +82,9 @@ export const menuDataPokokItems = [
 ];
 
 export const menuKewaliasuhanItems = [
-    { id: "groupkewaliasuhan", icon: "fa-book-open", text: "Group Kewaliasuhan", link: "/group-kewaliasuhan", content: <GroupKewaliasuhan /> },
     { id: "waliasuh", icon: "fa-user-shield", text: "Wali Asuh", link: "/wali-asuh", content: <WaliAsuh /> },
     { id: "anakasuh", icon: "fa-users", text: "Anak Asuh", link: "/anak-asuh", content: <AnakAsuh /> },
+    { id: "groupkewaliasuhan", icon: "fa-book-open", text: "Group Kewaliasuhan", link: "/group-kewaliasuhan", content: <GroupKewaliasuhan /> },
     { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh />, access: "kewaliasuhan", },
     { id: "catatanafektif", icon: "fa-hand-holding-heart", text: "Catatan Afektif", link: "/catatan-afektif", content: <CatatanAfektif /> },
     { id: "catatankognitif", icon: "fa-brain", text: "Catatan Kognitif", link: "/catatan-kognitif", content: <CatatanKognitif /> },
