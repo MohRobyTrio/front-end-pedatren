@@ -769,7 +769,7 @@ const LoginPage = () => {
         {/* Footer */}
         <div className="text-center mt-4 sm:mt-6 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
           <p className="text-yellow-100/80 text-xs drop-shadow-md">
-            © 2024 Pusdatren. Sistem Informasi Pesantren Modern
+            © 2025 Pusdatren. Sistem Informasi Pesantren Modern
           </p>
         </div>
       </div>
