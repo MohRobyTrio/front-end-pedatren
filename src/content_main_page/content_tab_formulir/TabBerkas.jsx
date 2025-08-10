@@ -95,6 +95,11 @@ export default function TabBerkas() {
                     text: "Berkas berhasil ditambahkan",
                 });
             }
+
+            window.dispatchEvent(new CustomEvent('biodataUpdated', { 
+                detail: { biodata_id } 
+            }));
+            
             Swal.close();
             setModalOpen(false);
             fetchBerkas();
