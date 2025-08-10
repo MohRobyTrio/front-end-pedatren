@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import { API_BASE_URL } from "../hooks/config";
 import { getCookie } from "../utils/cookieUtils";
 import blankProfile from "../assets/blank_profile.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const Formulir = () => {
     const { biodata_id } = useParams();
@@ -361,6 +363,13 @@ const Formulir = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <button
+                        onClick={() => navigate(-1)}
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors flex items-center gap-2"
+                    >
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                        Kembali
+                    </button>
                                 </div>
                             )}
                         </div>

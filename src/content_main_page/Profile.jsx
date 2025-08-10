@@ -15,6 +15,7 @@ import {
     faEyeSlash,
     faUserCircle,
     faCalendarAlt,
+    faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import { getRolesString } from "../utils/getRolesString"
@@ -259,7 +260,7 @@ const Profile = () => {
                         onClick={() => navigate(-1)}
                         className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors flex items-center gap-2"
                     >
-                        <FontAwesomeIcon icon={faTimes} />
+                        <FontAwesomeIcon icon={faArrowLeft} />
                         Kembali
                     </button>
                 </div>

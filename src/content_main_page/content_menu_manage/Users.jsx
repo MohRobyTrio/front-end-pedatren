@@ -69,8 +69,8 @@ const Users = () => {
                                         <th className="px-3 py-2 border-b">#</th>
                                         <th className="px-3 py-2 border-b">Nama User</th>
                                         <th className="px-3 py-2 border-b">Email</th>
-                                        <th className="px-3 py-2 border-b">Roles</th>
-                                        <th className="px-3 py-2 border-b">Guard Name</th>
+                                        <th className="px-3 py-2 border-b">Role</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -97,9 +97,16 @@ const Users = () => {
                                                 <td className="px-3 py-2 border-b capitalize">
                                                     {item.roles.map((role) => role.name).join(', ')}
                                                 </td>
-                                                <td className="px-3 py-2 border-b capitalize">
-                                                    {item.roles.map((role) => role.guard_name).join(', ')}
-                                                </td>
+                                                <td className="px-3 py-2 border-b w-30">
+                                                <span
+                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                        }`}
+                                                >
+                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
+                                                </span>
+                                            </td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2">
                                                     <div className="flex justify-center items-center space-x-2">
                                                         <button

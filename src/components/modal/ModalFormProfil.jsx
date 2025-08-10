@@ -489,6 +489,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
         password: "",
         confirm_password: "",
         role: "",
+        status: ""
     });
 
     useEffect(() => {
@@ -500,6 +501,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                     password: "",
                     confirm_password: "",
                     role: data.roles[0].name || "",
+                    status: data.status || ""
                 })
             } else {
                 setFormData({
@@ -508,6 +510,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                     password: "",
                     confirm_password: "",
                     role: "",
+                    status: ""
                 });
             }
         }
@@ -569,6 +572,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                 password: formData.password,
                 password_confirmation: formData.confirm_password,
                 role: formData.role,
+                status: formData.status
             };
 
             const isEditing = !!data?.id;
@@ -794,6 +798,35 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                                                         <option value="biktren">Biktren</option>
                                                         <option value="pengasuh">Pengasuh</option>
                                                     </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-gray-700">Status Aktif *</label>
+                                                    <div className="flex space-x-4 mt-1">
+                                                        <label className="inline-flex items-center">
+                                                            <input
+                                                                type="radio"
+                                                                name="status"
+                                                                value="1"
+                                                                checked={formData.status == true}
+                                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                                className="form-radio text-blue-500 focus:ring-blue-500"
+                                                                required
+                                                            />
+                                                            <span className="ml-2 text-gray-700">Ya</span>
+                                                        </label>
+                                                        <label className="inline-flex items-center">
+                                                            <input
+                                                                type="radio"
+                                                                name="status"
+                                                                value="0"
+                                                                checked={formData.status == false}
+                                                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                                className="form-radio text-blue-500 focus:ring-blue-500"
+                                                                required
+                                                            />
+                                                            <span className="ml-2 text-gray-700">Tidak</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
 
