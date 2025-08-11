@@ -60,6 +60,8 @@ import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
 import Users from "../content_main_page/content_menu_manage/Users";
 import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
+import Tahfidz from "../content_main_page/content_menu_data_pokok/Tahfidz";
+import Nadhoman from "../content_main_page/content_menu_data_pokok/Nadhoman";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -74,6 +76,8 @@ export const menuDataPokokItems = [
     { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
     { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah /> },
+    { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <Tahfidz /> },
+    { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <Nadhoman /> },
     // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
     // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
     // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
