@@ -161,30 +161,9 @@ const DetailSetoranTahfidz = ({ setoranTahfidz = [] }) => {
           <h2 className="text-xl font-semibold text-gray-900">Detail Setoran Tahfidz</h2>
           <p className="text-gray-600 mt-1">{setoranTahfidz.length} data setoran</p>
         </div>
-
-        {/* <div className="flex items-center bg-gray-100 rounded-lg p-1">
-          <button
-            onClick={() => setViewMode("table")}
-            className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-colors ${
-              viewMode === "table" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <FaList className="w-4 h-4" />
-            Tabel
-          </button>
-          <button
-            onClick={() => setViewMode("cards")}
-            className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-colors ${
-              viewMode === "cards" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <FaTh className="w-4 h-4" />
-            Kartu
-          </button>
-        </div> */}
       </div>
 
-      {viewMode === "table" ? <TableView /> : <CardView />}
+      <TableView />
     </div>
   )
 }

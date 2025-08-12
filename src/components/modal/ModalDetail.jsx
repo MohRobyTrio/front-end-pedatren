@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 // import blankProfile from "../assets/blank_profile.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
@@ -29,6 +29,8 @@ import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
 import DetailRekapTahfidz from "../../content_modal/detail/DetailRekapTahfidz";
 import DetailSetoranTahfidz from "../../content_modal/detail/DetailSetoranTahfidz";
+import DetailNadhoman from "../../content_modal/detail/DetailNadhoman";
+import DetailRekapNadhoman from "../../content_modal/detail/DetailRekapNadhoman";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
@@ -78,6 +80,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 else if (menu === 23) endpoint = `data-pokok/pengunjung/${item.id}`;
                 else if (menu === 24) endpoint = `tahfidz/${item.santri_id}`;
+                else if (menu === 25) endpoint = `nadhoman/${item.santri_id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
                 const token = sessionStorage.getItem("token") || getCookie("token");
@@ -254,6 +257,16 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 id: "rekap_tahfidz",
                 label: "Rekap Tahfidz",
                 content: <DetailRekapTahfidz rekapTahfidz={data?.rekap_tahfidz} />
+            },
+            data?.nadhoman && Object.keys(data?.nadhoman).length > 0 && {
+                id: "nadhoman",
+                label: "Nadhoman",
+                content: <DetailNadhoman nadhoman={data?.nadhoman} />
+            },
+            data?.rekap_nadhoman && Object.keys(data?.rekap_nadhoman).length > 0 && {
+                id: "rekap_nadhoman",
+                label: "Rekap Nadhoman",
+                content: <DetailRekapNadhoman rekapNadhoman={data?.rekap_nadhoman} />
             },
             data?.error && {
                 id: "error",

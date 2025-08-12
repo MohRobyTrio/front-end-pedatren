@@ -1,135 +1,123 @@
-"use client"
+import { useState, useEffect, useRef, useCallback } from "react";
+import { API_BASE_URL } from "../config";
+import { getCookie } from "../../utils/cookieUtils";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../Logout";
+import Swal from "sweetalert2";
 
-import { useState, useEffect, useCallback } from "react"
+const useFetchNadhoman = (filters) => {
+  const { clearAuthData } = useLogout();
+  const navigate = useNavigate();
 
-const useFetchNadhoman = (filters = {}) => {
-  const [nadhomanData, setNadhomanData] = useState([])
-  const [loadingNadhoman, setLoadingNadhoman] = useState(false)
-  const [error, setError] = useState(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [limit, setLimit] = useState(10)
-  const [totalDataNadhoman, setTotalDataNadhoman] = useState(0)
-  const [totalPages, setTotalPages] = useState(1)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [dataNadhoman, setDataNadhoman] = useState([]);
+  const [loadingNadhoman, setLoadingNadhoman] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock data untuk demo
-  const mockNadhomanData = [
-    {
-      id: 1,
-      tanggal: "2024-08-11",
-      nama_siswa: "Ari Surahman",
-      nis: "097556282828838",
-      kelas: "2 ULA",
-      unit: "PONDOKPA",
-      kitab: "Amsilati",
-      hafalan_baru: "5",
-      keterangan: "Bab 1 halaman 10-15",
-    },
-    {
-      id: 2,
-      tanggal: "2024-08-10",
-      nama_siswa: "Erwanto E. Yusuf",
-      nis: "1717",
-      kelas: "2 ULA",
-      unit: "PONDOKPA",
-      kitab: "Jurumiyah Jawan",
-      hafalan_baru: "3",
-      keterangan: "Bab 2 halaman 20-25",
-    },
-    {
-      id: 3,
-      tanggal: "2024-08-09",
-      nama_siswa: "Udin",
-      nis: "34534543",
-      kelas: "2 ULA",
-      unit: "PONDOKPA",
-      kitab: "Imrithi",
-      hafalan_baru: "7",
-      keterangan: "Bab 3 halaman 30-40",
-    },
-    {
-      id: 4,
-      tanggal: "2024-08-08",
-      nama_siswa: "Syamsuri",
-      nis: "123456",
-      kelas: "KELAS 1",
-      unit: "PONDOKPA",
-      kitab: "Alfiyah Ibnu Malik Awwal",
-      hafalan_baru: "4",
-      keterangan: "Bab 1 halaman 5-10",
-    },
-  ]
+  const [limit, setLimit] = useState(25);
+  const [totalData, setTotalData] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
-  const fetchData = useCallback(async () => {
-    setLoadingNadhoman(true)
-    setError(null)
+  const lastRequest = useRef("");
+  const token = sessionStorage.getItem("token") || getCookie("token");
 
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+  // Debounce untuk searchTerm
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
-      // Filter data based on search term and filters
-      let filteredData = mockNadhomanData
+  const fetchData = useCallback(
+    async (force = false) => {
+      let url = `${API_BASE_URL}nadhoman?limit=${limit}`;
 
-      if (searchTerm) {
-        filteredData = filteredData.filter(
-          (item) =>
-            item.nama_siswa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.nis.includes(searchTerm) ||
-            item.kitab.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
+      if (currentPage > 1) url += `&page=${currentPage}`;
+      if (debouncedSearchTerm)
+        url += `&nama_santri=${encodeURIComponent(debouncedSearchTerm)}`;
+
+      // Contoh filter tambahan jika ada, sesuaikan dengan API
+      if (filters?.nama_kitab)
+        url += `&nama_kitab=${encodeURIComponent(filters.nama_kitab)}`;
+
+      if (!force && lastRequest.current === url) {
+        console.log("Skip Fetch: URL sama dengan request sebelumnya");
+        return;
       }
 
-      // Apply other filters
-      if (filters.jenisKelamin) {
-        // Mock filter implementation
-      }
-      if (filters.status) {
-        // Mock filter implementation
-      }
-      if (filters.kitab) {
-        filteredData = filteredData.filter((item) => item.kitab.toLowerCase().includes(filters.kitab.toLowerCase()))
-      }
+      lastRequest.current = url;
+      console.log("Fetching data dari:", url);
 
-      // Pagination
-      const startIndex = (currentPage - 1) * limit
-      const endIndex = startIndex + limit
-      const paginatedData = filteredData.slice(startIndex, endIndex)
+      setLoadingNadhoman(true);
+      setError(null);
 
-      setNadhomanData(paginatedData)
-      setTotalDataNadhoman(filteredData.length)
-      setTotalPages(Math.ceil(filteredData.length / limit))
-    } catch (err) {
-      setError("Gagal memuat data nadhoman")
-      console.error("Error fetching nadhoman data:", err)
-    } finally {
-      setLoadingNadhoman(false)
-    }
-  }, [searchTerm, filters, currentPage, limit])
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401 && !window.sessionExpiredShown) {
+          window.sessionExpiredShown = true;
+          await Swal.fire({
+            title: "Sesi Berakhir",
+            text: "Sesi anda telah berakhir, silakan login kembali.",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          clearAuthData();
+          navigate("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log("Data dari API Nadhoman:", data);
+
+        setDataNadhoman(Array.isArray(data.data) ? data.data : []);
+        setTotalData(data.total_data || 0);
+        setTotalPages(data.total_pages || 1);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message);
+        setDataNadhoman([]);
+      } finally {
+        setLoadingNadhoman(false);
+      }
+    },
+    [currentPage, filters, limit, debouncedSearchTerm, token, clearAuthData, navigate]
+  );
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData();
+  }, [fetchData]);
 
-  // Reset to first page when search term or filters change
+  // Reset ke halaman 1 kalau limit berubah
   useEffect(() => {
-    setCurrentPage(1)
-  }, [searchTerm, filters])
+    setCurrentPage(1);
+  }, [limit]);
 
   return {
-    nadhomanData,
+    dataNadhoman,
     loadingNadhoman,
     error,
-    searchTerm,
-    setSearchTerm,
     limit,
     setLimit,
-    totalDataNadhoman,
+    totalData,
     totalPages,
     currentPage,
     setCurrentPage,
+    searchTerm,
+    setSearchTerm,
     fetchData,
-  }
-}
+  };
+};
 
-export default useFetchNadhoman
+export default useFetchNadhoman;

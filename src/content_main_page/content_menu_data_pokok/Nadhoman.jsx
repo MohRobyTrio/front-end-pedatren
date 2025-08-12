@@ -22,6 +22,7 @@ import NadhomanForm from "../../components/NadhomanForm"
 import useFetchNadhoman from "../../hooks/hooks_menu_data_pokok/Nadhoman"
 import NadhomanItem from "../../components/NadhomanItem"
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
+import { data } from "react-router-dom"
 
 export const Nadhoman = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -820,17 +821,17 @@ export const NadhomanAllData = () => {
     )
 
     const {
-        nadhomanData,
+        dataNadhoman,
         loadingNadhoman,
-        searchTerm,
-        setSearchTerm,
         error,
         limit,
         setLimit,
-        totalDataNadhoman,
+        totalData,
         totalPages,
         currentPage,
         setCurrentPage,
+        searchTerm,
+        setSearchTerm,
         fetchData,
     } = useFetchNadhoman(updatedFilters)
     const [showFilters, setShowFilters] = useState(false)
@@ -898,7 +899,7 @@ export const NadhomanAllData = () => {
         ],
     }
 
-    const filter6 = {}
+    // const filter6 = {}
 
     const fieldsExports = [
         { label: "NIS", value: "nis" },
@@ -916,57 +917,6 @@ export const NadhomanAllData = () => {
 
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormNadhoman(() => setShowFormModal(false), fetchData)
-
-    const mockNadhomanData = [
-        {
-            id: 1,
-            tanggal: "2024-08-11",
-            nama_siswa: "Ari Surahman",
-            nis: "097556282828838",
-            kelas: "2 ULA",
-            tahun_ajaran: "2024/2025",
-            ustadz: "Ustadz Ahmad",
-            jenis_setoran: "baru",
-            kitab: "Amsilati",
-            ayat_mulai: 1,
-            ayat_selesai: 5,
-            nilai: "lancar",
-            catatan: "Hafalan lancar dan baik",
-            status: "on progress",
-        },
-        {
-            id: 2,
-            tanggal: "2024-08-10",
-            nama_siswa: "Erwanto E. Yusuf",
-            nis: "1717",
-            kelas: "2 ULA",
-            tahun_ajaran: "2024/2025",
-            ustadz: "Ustadz Mahmud",
-            jenis_setoran: "murojaah",
-            kitab: "Jurumiyah",
-            ayat_mulai: 10,
-            ayat_selesai: 15,
-            nilai: "cukup",
-            catatan: "Perlu lebih banyak latihan",
-            status: "tuntas",
-        },
-        {
-            id: 3,
-            tanggal: "2024-08-09",
-            nama_siswa: "Udin",
-            nis: "34534543",
-            kelas: "2 ULA",
-            tahun_ajaran: "2024/2025",
-            ustadz: "Ustadz Yusuf",
-            jenis_setoran: "baru",
-            kitab: "Imrithi",
-            ayat_mulai: 1,
-            ayat_selesai: 3,
-            nilai: "kurang",
-            catatan: "Masih perlu bimbingan intensif",
-            status: "on progress",
-        },
-    ]
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
@@ -992,7 +942,7 @@ export const NadhomanAllData = () => {
                                 <FaPlus /> Tambah
                             </button>
 
-                            <button
+                            {/* <button
                                 onClick={() => setOpenModalImport(true)}
                                 className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                             >
@@ -1004,7 +954,7 @@ export const NadhomanAllData = () => {
                                 className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                             >
                                 <FaFileExport /> Export
-                            </button>
+                            </button> */}
                         </>
                     )}
 
@@ -1021,7 +971,7 @@ export const NadhomanAllData = () => {
 
             <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
                 {showStatistik ? (
-                    <StatistikChart data={nadhomanData} loading={loadingNadhoman} totalData={totalDataNadhoman} />
+                    <StatistikChart data={dataNadhoman} loading={loadingNadhoman} totalData={totalData} />
                 ) : (
                     <div>
                         {error ? (
@@ -1038,10 +988,10 @@ export const NadhomanAllData = () => {
                                     <div className="col-span-3 flex justify-center items-center">
                                         <OrbitProgress variant="disc" color="#d97706" size="small" text="" textColor="" />
                                     </div>
-                                ) : mockNadhomanData.length === 0 ? (
+                                ) : dataNadhoman.length === 0 ? (
                                     <p className="text-center col-span-3">Tidak ada data</p>
                                 ) : (
-                                    mockNadhomanData.map((item, index) => (
+                                    dataNadhoman.map((item, index) => (
                                         <NadhomanItem key={index} data={item} title="Data Nadhoman" menu={1} />
                                     ))
                                 )}
@@ -1092,7 +1042,7 @@ export const NadhomanAllData = () => {
                                 <SearchBar
                                     searchTerm={searchTerm}
                                     setSearchTerm={setSearchTerm}
-                                    totalData={totalDataNadhoman}
+                                    totalData={totalData}
                                     limit={limit}
                                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                                     toggleFilters={() => setShowFilters(!showFilters)}
@@ -1107,48 +1057,49 @@ export const NadhomanAllData = () => {
                                                 <th className="px-3 py-2 border-b">Nama Siswa</th>
                                                 <th className="px-3 py-2 border-b">NIS</th>
                                                 <th className="px-3 py-2 border-b">Kitab</th>
-                                                <th className="px-3 py-2 border-b">Nilai</th>
+                                                <th className="px-3 py-2 border-b">Total Bait</th>
                                                 <th className="px-3 py-2 border-b">Progress (%)</th>
-                                                <th className="px-3 py-2 border-b text-center w-24">Aksi</th>
+                                                {/* <th className="px-3 py-2 border-b text-center w-24">Aksi</th> */}
                                             </tr>
                                         </thead>
                                         <tbody className="text-gray-800">
                                             {loadingNadhoman ? (
                                                 <tr>
                                                     <td colSpan="14" className="text-center py-6">
-                                                        <OrbitProgress variant="disc" color="#d97706" size="small" text="" textColor="" />
+                                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                                     </td>
                                                 </tr>
-                                            ) : mockNadhomanData.length === 0 ? (
+                                            ) : dataNadhoman.length === 0 ? (
                                                 <tr>
                                                     <td colSpan="14" className="text-center py-6">
                                                         Tidak ada data
                                                     </td>
                                                 </tr>
                                             ) : (
-                                                mockNadhomanData.map((item, index) => (
+                                                dataNadhoman.map((item, index) => (
                                                     <tr
                                                         key={item.id || index}
                                                         className="hover:bg-gray-50 whitespace-nowrap cursor-pointer"
                                                         onClick={() => openModal(item)}
                                                     >
                                                         <td className="px-3 py-2 border-b text-center">{(currentPage - 1) * limit + index + 1}</td>
-                                                        <td className="px-3 py-2 border-b font-medium">{item.nama_siswa || "-"}</td>
+                                                        <td className="px-3 py-2 border-b font-medium">{item.nama_santri || "-"}</td>
                                                         <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
-                                                        <td className="px-3 py-2 border-b">{item.kitab || "-"}</td>
-                                                        <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td>
+                                                        <td className="px-3 py-2 border-b">{item.nama_kitab || "-"}</td>
+                                                        <td className="px-3 py-2 border-b">{item.total_bait || "-"}</td>
+                                                        {/* <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td> */}
                                                         <td className="px-3 py-2 border-b">
-                                                                    <div className="flex items-center">
-                                                                        <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
-                                                                            <div
-                                                                                className="bg-green-600 h-2 rounded-full"
-                                                                                style={{ width: `${Math.floor(Math.random() * 100)}%` }}
-                                                                            ></div>
-                                                                        </div>
-                                                                        <span className="text-xs text-gray-600">{Math.floor(Math.random() * 100)}%</span>
-                                                                    </div>
-                                                                </td>
-                                                        <td className="px-3 py-2 border-b text-center">
+                                                            <div className="flex items-center">
+                                                                <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                                                    <div
+                                                                        className="bg-green-600 h-2 rounded-full"
+                                                                        style={{ width: `${item.persentase_selesai}%` }}
+                                                                    ></div>
+                                                                </div>
+                                                                <span className="text-gray-600">{item.persentase_selesai}%</span>
+                                                            </div>
+                                                        </td>
+                                                        {/* <td className="px-3 py-2 border-b text-center">
                                                             <div className="flex items-center justify-center space-x-1">
                                                                 <button
                                                                     onClick={(e) => {
@@ -1169,7 +1120,7 @@ export const NadhomanAllData = () => {
                                                                     <FaTrash />
                                                                 </button>
                                                             </div>
-                                                        </td>
+                                                        </td> */}
                                                     </tr>
                                                 ))
                                             )}
@@ -1180,9 +1131,7 @@ export const NadhomanAllData = () => {
                                 <Pagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                    totalData={totalDataNadhoman}
-                                    limit={limit}
+                                    handlePageChange={handlePageChange}
                                 />
                             </>
                         )}
@@ -1218,11 +1167,11 @@ export const NadhomanAllData = () => {
                 ]}
             />
 
-            {isModalOpen && <ModalDetail title="Data Nadhoman" menu={1} item={selectedItem} onClose={closeModal} />}
+            {isModalOpen && <ModalDetail title="Data Nadhoman" menu={25} item={selectedItem} onClose={closeModal} />}
 
-            {showFormModal && (
+            {/* {showFormModal && (
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
-            )}
+            )} */}
         </div>
     )
 }

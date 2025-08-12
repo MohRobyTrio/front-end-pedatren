@@ -19,14 +19,6 @@ const DetailRekapTahfidz = ({ rekapTahfidz }) => {
         return "text-red-600"
     }
 
-    const getStatusBadge = (percent) => {
-        if (percent >= 80) return { text: "Sangat Baik", color: "bg-green-100 text-green-800" }
-        if (percent >= 60) return { text: "Baik", color: "bg-blue-100 text-blue-800" }
-        if (percent >= 40) return { text: "Cukup", color: "bg-yellow-100 text-yellow-800" }
-        return { text: "Perlu Perbaikan", color: "bg-red-100 text-red-800" }
-    }
-
-    const status = getStatusBadge(percentage)
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
