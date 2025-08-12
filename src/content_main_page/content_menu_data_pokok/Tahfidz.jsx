@@ -13,10 +13,7 @@ import ModalDetail from "../../components/modal/ModalDetail"
 import {
     FaChartLine,
     FaEdit,
-    FaFileExport,
-    FaFileImport,
     FaPlus,
-    FaArrowLeft,
     FaBook,
     FaQuran,
 } from "react-icons/fa"
@@ -30,6 +27,7 @@ import StatistikChart from "../../components/StatistikChart"
 import TahfidzForm from "../../components/TahfidzForm"
 import useFetchTahfidz from "../../hooks/hooks_menu_data_pokok/Tahfidz"
 import TahfidzItem from "../../components/TahfidzItem"
+import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
 
 const Tahfidz = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -37,9 +35,23 @@ const Tahfidz = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showStatistik, setShowStatistik] = useState(false)
-    const [activeTab, setActiveTab] = useState("laporan")
+    const [activeTab, setActiveTab] = useState("tambah")
     const [selectedStudent, setSelectedStudent] = useState(null)
     const [showStudentModal, setShowStudentModal] = useState(false)
+
+    const { allTahunAjaran } = useFetchTahunAjaran();
+
+    const [selectedYear, setSelectedYear] = useState("");
+
+    // Auto pilih yang statusnya true saat pertama render
+    useEffect(() => {
+        if (allTahunAjaran.length > 0 && !selectedYear) {
+            const aktif = allTahunAjaran.find((tahun) => tahun.status == true);
+            if (aktif) {
+                setSelectedYear(aktif.id);
+            }
+        }
+    }, [allTahunAjaran, selectedYear]);
 
     const openModal = (item) => {
         setSelectedItem(item)
@@ -209,7 +221,7 @@ const Tahfidz = () => {
 
     const fieldsExports = [
         { label: "NIS", value: "nis" },
-        { label: "Nama Siswa", value: "nama_siswa" },
+        { label: "Nama Santri", value: "nama_santri" },
         { label: "Kelas", value: "kelas" },
         { label: "Tingkat Hafalan", value: "tingkat_hafalan" },
         { label: "Target Hafalan", value: "target_hafalan" },
@@ -241,419 +253,11 @@ const Tahfidz = () => {
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-                    {/* <FaQuran className="text-green-600" /> */}
-                    {showStatistik ? "Statistik Data Tahfidz" : "Data Tahfidz Siswa"}
-                </h1>
-
-                <div className="flex flex-wrap items-center gap-2">
-                    {showStatistik ? (
-                        <button
-                            onClick={() => setShowStatistik(false)}
-                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                        >
-                            <FaArrowLeft /> Kembali ke Data
-                        </button>
-                    ) : (
-                        <>
-                            {activeTab === "laporan" && (
-                                <>
-                                    {/* <Access action="tambah">
-                                        <button
-                                            onClick={() => setShowFormModal(true)}
-                                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                                        >
-                                            <FaPlus /> Tambah Hafalan
-                                        </button>
-                                    </Access> */}
-
-                                    <button
-                                        onClick={() => setOpenModalImport(true)}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                                    >
-                                        <FaFileImport /> Import
-                                    </button>
-
-                                    <button
-                                        onClick={() => setOpenModalExport(true)}
-                                        className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                                    >
-                                        <FaFileExport /> Export
-                                    </button>
-                                </>
-                            )}
-                        </>
-                    )}
-
-                    {/* <button
-                        onClick={() => setShowStatistik(!showStatistik)}
-                        className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
-                            } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
-                    >
-                        {showStatistik ? <FaTable /> : <FaChartLine />}
-                        {showStatistik ? "Data" : "Statistik"}
-                    </button> */}
-                </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                {showStatistik ? (
-                    <StatistikChart data={tahfidzData} loading={loadingTahfidz} totalData={totalDataTahfidz} />
-                ) : (
-                    <>
-                        {/* Filter Section - Only show on laporan tab */}
-
-
-                        {/* Tab Navigation */}
-                        <div className="border-b border-gray-200 mb-6">
-                            <nav className="-mb-px flex space-x-8">
-                                <button
-                                    onClick={() => setActiveTab("laporan")}
-                                    className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "laporan"
-                                        ? "border-green-500 text-green-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
-                                >
-                                    <FaBook className="inline mr-2" />
-                                    Laporan Tahfidz
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("rekap")}
-                                    className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "rekap"
-                                        ? "border-green-500 text-green-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
-                                >
-                                    <FaChartLine className="inline mr-2" />
-                                    Rekap Laporan
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("tambah")}
-                                    className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "tambah"
-                                        ? "border-green-500 text-green-600"
-                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                        }`}
-                                >
-                                    <FaPlus className="inline mr-2" />
-                                    Tambah Hafalan
-                                </button>
-                            </nav>
-                        </div>
-
-                        {/* Tab Content */}
-                        {activeTab === "laporan" && (
-                            <div>
-                                {error ? (
-                                    <div
-                                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-                                        role="alert"
-                                    >
-                                        <strong className="font-bold">Error!</strong>
-                                        <span className="block sm:inline"> {error}</span>
-                                    </div>
-                                ) : viewMode === "list" ? (
-                                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                                        {loadingTahfidz ? (
-                                            <div className="col-span-3 flex justify-center items-center">
-                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                            </div>
-                                        ) : tahfidzData.length === 0 ? (
-                                            <p className="text-center col-span-3">Tidak ada data</p>
-                                        ) : (
-                                            tahfidzData.map((item, index) => (
-                                                <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
-                                            ))
-                                        )}
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div
-                                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
-                                        >
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filterNegara}
-                                                onChange={handleFilterChangeNegara}
-                                                selectedFilters={selectedNegara}
-                                            />
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filterWilayah}
-                                                onChange={handleFilterChangeWilayah}
-                                                selectedFilters={selectedWilayah}
-                                            />
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filterLembaga}
-                                                onChange={handleFilterChangeLembaga}
-                                                selectedFilters={selectedLembaga}
-                                            />
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filter4}
-                                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                                selectedFilters={filters}
-                                            />
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filter5}
-                                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                                selectedFilters={filters}
-                                            />
-                                            <Filters
-                                                showFilters={showFilters}
-                                                filterOptions={filter6}
-                                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                                selectedFilters={filters}
-                                            />
-                                        </div>
-
-                                        <SearchBar
-                                            searchTerm={searchTerm}
-                                            setSearchTerm={setSearchTerm}
-                                            totalData={totalDataTahfidz}
-                                            limit={limit}
-                                            toggleLimit={(e) => setLimit(Number(e.target.value))}
-                                            toggleFilters={() => setShowFilters(!showFilters)}
-                                            toggleView={setViewMode}
-                                        />
-                                        <DoubleScrollbarTable>
-                                            <table className="min-w-full text-sm text-left">
-                                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                                    <tr>
-                                                        <th className="px-3 py-2 border-b w-16">#</th>
-                                                        <th className="px-3 py-2 border-b">Tanggal</th>
-                                                        <th className="px-3 py-2 border-b">Nama Siswa</th>
-                                                        <th className="px-3 py-2 border-b">NIS</th>
-                                                        <th className="px-3 py-2 border-b">Kelas</th>
-                                                        <th className="px-3 py-2 border-b">Hafalan Baru</th>
-                                                        <th className="px-3 py-2 border-b">Keterangan</th>
-                                                        <th className="px-3 py-2 border-b">Murojaah</th>
-                                                        <th className="px-3 py-2 border-b">Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="text-gray-800">
-                                                    {loadingTahfidz ? (
-                                                        <tr>
-                                                            <td colSpan="9" className="text-center py-6">
-                                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                                            </td>
-                                                        </tr>
-                                                    ) : tahfidzData.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan="9" className="text-center py-6">
-                                                                Tidak ada data
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        tahfidzData.map((item, index) => (
-                                                            <tr
-                                                                key={item.id || index}
-                                                                className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
-                                                                onClick={() => openModal(item)}
-                                                            >
-                                                                <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.nama_siswa || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.hafalan_baru || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.murojaah || "-"}</td>
-                                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation()
-                                                                            // Handle edit
-                                                                        }}
-                                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                                    >
-                                                                        <FaEdit />
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </DoubleScrollbarTable>
-                                    </>
-                                )}
-                            </div>
-                        )}
-
-                        {activeTab === "rekap" && (
-                            <div>
-                                <DoubleScrollbarTable>
-                                    <table className="min-w-full text-sm text-left">
-                                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                            <tr>
-                                                <th className="px-3 py-2 border-b w-16">#</th>
-                                                <th className="px-3 py-2 border-b">NIS</th>
-                                                <th className="px-3 py-2 border-b">Nama Siswa</th>
-                                                <th className="px-3 py-2 border-b">Unit</th>
-                                                <th className="px-3 py-2 border-b">Kelas</th>
-                                                <th className="px-3 py-2 border-b">Total Hafalan</th>
-                                                <th className="px-3 py-2 border-b">Progress (%)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-gray-800">
-                                            {loadingTahfidz ? (
-                                                <tr>
-                                                    <td colSpan="7" className="text-center py-6">
-                                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                mockStudents.map((student, index) => (
-                                                    <tr key={student.nis} className="hover:bg-gray-50">
-                                                        <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                        <td className="px-3 py-2 border-b">{student.nis}</td>
-                                                        <td className="px-3 py-2 border-b">{student.nama}</td>
-                                                        <td className="px-3 py-2 border-b">{student.unit}</td>
-                                                        <td className="px-3 py-2 border-b">{student.kelas}</td>
-                                                        <td className="px-3 py-2 border-b">
-                                                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                                                                {Math.floor(Math.random() * 30) + 1} Juz
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-3 py-2 border-b">
-                                                            <div className="flex items-center">
-                                                                <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
-                                                                    <div
-                                                                        className="bg-green-600 h-2 rounded-full"
-                                                                        style={{ width: `${Math.floor(Math.random() * 100)}%` }}
-                                                                    ></div>
-                                                                </div>
-                                                                <span className="text-xs text-gray-600">{Math.floor(Math.random() * 100)}%</span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </DoubleScrollbarTable>
-                            </div>
-                        )}
-
-                        {activeTab === "tambah" && (
-                            <div className="bg-gray-50 rounded-lg p-6">
-                                {!selectedStudent ? (
-                                    <div className="text-center py-8">
-                                        <FaQuran className="mx-auto text-6xl text-gray-300 mb-4" />
-                                        <h3 className="text-lg font-medium text-gray-600 mb-2">Pilih Siswa Terlebih Dahulu</h3>
-                                        <p className="text-gray-500 mb-4">Silakan pilih siswa untuk menambahkan data tahfidz</p>
-                                        <button
-                                            onClick={() => setShowStudentModal(true)}
-                                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
-                                        >
-                                            Pilih Siswa
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 mb-6 shadow-sm">
-                                            <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
-                                                <div className="w-2 h-6 bg-green-500 rounded-full"></div>
-                                                Informasi Siswa Terpilih
-                                            </h3>
-
-                                            <div className="flex flex-col lg:flex-row gap-6">
-                                                <div className="flex-shrink-0 flex justify-center lg:justify-start">
-                                                    <div className="relative">
-                                                        <img
-                                                            src="src\assets\blank_profile.png"
-                                                            alt={`Foto ${selectedStudent.nama}`}
-                                                            className="w-24 h-30 md:w-38 md:h-46 rounded-xl object-cover border-3 border-white shadow-lg"
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex-1">
-                                                    <div className="bg-white rounded-lg p-4 shadow-sm border border-green-100">
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <div className="space-y-3">
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                                                                        NIS
-                                                                    </span>
-                                                                    <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis}</span>
-                                                                </div>
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                                                                        Nama Lengkap
-                                                                    </span>
-                                                                    <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="space-y-3">
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                                                                        Unit Sekolah
-                                                                    </span>
-                                                                    <span className="text-lg font-semibold text-gray-800">{selectedStudent.unit}</span>
-                                                                </div>
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                                                                        Kelas
-                                                                    </span>
-                                                                    <span className="text-lg font-semibold text-gray-800">{selectedStudent.kelas}</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="mt-2 pt-2 border-t border-green-100">
-                                                            <div className="flex flex-wrap items-center gap-2 justify-between">
-                                                                {/* Badge status & tahun ajaran */}
-                                                                <div className="flex flex-wrap items-center gap-2">
-                                                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                                        <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                                                                        Aktif
-                                                                    </span>
-                                                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                                        Tahun Ajaran 2024/2025
-                                                                    </span>
-                                                                </div>
-
-                                                                {/* Tombol di kanan */}
-                                                                <button
-                                                                    onClick={() => setShowStudentModal(true)}
-                                                                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
-                                                                >
-                                                                    <FaEdit className="w-3 h-3" />
-                                                                    Ganti Siswa
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <TahfidzForm student={selectedStudent} onSuccess={fetchData} />
-                                    </>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Pagination - Only show on laporan tab */}
-                        {totalPages > 1 && activeTab === "laporan" && (
-                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
-                        )}
-                    </>
-                )}
-            </div>
-
-            {/* Student Selection Modal */}
             {showStudentModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">Pilih Data Siswa</h3>
+                            <h3 className="text-lg font-semibold">Pilih Data Santri</h3>
                             <button onClick={() => setShowStudentModal(false)} className="text-gray-500 hover:text-gray-700">
                                 ×
                             </button>
@@ -694,6 +298,376 @@ const Tahfidz = () => {
                     </div>
                 </div>
             )}
+
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+                {showStatistik ? (
+                    <StatistikChart data={tahfidzData} loading={loadingTahfidz} totalData={totalDataTahfidz} />
+                ) : (
+
+                    <>
+                        {/* Filter Section - Only show on laporan tab */}
+
+                        {!selectedStudent ? (
+                            <div className="text-center py-8">
+                                <FaQuran className="mx-auto text-6xl text-gray-300 mb-4" />
+                                <h3 className="text-lg font-medium text-gray-600 mb-2">Pilih Tahun Ajaran & Santri</h3>
+                                <p className="text-gray-500 mb-4">Silakan pilih tahun ajaran lalu pilih santri untuk menambahkan data tahfidz</p>
+
+                                {/* Pilih Tahun Ajaran */}
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    className="border border-gray-300 rounded px-4 py-2 m-4"
+                                >
+                                    {allTahunAjaran.map((tahun) => (
+                                        <option key={tahun.id} value={tahun.id}>
+                                            {tahun.tahun_ajaran}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {/* Pilih Santri */}
+                                <button
+                                    onClick={() => setShowStudentModal(true)}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
+                                >
+                                    Pilih Santri
+                                </button>
+                            </div>
+
+                        ) : (
+                            <>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-xl font-bold text-green-800 flex items-center gap-2">
+                                            <div className="w-2 h-6 bg-green-500 rounded-full"></div>
+                                            Informasi Santri Terpilih
+                                        </h3>
+                                        <button
+                                            onClick={() => setSelectedStudent(null)}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                                        >
+                                            <FaEdit className="w-3 h-3" />
+                                            Ganti Santri
+                                        </button>
+                                    </div>
+
+
+                                    <div className="flex flex-col lg:flex-row gap-6">
+                                        <div className="flex-shrink-0 flex justify-center lg:justify-start">
+                                            <div className="relative">
+                                                <img
+                                                    src="src\assets\blank_profile.png"
+                                                    alt={`Foto ${selectedStudent.nama}`}
+                                                    className="w-24 h-30 md:w-38 md:h-46 rounded-xl object-cover border-3 border-white shadow-lg"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <div className="bg-white rounded-lg p-4 shadow-sm border border-green-100">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                                                                NIS
+                                                            </span>
+                                                            <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis}</span>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                                                                Nama Lengkap
+                                                            </span>
+                                                            <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                                                                Unit Sekolah
+                                                            </span>
+                                                            <span className="text-lg font-semibold text-gray-800">{selectedStudent.unit}</span>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                                                                Kelas
+                                                            </span>
+                                                            <span className="text-lg font-semibold text-gray-800">{selectedStudent.kelas}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-2 pt-2 border-t border-green-100">
+                                                    <div className="flex flex-wrap items-center gap-2 justify-between">
+                                                        {/* Badge status & tahun ajaran */}
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                                                                Aktif
+                                                            </span>
+                                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                                Tahun Ajaran 2024/2025
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Tombol di kanan */}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {/* Tab Navigation */}
+                                <div className="border-b border-gray-200 mb-6 mt-4">
+                                    <nav className="-mb-px flex space-x-8">
+                                        <button
+                                            onClick={() => setActiveTab("tambah")}
+                                            className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "tambah"
+                                                ? "border-green-500 text-green-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                                }`}
+                                        >
+                                            <FaPlus className="inline mr-2" />
+                                            Tambah Hafalan
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab("laporan")}
+                                            className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "laporan"
+                                                ? "border-green-500 text-green-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                                }`}
+                                        >
+                                            <FaBook className="inline mr-2" />
+                                            Laporan Tahfidz
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab("rekap")}
+                                            className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "rekap"
+                                                ? "border-green-500 text-green-600"
+                                                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                                }`}
+                                        >
+                                            <FaChartLine className="inline mr-2" />
+                                            Rekap Laporan
+                                        </button>
+                                    </nav>
+                                </div>
+
+                                {/* Tab Content */}
+                                {activeTab === "laporan" && (
+                                    <div>
+                                        {error ? (
+                                            <div
+                                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                                role="alert"
+                                            >
+                                                <strong className="font-bold">Error!</strong>
+                                                <span className="block sm:inline"> {error}</span>
+                                            </div>
+                                        ) : viewMode === "list" ? (
+                                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                                {loadingTahfidz ? (
+                                                    <div className="col-span-3 flex justify-center items-center">
+                                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                    </div>
+                                                ) : tahfidzData.length === 0 ? (
+                                                    <p className="text-center col-span-3">Tidak ada data</p>
+                                                ) : (
+                                                    tahfidzData.map((item, index) => (
+                                                        <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
+                                                    ))
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div
+                                                    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                                                >
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filterNegara}
+                                                        onChange={handleFilterChangeNegara}
+                                                        selectedFilters={selectedNegara}
+                                                    />
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filterWilayah}
+                                                        onChange={handleFilterChangeWilayah}
+                                                        selectedFilters={selectedWilayah}
+                                                    />
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filterLembaga}
+                                                        onChange={handleFilterChangeLembaga}
+                                                        selectedFilters={selectedLembaga}
+                                                    />
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filter4}
+                                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                                        selectedFilters={filters}
+                                                    />
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filter5}
+                                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                                        selectedFilters={filters}
+                                                    />
+                                                    <Filters
+                                                        showFilters={showFilters}
+                                                        filterOptions={filter6}
+                                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                                        selectedFilters={filters}
+                                                    />
+                                                </div>
+
+                                                <SearchBar
+                                                    searchTerm={searchTerm}
+                                                    setSearchTerm={setSearchTerm}
+                                                    totalData={totalDataTahfidz}
+                                                    limit={limit}
+                                                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                                                    toggleFilters={() => setShowFilters(!showFilters)}
+                                                    toggleView={setViewMode}
+                                                    showFilterButtons={false}
+                                                    showSearch={false}
+                                                />
+                                                <DoubleScrollbarTable>
+                                                    <table className="min-w-full text-sm text-left">
+                                                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                                            <tr>
+                                                                <th className="px-3 py-2 border-b w-16">#</th>
+                                                                <th className="px-3 py-2 border-b">Tanggal</th>
+                                                                <th className="px-3 py-2 border-b">Nama Santri</th>
+                                                                <th className="px-3 py-2 border-b">NIS</th>
+                                                                <th className="px-3 py-2 border-b">Kelas</th>
+                                                                <th className="px-3 py-2 border-b">Hafalan Baru</th>
+                                                                <th className="px-3 py-2 border-b">Keterangan</th>
+                                                                <th className="px-3 py-2 border-b">Murojaah</th>
+                                                                <th className="px-3 py-2 border-b">Aksi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="text-gray-800">
+                                                            {loadingTahfidz ? (
+                                                                <tr>
+                                                                    <td colSpan="9" className="text-center py-6">
+                                                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                                    </td>
+                                                                </tr>
+                                                            ) : tahfidzData.length === 0 ? (
+                                                                <tr>
+                                                                    <td colSpan="9" className="text-center py-6">
+                                                                        Tidak ada data
+                                                                    </td>
+                                                                </tr>
+                                                            ) : (
+                                                                tahfidzData.map((item, index) => (
+                                                                    <tr
+                                                                        key={item.id || index}
+                                                                        className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                                        onClick={() => openModal(item)}
+                                                                    >
+                                                                        <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.hafalan_baru || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.murojaah || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation()
+                                                                                    // Handle edit
+                                                                                }}
+                                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                                            >
+                                                                                <FaEdit />
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))
+                                                            )}
+                                                        </tbody>
+                                                    </table>
+                                                </DoubleScrollbarTable>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+
+                                {activeTab === "rekap" && (
+                                    <div>
+                                        <DoubleScrollbarTable>
+                                            <table className="min-w-full text-sm text-left">
+                                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                                    <tr>
+                                                        <th className="px-3 py-2 border-b w-16">#</th>
+                                                        <th className="px-3 py-2 border-b">NIS</th>
+                                                        <th className="px-3 py-2 border-b">Nama Santri</th>
+                                                        <th className="px-3 py-2 border-b">Unit</th>
+                                                        <th className="px-3 py-2 border-b">Kelas</th>
+                                                        <th className="px-3 py-2 border-b">Total Hafalan</th>
+                                                        <th className="px-3 py-2 border-b">Progress (%)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="text-gray-800">
+                                                    {loadingTahfidz ? (
+                                                        <tr>
+                                                            <td colSpan="7" className="text-center py-6">
+                                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        mockStudents.map((student, index) => (
+                                                            <tr key={student.nis} className="hover:bg-gray-50">
+                                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                                <td className="px-3 py-2 border-b">{student.nis}</td>
+                                                                <td className="px-3 py-2 border-b">{student.nama}</td>
+                                                                <td className="px-3 py-2 border-b">{student.unit}</td>
+                                                                <td className="px-3 py-2 border-b">{student.kelas}</td>
+                                                                <td className="px-3 py-2 border-b">
+                                                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                                                                        {Math.floor(Math.random() * 30) + 1} Juz
+                                                                    </span>
+                                                                </td>
+                                                                <td className="px-3 py-2 border-b">
+                                                                    <div className="flex items-center">
+                                                                        <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                                                            <div
+                                                                                className="bg-green-600 h-2 rounded-full"
+                                                                                style={{ width: `${Math.floor(Math.random() * 100)}%` }}
+                                                                            ></div>
+                                                                        </div>
+                                                                        <span className="text-xs text-gray-600">{Math.floor(Math.random() * 100)}%</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </DoubleScrollbarTable>
+                                    </div>
+                                )}
+
+                                {activeTab === "tambah" && (
+                                    <div className="bg-gray-50 rounded-lg p-6">
+                                        <TahfidzForm student={selectedStudent} onSuccess={fetchData} />
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+
+                        {/* Pagination - Only show on laporan tab */}
+                        {totalPages > 1 && activeTab === "laporan" && (
+                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                        )}
+                    </>
+                )}
+            </div>
+
+
 
             <ModalExport
                 isOpen={openModalExport}

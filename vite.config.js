@@ -8,10 +8,10 @@ import strip from '@rollup/plugin-strip';
 export default defineConfig({
   plugins: [
     react(),
-    // strip({
-    //   include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
-    //   functions: ['console.log', 'console.debug', 'console.warn', 'console.error'],
-    // }),
+    strip({
+      include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
+      functions: ['console.log', 'console.debug', 'console.warn', 'console.error'],
+    }),
     tailwindcss(),
     viteCompression({
       algorithm: 'brotliCompress',
@@ -33,12 +33,6 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react'
-            if (id.includes('react-router-dom')) return 'router'
-            if (id.includes('zustand')) return 'zustand'
-            if (id.includes('axios')) return 'axios'
-            if (id.includes('@fortawesome')) return 'fontawesome'
-            if (id.includes('react-icons')) return 'icons'
             return 'vendor'
           }
         }
