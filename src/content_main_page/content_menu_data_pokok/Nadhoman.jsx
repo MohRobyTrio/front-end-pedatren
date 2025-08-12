@@ -331,8 +331,8 @@ const Nadhoman = () => {
                             <>
                                 {/* <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6 mb-6 shadow-sm"> */}
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-amber-800 flex items-center gap-2">
-                                        <div className="w-2 h-6 bg-amber-500 rounded-full"></div>
+                                    <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                        {/* <div className="w-2 h-6 bg-amber-500 rounded-full"></div> */}
                                         Informasi Santri Terpilih
                                     </h3>
                                     <button
@@ -360,13 +360,13 @@ const Nadhoman = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-3">
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                             NIS
                                                         </span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis}</span>
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                             Nama Lengkap
                                                         </span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama}</span>
@@ -374,13 +374,13 @@ const Nadhoman = () => {
                                                 </div>
                                                 <div className="space-y-3">
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                             Unit Sekolah
                                                         </span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.unit}</span>
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-amber-600 uppercase tracking-wide">
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                             Kelas
                                                         </span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.kelas}</span>
@@ -396,7 +396,7 @@ const Nadhoman = () => {
                                                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
                                                             Aktif
                                                         </span>
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                             Tahun Ajaran 2024/2025
                                                         </span>
                                                     </div>
@@ -412,7 +412,7 @@ const Nadhoman = () => {
                                         <button
                                             onClick={() => setActiveTab("tambah")}
                                             className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "tambah"
-                                                ? "border-amber-500 text-amber-600"
+                                                ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                                 }`}
                                         >
@@ -422,7 +422,7 @@ const Nadhoman = () => {
                                         <button
                                             onClick={() => setActiveTab("laporan")}
                                             className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "laporan"
-                                                ? "border-amber-500 text-amber-600"
+                                                ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                                 }`}
                                         >
@@ -432,7 +432,7 @@ const Nadhoman = () => {
                                         <button
                                             onClick={() => setActiveTab("rekap")}
                                             className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "rekap"
-                                                ? "border-amber-500 text-amber-600"
+                                                ? "border-blue-500 text-blue-600"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                                 }`}
                                         >
