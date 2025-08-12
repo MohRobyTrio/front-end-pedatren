@@ -16,8 +16,16 @@ import {
     FaPlus,
     FaBook,
     FaQuran,
+    FaUsers,
+    FaSearch,
+    FaCheck,
+    FaCalendarAlt,
+    FaTrash,
+    FaArrowLeft,
+    FaFileImport,
+    FaFileExport,
+    FaTable,
 } from "react-icons/fa"
-import MultiStepModal from "../../components/modal/ModalFormTahfidz"
 import { useMultiStepFormTahfidz } from "../../hooks/hooks_modal/useMultiStepFormTahfidz"
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
@@ -28,8 +36,11 @@ import TahfidzForm from "../../components/TahfidzForm"
 import useFetchTahfidz from "../../hooks/hooks_menu_data_pokok/Tahfidz"
 import TahfidzItem from "../../components/TahfidzItem"
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
+import Access from "../../components/Access"
+import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
+import { ModalAddTahfidz } from "../../components/modal/ModalFormTahfidz"
 
-const Tahfidz = () => {
+export const Tahfidz = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
@@ -38,6 +49,8 @@ const Tahfidz = () => {
     const [activeTab, setActiveTab] = useState("tambah")
     const [selectedStudent, setSelectedStudent] = useState(null)
     const [showStudentModal, setShowStudentModal] = useState(false)
+    const [selectedId, setSelectedId] = useState(null);
+    const [feature, setFeature] = useState(null);
 
     const { allTahunAjaran } = useFetchTahunAjaran();
 
@@ -702,8 +715,907 @@ const Tahfidz = () => {
             {showFormModal && (
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
             )}
+
+            <ModalAddTahfidz isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} />
         </div>
     )
 }
 
-export default Tahfidz
+export const TahfidzRekap = () => {
+    const [openModalExport, setOpenModalExport] = useState(false)
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [showStatistik, setShowStatistik] = useState(false)
+    const [selectedId, setSelectedId] = useState(null);
+    const [feature, setFeature] = useState(null);
+
+    const openModal = (item) => {
+        setSelectedItem(item)
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+        setSelectedItem(null)
+        setIsModalOpen(false)
+    }
+
+    const [filters, setFilters] = useState({
+        tahunAjaran: "",
+        status: "",
+        jenisKelamin: "",
+        tingkatHafalan: "",
+        targetHafalan: "",
+        jenisSetoran: "",
+        nilai: "",
+        ustadz: "",
+        urutBerdasarkan: "",
+        urutSecara: "",
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        wilayah: "",
+        blok: "",
+        kamar: "",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+    })
+
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
+
+    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
+    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
+    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
+    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
+
+    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
+    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
+    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
+
+    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
+    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
+    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
+    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
+
+    // Gabungkan filter tambahan sebelum dipakai
+    const updatedFilters = useMemo(
+        () => ({
+            ...filters,
+            negara: negaraTerpilih,
+            provinsi: provinsiTerpilih,
+            kabupaten: kabupatenTerpilih,
+            kecamatan: kecamatanTerpilih,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih,
+        }),
+        [
+            blokTerpilih,
+            filters,
+            jurusanTerpilih,
+            kabupatenTerpilih,
+            kamarTerpilih,
+            kecamatanTerpilih,
+            kelasTerpilih,
+            lembagaTerpilih,
+            negaraTerpilih,
+            provinsiTerpilih,
+            rombelTerpilih,
+            wilayahTerpilih,
+        ],
+    )
+
+    const { dataTahfidz,
+        loadingTahfidz,
+        error,
+        limit,
+        setLimit,
+        totalData,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        fetchData, } = useFetchTahfidz(updatedFilters);
+
+    const [showFilters, setShowFilters] = useState(false)
+    const [viewMode, setViewMode] = useState("table")
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode")
+        if (savedViewMode) {
+            setViewMode(savedViewMode)
+        }
+    }, [])
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page)
+        }
+    }
+
+    const filter4 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" },
+        ],
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Aktif", value: "aktif" },
+            { label: "Tidak Aktif", value: "tidak aktif" },
+            { label: "Lulus", value: "lulus" },
+            { label: "Pindah", value: "pindah" },
+        ],
+        tahunAjaran: generateDropdownTahun({
+            placeholder: "Semua Tahun Ajaran",
+            labelTemplate: "Tahun {year}/{nextYear}",
+        }),
+    }
+
+    const filter5 = {
+        jenisSetoran: [
+            { label: "Semua Jenis Setoran", value: "" },
+            { label: "Baru", value: "baru" },
+            { label: "Murojaah", value: "murojaah" },
+        ],
+        nilai: [
+            { label: "Semua Nilai", value: "" },
+            { label: "Lancar", value: "lancar" },
+            { label: "Cukup", value: "cukup" },
+            { label: "Kurang", value: "kurang" },
+        ],
+        ustadz: [
+            { label: "Semua Ustadz", value: "" },
+            { label: "Ustadz Ahmad", value: "ustadz_ahmad" },
+            { label: "Ustadz Muhammad", value: "ustadz_muhammad" },
+            { label: "Ustadz Ali", value: "ustadz_ali" },
+            { label: "Ustadz Hassan", value: "ustadz_hassan" },
+        ],
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIS", value: "nis" },
+            { label: "Tanggal", value: "tanggal" },
+            { label: "Surat", value: "surat" },
+            { label: "Nilai", value: "nilai" },
+        ],
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
+        ],
+    }
+
+    const filter6 = {}
+
+    const fieldsExports = [
+        { label: "NIS", value: "nis" },
+        { label: "Nama Santri", value: "nama_siswa" },
+        { label: "Kelas", value: "kelas" },
+        { label: "Tahun Ajaran", value: "tahun_ajaran" },
+        { label: "Ustadz", value: "ustadz" },
+        { label: "Tanggal", value: "tanggal" },
+        { label: "Jenis Setoran", value: "jenis_setoran" },
+        { label: "Surat", value: "surat" },
+        { label: "Ayat Mulai", value: "ayat_mulai" },
+        { label: "Ayat Selesai", value: "ayat_selesai" },
+        { label: "Nilai", value: "nilai" },
+        { label: "Status", value: "status" },
+        { label: "Catatan", value: "catatan" },
+    ]
+
+    const handleImportSuccess = () => {
+        fetchData()
+    }
+
+    const [showFormModal, setShowFormModal] = useState(false)
+    const formState = useMultiStepFormTahfidz(() => setShowFormModal(false), fetchData)
+
+    return (
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                    {/* <FaQuran className="text-green-600" /> */}
+                    {showStatistik ? "Statistik Data Tahfidz" : "Data Tahfidz Santri"}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-2">
+                    {showStatistik ? (
+                        <button
+                            onClick={() => setShowStatistik(false)}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaArrowLeft /> Kembali ke Data
+                        </button>
+                    ) : (
+                        <>
+                            <Access action="tambah">
+                                <button
+                                    onClick={() => { setShowFormModal(true); setFeature(1); }}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                >
+                                    <FaPlus /> Tambah
+                                </button>
+                            </Access>
+
+                            <button
+                                onClick={() => setOpenModalImport(true)}
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileImport /> Import
+                            </button>
+
+                            <button
+                                onClick={() => setOpenModalExport(true)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileExport /> Export
+                            </button>
+                        </>
+                    )}
+
+                    {/* <button
+                        onClick={() => setShowStatistik(!showStatistik)}
+                        className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
+                            } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
+                    >
+                        {showStatistik ? <FaTable /> : <FaChartLine />}
+                        {showStatistik ? "Data" : "Statistik"}
+                    </button> */}
+                </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+                {showStatistik ? (
+                    <StatistikChart data={dataTahfidz} loading={loadingTahfidz} totalData={totalData} />
+                ) : (
+                    <>
+                        <div
+                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                        >
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterNegara}
+                                onChange={handleFilterChangeNegara}
+                                selectedFilters={selectedNegara}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterWilayah}
+                                onChange={handleFilterChangeWilayah}
+                                selectedFilters={selectedWilayah}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterLembaga}
+                                onChange={handleFilterChangeLembaga}
+                                selectedFilters={selectedLembaga}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter4}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter5}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter6}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                        </div>
+
+                        <SearchBar
+                            // searchTerm={searchTerm}
+                            // setSearchTerm={setSearchTerm}
+                            totalData={totalData}
+                            limit={limit}
+                            toggleLimit={(e) => setLimit(Number(e.target.value))}
+                            toggleFilters={() => setShowFilters(!showFilters)}
+                            toggleView={setViewMode}
+                        />
+
+                        {error ? (
+                            <div
+                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                role="alert"
+                            >
+                                <strong className="font-bold">Error!</strong>
+                                <span className="block sm:inline"> {error}</span>
+                            </div>
+                        ) : viewMode === "list" ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                {loadingTahfidz ? (
+                                    <div className="col-span-3 flex justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </div>
+                                ) : (dataTahfidz.length > 0).length === 0 ? (
+                                    <p className="text-center col-span-3">Tidak ada data</p>
+                                ) : (
+                                    (dataTahfidz.length > 0).map((item, index) => (
+                                        <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
+                                    ))
+                                )}
+                            </div>
+                        ) : (
+                            <DoubleScrollbarTable>
+                                <table className="min-w-full text-sm text-left">
+                                    <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                        <tr>
+                                            <th className="px-3 py-2 border-b w-16">#</th>
+                                            <th className="px-3 py-2 border-b">Nama Santri</th>
+                                            <th className="px-3 py-2 border-b">NIS</th>
+                                            <th className="px-3 py-2 border-b">Total Surat</th>
+                                            <th className="px-3 py-2 border-b">Progress (%)</th>
+                                            {/* <th className="px-3 py-2 border-b">Aksi</th> */}
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-gray-800">
+                                        {loadingTahfidz ? (
+                                            <tr>
+                                                <td colSpan="14" className="text-center py-6">
+                                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                </td>
+                                            </tr>
+                                        ) : dataTahfidz.length == 0 ? (
+                                            <tr>
+                                                <td colSpan="14" className="text-center py-6">
+                                                    Tidak ada data
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            dataTahfidz.length > 0 && dataTahfidz.map((item, index) => (
+                                                <tr
+                                                    key={item.id || index}
+                                                    className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                    onClick={() => openModal(item)}
+                                                >
+                                                    <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.total_surat || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">
+                                                        <div className="flex items-center">
+                                                            <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                                                <div
+                                                                    className="bg-green-600 h-2 rounded-full"
+                                                                    style={{ width: `${item.persentase_khatam}%` }}
+                                                                ></div>
+                                                            </div>
+                                                            <span className="text-gray-600">{item.persentase_khatam}%</span>
+                                                        </div>
+                                                    </td>
+                                                    {/* <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                // Handle edit action
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                // Handle delete action
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaTrash />
+                                                        </button>
+                                                    </td> */}
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </DoubleScrollbarTable>
+                        )}
+
+                        {totalPages > 1 && (
+                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                        )}
+                    </>
+                )}
+            </div>
+
+            <ModalExport
+                isOpen={openModalExport}
+                onClose={() => setOpenModalExport(false)}
+                filters={updatedFilters}
+                // searchTerm={searchTerm}
+                limit={limit}
+                currentPage={currentPage}
+                fields={fieldsExports}
+                endpoint="export/tahfidz"
+            />
+
+            <ModalImport
+                isOpen={openModalImport}
+                onClose={() => setOpenModalImport(false)}
+                onSuccess={handleImportSuccess}
+                title="Import Data Tahfidz"
+                endpoint="import/tahfidz"
+                templateUrl="/template/tahfidz_import_template.xlsx"
+                templateName="template_tahfidz.xlsx"
+                instructions={[
+                    "Download template terlebih dahulu",
+                    "Isi data sesuai format template (header di baris 2)",
+                    "Jangan mengubah nama kolom/header",
+                    "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                    "Upload file yang sudah diisi dan klik 'Import Data'",
+                ]}
+            />
+
+            {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />}
+
+            {/* {showFormModal && (
+                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
+            )} */}
+
+            <ModalAddTahfidz isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} />
+        </div>
+    )
+}
+
+export const TahfidzSetoran = () => {
+    const [openModalExport, setOpenModalExport] = useState(false)
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [showStatistik, setShowStatistik] = useState(false)
+
+    const openModal = (item) => {
+        setSelectedItem(item)
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+        setSelectedItem(null)
+        setIsModalOpen(false)
+    }
+
+    const [filters, setFilters] = useState({
+        tahunAjaran: "",
+        status: "",
+        jenisKelamin: "",
+        tingkatHafalan: "",
+        targetHafalan: "",
+        jenisSetoran: "",
+        nilai: "",
+        ustadz: "",
+        urutBerdasarkan: "",
+        urutSecara: "",
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        wilayah: "",
+        blok: "",
+        kamar: "",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+    })
+
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
+
+    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
+    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
+    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
+    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
+
+    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
+    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
+    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
+
+    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
+    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
+    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
+    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
+
+    // Gabungkan filter tambahan sebelum dipakai
+    const updatedFilters = useMemo(
+        () => ({
+            ...filters,
+            negara: negaraTerpilih,
+            provinsi: provinsiTerpilih,
+            kabupaten: kabupatenTerpilih,
+            kecamatan: kecamatanTerpilih,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih,
+        }),
+        [
+            blokTerpilih,
+            filters,
+            jurusanTerpilih,
+            kabupatenTerpilih,
+            kamarTerpilih,
+            kecamatanTerpilih,
+            kelasTerpilih,
+            lembagaTerpilih,
+            negaraTerpilih,
+            provinsiTerpilih,
+            rombelTerpilih,
+            wilayahTerpilih,
+        ],
+    )
+
+    const {
+        tahfidzData,
+        loadingTahfidz,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalDataTahfidz,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        fetchData,
+    } = useFetchTahfidz(updatedFilters)
+    const [showFilters, setShowFilters] = useState(false)
+    const [viewMode, setViewMode] = useState("table")
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode")
+        if (savedViewMode) {
+            setViewMode(savedViewMode)
+        }
+    }, [])
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page)
+        }
+    }
+
+    const filter4 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" },
+        ],
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Aktif", value: "aktif" },
+            { label: "Tidak Aktif", value: "tidak aktif" },
+            { label: "Lulus", value: "lulus" },
+            { label: "Pindah", value: "pindah" },
+        ],
+        tahunAjaran: generateDropdownTahun({
+            placeholder: "Semua Tahun Ajaran",
+            labelTemplate: "Tahun {year}/{nextYear}",
+        }),
+    }
+
+    const filter5 = {
+        jenisSetoran: [
+            { label: "Semua Jenis Setoran", value: "" },
+            { label: "Baru", value: "baru" },
+            { label: "Murojaah", value: "murojaah" },
+        ],
+        nilai: [
+            { label: "Semua Nilai", value: "" },
+            { label: "Lancar", value: "lancar" },
+            { label: "Cukup", value: "cukup" },
+            { label: "Kurang", value: "kurang" },
+        ],
+        ustadz: [
+            { label: "Semua Ustadz", value: "" },
+            { label: "Ustadz Ahmad", value: "ustadz_ahmad" },
+            { label: "Ustadz Muhammad", value: "ustadz_muhammad" },
+            { label: "Ustadz Ali", value: "ustadz_ali" },
+            { label: "Ustadz Hassan", value: "ustadz_hassan" },
+        ],
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIS", value: "nis" },
+            { label: "Tanggal", value: "tanggal" },
+            { label: "Surat", value: "surat" },
+            { label: "Nilai", value: "nilai" },
+        ],
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
+        ],
+    }
+
+    const filter6 = {}
+
+    const fieldsExports = [
+        { label: "NIS", value: "nis" },
+        { label: "Nama Santri", value: "nama_siswa" },
+        { label: "Kelas", value: "kelas" },
+        { label: "Tahun Ajaran", value: "tahun_ajaran" },
+        { label: "Ustadz", value: "ustadz" },
+        { label: "Tanggal", value: "tanggal" },
+        { label: "Jenis Setoran", value: "jenis_setoran" },
+        { label: "Surat", value: "surat" },
+        { label: "Ayat Mulai", value: "ayat_mulai" },
+        { label: "Ayat Selesai", value: "ayat_selesai" },
+        { label: "Nilai", value: "nilai" },
+        { label: "Status", value: "status" },
+        { label: "Catatan", value: "catatan" },
+    ]
+
+    const handleImportSuccess = () => {
+        fetchData()
+    }
+
+    const [showFormModal, setShowFormModal] = useState(false)
+    const formState = useMultiStepFormTahfidz(() => setShowFormModal(false), fetchData)
+
+    return (
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                    {/* <FaQuran className="text-green-600" /> */}
+                    {showStatistik ? "Statistik Data Tahfidz" : "Data Tahfidz Santri"}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-2">
+                    {showStatistik ? (
+                        <button
+                            onClick={() => setShowStatistik(false)}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaArrowLeft /> Kembali ke Data
+                        </button>
+                    ) : (
+                        <>
+                            <Access action="tambah">
+                                <button
+                                    onClick={() => setShowFormModal(true)}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                >
+                                    <FaPlus /> Tambah
+                                </button>
+                            </Access>
+
+                            <button
+                                onClick={() => setOpenModalImport(true)}
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileImport /> Import
+                            </button>
+
+                            <button
+                                onClick={() => setOpenModalExport(true)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileExport /> Export
+                            </button>
+                        </>
+                    )}
+
+                    {/* <button
+                        onClick={() => setShowStatistik(!showStatistik)}
+                        className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
+                            } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
+                    >
+                        {showStatistik ? <FaTable /> : <FaChartLine />}
+                        {showStatistik ? "Data" : "Statistik"}
+                    </button> */}
+                </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+                {showStatistik ? (
+                    <StatistikChart data={tahfidzData} loading={loadingTahfidz} totalData={totalDataTahfidz} />
+                ) : (
+                    <>
+                        <div
+                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                        >
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterNegara}
+                                onChange={handleFilterChangeNegara}
+                                selectedFilters={selectedNegara}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterWilayah}
+                                onChange={handleFilterChangeWilayah}
+                                selectedFilters={selectedWilayah}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filterLembaga}
+                                onChange={handleFilterChangeLembaga}
+                                selectedFilters={selectedLembaga}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter4}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter5}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                            <Filters
+                                showFilters={showFilters}
+                                filterOptions={filter6}
+                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                selectedFilters={filters}
+                            />
+                        </div>
+
+                        <SearchBar
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            totalData={totalDataTahfidz}
+                            limit={limit}
+                            toggleLimit={(e) => setLimit(Number(e.target.value))}
+                            toggleFilters={() => setShowFilters(!showFilters)}
+                            toggleView={setViewMode}
+                        />
+
+                        {error ? (
+                            <div
+                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                role="alert"
+                            >
+                                <strong className="font-bold">Error!</strong>
+                                <span className="block sm:inline"> {error}</span>
+                            </div>
+                        ) : viewMode === "list" ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                {loadingTahfidz ? (
+                                    <div className="col-span-3 flex justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </div>
+                                ) : (tahfidzData.length > 0 ? tahfidzData : mockTahfidzData).length === 0 ? (
+                                    <p className="text-center col-span-3">Tidak ada data</p>
+                                ) : (
+                                    (tahfidzData.length > 0 ? tahfidzData : mockTahfidzData).map((item, index) => (
+                                        <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
+                                    ))
+                                )}
+                            </div>
+                        ) : (
+                            <DoubleScrollbarTable>
+                                <table className="min-w-full text-sm text-left">
+                                    <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                        <tr>
+                                            <th className="px-3 py-2 border-b w-16">#</th>
+                                            <th className="px-3 py-2 border-b">Tanggal</th>
+                                            <th className="px-3 py-2 border-b">Nama Santri</th>
+                                            <th className="px-3 py-2 border-b">NIS</th>
+                                            <th className="px-3 py-2 border-b">Kelas</th>
+                                            <th className="px-3 py-2 border-b">Hafalan Baru</th>
+                                            <th className="px-3 py-2 border-b">Keterangan</th>
+                                            <th className="px-3 py-2 border-b">Murojaah</th>
+                                            <th className="px-3 py-2 border-b">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="text-gray-800">
+                                        {loadingTahfidz ? (
+                                            <tr>
+                                                <td colSpan="14" className="text-center py-6">
+                                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                </td>
+                                            </tr>
+                                        ) : (tahfidzData.length > 0 ? tahfidzData : mockTahfidzData).length === 0 ? (
+                                            <tr>
+                                                <td colSpan="14" className="text-center py-6">
+                                                    Tidak ada data
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            (tahfidzData.length > 0 ? tahfidzData : mockTahfidzData).map((item, index) => (
+                                                <tr
+                                                    key={item.id || index}
+                                                    className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                    onClick={() => openModal(item)}
+                                                >
+                                                    <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nama_siswa || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.tahun_ajaran || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.ustadz || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item.ustadz || "-"}</td>
+                                                    <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                // Handle edit action
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                // Handle delete action
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaTrash />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </DoubleScrollbarTable>
+                        )}
+
+                        {totalPages > 1 && (
+                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                        )}
+                    </>
+                )}
+            </div>
+
+            <ModalExport
+                isOpen={openModalExport}
+                onClose={() => setOpenModalExport(false)}
+                filters={updatedFilters}
+                searchTerm={searchTerm}
+                limit={limit}
+                currentPage={currentPage}
+                fields={fieldsExports}
+                endpoint="export/tahfidz"
+            />
+
+            <ModalImport
+                isOpen={openModalImport}
+                onClose={() => setOpenModalImport(false)}
+                onSuccess={handleImportSuccess}
+                title="Import Data Tahfidz"
+                endpoint="import/tahfidz"
+                templateUrl="/template/tahfidz_import_template.xlsx"
+                templateName="template_tahfidz.xlsx"
+                instructions={[
+                    "Download template terlebih dahulu",
+                    "Isi data sesuai format template (header di baris 2)",
+                    "Jangan mengubah nama kolom/header",
+                    "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                    "Upload file yang sudah diisi dan klik 'Import Data'",
+                ]}
+            />
+
+            {isModalOpen && <ModalDetail title="Data Tahfidz" menu={1} item={selectedItem} onClose={closeModal} />}
+
+            {showFormModal && (
+                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
+            )}
+        </div>
+    )
+}

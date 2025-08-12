@@ -212,7 +212,7 @@ const NadhomanForm = ({ student, onSuccess }) => {
                         </select>
                     </div>
 
-        </div>
+                </div>
                 <div className="grid grid-cols-1 gap-6 mt-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -231,26 +231,26 @@ const NadhomanForm = ({ student, onSuccess }) => {
                     </div>
                 </div>
 
-                {/* Action Buttons */ }
-    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8 pt-6 border-t border-gray-200">
-        <button
-            type="button"
-            onClick={handleReset}
-            disabled={isSubmitting}
-            className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-md font-medium flex items-center justify-center gap-2 transition-colors"
-        >
-            <FaUndo />
-            Reset
-        </button>
-        <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-6 py-2 rounded-md font-medium flex items-center justify-center gap-2 transition-colors"
-        >
-            <FaSave />
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
-        </button>
-    </div>
+                {/* Action Buttons */}
+                <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8 pt-6 border-t border-gray-200">
+                    <button
+                        type="button"
+                        onClick={handleReset}
+                        disabled={isSubmitting}
+                        className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-md font-medium flex items-center justify-center gap-2 transition-colors"
+                    >
+                        <FaUndo />
+                        Reset
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full sm:w-auto bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-6 py-2 rounded-md font-medium flex items-center justify-center gap-2 transition-colors"
+                    >
+                        <FaSave />
+                        {isSubmitting ? "Menyimpan..." : "Simpan"}
+                    </button>
+                </div>
 
             </form >
         </div >

@@ -27,6 +27,8 @@ import DetailPelanggaran from "../../content_modal/detail/DetailPelanggaran";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
+import DetailRekapTahfidz from "../../content_modal/detail/DetailRekapTahfidz";
+import DetailSetoranTahfidz from "../../content_modal/detail/DetailSetoranTahfidz";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
@@ -49,36 +51,37 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             try {
                 let endpoint = '';
 
-                if (menu === 1) endpoint = `pesertadidik/${item.biodata_id}`;
-                else if (menu === 2) endpoint = `santri/${item.biodata_id}`;
-                else if (menu === 3) endpoint = `santri-nondomisili/${item.biodata_id}`;
-                else if (menu === 4) endpoint = `pelajar/${item.biodata_id}`;
-                else if (menu === 5) endpoint = `pesertadidik-bersaudara/${item.biodata_id}`;
-                else if (menu === 6) endpoint = `orangtua/${item.biodata_id}`;
-                else if (menu === 7) endpoint = `wali/${item.biodata_id}`;
-                else if (menu === 8) endpoint = `pengajar/${item.biodata_id}`;
-                else if (menu === 9) endpoint = `pengurus/${item.biodata_id}`;
-                else if (menu === 10) endpoint = `karyawan/${item.biodata_id}`;
-                else if (menu === 11) endpoint = `walikelas/${item.id}`;
-                else if (menu === 12) endpoint = `khadam/${item.biodata_id}`;
-                else if (menu === 13) endpoint = `alumni/${item.biodata_id}`;
+                if (menu === 1) endpoint = `data-pokok/pesertadidik/${item.biodata_id}`;
+                else if (menu === 2) endpoint = `data-pokok/santri/${item.biodata_id}`;
+                else if (menu === 3) endpoint = `data-pokok/santri-nondomisili/${item.biodata_id}`;
+                else if (menu === 4) endpoint = `data-pokok/pelajar/${item.biodata_id}`;
+                else if (menu === 5) endpoint = `data-pokok/pesertadidik-bersaudara/${item.biodata_id}`;
+                else if (menu === 6) endpoint = `data-pokok/orangtua/${item.biodata_id}`;
+                else if (menu === 7) endpoint = `data-pokok/wali/${item.biodata_id}`;
+                else if (menu === 8) endpoint = `data-pokok/pengajar/${item.biodata_id}`;
+                else if (menu === 9) endpoint = `data-pokok/pengurus/${item.biodata_id}`;
+                else if (menu === 10) endpoint = `data-pokok/karyawan/${item.biodata_id}`;
+                else if (menu === 11) endpoint = `data-pokok/walikelas/${item.id}`;
+                else if (menu === 12) endpoint = `data-pokok/khadam/${item.biodata_id}`;
+                else if (menu === 13) endpoint = `data-pokok/alumni/${item.biodata_id}`;
 
-                else if (menu === 14) endpoint = `waliasuh/${item.biodata_id}`;
-                else if (menu === 16) endpoint = `anakasuh/${item.biodata_id}`;
+                else if (menu === 14) endpoint = `data-pokok/waliasuh/${item.biodata_id}`;
+                else if (menu === 16) endpoint = `data-pokok/anakasuh/${item.biodata_id}`;
 
-                else if (menu === 17) endpoint = `perizinan/${item.id}`;
-                else if (menu === 18) endpoint = `pelanggaran/${item.id}`;
-                else if (menu === 19) endpoint = `catatan-afektif/${item}`;
-                else if (menu === 20) endpoint = `catatan-kognitif/${item}`;
+                else if (menu === 17) endpoint = `data-pokok/perizinan/${item.id}`;
+                else if (menu === 18) endpoint = `data-pokok/pelanggaran/${item.id}`;
+                else if (menu === 19) endpoint = `data-pokok/catatan-afektif/${item}`;
+                else if (menu === 20) endpoint = `data-pokok/catatan-kognitif/${item}`;
 
-                else if (menu === 21) endpoint = `pegawai/${item.biodata_id}`;
-                else if (menu === 22) endpoint = `anakpegawai/${item.biodata_id}`;
+                else if (menu === 21) endpoint = `data-pokok/pegawai/${item.biodata_id}`;
+                else if (menu === 22) endpoint = `data-pokok/anakpegawai/${item.biodata_id}`;
 
-                else if (menu === 23) endpoint = `pengunjung/${item.id}`;
+                else if (menu === 23) endpoint = `data-pokok/pengunjung/${item.id}`;
+                else if (menu === 24) endpoint = `tahfidz/${item.santri_id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
                 const token = sessionStorage.getItem("token") || getCookie("token");
-                const res = await fetch(`${API_BASE_URL}data-pokok/${endpoint}`, {
+                const res = await fetch(`${API_BASE_URL}${endpoint}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -122,11 +125,11 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             }
         };
 
-        if (item?.biodata_id || item?.id_khadam || item?.id || item) {
+        if (item?.biodata_id || item?.id_khadam || item?.id || item?.santri_id) {
             fetchData();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [item, item.biodata_id, item.id, item.id_khadam, menu]);
+    }, [item, item.biodata_id, item.id, item.id_khadam, item.santri_id, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
 
@@ -241,6 +244,16 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 id: "berkas",
                 label: "Berkas",
                 content: <DetailBerkas berkas={data?.Berkas || []} menu={menu} id={item.id} close={onClose} />
+            },
+            data?.tahfidz && Object.keys(data?.tahfidz).length > 0 && {
+                id: "tahfidz",
+                label: "Tahfidz",
+                content: <DetailSetoranTahfidz setoranTahfidz={data?.tahfidz} />
+            },
+            data?.rekap_tahfidz && Object.keys(data?.rekap_tahfidz).length > 0 && {
+                id: "rekap_tahfidz",
+                label: "Rekap Tahfidz",
+                content: <DetailRekapTahfidz rekapTahfidz={data?.rekap_tahfidz} />
             },
             data?.error && {
                 id: "error",

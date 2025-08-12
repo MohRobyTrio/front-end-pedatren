@@ -10,7 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import { FaChartLine, FaEdit, FaPlus, FaBook, FaScroll } from "react-icons/fa"
+import { FaChartLine, FaEdit, FaPlus, FaBook, FaScroll, FaArrowLeft, FaFileImport, FaFileExport, FaTrash } from "react-icons/fa"
 import MultiStepModal from "../../components/modal/ModalFormNadhoman"
 import { useMultiStepFormNadhoman } from "../../hooks/hooks_modal/useMultiStepFormNadhoman"
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
@@ -23,7 +23,7 @@ import useFetchNadhoman from "../../hooks/hooks_menu_data_pokok/Nadhoman"
 import NadhomanItem from "../../components/NadhomanItem"
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
 
-const Nadhoman = () => {
+export const Nadhoman = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
@@ -44,7 +44,7 @@ const Nadhoman = () => {
                 setSelectedYear(aktif.id);
             }
         }
-    }, [allTahunAjaran, selectedYear]); 
+    }, [allTahunAjaran, selectedYear]);
 
     const openModal = (item) => {
         setSelectedItem(item)
@@ -732,4 +732,497 @@ const Nadhoman = () => {
     )
 }
 
-export default Nadhoman
+export const NadhomanAllData = () => {
+    const [openModalExport, setOpenModalExport] = useState(false)
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [showStatistik, setShowStatistik] = useState(false)
+
+    const openModal = (item) => {
+        setSelectedItem(item)
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+        setSelectedItem(null)
+        setIsModalOpen(false)
+    }
+
+    const [filters, setFilters] = useState({
+        tahunAjaran: "",
+        status: "",
+        jenisKelamin: "",
+        kitab: "",
+        urutBerdasarkan: "",
+        urutSecara: "",
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        wilayah: "",
+        blok: "",
+        kamar: "",
+        lembaga: "",
+        jurusan: "",
+        kelas: "",
+        rombel: "",
+    })
+
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
+
+    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
+    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
+    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
+    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
+
+    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
+    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
+    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
+
+    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
+    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
+    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
+    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
+
+    // Gabungkan filter tambahan sebelum dipakai
+    const updatedFilters = useMemo(
+        () => ({
+            ...filters,
+            negara: negaraTerpilih,
+            provinsi: provinsiTerpilih,
+            kabupaten: kabupatenTerpilih,
+            kecamatan: kecamatanTerpilih,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih,
+        }),
+        [
+            blokTerpilih,
+            filters,
+            jurusanTerpilih,
+            kabupatenTerpilih,
+            kamarTerpilih,
+            kecamatanTerpilih,
+            kelasTerpilih,
+            lembagaTerpilih,
+            negaraTerpilih,
+            provinsiTerpilih,
+            rombelTerpilih,
+            wilayahTerpilih,
+        ],
+    )
+
+    const {
+        nadhomanData,
+        loadingNadhoman,
+        searchTerm,
+        setSearchTerm,
+        error,
+        limit,
+        setLimit,
+        totalDataNadhoman,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+        fetchData,
+    } = useFetchNadhoman(updatedFilters)
+    const [showFilters, setShowFilters] = useState(false)
+    const [viewMode, setViewMode] = useState("table")
+
+    useEffect(() => {
+        const savedViewMode = sessionStorage.getItem("viewMode")
+        if (savedViewMode) {
+            setViewMode(savedViewMode)
+        }
+    }, [])
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page)
+        }
+    }
+
+    const filter1 = {
+        tahunAjaran: generateDropdownTahun({
+            placeholder: "Semua Tahun Ajaran",
+            labelTemplate: "Tahun {year}/{nextYear}",
+        }),
+    }
+
+    const filter4 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" },
+        ],
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Aktif", value: "aktif" },
+            { label: "Tidak Aktif", value: "tidak aktif" },
+            { label: "Lulus", value: "lulus" },
+            { label: "Pindah", value: "pindah" },
+        ],
+    }
+
+    const filter5 = {
+        kitab: [
+            { label: "Semua Kitab", value: "" },
+            { label: "Bahasa Arab", value: "bahasa-arab" },
+            { label: "Amsilati", value: "amsilati" },
+            { label: "Awamil", value: "awamil" },
+            { label: "Amsilati Tasrifiyah", value: "amsilati-tasrifiyah" },
+            { label: "Jurumiyah Jawan", value: "jurumiyah-jawan" },
+            { label: "Imrithi", value: "imrithi" },
+            { label: "Alfiyah Ibnu Malik Awwal", value: "alfiyah-awwal" },
+            { label: "Alfiyah Ibnu Malik Tsani", value: "alfiyah-tsani" },
+        ],
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIS", value: "nis" },
+            { label: "Kitab", value: "kitab" },
+            { label: "Jumlah Hafalan", value: "jumlah_hafalan" },
+            { label: "Tanggal Update", value: "tanggal_update" },
+        ],
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
+        ],
+    }
+
+    const filter6 = {}
+
+    const fieldsExports = [
+        { label: "NIS", value: "nis" },
+        { label: "Nama Siswa", value: "nama_siswa" },
+        { label: "Kelas", value: "kelas" },
+        { label: "Kitab", value: "kitab" },
+        { label: "Jumlah Hafalan Baru", value: "hafalan_baru" },
+        { label: "Keterangan Hafalan", value: "keterangan_hafalan" },
+        { label: "Tanggal", value: "tanggal" },
+    ]
+
+    const handleImportSuccess = () => {
+        fetchData()
+    }
+
+    const [showFormModal, setShowFormModal] = useState(false)
+    const formState = useMultiStepFormNadhoman(() => setShowFormModal(false), fetchData)
+
+    const mockNadhomanData = [
+        {
+            id: 1,
+            tanggal: "2024-08-11",
+            nama_siswa: "Ari Surahman",
+            nis: "097556282828838",
+            kelas: "2 ULA",
+            tahun_ajaran: "2024/2025",
+            ustadz: "Ustadz Ahmad",
+            jenis_setoran: "baru",
+            kitab: "Amsilati",
+            ayat_mulai: 1,
+            ayat_selesai: 5,
+            nilai: "lancar",
+            catatan: "Hafalan lancar dan baik",
+            status: "on progress",
+        },
+        {
+            id: 2,
+            tanggal: "2024-08-10",
+            nama_siswa: "Erwanto E. Yusuf",
+            nis: "1717",
+            kelas: "2 ULA",
+            tahun_ajaran: "2024/2025",
+            ustadz: "Ustadz Mahmud",
+            jenis_setoran: "murojaah",
+            kitab: "Jurumiyah",
+            ayat_mulai: 10,
+            ayat_selesai: 15,
+            nilai: "cukup",
+            catatan: "Perlu lebih banyak latihan",
+            status: "tuntas",
+        },
+        {
+            id: 3,
+            tanggal: "2024-08-09",
+            nama_siswa: "Udin",
+            nis: "34534543",
+            kelas: "2 ULA",
+            tahun_ajaran: "2024/2025",
+            ustadz: "Ustadz Yusuf",
+            jenis_setoran: "baru",
+            kitab: "Imrithi",
+            ayat_mulai: 1,
+            ayat_selesai: 3,
+            nilai: "kurang",
+            catatan: "Masih perlu bimbingan intensif",
+            status: "on progress",
+        },
+    ]
+
+    return (
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                    {showStatistik ? "Statistik Data Nadhoman" : "Data Nadhoman Santri"}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-2">
+                    {showStatistik ? (
+                        <button
+                            onClick={() => setShowStatistik(false)}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaArrowLeft /> Kembali ke Data
+                        </button>
+                    ) : (
+                        <>
+                            <button
+                                onClick={() => setShowFormModal(true)}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaPlus /> Tambah
+                            </button>
+
+                            <button
+                                onClick={() => setOpenModalImport(true)}
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileImport /> Import
+                            </button>
+
+                            <button
+                                onClick={() => setOpenModalExport(true)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaFileExport /> Export
+                            </button>
+                        </>
+                    )}
+
+                    {/* <button
+                        onClick={() => setShowStatistik(!showStatistik)}
+                        className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
+                            } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
+                    >
+                        <FaChartLine />
+                        {showStatistik ? "Data" : "Statistik"}
+                    </button> */}
+                </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+                {showStatistik ? (
+                    <StatistikChart data={nadhomanData} loading={loadingNadhoman} totalData={totalDataNadhoman} />
+                ) : (
+                    <div>
+                        {error ? (
+                            <div
+                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                role="alert"
+                            >
+                                <strong className="font-bold">Error!</strong>
+                                <span className="block sm:inline"> {error}</span>
+                            </div>
+                        ) : viewMode === "list" ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                {loadingNadhoman ? (
+                                    <div className="col-span-3 flex justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#d97706" size="small" text="" textColor="" />
+                                    </div>
+                                ) : mockNadhomanData.length === 0 ? (
+                                    <p className="text-center col-span-3">Tidak ada data</p>
+                                ) : (
+                                    mockNadhomanData.map((item, index) => (
+                                        <NadhomanItem key={index} data={item} title="Data Nadhoman" menu={1} />
+                                    ))
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <div
+                                    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                                >
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter1}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterNegara}
+                                        onChange={handleFilterChangeNegara}
+                                        selectedFilters={selectedNegara}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterWilayah}
+                                        onChange={handleFilterChangeWilayah}
+                                        selectedFilters={selectedWilayah}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterLembaga}
+                                        onChange={handleFilterChangeLembaga}
+                                        selectedFilters={selectedLembaga}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter4}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter5}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                </div>
+
+                                <SearchBar
+                                    searchTerm={searchTerm}
+                                    setSearchTerm={setSearchTerm}
+                                    totalData={totalDataNadhoman}
+                                    limit={limit}
+                                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                                    toggleFilters={() => setShowFilters(!showFilters)}
+                                    toggleView={setViewMode}
+                                />
+
+                                <DoubleScrollbarTable>
+                                    <table className="min-w-full text-sm text-left">
+                                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                            <tr>
+                                                <th className="px-3 py-2 border-b w-16">#</th>
+                                                <th className="px-3 py-2 border-b">Nama Siswa</th>
+                                                <th className="px-3 py-2 border-b">NIS</th>
+                                                <th className="px-3 py-2 border-b">Kitab</th>
+                                                <th className="px-3 py-2 border-b">Nilai</th>
+                                                <th className="px-3 py-2 border-b">Progress (%)</th>
+                                                <th className="px-3 py-2 border-b text-center w-24">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="text-gray-800">
+                                            {loadingNadhoman ? (
+                                                <tr>
+                                                    <td colSpan="14" className="text-center py-6">
+                                                        <OrbitProgress variant="disc" color="#d97706" size="small" text="" textColor="" />
+                                                    </td>
+                                                </tr>
+                                            ) : mockNadhomanData.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="14" className="text-center py-6">
+                                                        Tidak ada data
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                mockNadhomanData.map((item, index) => (
+                                                    <tr
+                                                        key={item.id || index}
+                                                        className="hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                                        onClick={() => openModal(item)}
+                                                    >
+                                                        <td className="px-3 py-2 border-b text-center">{(currentPage - 1) * limit + index + 1}</td>
+                                                        <td className="px-3 py-2 border-b font-medium">{item.nama_siswa || "-"}</td>
+                                                        <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                        <td className="px-3 py-2 border-b">{item.kitab || "-"}</td>
+                                                        <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td>
+                                                        <td className="px-3 py-2 border-b">
+                                                                    <div className="flex items-center">
+                                                                        <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                                                            <div
+                                                                                className="bg-green-600 h-2 rounded-full"
+                                                                                style={{ width: `${Math.floor(Math.random() * 100)}%` }}
+                                                                            ></div>
+                                                                        </div>
+                                                                        <span className="text-xs text-gray-600">{Math.floor(Math.random() * 100)}%</span>
+                                                                    </div>
+                                                                </td>
+                                                        <td className="px-3 py-2 border-b text-center">
+                                                            <div className="flex items-center justify-center space-x-1">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        // Handle edit action
+                                                                    }}
+                                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                                >
+                                                                    <FaEdit />
+                                                                </button>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        // Handle delete action
+                                                                    }}
+                                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                                >
+                                                                    <FaTrash />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </DoubleScrollbarTable>
+
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={handlePageChange}
+                                    totalData={totalDataNadhoman}
+                                    limit={limit}
+                                />
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <ModalExport
+                isOpen={openModalExport}
+                onClose={() => setOpenModalExport(false)}
+                filters={updatedFilters}
+                searchTerm={searchTerm}
+                limit={limit}
+                currentPage={currentPage}
+                fields={fieldsExports}
+                endpoint="export/nadhoman"
+            />
+
+            <ModalImport
+                isOpen={openModalImport}
+                onClose={() => setOpenModalImport(false)}
+                onSuccess={handleImportSuccess}
+                title="Import Data Nadhoman"
+                endpoint="import/nadhoman"
+                templateUrl="/template/nadhoman_import_template.xlsx"
+                templateName="template_nadhoman.xlsx"
+                instructions={[
+                    "Download template terlebih dahulu",
+                    "Isi data sesuai format template (header di baris 2)",
+                    "Jangan mengubah nama kolom/header",
+                    "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                    "Upload file yang sudah diisi dan klik 'Import Data'",
+                ]}
+            />
+
+            {isModalOpen && <ModalDetail title="Data Nadhoman" menu={1} item={selectedItem} onClose={closeModal} />}
+
+            {showFormModal && (
+                <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
+            )}
+        </div>
+    )
+}

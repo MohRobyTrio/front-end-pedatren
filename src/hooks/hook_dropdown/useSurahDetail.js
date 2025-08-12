@@ -5,6 +5,8 @@ const useSurahDetail = (nomorSurah) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log(nomorSurah);
+    
     if (!nomorSurah) return;
 
     setLoading(true);

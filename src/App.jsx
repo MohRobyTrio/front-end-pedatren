@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage';
 import Profile from './content_main_page/Profile';
+import UstadzDashboard from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
 
@@ -84,7 +85,7 @@ const PublicRoute = () => {
 
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
-  const hasRedirectedtoDashboard = useRef(false); // <-- flag guard
+  const hasRedirectedtoDashboard = useRef(false);
 
   useEffect(() => {
     if (!hasRedirectedtoDashboard.current) {
@@ -152,11 +153,12 @@ function App() {
               ...subKelembagaanItems,
               ...subPelajaranItems,
               ...menuManageItems,
-              ...menuAlumni
+              ...menuAlumni,
             ].map((tab) => (
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}
             <Route path="/profile" element={<Profile />} />
+            <Route path="/ustadz-dashboard" element={<UstadzDashboard />} />
           </Route>
         </Route>
 

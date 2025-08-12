@@ -10,7 +10,6 @@ const DropdownSurah = () => {
       // Ambil dari sessionStorage
       const parsedData = JSON.parse(localData);
       setMenuSurah([
-        { label: "Pilih Surat", value: "" },
         ...parsedData
       ]);
     } else {
@@ -20,7 +19,9 @@ const DropdownSurah = () => {
         .then((data) => {
           // Map data API ke format dropdown
           const formatted = data.map((surah) => ({
+            no: surah.nomor,
             value: surah.nomor,
+            nama: surah.nama_latin,
             label: `${surah.nomor}. ${surah.nama_latin} (${surah.jumlah_ayat} ayat)`
           }));
 
@@ -29,13 +30,12 @@ const DropdownSurah = () => {
 
           // Set ke state
           setMenuSurah([
-            { label: "Pilih Surat", value: "" },
             ...formatted
           ]);
         })
         .catch((error) => {
           console.error("Error fetching surat:", error);
-          setMenuSurah([{ label: "Pilih Surat", value: "" }]);
+          setMenuSurah([]);
         });
     }
   }, []);
