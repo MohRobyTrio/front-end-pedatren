@@ -10,22 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import {
-    FaChartLine,
-    FaEdit,
-    FaPlus,
-    FaBook,
-    FaQuran,
-    FaUsers,
-    FaSearch,
-    FaCheck,
-    FaCalendarAlt,
-    FaTrash,
-    FaArrowLeft,
-    FaFileImport,
-    FaFileExport,
-    FaTable,
-} from "react-icons/fa"
+import { FaChartLine, FaEdit, FaPlus, FaBook, FaQuran, FaArrowLeft, FaFileImport, FaFileExport } from "react-icons/fa"
 import { useMultiStepFormTahfidz } from "../../hooks/hooks_modal/useMultiStepFormTahfidz"
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
@@ -40,31 +25,31 @@ import Access from "../../components/Access"
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { ModalAddTahfidz } from "../../components/modal/ModalFormTahfidz"
 
-export const Tahfidz = () => {
+export const Tahfidz = ({ student }) => {
     const [openModalExport, setOpenModalExport] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showStatistik, setShowStatistik] = useState(false)
     const [activeTab, setActiveTab] = useState("tambah")
-    const [selectedStudent, setSelectedStudent] = useState(null)
+    const [selectedStudent, setSelectedStudent] = useState(student)
     const [showStudentModal, setShowStudentModal] = useState(false)
-    const [selectedId, setSelectedId] = useState(null);
-    const [feature, setFeature] = useState(null);
+    const [selectedId, setSelectedId] = useState(null)
+    const [feature, setFeature] = useState(null)
 
-    const { allTahunAjaran } = useFetchTahunAjaran();
+    const { allTahunAjaran } = useFetchTahunAjaran()
 
-    const [selectedYear, setSelectedYear] = useState("");
+    const [selectedYear, setSelectedYear] = useState("")
 
     // Auto pilih yang statusnya true saat pertama render
     useEffect(() => {
         if (allTahunAjaran.length > 0 && !selectedYear) {
-            const aktif = allTahunAjaran.find((tahun) => tahun.status == true);
+            const aktif = allTahunAjaran.find((tahun) => tahun.status == true)
             if (aktif) {
-                setSelectedYear(aktif.id);
+                setSelectedYear(aktif.id)
             }
         }
-    }, [allTahunAjaran, selectedYear]);
+    }, [allTahunAjaran, selectedYear])
 
     const openModal = (item) => {
         setSelectedItem(item)
@@ -265,7 +250,7 @@ export const Tahfidz = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
             {showStudentModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -312,11 +297,10 @@ export const Tahfidz = () => {
                 </div>
             )}
 
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+            <div className="bg-white rounded-lg shadow-md mb-10 overflow-x-auto">
                 {showStatistik ? (
                     <StatistikChart data={tahfidzData} loading={loadingTahfidz} totalData={totalDataTahfidz} />
                 ) : (
-
                     <>
                         {/* Filter Section - Only show on laporan tab */}
 
@@ -324,7 +308,9 @@ export const Tahfidz = () => {
                             <div className="text-center py-8">
                                 <FaQuran className="mx-auto text-6xl text-gray-300 mb-4" />
                                 <h3 className="text-lg font-medium text-gray-600 mb-2">Pilih Tahun Ajaran & Santri</h3>
-                                <p className="text-gray-500 mb-4">Silakan pilih tahun ajaran lalu pilih santri untuk menambahkan data tahfidz</p>
+                                <p className="text-gray-500 mb-4">
+                                    Silakan pilih tahun ajaran lalu pilih santri untuk menambahkan data tahfidz
+                                </p>
 
                                 {/* Pilih Tahun Ajaran */}
                                 <select
@@ -347,23 +333,21 @@ export const Tahfidz = () => {
                                     Pilih Santri
                                 </button>
                             </div>
-
                         ) : (
                             <>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                        {/* <div className="w-2 h-6 bg-gray-500 rounded-full"></div> */}
+                                    {/* <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                        <div className="w-2 h-6 bg-gray-500 rounded-full"></div>
                                         Informasi Santri Terpilih
-                                    </h3>
-                                    <button
+                                    </h3> */}
+                                    {/* <button
                                         onClick={() => setSelectedStudent(null)}
                                         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
                                     >
                                         <FaEdit className="w-3 h-3" />
                                         Ganti Santri
-                                    </button>
+                                    </button> */}
                                 </div>
-
 
                                 <div className="flex flex-col lg:flex-row gap-6">
                                     <div className="flex-shrink-0 flex justify-center lg:justify-start">
@@ -381,9 +365,7 @@ export const Tahfidz = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-3">
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                                            NIS
-                                                        </span>
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">NIS</span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis}</span>
                                                     </div>
                                                     <div className="flex flex-col">
@@ -401,9 +383,7 @@ export const Tahfidz = () => {
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.unit}</span>
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                                            Kelas
-                                                        </span>
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Kelas</span>
                                                         <span className="text-lg font-semibold text-gray-800">{selectedStudent.kelas}</span>
                                                     </div>
                                                 </div>
@@ -578,7 +558,9 @@ export const Tahfidz = () => {
                                                                         className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
                                                                         onClick={() => openModal(item)}
                                                                     >
-                                                                        <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">
+                                                                            {(currentPage - 1) * limit + index + 1 || "-"}
+                                                                        </td>
                                                                         <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
                                                                         <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
                                                                         <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
@@ -671,7 +653,6 @@ export const Tahfidz = () => {
                             </>
                         )}
 
-
                         {/* Pagination - Only show on laporan tab */}
                         {totalPages > 1 && activeTab === "laporan" && (
                             <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
@@ -679,8 +660,6 @@ export const Tahfidz = () => {
                     </>
                 )}
             </div>
-
-
 
             <ModalExport
                 isOpen={openModalExport}
@@ -716,7 +695,13 @@ export const Tahfidz = () => {
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
             )}
 
-            <ModalAddTahfidz isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} />
+            <ModalAddTahfidz
+                isOpen={showFormModal}
+                onClose={() => setShowFormModal(false)}
+                refetchData={fetchData}
+                feature={feature}
+                id={selectedId}
+            />
         </div>
     )
 }
@@ -727,17 +712,20 @@ export const TahfidzRekap = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showStatistik, setShowStatistik] = useState(false)
-    const [selectedId, setSelectedId] = useState(null);
-    const [feature, setFeature] = useState(null);
+    const [selectedId, setSelectedId] = useState(null)
+    const [feature, setFeature] = useState(null)
 
-    const openModal = (item) => {
-        setSelectedItem(item)
-        setIsModalOpen(true)
+    const [currentView, setCurrentView] = useState("rekap") // 'rekap' or 'tahfidz'
+    const [selectedStudentForTahfidz, setSelectedStudentForTahfidz] = useState(null)
+
+    const handleSelectStudent = (student) => {
+        setSelectedStudentForTahfidz(student)
+        setCurrentView("tahfidz")
     }
 
-    const closeModal = () => {
-        setSelectedItem(null)
-        setIsModalOpen(false)
+    const handleBackToRekap = () => {
+        setCurrentView("rekap")
+        setSelectedStudentForTahfidz(null)
     }
 
     const [filters, setFilters] = useState({
@@ -814,7 +802,8 @@ export const TahfidzRekap = () => {
         ],
     )
 
-    const { dataTahfidz,
+    const {
+        dataTahfidz,
         loadingTahfidz,
         error,
         limit,
@@ -823,7 +812,8 @@ export const TahfidzRekap = () => {
         totalPages,
         currentPage,
         setCurrentPage,
-        fetchData, } = useFetchTahfidz(updatedFilters);
+        fetchData,
+    } = useFetchTahfidz(updatedFilters)
 
     const [showFilters, setShowFilters] = useState(false)
     const [viewMode, setViewMode] = useState("table")
@@ -921,48 +911,72 @@ export const TahfidzRekap = () => {
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-                <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-                    {/* <FaQuran className="text-green-600" /> */}
-                    {showStatistik ? "Statistik Data Tahfidz" : "Data Tahfidz Santri"}
-                </h1>
-
-                <div className="flex flex-wrap items-center gap-2">
-                    {showStatistik ? (
+            {currentView === "tahfidz" ? (
+                // Show Tahfidz component
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <div className="flex items-center gap-4 justify-between">
+                        <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            {/* <div className="w-2 h-6 bg-gray-500 rounded-full"></div> */}
+                            Informasi Santri Terpilih
+                        </h3>
                         <button
-                            onClick={() => setShowStatistik(false)}
-                            className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            onClick={handleBackToRekap}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors duration-200"
                         >
-                            <FaArrowLeft /> Kembali ke Data
+                            <FaArrowLeft className="w-4 h-4" />
+                            Kembali
                         </button>
-                    ) : (
-                        <>
-                            <Access action="tambah">
+                        {/* <h1 className="text-xl md:text-2xl font-bold">Input Tahfidz - {selectedStudentForTahfidz?.nama}</h1> */}
+                    </div>
+                    <Tahfidz student={selectedStudentForTahfidz} />
+                </div>
+            ) : (
+                // Show existing rekap content
+                <>
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                        <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                            {showStatistik ? "Statistik Data Tahfidz" : "Rekap Data Tahfidz Santri"}
+                        </h1>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                            {showStatistik ? (
                                 <button
-                                    onClick={() => { setShowFormModal(true); setFeature(1); }}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                    onClick={() => setShowStatistik(false)}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                                 >
-                                    <FaPlus /> Tambah
+                                    <FaArrowLeft /> Kembali ke Data
                                 </button>
-                            </Access>
+                            ) : (
+                                <>
+                                    <Access action="tambah">
+                                        <button
+                                            onClick={() => {
+                                                setShowFormModal(true)
+                                                setFeature(1)
+                                            }}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                        >
+                                            <FaPlus /> Tambah
+                                        </button>
+                                    </Access>
 
-                            <button
-                                onClick={() => setOpenModalImport(true)}
-                                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                            >
-                                <FaFileImport /> Import
-                            </button>
+                                    <button
+                                        onClick={() => setOpenModalImport(true)}
+                                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                    >
+                                        <FaFileImport /> Import
+                                    </button>
 
-                            <button
-                                onClick={() => setOpenModalExport(true)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                            >
-                                <FaFileExport /> Export
-                            </button>
-                        </>
-                    )}
+                                    <button
+                                        onClick={() => setOpenModalExport(true)}
+                                        className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                                    >
+                                        <FaFileExport /> Export
+                                    </button>
+                                </>
+                            )}
 
-                    {/* <button
+                            {/* <button
                         onClick={() => setShowStatistik(!showStatistik)}
                         className={`${showStatistik ? "bg-gray-500 hover:bg-gray-600" : "bg-indigo-500 hover:bg-indigo-700"
                             } text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
@@ -970,208 +984,215 @@ export const TahfidzRekap = () => {
                         {showStatistik ? <FaTable /> : <FaChartLine />}
                         {showStatistik ? "Data" : "Statistik"}
                     </button> */}
-                </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                {showStatistik ? (
-                    <StatistikChart data={dataTahfidz} loading={loadingTahfidz} totalData={totalData} />
-                ) : (
-                    <>
-                        <div
-                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
-                        >
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filterNegara}
-                                onChange={handleFilterChangeNegara}
-                                selectedFilters={selectedNegara}
-                            />
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filterWilayah}
-                                onChange={handleFilterChangeWilayah}
-                                selectedFilters={selectedWilayah}
-                            />
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filterLembaga}
-                                onChange={handleFilterChangeLembaga}
-                                selectedFilters={selectedLembaga}
-                            />
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filter4}
-                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                selectedFilters={filters}
-                            />
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filter5}
-                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                selectedFilters={filters}
-                            />
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filter6}
-                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                selectedFilters={filters}
-                            />
                         </div>
+                    </div>
 
-                        <SearchBar
-                            // searchTerm={searchTerm}
-                            // setSearchTerm={setSearchTerm}
-                            totalData={totalData}
-                            limit={limit}
-                            toggleLimit={(e) => setLimit(Number(e.target.value))}
-                            toggleFilters={() => setShowFilters(!showFilters)}
-                            toggleView={setViewMode}
-                        />
-
-                        {error ? (
-                            <div
-                                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-                                role="alert"
-                            >
-                                <strong className="font-bold">Error!</strong>
-                                <span className="block sm:inline"> {error}</span>
-                            </div>
-                        ) : viewMode === "list" ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                                {loadingTahfidz ? (
-                                    <div className="col-span-3 flex justify-center items-center">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </div>
-                                ) : (dataTahfidz.length > 0).length === 0 ? (
-                                    <p className="text-center col-span-3">Tidak ada data</p>
-                                ) : (
-                                    (dataTahfidz.length > 0).map((item, index) => (
-                                        <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
-                                    ))
-                                )}
-                            </div>
+                    <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+                        {showStatistik ? (
+                            <StatistikChart data={dataTahfidz} loading={loadingTahfidz} totalData={totalData} />
                         ) : (
-                            <DoubleScrollbarTable>
-                                <table className="min-w-full text-sm text-left">
-                                    <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                        <tr>
-                                            <th className="px-3 py-2 border-b w-16">#</th>
-                                            <th className="px-3 py-2 border-b">Nama Santri</th>
-                                            <th className="px-3 py-2 border-b">NIS</th>
-                                            <th className="px-3 py-2 border-b">Total Surat</th>
-                                            <th className="px-3 py-2 border-b">Progress (%)</th>
-                                            {/* <th className="px-3 py-2 border-b">Aksi</th> */}
-                                        </tr>
-                                    </thead>
-                                    <tbody className="text-gray-800">
+                            <>
+                                <div
+                                    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
+                                >
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterNegara}
+                                        onChange={handleFilterChangeNegara}
+                                        selectedFilters={selectedNegara}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterWilayah}
+                                        onChange={handleFilterChangeWilayah}
+                                        selectedFilters={selectedWilayah}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filterLembaga}
+                                        onChange={handleFilterChangeLembaga}
+                                        selectedFilters={selectedLembaga}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter4}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter5}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                    <Filters
+                                        showFilters={showFilters}
+                                        filterOptions={filter6}
+                                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                                        selectedFilters={filters}
+                                    />
+                                </div>
+
+                                <SearchBar
+                                    // searchTerm={searchTerm}
+                                    // setSearchTerm={setSearchTerm}
+                                    totalData={totalData}
+                                    limit={limit}
+                                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                                    toggleFilters={() => setShowFilters(!showFilters)}
+                                    toggleView={setViewMode}
+                                />
+
+                                {error ? (
+                                    <div
+                                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                                        role="alert"
+                                    >
+                                        <strong className="font-bold">Error!</strong>
+                                        <span className="block sm:inline"> {error}</span>
+                                    </div>
+                                ) : viewMode === "list" ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                                         {loadingTahfidz ? (
-                                            <tr>
-                                                <td colSpan="14" className="text-center py-6">
-                                                    <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                                </td>
-                                            </tr>
-                                        ) : dataTahfidz.length == 0 ? (
-                                            <tr>
-                                                <td colSpan="14" className="text-center py-6">
-                                                    Tidak ada data
-                                                </td>
-                                            </tr>
+                                            <div className="col-span-3 flex justify-center items-center">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                            </div>
+                                        ) : (dataTahfidz.length > 0).length === 0 ? (
+                                            <p className="text-center col-span-3">Tidak ada data</p>
                                         ) : (
-                                            dataTahfidz.length > 0 && dataTahfidz.map((item, index) => (
-                                                <tr
-                                                    key={item.id || index}
-                                                    className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
-                                                    onClick={() => openModal(item)}
-                                                >
-                                                    <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.total_surat || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">
-                                                        <div className="flex items-center">
-                                                            <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
-                                                                <div
-                                                                    className="bg-green-600 h-2 rounded-full"
-                                                                    style={{ width: `${item.persentase_khatam}%` }}
-                                                                ></div>
-                                                            </div>
-                                                            <span className="text-gray-600">{item.persentase_khatam}%</span>
-                                                        </div>
-                                                    </td>
-                                                    {/* <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                // Handle edit action
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                // Handle delete action
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaTrash />
-                                                        </button>
-                                                    </td> */}
-                                                </tr>
+                                            (dataTahfidz.length > 0).map((item, index) => (
+                                                <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
                                             ))
                                         )}
-                                    </tbody>
-                                </table>
-                            </DoubleScrollbarTable>
+                                    </div>
+                                ) : (
+                                    <DoubleScrollbarTable>
+                                        <table className="min-w-full text-sm text-left">
+                                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                                <tr>
+                                                    <th className="px-3 py-2 border-b w-16">#</th>
+                                                    <th className="px-3 py-2 border-b">Nama Santri</th>
+                                                    <th className="px-3 py-2 border-b">NIS</th>
+                                                    <th className="px-3 py-2 border-b">Total Surat</th>
+                                                    <th className="px-3 py-2 border-b">Progress (%)</th>
+                                                    <th className="px-3 py-2 border-b text-center">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="text-gray-800">
+                                                {loadingTahfidz ? (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center py-6">
+                                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                                        </td>
+                                                    </tr>
+                                                ) : dataTahfidz.length == 0 ? (
+                                                    <tr>
+                                                        <td colSpan="6" className="text-center py-6">
+                                                            Tidak ada data
+                                                        </td>
+                                                    </tr>
+                                                ) : (
+                                                    dataTahfidz.length > 0 &&
+                                                    dataTahfidz.map((item, index) => (
+                                                        <tr
+                                                            key={item.id || index}
+                                                            className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                            onClick={() => openModal(item)}
+                                                        >
+                                                            <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">{item.total_surat || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">
+                                                                <div className="flex items-center">
+                                                                    <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                                                        <div
+                                                                            className="bg-green-600 h-2 rounded-full"
+                                                                            style={{ width: `${item.persentase_khatam}%` }}
+                                                                        ></div>
+                                                                    </div>
+                                                                    <span className="text-gray-600">{item.persentase_khatam}%</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-3 py-2 border-b text-center">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        handleSelectStudent({
+                                                                            nis: item.nis,
+                                                                            nama: item.nama_santri,
+                                                                            unit: "PONDOKPA", // atau ambil dari data item jika ada
+                                                                            kelas: item.kelas || "N/A",
+                                                                        })
+                                                                    }}
+                                                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 flex items-center gap-1 mx-auto"
+                                                                >
+                                                                    <FaEdit className="w-3 h-3" />
+                                                                    Pilih
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </DoubleScrollbarTable>
+                                )}
+
+                                {totalPages > 1 && (
+                                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                                )}
+                            </>
                         )}
+                    </div>
 
-                        {totalPages > 1 && (
-                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
-                        )}
-                    </>
-                )}
-            </div>
+                    <ModalExport
+                        isOpen={openModalExport}
+                        onClose={() => setOpenModalExport(false)}
+                        filters={updatedFilters}
+                        // searchTerm={searchTerm}
+                        limit={limit}
+                        currentPage={currentPage}
+                        fields={fieldsExports}
+                        endpoint="export/tahfidz"
+                    />
 
-            <ModalExport
-                isOpen={openModalExport}
-                onClose={() => setOpenModalExport(false)}
-                filters={updatedFilters}
-                // searchTerm={searchTerm}
-                limit={limit}
-                currentPage={currentPage}
-                fields={fieldsExports}
-                endpoint="export/tahfidz"
-            />
+                    <ModalImport
+                        isOpen={openModalImport}
+                        onClose={() => setOpenModalImport(false)}
+                        onSuccess={handleImportSuccess}
+                        title="Import Data Tahfidz"
+                        endpoint="import/tahfidz"
+                        templateUrl="/template/tahfidz_import_template.xlsx"
+                        templateName="template_tahfidz.xlsx"
+                        instructions={[
+                            "Download template terlebih dahulu",
+                            "Isi data sesuai format template (header di baris 2)",
+                            "Jangan mengubah nama kolom/header",
+                            "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                            "Upload file yang sudah diisi dan klik 'Import Data'",
+                        ]}
+                    />
 
-            <ModalImport
-                isOpen={openModalImport}
-                onClose={() => setOpenModalImport(false)}
-                onSuccess={handleImportSuccess}
-                title="Import Data Tahfidz"
-                endpoint="import/tahfidz"
-                templateUrl="/template/tahfidz_import_template.xlsx"
-                templateName="template_tahfidz.xlsx"
-                instructions={[
-                    "Download template terlebih dahulu",
-                    "Isi data sesuai format template (header di baris 2)",
-                    "Jangan mengubah nama kolom/header",
-                    "Pastikan format tanggal menggunakan YYYY-MM-DD",
-                    "Upload file yang sudah diisi dan klik 'Import Data'",
-                ]}
-            />
+                    {/* {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />} */}
 
-            {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />}
-
-            {/* {showFormModal && (
+                    {/* {showFormModal && (
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
             )} */}
 
-            <ModalAddTahfidz isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} feature={feature} id={selectedId} />
+                    <ModalAddTahfidz
+                        isOpen={showFormModal}
+                        onClose={() => setShowFormModal(false)}
+                        refetchData={fetchData}
+                        feature={feature}
+                        id={selectedId}
+                    />
+                </>
+            )}
         </div>
     )
 }
+
 
 export const TahfidzSetoran = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
