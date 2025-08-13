@@ -181,6 +181,9 @@ const Scan = () => {
                 }),
             })
 
+            console.log("URL ",`${API_BASE_URL}presensi/cari-santri`);
+            
+
             if (!response.ok) {
                 throw new Error("Santri tidak ditemukan")
             }
