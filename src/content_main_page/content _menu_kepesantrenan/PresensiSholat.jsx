@@ -902,7 +902,7 @@ const PresensiSholat = () => {
     )
 
     const AttendanceList = () => (
-        <div className="space-y-6">
+        <div className="space-y-6 mb-8">
             <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                     <div className="relative flex-1 max-w-md">
@@ -1024,7 +1024,7 @@ const PresensiSholat = () => {
     }
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="pl-6 pt-6 mb-8 pb-6">
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
