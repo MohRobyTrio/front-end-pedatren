@@ -1220,12 +1220,13 @@ const Scan = () => {
                     nis: manualNIS.trim(),
                 }),
             })
+            
+            const data = await response.json()
 
             if (!response.ok) {
                 throw new Error(data.message || "Santri tidak ditemukan")
             }
 
-            const data = await response.json()
             setStudentData(data.data)
             setStatus(`Data santri ditemukan: ${data.data.nama_santri}`)
         } catch (error) {
@@ -1412,7 +1413,7 @@ const Scan = () => {
                                 <FiX className="text-red-400 text-lg sm:text-xl mt-0.5" />
                             </div>
                             <div className="ml-3">
-                                <h3 className="text-sm font-medium text-red-800">{status || "Data Tidak Ditemukan"}</h3>
+                                <h3 className="text-sm font-medium text-red-800">{statusResponse || "Data Tidak Ditemukan"}</h3>
                                 <p className="text-sm text-red-700 mt-1">{error}</p>
                             </div>
                         </div>
