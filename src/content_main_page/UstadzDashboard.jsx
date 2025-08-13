@@ -171,7 +171,7 @@ const Scan = () => {
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}presensi/cari-santri`, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -190,6 +190,8 @@ const Scan = () => {
 
             const data = await response.json()
             setStudentData(data)
+            console.log(data);
+            
             setStatus(`Data santri ditemukan: ${data.nama_santri}`)
         } catch (error) {
             setError("Error: " + error.message)
