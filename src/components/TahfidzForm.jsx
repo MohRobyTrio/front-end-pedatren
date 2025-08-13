@@ -247,7 +247,7 @@ const TahfidzForm = ({ student, onSuccess }) => {
                         name="murojaahHafalanBaru"
                         value={formData.murojaahHafalanBaru}
                         onChange={handleInputChange}
-                        placeholder="Murojaah hafalan baru (sebelum hafalan hari ini)"
+                        placeholder="Masukkan Catatan"
                         required
                         rows="4"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent resize-none"
