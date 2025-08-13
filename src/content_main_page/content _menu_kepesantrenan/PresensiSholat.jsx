@@ -572,8 +572,8 @@ const PresensiSholat = () => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const res = await fetch("http://localhost:8000/api/presensi/scan", {
-                method: "POST",
+            const res = await fetch("http://localhost:8000/api/presensi/cari-santri", {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`, // kalau butuh token

@@ -27,6 +27,7 @@ import Profile from './content_main_page/Profile';
 // import UstadzDashboard from './content_main_page/UstadzDashboard';
 import PresensiKartu from './content_main_page/UstadzDashboard';
 import { getRolesString } from './utils/getRolesString';
+import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
 
@@ -188,7 +189,7 @@ function App() {
               <Route key={tab.id} path={tab.link} element={tab.content} />
             ))}
             <Route path="/profile" element={<Profile />} />
-            <Route path="/presensi-kartu" element={<PresensiKartu />} />
+            <Route path="/presensi-kartu" element={<RFIDScanner />} />
           </Route>
         </Route>
 
