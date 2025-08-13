@@ -26,7 +26,6 @@ import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
 import { FiCheck, FiCreditCard, FiEdit3, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
 import { API_BASE_URL } from "../../hooks/config"
-import { set } from "react-hook-form"
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
@@ -1057,7 +1056,7 @@ const PresensiSholat = () => {
                             >
                                 <FaUserCheck className="w-4 h-4" />
                                 <span>Daftar</span>
-                            </button>                            
+                            </button>
                             {/* <button
                                 onClick={() => setCurrentView("report")}
                                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${currentView === "report" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -1085,6 +1084,8 @@ const PresensiSholat = () => {
 }
 
 export default PresensiSholat
+
+import { NDEFReader } from "ndef-reader"
 
 const Scan = () => {
     const [isScanning, setIsScanning] = useState(false)
@@ -1180,12 +1181,13 @@ const Scan = () => {
 
             console.log("URL ", `${API_BASE_URL}presensi/cari-santri`)
 
+            const data = await response.json()
+
             if (!response.ok || data.success == false) {
                 setStatusResponse(data.status || "")
                 throw new Error(data.message || "Santri tidak ditemukan")
             }
 
-            const data = await response.json()
             setStudentData(data.data)
             console.log(data)
 
@@ -1220,7 +1222,7 @@ const Scan = () => {
                     nis: manualNIS.trim(),
                 }),
             })
-            
+
             const data = await response.json()
 
             if (!response.ok) {
