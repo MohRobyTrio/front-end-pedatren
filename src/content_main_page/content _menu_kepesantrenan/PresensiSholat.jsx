@@ -25,6 +25,8 @@ import {
     FaTimesCircle,
     FaExclamationTriangle,
 } from "react-icons/fa"
+import { hasAccess } from "../../utils/hasAccess"
+import { Navigate } from "react-router-dom"
 
 const PresensiSholat = () => {
     // const [openModalExport, setOpenModalExport] = useState(false)
@@ -846,6 +848,10 @@ const PresensiSholat = () => {
             </div>
         </div>
     )
+
+    if (!hasAccess("presensi_sholat")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">

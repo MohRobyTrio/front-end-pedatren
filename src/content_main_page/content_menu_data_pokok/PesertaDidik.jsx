@@ -20,9 +20,10 @@ import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
 import Access from "../../components/Access"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { ModalExport } from "../../components/modal/ModalExport"
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import ModalImport from "../../components/modal/ModalImport"
 import StatistikChart from "../../components/StatistikChart"
+import { hasAccess } from "../../utils/hasAccess"
 
 const PesertaDidik = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -213,6 +214,10 @@ const PesertaDidik = () => {
 
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
+
+    if (!hasAccess("santri")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">

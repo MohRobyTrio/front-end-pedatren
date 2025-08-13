@@ -22,7 +22,8 @@ import NadhomanForm from "../../components/NadhomanForm"
 import useFetchNadhoman from "../../hooks/hooks_menu_data_pokok/Nadhoman"
 import NadhomanItem from "../../components/NadhomanItem"
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
-import { data } from "react-router-dom"
+import { data, Navigate } from "react-router-dom"
+import { hasAccess } from "../../utils/hasAccess"
 
 export const Nadhoman = ({ nadhoman }) => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -970,6 +971,10 @@ export const NadhomanAllData = () => {
 
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormNadhoman(() => setShowFormModal(false), fetchData)
+
+    if (!hasAccess("nadhoman")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">

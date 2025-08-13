@@ -14,6 +14,8 @@ import { FaFileExport, FaPlus, FaMapMarkerAlt, FaSchool, FaClipboardList, FaUser
 import { ModalAddPelanggaran } from "../../components/modal/ModalFormPelanggaran";
 import Access from "../../components/Access";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const DataPelanggaran = () => {
     const [openModalExport, setOpenModalExport] = useState(false);
@@ -121,6 +123,10 @@ const DataPelanggaran = () => {
     const [showFormModal, setShowFormModal] = useState(false);
     const fieldsExports = [];
 
+    if (!hasAccess("pelanggaran")) {
+        return <Navigate to="/not-found" replace />;
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
@@ -186,7 +192,7 @@ const DataPelanggaran = () => {
                 </div>
 
                 <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pelanggaran" />
-                 
+
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -212,26 +218,26 @@ const PelanggaranCard = ({ data, openModal, setShowFormModal, setFeature, setSel
     const getStatusConfig = (status) => {
         switch (status) {
             case 'Sudah diproses':
-                return { 
-                    bg: 'bg-green-100', 
+                return {
+                    bg: 'bg-green-100',
                     text: 'text-green-800',
                     border: 'border-green-300'
                 };
             case 'Sedang diproses':
-                return { 
-                    bg: 'bg-blue-100', 
+                return {
+                    bg: 'bg-blue-100',
                     text: 'text-blue-800',
                     border: 'border-blue-300'
                 };
             case 'Belum diproses':
-                return { 
-                    bg: 'bg-gray-100', 
+                return {
+                    bg: 'bg-gray-100',
                     text: 'text-gray-800',
                     border: 'border-gray-300'
                 };
             default:
-                return { 
-                    bg: 'bg-gray-100', 
+                return {
+                    bg: 'bg-gray-100',
                     text: 'text-gray-800',
                     border: 'border-gray-300'
                 };

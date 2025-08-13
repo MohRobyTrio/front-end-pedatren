@@ -24,6 +24,8 @@ import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
 import Access from "../../components/Access"
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { ModalAddTahfidz } from "../../components/modal/ModalFormTahfidz"
+import { hasAccess } from "../../utils/hasAccess"
+import { Navigate } from "react-router-dom"
 
 export const Tahfidz = ({ student }) => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -1025,6 +1027,10 @@ export const TahfidzRekap = () => {
 
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormTahfidz(() => setShowFormModal(false), fetchData)
+
+    if (!hasAccess("tahfidz")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">

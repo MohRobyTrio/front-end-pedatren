@@ -15,6 +15,10 @@ const Kitab = () => {
     const [feature, setFeature] = useState("");
     const { kitab, loadingKitab, error, fetchKitab, handleDelete } = useFetchKitab();
 
+    if (!hasAccess("kitab")) {
+        return <Navigate to="/not-found" replace />;
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">

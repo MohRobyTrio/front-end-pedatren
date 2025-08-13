@@ -15,6 +15,10 @@ const KartuRFID = () => {
     const [feature, setFeature] = useState("");
     const { karturfid, loadingKartuRFID, error, fetchKartuRFID, handleDelete } = useFetchKartuRFID();
 
+    if (!hasAccess("karturfid")) {
+        return <Navigate to="/not-found" replace />;
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">

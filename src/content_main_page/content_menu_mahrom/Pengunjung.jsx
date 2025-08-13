@@ -11,6 +11,8 @@ import Access from "../../components/Access";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import { ModalAddPengunjung } from "../../components/modal/ModalFormPengunjung";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Pengunjung = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -77,6 +79,10 @@ const Pengunjung = () => {
     };
 
     const [showFormModal, setShowFormModal] = useState(false);
+
+    if (!hasAccess("kunjungan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

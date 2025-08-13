@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import useFetchKelas from "../../hooks/hooks_menu_akademik/Kelas";
 import { ModalAddOrEditKelas, ModalDetailKelas } from "../../components/modal/modal_kelembagaan/ModalFormKelas";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Kelas = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -20,6 +22,10 @@ const Kelas = () => {
             setCurrentPage(page);
         }
     };
+
+    if (!hasAccess("kelembagaan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

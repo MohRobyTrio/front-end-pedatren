@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination";
 import useFetchKamar from "../../hooks/hooks_menu_kewilayahan/Kamar";
 import { ModalAddOrEditKamar, ModalDetailKamar } from "../../components/modal/modal_kewilayahan/ModalFormKamar";
 import ToggleStatus from "../../components/ToggleStatus";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Kamar = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -34,6 +36,10 @@ const Kamar = () => {
             setCurrentPage(page);
         }
     };
+
+    if (!hasAccess("kewilayahan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

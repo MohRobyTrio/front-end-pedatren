@@ -14,4 +14,18 @@ export const rolesWithAccess = {
   golongan: ["admin", "superadmin"],
   kewaliasuhan: ["admin", "superadmin"],
   manage: ["admin", "superadmin"],
+  kepegawaian: ["admin", "superadmin"],
+  santri: ["admin", "superadmin"],
+  kitab: ["admin", "superadmin"],
+  karturfid: ["admin", "superadmin"],
+  dashboard: ["admin", "superadmin"],
+  perizinan: ["admin", "superadmin"],
+  pelanggaran: ["admin", "superadmin"],
+  kunjungan: ["admin", "superadmin"],
+  sholat: ["admin", "superadmin"],
+  jadwal_sholat: ["admin", "superadmin"],
+  khadam: ["admin", "superadmin"],
+  presensi_sholat: ["admin", "superadmin", "ustadz"],
+  tahfidz: ["admin", "superadmin", "ustadz"],
+  nadhoman: ["admin", "superadmin", "ustadz"]
 };

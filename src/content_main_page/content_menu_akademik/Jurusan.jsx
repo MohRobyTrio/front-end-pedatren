@@ -7,6 +7,8 @@ import useFetchJurusan from "../../hooks/hooks_menu_akademik/Jurusan";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import { ModalAddOrEditJurusan, ModalDetailJurusan } from "../../components/modal/modal_kelembagaan/ModalFormJurusan";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Jurusan = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -20,6 +22,10 @@ const Jurusan = () => {
             setCurrentPage(page);
         }
     };
+
+    if (!hasAccess("kelembagaan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

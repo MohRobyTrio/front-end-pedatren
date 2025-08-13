@@ -15,6 +15,10 @@ const JadwalSholat = () => {
     const [feature, setFeature] = useState("");
     const { jadwalSholat, loadingJadwalSholat, error, fetchJadwalSholat, handleDelete } = useFetchJadwalSholat();
 
+    if (!hasAccess("jadwal_sholat")) {
+        return <Navigate to="/not-found" replace />;
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">

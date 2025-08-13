@@ -96,36 +96,37 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const SubMenuDropdown = ({ subData, parentId }) => {
         if (!Array.isArray(subData)) return null;
         return (
-        <ul className="ml-7 mt-1">
-            {subData.map((subItem) => {
-                const isActive = location.pathname === subItem.link;
+            <ul className="ml-7 mt-1">
+                {subData.map((subItem) => {
+                    const isActive = location.pathname === subItem.link;
 
-                // Gunakan warna merah untuk peserta didik, biru untuk lainnya
-                const activeBg = parentId === "pesertadidik" ? "bg-red-50" : "bg-blue-100";
-                const activeText = parentId === "pesertadidik" ? "text-red-500" : "text-blue-700";
-                const activeChevron = parentId === "pesertadidik" ? "text-red-300" : "text-blue-300";
-                const hoverText = parentId === "pesertadidik" ? "hover:text-red-500" : "hover:text-blue-600";
-                const hoverBg = parentId === "pesertadidik" ? "hover:bg-red-100" : "hover:bg-blue-50";
-                const defaultText = parentId === "pesertadidik" ? "text-red-400" : "text-gray-700";
+                    // Gunakan warna merah untuk peserta didik, biru untuk lainnya
+                    const activeBg = parentId === "pesertadidik" ? "bg-red-50" : "bg-blue-100";
+                    const activeText = parentId === "pesertadidik" ? "text-red-500" : "text-blue-700";
+                    const activeChevron = parentId === "pesertadidik" ? "text-red-300" : "text-blue-300";
+                    const hoverText = parentId === "pesertadidik" ? "hover:text-red-500" : "hover:text-blue-600";
+                    const hoverBg = parentId === "pesertadidik" ? "hover:bg-red-100" : "hover:bg-blue-50";
+                    const defaultText = parentId === "pesertadidik" ? "text-red-400" : "text-gray-700";
 
-                return (
-                    <li key={subItem.id} className="mb-0.5">
-                        <Link
-                            to={subItem.link}
-                            className={`flex items-center px-3 py-1.5 rounded-md text-xs transition
+                    return (
+                        <li key={subItem.id} className="mb-0.5">
+                            <Link
+                                to={subItem.link}
+                                className={`flex items-center px-3 py-1.5 rounded-md text-xs transition
                             ${isActive
-                                    ? `${activeBg} ${activeText} font-semibold`
-                                    : `${defaultText} font-medium ${hoverBg} ${hoverText}`
-                                }`}
-                        >
-                            <i className={`fas fa-chevron-right mr-2 text-xs ${activeChevron}`} />
-                            {subItem.text}
-                        </Link>
-                    </li>
-                );
-            })}
-        </ul>
-    )};
+                                        ? `${activeBg} ${activeText} font-semibold`
+                                        : `${defaultText} font-medium ${hoverBg} ${hoverText}`
+                                    }`}
+                            >
+                                <i className={`fas fa-chevron-right mr-2 text-xs ${activeChevron}`} />
+                                {subItem.text}
+                            </Link>
+                        </li>
+                    );
+                })}
+            </ul>
+        )
+    };
 
 
     const MenuHeader = ({ name, isOpen, onClick }) => (
@@ -154,6 +155,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                     <nav className="mt-2 px-2">
                         <ul>
                             {menuItems.map((item) => {
+                                if (item.access && !hasAccess(item.access)) return null;
                                 const isActive = location.pathname === item.link || location.pathname.startsWith(item.link + "/");
                                 return (
                                     <li key={item.id} className="mb-0.5">
@@ -183,14 +185,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                         {dropdowns.dataPokok && <DropdownMenu items={menuDataPokokItems} />}
                     </div>
 
-                    <div className="mt-3 px-2">
-                        <MenuHeader
-                            name="Kewaliasuhan"
-                            isOpen={dropdowns.kewaliasuhan}
-                            onClick={() => toggleDropdown("kewaliasuhan")}
-                        />
-                        {dropdowns.kewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
-                    </div>
+                    <Access action="kewaliasuhan">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Kewaliasuhan"
+                                isOpen={dropdowns.kewaliasuhan}
+                                onClick={() => toggleDropdown("kewaliasuhan")}
+                            />
+                            {dropdowns.kewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
+                        </div>
+                    </Access>
 
                     <div className="mt-3 px-2">
                         <MenuHeader
@@ -201,14 +205,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                         {dropdowns.kepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
                     </div>
 
-                    <div className="mt-3 px-2">
-                        <MenuHeader
-                            name="Kepegawaian"
-                            isOpen={dropdowns.kepegawaian}
-                            onClick={() => toggleDropdown("kepegawaian")}
-                        />
-                        {dropdowns.kepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
-                    </div>
+                    <Access action="kepegawaian">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Kepegawaian"
+                                isOpen={dropdowns.kepegawaian}
+                                onClick={() => toggleDropdown("kepegawaian")}
+                            />
+                            {dropdowns.kepegawaian && <DropdownMenu items={menuKepegawaianItems} />}
+                        </div>
+                    </Access>
 
                     {/* <div className="mt-3 px-2">
                         <MenuHeader

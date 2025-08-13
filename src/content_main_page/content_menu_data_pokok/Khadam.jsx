@@ -17,7 +17,8 @@ import { ModalExport } from "../../components/modal/ModalExport";
 import Access from "../../components/Access";
 import MultiStepModalKhadam from "../../components/modal/ModalFormKhadam";
 import { useMultiStepFormKhadam } from "../../hooks/hooks_modal/useMultiStepFormKhadam";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const Khadam = () => {
     const navigate = useNavigate();
@@ -188,6 +189,10 @@ const Khadam = () => {
             state: { kondisiTabFormulir: kondisi }
         });
     };
+
+    if (!hasAccess("khadam")) {
+        return <Navigate     to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

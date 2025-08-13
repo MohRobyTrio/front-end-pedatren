@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom"
 import useLogin from "../hooks/Login"
 import logo from "../assets/logoku.png"
 import Swal from "sweetalert2"
+import { getRolesString } from "../utils/getRolesString"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -27,8 +28,13 @@ const LoginPage = () => {
         })
         return
       }
-
-      navigate("/dashboard")
+      const roles = getRolesString();
+      if (roles.includes("Ustadz")) {
+        sessionStorage.setItem("dataPokok", "true");
+        return navigate("/tahfidz", { replace: true });
+      } else {
+        return navigate("/dashboard", { replace: true });
+      }
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -230,10 +236,9 @@ const LoginPage = () => {
               className={`
                 w-full rounded-lg sm:rounded-xl px-4 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold shadow-lg
                 transition-all duration-200
-                ${
-                  isLoggingIn
-                    ? "bg-gray-400 cursor-not-allowed text-white"
-                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 cursor-pointer text-white hover:shadow-xl"
+                ${isLoggingIn
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 cursor-pointer text-white hover:shadow-xl"
                 }
               `}
             >
@@ -287,7 +292,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fade-in {
           from {
             opacity: 0;

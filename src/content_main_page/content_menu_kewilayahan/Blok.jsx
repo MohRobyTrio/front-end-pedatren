@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination";
 import useFetchBlok from "../../hooks/hooks_menu_kewilayahan/Blok";
 import { ModalAddOrEditBlok, ModalDetailBlok } from "../../components/modal/modal_kewilayahan/ModalFormBlok";
 import ToggleStatus from "../../components/ToggleStatus";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Blok = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -34,6 +36,10 @@ const Blok = () => {
             setCurrentPage(page);
         }
     };
+
+    if (!hasAccess("kewilayahan")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

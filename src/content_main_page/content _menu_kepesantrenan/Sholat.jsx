@@ -5,6 +5,8 @@ import { useState } from "react";
 // import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import useFetchSholat from "../../hooks/hook_menu_kepesantrenan/Sholat";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Sholat = () => {
 
@@ -12,6 +14,10 @@ const Sholat = () => {
     const [lembagaData, setLembagaData] = useState("");
     const [feature, setFeature] = useState("");
     const { sholat, loadingSholat, error, fetchSholat, handleDelete } = useFetchSholat();
+
+    if (!hasAccess("sholat")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

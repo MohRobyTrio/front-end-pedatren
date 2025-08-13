@@ -7,6 +7,8 @@ import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import { ModalAddOrEditWilayah, ModalDetailWilayah } from "../../components/modal/modal_kewilayahan/ModalFormWilayah";
 import ToggleStatus from "../../components/ToggleStatus";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Wilayah = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -34,6 +36,10 @@ const Wilayah = () => {
             setCurrentPage(page);
         }
     };
+
+    if (!hasAccess("kewilayahan")) {
+        return <Navigate to="/not-found" replace />;
+    }
     
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

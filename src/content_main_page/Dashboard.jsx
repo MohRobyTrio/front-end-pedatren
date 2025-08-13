@@ -11,12 +11,13 @@ import {
     faClock,
     faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons"
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import useFetchSantri from "../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri"
 import useFetchKhadam from "../hooks/hooks_menu_data_pokok/Khadam"
 import useFetchAlumni from "../hooks/hooks_menu_data_pokok/Alumni"
 import useFetchWaliAsuh from "../hooks/hooks_menu_kewaliasuhan/WaliAsuh"
 import useFetchPerizinan from "../hooks/hook_menu_kepesantrenan/Perizinan"
+import { hasAccess } from "../utils/hasAccess"
 
 const Dashboard = () => {
     const filtersPerizinanDMI = useMemo(() => ({ status: "sudah berada diluar pondok" }), [])
@@ -86,6 +87,10 @@ const Dashboard = () => {
             description: "Perlu perhatian khusus",
         },
     ]
+
+    if (!hasAccess("dashboard")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">

@@ -24,8 +24,9 @@ import Swal from 'sweetalert2';
 import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage';
 import Profile from './content_main_page/Profile';
-import UstadzDashboard from './content_main_page/UstadzDashboard';
+// import UstadzDashboard from './content_main_page/UstadzDashboard';
 import PresensiKartu from './content_main_page/UstadzDashboard';
+import { getRolesString } from './utils/getRolesString';
 
 window.sessionExpiredShown = false;
 
@@ -41,7 +42,11 @@ const isLoggedIn = () => {
   console.log(
     "isLoggedIn"
   );
-  
+
+  const roles = getRolesString();
+  console.log(roles);
+
+
   // return true
   const token = getCookie("token");
   const expiredAt = getCookie("expiredAt");
@@ -81,23 +86,47 @@ const PrivateRoute = () => {
 
 // Public route hanya untuk user yang belum login
 const PublicRoute = () => {
-  return !isLoggedIn() ? <Outlet /> : <Navigate to="/dashboard" replace />;
+  console.log("PublicRoute");
+
+  if (!isLoggedIn()) {
+    return <Outlet />;
+  } else {
+    // const rolesString = localStorage.getItem("roles") || sessionStorage.getItem("roles") || "[]";
+    const roles = getRolesString();
+
+    if (roles.includes("Ustadz")) {
+      return <Navigate to="/tahfidz" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
 };
+
 
 const RedirectToDashboard = () => {
   const navigate = useNavigate();
-  const hasRedirectedtoDashboard = useRef(false);
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (!hasRedirectedtoDashboard.current) {
-      console.log("direct");
-      navigate('/dashboard', { replace: true });
-      hasRedirectedtoDashboard.current = true;
+    if (!hasRedirected.current) {
+      // Ambil roles dari localStorage atau sessionStorage
+      const rolesString = localStorage.getItem("roles") || sessionStorage.getItem("roles") || "[]";
+      const roles = JSON.parse(rolesString);
+
+      // Kalau ada role ustadz → direct ke /tahfidz
+      if (roles.includes("ustadz")) {
+        navigate('/tahfidz', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+
+      hasRedirected.current = true;
     }
   }, [navigate]);
 
   return null;
 };
+
 
 const RedirectToBiodata = () => {
   const navigate = useNavigate();
