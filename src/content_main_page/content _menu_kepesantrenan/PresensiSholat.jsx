@@ -1368,17 +1368,20 @@ const Scan = () => {
                 {/* Header */}
                 <div className="text-center mb-6 sm:mb-8">
                     <div className="bg-white rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 flex items-center justify-center shadow-lg">
-                        {inputMode === "nfc" ? (
-                            <FiWifi className="text-2xl sm:text-3xl text-blue-600" />
-                        ) : (
-                            <FiEdit3 className="text-2xl sm:text-3xl text-blue-600" />
-                        )}
+                        {inputMode === "nfc" && <FiWifi className="text-2xl sm:text-3xl text-blue-600" />}
+                        {inputMode === "reader" && <FiHardDrive className="text-2xl sm:text-3xl text-blue-600" />}
+                        {inputMode === "manual" && <FiEdit3 className="text-2xl sm:text-3xl text-blue-600" />}
                     </div>
+
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
-                        {inputMode === "nfc" ? "Scan Kartu NFC" : "Input Manual"}
+                        {inputMode === "nfc" && "Scan Kartu NFC"}
+                        {inputMode === "reader" && "Gunakan Card Reader"}
+                        {inputMode === "manual" && "Input Manual"}
                     </h1>
+
                     <p className="text-sm sm:text-base text-gray-600">{status}</p>
                 </div>
+
 
                 <div className="flex bg-white rounded-xl p-1 shadow-lg mb-4 sm:mb-6">
                     <button
@@ -1468,21 +1471,6 @@ const Scan = () => {
                             </button>
                         </div>
                     ) : (
-                        // <form
-                        //     onSubmit={(e) => {
-                        //         e.preventDefault();
-                        //         submitForm(nis);
-                        //     }}
-                        // >
-                        //     <input
-                        //         ref={inputRef}
-                        //         type="text"
-                        //         value={nis}
-                        //         placeholder="Masukkan NIS"
-                        //         className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                        //         readOnly // supaya user tidak bisa ketik manual
-                        //     />
-                        // </form>
                         <div className="text-center">
                             <div className="relative mb-6">
                                 {/* Card Reader Visual */}
@@ -1546,7 +1534,7 @@ const Scan = () => {
                             </div>
 
                             {/* Instructions */}
-                            <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                            <div className="bg-blue-50 rounded-lg p-4">
                                 <div className="flex items-start space-x-3">
                                     <FiInfo className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
                                     <div className="text-left">
@@ -1555,14 +1543,14 @@ const Scan = () => {
                                             <li>• Pastikan card reader terhubung dengan baik</li>
                                             <li>• Letakkan kartu pada slot reader</li>
                                             <li>• Tunggu hingga NIS muncul secara otomatis</li>
-                                            <li>• Tekan tombol "Proses Presensi" untuk melanjutkan</li>
+                                            <li>• Tekan tombol &quot;Proses Presensi&quot; untuk melanjutkan</li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Action Button */}
-                            {nis && (
+                            {/* {nis && (
                                 <button
                                     onClick={() => submitForm(nis)}
                                     className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
@@ -1574,7 +1562,6 @@ const Scan = () => {
                                 </button>
                             )}
 
-                            {/* Clear Button */}
                             {nis && (
                                 <button
                                     onClick={() => setNis("")}
@@ -1582,7 +1569,7 @@ const Scan = () => {
                                 >
                                     Bersihkan Input
                                 </button>
-                            )}
+                            )} */}
                         </div>
                     )}
                 </div>
