@@ -23,7 +23,6 @@ import {
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
-// import { NDEFReader } from "ndef-reader"
 
 const PresensiSholat = () => {
   const [filters, setFilters] = useState({
@@ -112,22 +111,22 @@ const PresensiSholat = () => {
     fetchData,
   } = useFetchPresensi(updatedFilters)
 
-  // Main states
-  const [currentView, setCurrentView] = useState("scan") // Auto-start in scan mode
+  // Main states - Auto-start in scan mode
+  const [currentView, setCurrentView] = useState("scan")
   const [scanMode, setScanMode] = useState("nfc")
   const [attendanceData, setAttendanceData] = useState([])
   const [todayAttendance, setTodayAttendance] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
-  const [isScanning, setIsScanning] = useState(true) // Auto-start scanning
+  const [isScanning, setIsScanning] = useState(false) // Will be set to true after NFC init
   const [scanResult, setScanResult] = useState(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // NFC states
+  // NFC states - Auto-start ready
   const [nfcSupported, setNfcSupported] = useState(false)
   const [nfcReaderActive, setNfcReaderActive] = useState(false)
-  const [nfcStatus, setNfcStatus] = useState("checking")
+  const [nfcStatus, setNfcStatus] = useState("initializing")
 
   // Student data states
   const [studentData, setStudentData] = useState(null)
@@ -137,26 +136,42 @@ const PresensiSholat = () => {
 
   // Refs
   const abortControllerRef = useRef(null)
+  const nfcReaderRef = useRef(null)
 
+  // Auto-initialize NFC when component mounts
   useEffect(() => {
-    initializeNFC()
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    const initializeApp = async () => {
+      // Start time updates
+      const timer = setInterval(() => setCurrentTime(new Date()), 1000)
 
-    return () => {
-      clearInterval(timer)
-      cleanupNFC()
+      // Auto-initialize NFC scanning
+      await initializeNFC()
+
+      return () => {
+        clearInterval(timer)
+        cleanupNFC()
+      }
     }
+
+    initializeApp()
   }, [])
 
   const initializeNFC = async () => {
+    console.log("Initializing NFC...")
+    setNfcStatus("checking")
+
+    // Check if Web NFC API is supported
     if ("NDEFReader" in window) {
+      console.log("Web NFC API supported")
       setNfcSupported(true)
       setNfcStatus("supported")
-      await startNFCScanning() // Auto-start NFC scanning
+
+      // Auto-start NFC scanning immediately
+      await startNFCScanning()
     } else {
+      console.log("Web NFC API not supported")
       setNfcSupported(false)
       setNfcStatus("not_supported")
-      console.log("Web NFC API not supported")
     }
   }
 
@@ -164,23 +179,37 @@ const PresensiSholat = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
+    setNfcReaderActive(false)
+    setIsScanning(false)
   }
 
   const startNFCScanning = async () => {
-    if (!nfcSupported) return
+    if (!nfcSupported) {
+      console.log("NFC not supported, cannot start scanning")
+      return
+    }
 
     try {
+      console.log("Starting NFC scanning...")
       setNfcStatus("starting")
       setIsScanning(true)
+
+      // Cleanup previous controller
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
 
       // Create new abort controller
       abortControllerRef.current = new AbortController()
 
-      const ndef = new NDEFReader()
+      // Use the native NDEFReader from Web NFC API
+      const ndef = new window.NDEFReader()
+      nfcReaderRef.current = ndef
 
       // Start scanning
       await ndef.scan({ signal: abortControllerRef.current.signal })
 
+      console.log("NFC scanning started successfully")
       setNfcReaderActive(true)
       setNfcStatus("scanning")
 
@@ -202,14 +231,29 @@ const PresensiSholat = () => {
       console.error("Failed to start NFC scanning:", error)
       setNfcStatus("error")
       setIsScanning(false)
-      setScanResult({
-        success: false,
-        message: "Gagal memulai NFC scanning: " + error.message,
-      })
+      setNfcReaderActive(false)
+
+      if (error.name === "NotAllowedError") {
+        setScanResult({
+          success: false,
+          message: "Akses NFC ditolak. Mohon berikan izin untuk menggunakan NFC.",
+        })
+      } else if (error.name === "NotSupportedError") {
+        setScanResult({
+          success: false,
+          message: "NFC tidak didukung pada perangkat ini.",
+        })
+      } else {
+        setScanResult({
+          success: false,
+          message: "Gagal memulai NFC scanning: " + error.message,
+        })
+      }
     }
   }
 
   const stopNFCScanning = () => {
+    console.log("Stopping NFC scanning...")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
@@ -218,24 +262,46 @@ const PresensiSholat = () => {
     setNfcStatus("stopped")
   }
 
+  const restartNFCScanning = async () => {
+    console.log("Restarting NFC scanning...")
+    stopNFCScanning()
+
+    // Wait a moment before restarting
+    setTimeout(async () => {
+      await startNFCScanning()
+    }, 1000)
+  }
+
   const handleNFCRead = async (serialNumber) => {
-    if (isProcessing) return
+    if (isProcessing) {
+      console.log("Already processing, ignoring new scan")
+      return
+    }
 
     console.log("Processing NFC tag:", serialNumber)
 
     // Convert serial number to uid_kartu format
     const uid_kartu = serialNumber || ""
 
+    if (!uid_kartu.trim()) {
+      setScanResult({
+        success: false,
+        message: "UID kartu tidak valid atau kosong",
+      })
+      return
+    }
+
     await searchStudent(uid_kartu)
   }
 
   const searchStudent = async (uid_kartu) => {
-    if (!uid_kartu.trim()) return
-
     setIsSearching(true)
     setIsProcessing(true)
+    setScanResult(null)
 
     try {
+      console.log("Searching student with UID:", uid_kartu)
+
       const token = sessionStorage.getItem("token") || getCookie("token")
       const response = await fetch(
         `http://localhost:8000/api/presensi/cari-santri?uid_kartu=${encodeURIComponent(uid_kartu)}`,
@@ -261,7 +327,7 @@ const PresensiSholat = () => {
           nis: data.nis,
           uid_kartu: data.uid_kartu,
           foto_profil: data.foto_profil,
-          uid_santri: data.uid_santri || data.id, // Assuming uid_santri might be in id field
+          uid_santri: data.uid_santri || data.id,
         })
         setShowStudentForm(true)
         setScanResult({
@@ -275,6 +341,11 @@ const PresensiSholat = () => {
           message: `Santri tidak ditemukan dengan UID: ${uid_kartu}`,
         })
         playNotificationSound(false)
+
+        // Auto-clear error after 3 seconds and restart scanning
+        setTimeout(() => {
+          setScanResult(null)
+        }, 3000)
       }
     } catch (error) {
       console.error("Error searching student:", error)
@@ -283,6 +354,11 @@ const PresensiSholat = () => {
         message: "Gagal mencari data santri: " + error.message,
       })
       playNotificationSound(false)
+
+      // Auto-clear error after 3 seconds
+      setTimeout(() => {
+        setScanResult(null)
+      }, 3000)
     } finally {
       setIsSearching(false)
       setIsProcessing(false)
@@ -295,6 +371,8 @@ const PresensiSholat = () => {
     setIsSaving(true)
 
     try {
+      console.log("Saving attendance for:", studentData.uid_santri)
+
       const token = sessionStorage.getItem("token") || getCookie("token")
       const response = await fetch("http://localhost:8000/api/presensi/scan", {
         method: "POST",
@@ -346,11 +424,12 @@ const PresensiSholat = () => {
   }
 
   const handleCancelForm = () => {
+    console.log("Canceling form")
     setShowStudentForm(false)
     setStudentData(null)
     setScanResult(null)
 
-    // Restart scanning
+    // Restart scanning if not active
     if (nfcSupported && !nfcReaderActive) {
       startNFCScanning()
     }
@@ -366,6 +445,7 @@ const PresensiSholat = () => {
       gainNode.connect(audioContext.destination)
 
       if (success) {
+        // Success sound: two ascending tones
         oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
         oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.15)
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
@@ -373,6 +453,7 @@ const PresensiSholat = () => {
         oscillator.start(audioContext.currentTime)
         oscillator.stop(audioContext.currentTime + 0.3)
       } else {
+        // Error sound: two descending tones
         oscillator.frequency.setValueAtTime(400, audioContext.currentTime)
         oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.3)
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
@@ -450,18 +531,33 @@ const PresensiSholat = () => {
             </div>
             <div className="flex items-center space-x-2">
               {nfcReaderActive ? (
-                <FaCreditCard className="w-4 h-4 text-green-500" />
+                <div className="flex items-center space-x-1">
+                  <div className="animate-pulse">
+                    <FaCreditCard className="w-4 h-4 text-green-500" />
+                  </div>
+                  <span className="text-sm text-green-600">Scanner Aktif</span>
+                </div>
               ) : (
-                <FaCreditCard className="w-4 h-4 text-red-500" />
+                <div className="flex items-center space-x-1">
+                  <FaCreditCard className="w-4 h-4 text-red-500" />
+                  <span className="text-sm text-red-600">Scanner Tidak Aktif</span>
+                </div>
               )}
-              <span className={`text-sm ${nfcReaderActive ? "text-green-600" : "text-red-600"}`}>
-                NFC Scanner {nfcReaderActive ? "Aktif" : "Tidak Aktif"}
-              </span>
             </div>
           </div>
         </div>
 
-        {!nfcSupported && (
+        {/* Status Messages */}
+        {nfcStatus === "initializing" && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+              <p className="text-blue-800">Menginisialisasi NFC Scanner...</p>
+            </div>
+          </div>
+        )}
+
+        {nfcStatus === "not_supported" && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <FaExclamationTriangle className="w-5 h-5 text-red-600" />
@@ -472,20 +568,11 @@ const PresensiSholat = () => {
           </div>
         )}
 
-        {nfcSupported && !nfcReaderActive && nfcStatus !== "scanning" && (
+        {nfcStatus === "starting" && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FaExclamationTriangle className="w-5 h-5 text-yellow-600" />
-                <p className="text-yellow-800">NFC Scanner tidak aktif</p>
-              </div>
-              <button
-                onClick={startNFCScanning}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                disabled={isScanning}
-              >
-                {isScanning ? "Memulai..." : "Mulai Scan"}
-              </button>
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-600 border-t-transparent"></div>
+              <p className="text-yellow-800">Memulai NFC Scanner...</p>
             </div>
           </div>
         )}
@@ -499,12 +586,55 @@ const PresensiSholat = () => {
                 </div>
                 <p className="text-green-800">NFC Scanner aktif - siap membaca kartu</p>
               </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={restartNFCScanning}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                >
+                  <FaSync className="w-3 h-3 mr-1" />
+                  Restart
+                </button>
+                <button
+                  onClick={stopNFCScanning}
+                  className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                >
+                  <FaStop className="w-3 h-3 mr-1" />
+                  Stop
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {nfcStatus === "error" && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FaExclamationTriangle className="w-5 h-5 text-red-600" />
+                <p className="text-red-800">Error pada NFC Scanner</p>
+              </div>
               <button
-                onClick={stopNFCScanning}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                onClick={restartNFCScanning}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <FaStop className="w-4 h-4 mr-2" />
-                Stop
+                Coba Lagi
+              </button>
+            </div>
+          </div>
+        )}
+
+        {nfcStatus === "stopped" && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FaStop className="w-5 h-5 text-gray-600" />
+                <p className="text-gray-800">NFC Scanner dihentikan</p>
+              </div>
+              <button
+                onClick={startNFCScanning}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Mulai Scan
               </button>
             </div>
           </div>
@@ -531,15 +661,24 @@ const PresensiSholat = () => {
                 <p className="text-gray-600 font-medium">Tempelkan kartu NFC ke perangkat</p>
                 <p className="text-sm text-gray-500">Scanner aktif dan siap membaca</p>
               </div>
+            ) : nfcStatus === "initializing" ? (
+              <div className="flex flex-col items-center space-y-4">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
+                <p className="text-blue-600 font-medium">Menginisialisasi NFC...</p>
+              </div>
             ) : (
               <div className="flex flex-col items-center space-y-4">
                 <FaMobile className="w-20 h-20 text-gray-400" />
                 <p className="text-gray-600 font-medium">NFC Scanner tidak aktif</p>
-                <p className="text-sm text-gray-500">Klik tombol untuk memulai scanning</p>
+                <p className="text-sm text-gray-500">
+                  {nfcSupported ? "Klik tombol untuk memulai scanning" : "Browser tidak mendukung NFC"}
+                </p>
               </div>
             )}
 
-            {isSearching && <div className="absolute inset-0 bg-blue-600 opacity-20 animate-pulse"></div>}
+            {(isSearching || nfcStatus === "initializing") && (
+              <div className="absolute inset-0 bg-blue-600 opacity-20 animate-pulse"></div>
+            )}
           </div>
         </div>
       </div>
@@ -556,12 +695,18 @@ const PresensiSholat = () => {
                   src={studentData.foto_profil || "/placeholder.svg"}
                   alt={studentData.nama_santri}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = "none"
+                    e.target.nextSibling.style.display = "flex"
+                  }}
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <FaUser className="w-8 h-8 text-gray-400" />
-                </div>
-              )}
+              ) : null}
+              <div
+                className="w-full h-full flex items-center justify-center"
+                style={{ display: studentData.foto_profil ? "none" : "flex" }}
+              >
+                <FaUser className="w-8 h-8 text-gray-400" />
+              </div>
             </div>
             <div className="flex-1">
               <h4 className="text-xl font-semibold text-gray-900">{studentData.nama_santri}</h4>
