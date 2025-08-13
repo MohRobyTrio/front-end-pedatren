@@ -18,7 +18,17 @@ export default function NFCScanner() {
             setStatus("Silakan tempelkan kartu NFC...");
 
             ndef.addEventListener("reading", async ({ serialNumber, message }) => {
-                console.log("UID Kartu:", serialNumber);
+                console.log("UID Kartu (Hex):", serialNumber);
+
+                // --- Konversi serialNumber Hex ke Decimal ---
+                let uidDecimal = null;
+                try {
+                    uidDecimal = BigInt("0x" + serialNumber).toString(10); // hasil string desimal
+                    console.log("UID Kartu (Decimal):", uidDecimal);
+                } catch (e) {
+                    console.error("Gagal konversi UID ke desimal:", e);
+                    uidDecimal = serialNumber; // fallback
+                }
 
                 let angkaRFID = null;
 
@@ -30,12 +40,11 @@ export default function NFCScanner() {
                 }
 
                 if (angkaRFID) {
-                    alert(`Data angka dari kartu: ${angkaRFID}`);
+                    alert(`Data angka dari kartu: ${angkaRFID} | UID Desimal: ${uidDecimal}`);
                 } else {
-                    alert("Tidak ada data angka di kartu, hanya UID: " + serialNumber);
+                    alert(`Tidak ada data angka di kartu, UID Desimal: ${uidDecimal}`);
                 }
 
-                // setStatus(`Kartu terbaca: ${serialNumber} ${cardData ? `| Data: ${cardData}` : ""}`);
                 setScanning(false);
 
                 // Kirim ke API
@@ -47,8 +56,7 @@ export default function NFCScanner() {
                             Authorization: `Bearer ${localStorage.getItem("token")}`,
                         },
                         body: JSON.stringify({
-                            card_id: serialNumber,
-                            // card_data: cardData
+                            card_id: uidDecimal, // gunakan desimal
                         }),
                     });
 
@@ -60,6 +68,7 @@ export default function NFCScanner() {
                     setStatus("Gagal mengirim data ke API");
                 }
             });
+
 
         } catch (error) {
             console.error("Gagal memulai NFC:", error);
