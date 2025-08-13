@@ -664,7 +664,7 @@ const PerizinanCard = ({
                                 }}
                             />
                             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm border border-white">
-                                {data.jenis_kelamin === "p" ? "♀" : "♂"}
+                                {data.jenis_kelamin == "p" ? "♀" : "♂"}
                             </div>
                         </div>
                     </div>
@@ -721,9 +721,9 @@ const PerizinanCard = ({
                         </div>
 
                         {/* Return Date for completed permissions */}
-                        {(data.status === "kembali tepat waktu" ||
-                            data.status === "telat(sudah kembali)" ||
-                            data.status === "telat(belum kembali)") && (
+                        {(data.status == "kembali tepat waktu" ||
+                            data.status == "telat(sudah kembali)" ||
+                            data.status == "telat(belum kembali)") && (
                                 <div className="mb-3">
                                     <div className="bg-gray-50 border border-gray-200 p-2 rounded-lg inline-flex items-center gap-2">
                                         <FaHome className="text-green-600 text-sm" />
@@ -740,67 +740,65 @@ const PerizinanCard = ({
                 {/* Compact Progress Timeline */}
                 <div className="mt-3 pt-3 border-t border-gray-100">
                     <div className="flex items-center justify-between">
+
+                        {/* Step 1 - Ajuan */}
                         <div className="flex flex-col items-center">
-                            <div className="w-6 h-6 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold shadow-sm text-xs">
+                            <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-sm text-xs">
                                 ✓
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Ajuan</span>
                         </div>
+
                         <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 2 - Setuju/Tolak/Batal */}
                         <div className="flex flex-col items-center">
-                            <div
-                                className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status === "perizinan ditolak" || data.status === "dibatalkan"
-                                        ? "bg-red-500 text-white"
-                                        : (data.status !== "sedang proses izin")
-                                            ? "bg-green-500 text-white"
-                                            : "bg-gray-300 text-gray-600"
-                                    }`}
-                            >
-                                {data.status === "perizinan ditolak" || data.status === "dibatalkan"
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${(data.status == "perizinan ditolak" || data.status == "dibatalkan")
+                                ? "bg-red-500 text-white"
+                                : (data.status !== "sedang proses izin")
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {(data.status == "perizinan ditolak" || data.status == "dibatalkan")
                                     ? "✗"
-                                    : data.status !== "sedang proses izin"
+                                    : (data.status !== "sedang proses izin")
                                         ? "✓"
                                         : "2"}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">
-                                {data.status === "dibatalkan" ? "Batal" : data.status === "perizinan ditolak" ? "Tolak" : "Setuju"}
+                                {data.status == "dibatalkan" ? "Batal" :
+                                    data.status == "perizinan ditolak" ? "Tolak" : "Setuju"}
                             </span>
                         </div>
+
                         <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 3 - Keluar */}
                         <div className="flex flex-col items-center">
-                            <div
-                                className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status === "sudah berada diluar pondok" ||
-                                        data.status === "kembali tepat waktu" ||
-                                        data.status === "telat(sudah kembali)" ||
-                                        data.status === "telat(belum kembali)"
-                                        ? "bg-gray-300 text-white"
-                                        : "bg-gray-300 text-gray-600"
-                                    }`}
-                            >
-                                {data.status === "sudah berada diluar pondok" ||
-                                    data.status === "kembali tepat waktu" ||
-                                    data.status === "telat(sudah kembali)" ||
-                                    data.status === "telat(belum kembali)"
-                                    ? "✓"
-                                    : "3"}
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
+                                data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali)")
+                                ? "bg-green-500 text-white"
+                                : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
+                                    data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali")
+                                ? "✓": "3"}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Keluar</span>
                         </div>
+
                         <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 4 - Kembali */}
                         <div className="flex flex-col items-center">
-                            <div
-                                className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status === "kembali tepat waktu"
-                                        ? "bg-green-500 text-white"
-                                        : (data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)")
-                                            ? "bg-orange-500 text-white"
-                                            : "bg-gray-300 text-gray-600"
-                                    }`}
-                            >
-                                {data.status === "kembali tepat waktu"
-                                    ? "✓"
-                                    : data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)"
-                                        ? "!"
-                                        : "4"}
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status == "kembali tepat waktu"
+                                ? "bg-green-500 text-white"
+                                : (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)")
+                                    ? "bg-red-500 text-white"
+                                    : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {data.status === "kembali tepat waktu" ? '✓' :
+                                 (data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)") ? '!' : '4'}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Kembali</span>
                         </div>

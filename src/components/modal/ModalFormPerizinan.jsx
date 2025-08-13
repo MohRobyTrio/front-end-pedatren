@@ -411,8 +411,9 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                                 <option value="sudah berada diluar pondok">Sudah berada diluar pondok</option>
                                                                 <option value="perizinan ditolak">Perizinan ditolak</option>
                                                                 <option value="dibatalkan">Dibatalkan</option>
-                                                                <option value="telat(sudah kembali)">Telat(sudah kembali)</option>
-                                                                <option value="telat(belum kembali)">Telat(belum kembali)</option>
+                                                                {/* <option value="telat(sudah kembali)">Telat(sudah kembali)</option> */}
+                                                                {/* <option value="telat(belum kembali)">Telat(belum kembali)</option> */}
+                                                                <option value="telat">Telat</option>
                                                                 <option value="kembali tepat waktu">Kembali tepat waktu</option>
                                                             </select>
                                                         </div>
