@@ -20,16 +20,33 @@ const useFetchNadhoman = (filters) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
+  const [detailNadhoman, setDetailNadhoman] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+
   const lastRequest = useRef("");
   const token = sessionStorage.getItem("token") || getCookie("token");
 
-  // Debounce untuk searchTerm
+  // Debounce searchTerm
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 400);
     return () => clearTimeout(handler);
   }, [searchTerm]);
+
+  const handleUnauthorized = async () => {
+    if (!window.sessionExpiredShown) {
+      window.sessionExpiredShown = true;
+      await Swal.fire({
+        title: "Sesi Berakhir",
+        text: "Sesi anda telah berakhir, silakan login kembali.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      clearAuthData();
+      navigate("/login");
+    }
+  };
 
   const fetchData = useCallback(
     async (force = false) => {
@@ -39,7 +56,6 @@ const useFetchNadhoman = (filters) => {
       if (debouncedSearchTerm)
         url += `&nama_santri=${encodeURIComponent(debouncedSearchTerm)}`;
 
-      // Contoh filter tambahan jika ada, sesuaikan dengan API
       if (filters?.nama_kitab)
         url += `&nama_kitab=${encodeURIComponent(filters.nama_kitab)}`;
 
@@ -49,62 +65,70 @@ const useFetchNadhoman = (filters) => {
       }
 
       lastRequest.current = url;
-      console.log("Fetching data dari:", url);
-
       setLoadingNadhoman(true);
       setError(null);
 
       try {
         const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.status === 401 && !window.sessionExpiredShown) {
-          window.sessionExpiredShown = true;
-          await Swal.fire({
-            title: "Sesi Berakhir",
-            text: "Sesi anda telah berakhir, silakan login kembali.",
-            icon: "warning",
-            confirmButtonText: "OK",
-          });
-          clearAuthData();
-          navigate("/login");
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(`${response.status} - ${response.statusText}`);
-        }
+        if (response.status === 401) return handleUnauthorized();
+        if (!response.ok) throw new Error(`${response.status} - ${response.statusText}`);
 
         const data = await response.json();
-        console.log("Data dari API Nadhoman:", data);
-
         setDataNadhoman(Array.isArray(data.data) ? data.data : []);
         setTotalData(data.total_data || 0);
         setTotalPages(data.total_pages || 1);
       } catch (err) {
-        console.error("Fetch error:", err);
         setError(err.message);
         setDataNadhoman([]);
       } finally {
         setLoadingNadhoman(false);
       }
     },
-    [currentPage, filters, limit, debouncedSearchTerm, token, clearAuthData, navigate]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentPage, filters, limit, debouncedSearchTerm, token]
+  );
+
+  // ✅ Fungsi baru untuk fetch detail santri
+  const fetchNadhomanDetail = useCallback(
+    async (santriId) => {
+      if (!santriId) return;
+      setLoadingDetail(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}nadhoman/${santriId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.status === 401) return handleUnauthorized();
+        if (!response.ok) throw new Error(`${response.status} - ${response.statusText}`);
+
+        const data = await response.json();
+        setDetailNadhoman(data);
+      } catch (err) {
+        setError(err.message);
+        setDetailNadhoman(null);
+      } finally {
+        setLoadingDetail(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [token]
   );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Reset ke halaman 1 kalau limit berubah
   useEffect(() => {
     setCurrentPage(1);
   }, [limit]);
 
   return {
+    // list
     dataNadhoman,
     loadingNadhoman,
     error,
@@ -117,6 +141,11 @@ const useFetchNadhoman = (filters) => {
     searchTerm,
     setSearchTerm,
     fetchData,
+
+    // detail
+    detailNadhoman,
+    loadingDetail,
+    fetchNadhomanDetail,
   };
 };
 

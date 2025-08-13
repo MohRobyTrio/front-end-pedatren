@@ -10,7 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import { FaChartLine, FaEdit, FaPlus, FaBook, FaQuran, FaArrowLeft, FaFileImport, FaFileExport } from "react-icons/fa"
+import { FaChartLine, FaEdit, FaPlus, FaBook, FaQuran, FaArrowLeft, FaFileImport, FaFileExport, FaUser, FaIdCard, FaStar, FaCheckCircle, FaCalendarAlt } from "react-icons/fa"
 import { useMultiStepFormTahfidz } from "../../hooks/hooks_modal/useMultiStepFormTahfidz"
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
@@ -133,21 +133,47 @@ export const Tahfidz = ({ student }) => {
     )
 
     const {
-        tahfidzData,
+        dataTahfidz,
+        detailTahfidz,
         loadingTahfidz,
-        searchTerm,
-        setSearchTerm,
+        loadingDetail,
         error,
         limit,
         setLimit,
-        totalDataTahfidz,
+        totalData,
         totalPages,
         currentPage,
         setCurrentPage,
         fetchData,
+        fetchDetailTahfidz,
     } = useFetchTahfidz(updatedFilters)
     const [showFilters, setShowFilters] = useState(false)
     const [viewMode, setViewMode] = useState("table")
+
+    useEffect(() => {
+        console.log("student:", student);
+        if (student) {
+            console.log("Fetching detail for student ID:", student.santri_id);
+            fetchDetailTahfidz(student.santri_id)
+        }
+    }, [student, student.santri_id]);
+
+    useEffect(() => {
+        if (detailTahfidz?.data) {
+            console.log("Daftar Tahfidz:", detailTahfidz.data.tahfidz);
+            console.log("Rekap Tahfidz:", detailTahfidz.data.rekap_tahfidz);
+
+            // contoh ambil satu nilai
+            console.log("Nama Santri:", detailTahfidz.data.rekap_tahfidz.santri_nama);
+            console.log("Tahun Ajaran:", detailTahfidz.data.rekap_tahfidz.tahun_ajaran);
+            console.log("Persentase Khatam:", detailTahfidz.data.rekap_tahfidz.persentase_khatam);
+
+            // contoh loop tahfidz
+            detailTahfidz.data.tahfidz.forEach((item) => {
+                console.log(item.tanggal, item.jenis_setoran, item.surat);
+            });
+        }
+    }, [detailTahfidz]);
 
     useEffect(() => {
         const savedViewMode = sessionStorage.getItem("viewMode")
@@ -297,9 +323,9 @@ export const Tahfidz = ({ student }) => {
                 </div>
             )}
 
-            <div className="bg-white rounded-lg shadow-md mb-10 overflow-x-auto">
+            <div className="overflow-x-auto">
                 {showStatistik ? (
-                    <StatistikChart data={tahfidzData} loading={loadingTahfidz} totalData={totalDataTahfidz} />
+                    <StatistikChart data={dataTahfidz} loading={loadingTahfidz} totalData={totalData} />
                 ) : (
                     <>
                         {/* Filter Section - Only show on laporan tab */}
@@ -370,41 +396,43 @@ export const Tahfidz = ({ student }) => {
                                                     </div>
                                                     <div className="flex flex-col">
                                                         <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                                            Nama Lengkap
+                                                            Nama Santri
                                                         </span>
-                                                        <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama}</span>
+                                                        <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama_santri}</span>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3">
                                                     <div className="flex flex-col">
                                                         <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                                            Unit Sekolah
+                                                            Tahun Ajaran
                                                         </span>
-                                                        <span className="text-lg font-semibold text-gray-800">{selectedStudent.unit}</span>
+                                                        <span className="text-lg font-semibold text-gray-800">{selectedStudent.tahun_ajaran}</span>
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Kelas</span>
-                                                        <span className="text-lg font-semibold text-gray-800">{selectedStudent.kelas}</span>
+                                                        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                                            Rata Rata Nilai
+                                                        </span>
+                                                        <span className="text-lg font-semibold text-gray-800">
+                                                            {selectedStudent.rata_rata_nilai}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="mt-2 pt-2 border-t border-green-100">
-                                                <div className="flex flex-wrap items-center gap-2 justify-between">
-                                                    {/* Badge status & tahun ajaran */}
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                                                            Aktif
-                                                        </span>
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                            Tahun Ajaran 2024/2025
-                                                        </span>
-                                                    </div>
+                                            {/* <div className="mt-2 pt-2 border-t border-green-100">
+                        <div className="flex flex-wrap items-center gap-2 justify-between">
+]                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                              Aktif
+                            </span>
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              Tahun Ajaran {selectedStudent.tahun_ajaran}
+                            </span>
+                          </div>
 
-                                                    {/* Tombol di kanan */}
-                                                </div>
-                                            </div>
+                        </div>
+                      </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -461,17 +489,17 @@ export const Tahfidz = ({ student }) => {
                                                     <div className="col-span-3 flex justify-center items-center">
                                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                                     </div>
-                                                ) : tahfidzData.length === 0 ? (
+                                                ) : dataTahfidz.length === 0 ? (
                                                     <p className="text-center col-span-3">Tidak ada data</p>
                                                 ) : (
-                                                    tahfidzData.map((item, index) => (
+                                                    dataTahfidz.map((item, index) => (
                                                         <TahfidzItem key={index} data={item} title="Data Tahfidz" menu={1} />
                                                     ))
                                                 )}
                                             </div>
                                         ) : (
                                             <>
-                                                <div
+                                                {/* <div
                                                     className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
                                                 >
                                                     <Filters
@@ -513,16 +541,16 @@ export const Tahfidz = ({ student }) => {
                                                 </div>
 
                                                 <SearchBar
-                                                    searchTerm={searchTerm}
-                                                    setSearchTerm={setSearchTerm}
-                                                    totalData={totalDataTahfidz}
+                                                    // searchTerm={searchTerm}
+                                                    // setSearchTerm={setSearchTerm}
+                                                    // totalData={totalDataTahfidz}
                                                     limit={limit}
                                                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                                                     toggleFilters={() => setShowFilters(!showFilters)}
                                                     toggleView={setViewMode}
                                                     showFilterButtons={false}
                                                     showSearch={false}
-                                                />
+                                                /> */}
                                                 <DoubleScrollbarTable>
                                                     <table className="min-w-full text-sm text-left">
                                                         <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
@@ -530,29 +558,29 @@ export const Tahfidz = ({ student }) => {
                                                                 <th className="px-3 py-2 border-b w-16">#</th>
                                                                 <th className="px-3 py-2 border-b">Tanggal</th>
                                                                 <th className="px-3 py-2 border-b">Nama Santri</th>
-                                                                <th className="px-3 py-2 border-b">NIS</th>
-                                                                <th className="px-3 py-2 border-b">Kelas</th>
-                                                                <th className="px-3 py-2 border-b">Hafalan Baru</th>
-                                                                <th className="px-3 py-2 border-b">Keterangan</th>
-                                                                <th className="px-3 py-2 border-b">Murojaah</th>
-                                                                <th className="px-3 py-2 border-b">Aksi</th>
+                                                                <th className="px-3 py-2 border-b">Jenis Setoran</th>
+                                                                <th className="px-3 py-2 border-b">Surat</th>
+                                                                <th className="px-3 py-2 border-b">Nilai</th>
+                                                                <th className="px-3 py-2 border-b">Catatan</th>
+                                                                <th className="px-3 py-2 border-b">Status</th>
+                                                                <th className="px-3 py-2 border-b">Pencatat</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody className="text-gray-800">
-                                                            {loadingTahfidz ? (
+                                                            {loadingDetail ? (
                                                                 <tr>
                                                                     <td colSpan="9" className="text-center py-6">
                                                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                                                     </td>
                                                                 </tr>
-                                                            ) : tahfidzData.length === 0 ? (
+                                                            ) : detailTahfidz.data.tahfidz.length === 0 ? (
                                                                 <tr>
                                                                     <td colSpan="9" className="text-center py-6">
                                                                         Tidak ada data
                                                                     </td>
                                                                 </tr>
                                                             ) : (
-                                                                tahfidzData.map((item, index) => (
+                                                                detailTahfidz.data.tahfidz.map((item, index) => (
                                                                     <tr
                                                                         key={item.id || index}
                                                                         className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
@@ -562,13 +590,14 @@ export const Tahfidz = ({ student }) => {
                                                                             {(currentPage - 1) * limit + index + 1 || "-"}
                                                                         </td>
                                                                         <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.kelas || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.hafalan_baru || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b">{item.murojaah || "-"}</td>
-                                                                        <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                                        <td className="px-3 py-2 border-b">{item.santri_nama || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b capitalize">{item.jenis_setoran || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.surat || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.catatan || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b capitalize">{item.status || "-"}</td>
+                                                                        <td className="px-3 py-2 border-b">{item.pencatat || "-"}</td>
+                                                                        {/* <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                                             <button
                                                                                 onClick={(e) => {
                                                                                     e.stopPropagation()
@@ -578,7 +607,7 @@ export const Tahfidz = ({ student }) => {
                                                                             >
                                                                                 <FaEdit />
                                                                             </button>
-                                                                        </td>
+                                                                        </td> */}
                                                                     </tr>
                                                                 ))
                                                             )}
@@ -591,58 +620,133 @@ export const Tahfidz = ({ student }) => {
                                 )}
 
                                 {activeTab === "rekap" && (
-                                    <div>
-                                        <DoubleScrollbarTable>
-                                            <table className="min-w-full text-sm text-left">
-                                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                                    <tr>
-                                                        <th className="px-3 py-2 border-b w-16">#</th>
-                                                        <th className="px-3 py-2 border-b">NIS</th>
-                                                        <th className="px-3 py-2 border-b">Nama Santri</th>
-                                                        <th className="px-3 py-2 border-b">Unit</th>
-                                                        <th className="px-3 py-2 border-b">Kelas</th>
-                                                        <th className="px-3 py-2 border-b">Total Hafalan</th>
-                                                        <th className="px-3 py-2 border-b">Progress (%)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="text-gray-800">
-                                                    {loadingTahfidz ? (
-                                                        <tr>
-                                                            <td colSpan="7" className="text-center py-6">
-                                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        mockStudents.map((student, index) => (
-                                                            <tr key={student.nis} className="hover:bg-gray-50">
-                                                                <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                                <td className="px-3 py-2 border-b">{student.nis}</td>
-                                                                <td className="px-3 py-2 border-b">{student.nama}</td>
-                                                                <td className="px-3 py-2 border-b">{student.unit}</td>
-                                                                <td className="px-3 py-2 border-b">{student.kelas}</td>
-                                                                <td className="px-3 py-2 border-b">
-                                                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                                                                        {Math.floor(Math.random() * 30) + 1} Juz
-                                                                    </span>
-                                                                </td>
-                                                                <td className="px-3 py-2 border-b">
-                                                                    <div className="flex items-center">
-                                                                        <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
-                                                                            <div
-                                                                                className="bg-green-600 h-2 rounded-full"
-                                                                                style={{ width: `${Math.floor(Math.random() * 100)}%` }}
-                                                                            ></div>
+                                    loadingDetail ? (
+                                        <div className="flex justify-center items-center py-6">
+                                            <OrbitProgress
+                                                variant="disc"
+                                                color="#2a6999"
+                                                size="small"
+                                                text=""
+                                                textColor=""
+                                            />
+                                        </div>
+
+                                    ) : (
+                                        <>
+                                            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                                                <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                                                    <FaChartLine className="mr-2 text-green-600" />
+                                                    Progress Hafalan
+                                                </h2>
+
+                                                <div className="space-y-6">
+                                                    {/* Progress Bar */}
+                                                    <div>
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <span className="text-sm font-medium text-gray-700">Persentase Khatam</span>
+                                                            <span
+                                                                className={`text-sm font-bold ${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 50 ? "text-green-600" : Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 25 ? "text-yellow-600" : "text-red-600"}`}
+                                                            >
+                                                                {Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam).toFixed(2)}%
+                                                            </span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-200 rounded-full h-3">
+                                                            <div
+                                                                className={`h-3 rounded-full transition-all duration-500 ${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 50
+                                                                    ? "bg-green-500"
+                                                                    : Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 25
+                                                                        ? "bg-yellow-500"
+                                                                        : "bg-red-500"
+                                                                    }`}
+                                                                style={{
+                                                                    width: `${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam)}%`,
+                                                                }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Statistics Grid */}
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                        <div className="bg-green-50 p-4 rounded-lg text-center">
+                                                            <div className="text-2xl font-bold text-green-600">
+                                                                {detailTahfidz.data.rekap_tahfidz.total_surat}
+                                                            </div>
+                                                            <div className="text-sm text-gray-600">Total Surat</div>
+                                                        </div>
+
+                                                        <div className="bg-blue-50 p-4 rounded-lg text-center">
+                                                            <div className="text-2xl font-bold text-blue-600">
+                                                                {detailTahfidz.data.rekap_tahfidz.jumlah_setoran}
+                                                            </div>
+                                                            <div className="text-sm text-gray-600">Jumlah Setoran</div>
+                                                        </div>
+
+                                                        <div className="bg-purple-50 p-4 rounded-lg text-center">
+                                                            <div className="text-2xl font-bold text-purple-600">
+                                                                {detailTahfidz.data.rekap_tahfidz.surat_tersisa}
+                                                            </div>
+                                                            <div className="text-sm text-gray-600">Surat Tersisa</div>
+                                                        </div>
+
+                                                        <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                                                            <div className="text-2xl font-bold text-yellow-600">
+                                                                {Number.parseFloat(detailTahfidz.data.rekap_tahfidz.sisa_persentase).toFixed(2)}%
+                                                            </div>
+                                                            <div className="text-sm text-gray-600">Tersisa</div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Additional Information */}
+                                                    {(detailTahfidz.data.rekap_tahfidz.tanggal_mulai ||
+                                                        detailTahfidz.data.rekap_tahfidz.tanggal_selesai) && (
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                                                                {detailTahfidz.data.rekap_tahfidz.tanggal_mulai && (
+                                                                    <div className="flex items-center space-x-3">
+                                                                        <div className="bg-indigo-100 p-2 rounded-lg">
+                                                                            <FaCalendarAlt className="text-indigo-600" />
                                                                         </div>
-                                                                        <span className="text-xs text-gray-600">{Math.floor(Math.random() * 100)}%</span>
+                                                                        <div>
+                                                                            <div className="text-sm text-gray-500">Tanggal Mulai</div>
+                                                                            <div className="font-semibold text-gray-800">
+                                                                                {new Date(detailTahfidz.data.rekap_tahfidz.tanggal_mulai).toLocaleDateString(
+                                                                                    "id-ID",
+                                                                                    {
+                                                                                        year: "numeric",
+                                                                                        month: "long",
+                                                                                        day: "numeric",
+                                                                                    },
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </DoubleScrollbarTable>
-                                    </div>
+                                                                )}
+
+                                                                {detailTahfidz.data.rekap_tahfidz.tanggal_selesai && (
+                                                                    <div className="flex items-center space-x-3">
+                                                                        <div className="bg-emerald-100 p-2 rounded-lg">
+                                                                            <FaCheckCircle className="text-emerald-600" />
+                                                                        </div>
+                                                                        <div>
+                                                                            <div className="text-sm text-gray-500">Tanggal Selesai</div>
+                                                                            <div className="font-semibold text-gray-800">
+                                                                                {new Date(detailTahfidz.data.rekap_tahfidz.tanggal_selesai).toLocaleDateString(
+                                                                                    "id-ID",
+                                                                                    {
+                                                                                        year: "numeric",
+                                                                                        month: "long",
+                                                                                        day: "numeric",
+                                                                                    },
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )
                                 )}
 
                                 {activeTab === "tambah" && (
@@ -654,9 +758,9 @@ export const Tahfidz = ({ student }) => {
                         )}
 
                         {/* Pagination - Only show on laporan tab */}
-                        {totalPages > 1 && activeTab === "laporan" && (
+                        {/* {totalPages > 1 && activeTab === "laporan" && (
                             <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
-                        )}
+                        )} */}
                     </>
                 )}
             </div>
@@ -665,7 +769,7 @@ export const Tahfidz = ({ student }) => {
                 isOpen={openModalExport}
                 onClose={() => setOpenModalExport(false)}
                 filters={updatedFilters}
-                searchTerm={searchTerm}
+                // searchTerm={searchTerm}
                 limit={limit}
                 currentPage={currentPage}
                 fields={fieldsExports}
@@ -726,6 +830,16 @@ export const TahfidzRekap = () => {
     const handleBackToRekap = () => {
         setCurrentView("rekap")
         setSelectedStudentForTahfidz(null)
+    }
+
+    const openModal = (item) => {
+        setSelectedItem(item)
+        setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+        setSelectedItem(null)
+        setIsModalOpen(false)
     }
 
     const [filters, setFilters] = useState({
@@ -804,7 +918,9 @@ export const TahfidzRekap = () => {
 
     const {
         dataTahfidz,
+        detailTahfidz,
         loadingTahfidz,
+        loadingDetail,
         error,
         limit,
         setLimit,
@@ -813,6 +929,7 @@ export const TahfidzRekap = () => {
         currentPage,
         setCurrentPage,
         fetchData,
+        fetchDetailTahfidz,
     } = useFetchTahfidz(updatedFilters)
 
     const [showFilters, setShowFilters] = useState(false)
@@ -960,12 +1077,12 @@ export const TahfidzRekap = () => {
                                         </button>
                                     </Access>
 
-                                    <button
+                                    {/* <button
                                         onClick={() => setOpenModalImport(true)}
                                         className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                                     >
                                         <FaFileImport /> Import
-                                    </button>
+                                    </button> */}
 
                                     <button
                                         onClick={() => setOpenModalExport(true)}
@@ -1118,12 +1235,7 @@ export const TahfidzRekap = () => {
                                                                 <button
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
-                                                                        handleSelectStudent({
-                                                                            nis: item.nis,
-                                                                            nama: item.nama_santri,
-                                                                            unit: "PONDOKPA", // atau ambil dari data item jika ada
-                                                                            kelas: item.kelas || "N/A",
-                                                                        })
+                                                                        handleSelectStudent(item)
                                                                     }}
                                                                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 flex items-center gap-1 mx-auto"
                                                                 >
@@ -1174,7 +1286,7 @@ export const TahfidzRekap = () => {
                         ]}
                     />
 
-                    {/* {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />} */}
+                    {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />}
 
                     {/* {showFormModal && (
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />

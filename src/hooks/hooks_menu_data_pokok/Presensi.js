@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useLogout from "../Logout";
 import Swal from "sweetalert2";
 
-const useFetchPresensi = (filters) => {
+const useFetchPresensiSholat = (filters) => {
   const { clearAuthData } = useLogout();
   const navigate = useNavigate();
   const [dataPresensi, setDataPresensi] = useState([]);
@@ -106,4 +106,4 @@ const useFetchPresensi = (filters) => {
   };
 };
 
-export default useFetchPresensi;
+export default useFetchPresensiSholat;

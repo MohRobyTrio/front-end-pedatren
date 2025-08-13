@@ -63,6 +63,10 @@ import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import { Nadhoman, NadhomanAllData } from "../content_main_page/content_menu_data_pokok/Nadhoman";
 import { Tahfidz, TahfidzRekap, TahfidzSetoran } from "../content_main_page/content_menu_data_pokok/Tahfidz";
 import PresensiSholat from "../content_main_page/content _menu_kepesantrenan/PresensiSholat";
+import Kitab from "../content_main_page/content_menu_data_pokok/Kitab";
+import KartuRFID from "../content_main_page/content_menu_data_pokok/KartuRFID";
+import Sholat from "../content_main_page/content _menu_kepesantrenan/Sholat";
+import JadwalSholat from "../content_main_page/content _menu_kepesantrenan/JadwalSholat";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 
 export const menuItems = [
@@ -75,10 +79,12 @@ export const menuDataPokokItems = [
     { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
     { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
-    { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
-    { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah /> },
+    { id: "kitab", icon: "fa-book", text: "Kitab", link: "/kitab", content: <Kitab /> },
     { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap /> },
     { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData /> },
+    { id: "karturfid", icon: "fa-id-card", text: "Kartu RFID", link: "/karturfid", content: <KartuRFID /> },
+    { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga /> },
+    { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah /> },
     // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
     // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
     // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
@@ -102,6 +108,8 @@ export const menuKepesantrenanItems = [
     // { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung /> },
     { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam /> },
+    { id: "sholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat /> },
+    { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat /> },
     { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat /> },
 ];
 
