@@ -25,7 +25,6 @@ import ForgotPasswordPage from './page/ForgotPasswordPage';
 import ResetPasswordPage from './page/ResetPasswordPage';
 import Profile from './content_main_page/Profile';
 // import UstadzDashboard from './content_main_page/UstadzDashboard';
-import PresensiKartu from './content_main_page/UstadzDashboard';
 import { getRolesString } from './utils/getRolesString';
 import RFIDScanner from './content_main_page/UstadzDashboard';
 
