@@ -26,6 +26,7 @@ import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
 import { FiCheck, FiCreditCard, FiEdit3, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
 import { API_BASE_URL } from "../../hooks/config"
+import blankProfile from "../../assets/blank_profile.png";
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
@@ -1025,7 +1026,7 @@ const PresensiSholat = () => {
 
     return (
         <div className="pl-6 pt-6 mb-8 pb-6">
-            <div className="max-w-7xl mx-auto">
+            <div className="mx-auto">
                 <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
@@ -1444,6 +1445,10 @@ const Scan = () => {
                                         src={studentData.foto_profil || "/placeholder.svg"}
                                         alt="Foto Profil"
                                         className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = blankProfile;
+                                        }}
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center">
