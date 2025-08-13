@@ -24,26 +24,26 @@ export default function NFCScanner() {
                 let uidDecimal = null;
                 try {
                     uidDecimal = BigInt("0x" + serialNumber).toString(10); // hasil string desimal
-                    console.log("UID Kartu (Decimal):", uidDecimal);
+                    alert("UID Kartu (Decimal):", uidDecimal);
                 } catch (e) {
-                    console.error("Gagal konversi UID ke desimal:", e);
+                    alert("Gagal konversi UID ke desimal:", e);
                     uidDecimal = serialNumber; // fallback
                 }
 
-                let angkaRFID = null;
+                // let angkaRFID = null;
 
-                for (const record of message.records) {
-                    if (record.recordType == "text") {
-                        const textDecoder = new TextDecoder(record.encoding);
-                        angkaRFID = textDecoder.decode(record.data).trim(); // hapus spasi
-                    }
-                }
+                // for (const record of message.records) {
+                //     if (record.recordType == "text") {
+                //         const textDecoder = new TextDecoder(record.encoding);
+                //         angkaRFID = textDecoder.decode(record.data).trim(); // hapus spasi
+                //     }
+                // }
 
-                if (angkaRFID) {
-                    alert(`Data angka dari kartu: ${angkaRFID} | UID Desimal: ${uidDecimal}`);
-                } else {
-                    alert(`Tidak ada data angka di kartu, UID Desimal: ${uidDecimal}`);
-                }
+                // if (angkaRFID) {
+                //     alert(`Data angka dari kartu: ${angkaRFID} | UID Desimal: ${uidDecimal}`);
+                // } else {
+                //     alert(`Tidak ada data angka di kartu, UID Desimal: ${uidDecimal}`);
+                // }
 
                 setScanning(false);
 
