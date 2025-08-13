@@ -25,8 +25,9 @@ export default function NFCScanner() {
                 let uidDecimal = null;
                 try {
                     // Hapus semua tanda ':'
-                    const hexClean = serialNumber.replace(/:/g, ""); // "2F8B292B"
-                    uidDecimal = BigInt("0x" + hexClean).toString(10); // konversi ke desimal
+                    const bytes = serialNumber.split(":");      // ["2F","8B","29","2B"]
+                    const reversed = bytes.reverse().join("");  // "2B298B2F" (little-endian)
+                    const uidDecimal = BigInt("0x" + reversed).toString(10); // konversi ke desimal
                     alert("UID Kartu (Decimal): " + uidDecimal);
                 } catch (e) {
                     alert("Gagal konversi UID ke desimal: " + e);
