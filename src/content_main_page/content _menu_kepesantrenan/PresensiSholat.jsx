@@ -20,8 +20,6 @@ import {
   FaUser,
   FaMobile,
   FaKeyboard,
-  FaWifi,
-  FaShieldAlt,
 } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
@@ -126,21 +124,12 @@ const PresensiSholat = () => {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // Enhanced NFC states
+  // Simplified NFC states for built-in phone NFC
   const [nfcSupported, setNfcSupported] = useState(false)
   const [nfcReaderActive, setNfcReaderActive] = useState(false)
   const [nfcStatus, setNfcStatus] = useState("initializing")
   const [nfcPermission, setNfcPermission] = useState("unknown")
-  const [nfcHardwareEnabled, setNfcHardwareEnabled] = useState("unknown")
   const [browserInfo, setBrowserInfo] = useState("")
-  const [systemChecks, setSystemChecks] = useState({
-    https: false,
-    browser: false,
-    android: false,
-    nfcApi: false,
-    permissions: false,
-    hardware: false,
-  })
 
   // Student data states
   const [studentData, setStudentData] = useState(null)
@@ -156,7 +145,6 @@ const PresensiSholat = () => {
   const abortControllerRef = useRef(null)
   const nfcReaderRef = useRef(null)
   const manualInputRef = useRef(null)
-  const permissionCheckInterval = useRef(null)
 
   // Auto-initialize when component mounts
   useEffect(() => {
@@ -166,19 +154,16 @@ const PresensiSholat = () => {
       // Start time updates
       const timer = setInterval(() => setCurrentTime(new Date()), 1000)
 
-      // Perform comprehensive system checks
-      await performSystemChecks()
+      // Detect browser and platform
+      detectBrowserInfo()
 
       // Auto-initialize NFC scanning with delay
       setTimeout(async () => {
         await initializeNFC()
-      }, 1000)
+      }, 800)
 
       return () => {
         clearInterval(timer)
-        if (permissionCheckInterval.current) {
-          clearInterval(permissionCheckInterval.current)
-        }
         cleanupNFC()
       }
     }
@@ -186,176 +171,77 @@ const PresensiSholat = () => {
     initializeApp()
   }, [])
 
-  const performSystemChecks = async () => {
-    console.log("🔍 Performing comprehensive system checks...")
-
+  const detectBrowserInfo = () => {
     const userAgent = navigator.userAgent
     const isChrome = /Chrome/.test(userAgent) && !/Edg/.test(userAgent)
     const isAndroid = /Android/.test(userAgent)
     const isHttps = window.location.protocol === "https:"
-    const hasNDEFReader = "NDEFReader" in window
-    const isSecureContext = window.isSecureContext
 
-    const checks = {
-      https: isHttps && isSecureContext,
-      browser: isChrome,
-      android: isAndroid,
-      nfcApi: hasNDEFReader,
-      permissions: false,
-      hardware: false,
-    }
-
-    // Check permissions
-    try {
-      if ("permissions" in navigator) {
-        const permission = await navigator.permissions.query({ name: "nfc" })
-        checks.permissions = permission.state === "granted"
-        setNfcPermission(permission.state)
-
-        // Monitor permission changes
-        permission.addEventListener("change", () => {
-          setNfcPermission(permission.state)
-          console.log("🔄 NFC Permission changed:", permission.state)
-        })
-      }
-    } catch (error) {
-      console.log("⚠️ Cannot check NFC permissions:", error)
-    }
-
-    // Check NFC hardware availability
-    await checkNFCHardware()
-
-    setSystemChecks(checks)
-
-    const info = `Chrome: ${isChrome ? "✅" : "❌"}, Android: ${isAndroid ? "✅" : "❌"}, HTTPS: ${isHttps ? "✅" : "❌"}, NFC API: ${hasNDEFReader ? "✅" : "❌"}`
+    const info = `Browser: ${isChrome ? "Chrome ✅" : "Other ❌"}, Platform: ${isAndroid ? "Android ✅" : "Other ❌"}, HTTPS: ${isHttps ? "Yes ✅" : "No ❌"}`
     setBrowserInfo(info)
-
-    console.log("📋 System Checks:", checks)
     console.log("🔍 Browser Info:", info)
   }
 
-  const checkNFCHardware = async () => {
-    try {
-      // Try to create NDEFReader to test hardware availability
-      if ("NDEFReader" in window) {
-        const testReader = new window.NDEFReader()
-
-        // Try to scan briefly to test hardware
-        const testController = new AbortController()
-
-        try {
-          await testReader.scan({ signal: testController.signal })
-          setNfcHardwareEnabled("enabled")
-          setSystemChecks((prev) => ({ ...prev, hardware: true }))
-          console.log("✅ NFC Hardware: Enabled and available")
-
-          // Immediately abort the test scan
-          testController.abort()
-        } catch (error) {
-          if (error.name === "NotAllowedError") {
-            // Permission denied, but hardware exists
-            setNfcHardwareEnabled("permission_denied")
-            setSystemChecks((prev) => ({ ...prev, hardware: true }))
-            console.log("🔐 NFC Hardware: Available but permission denied")
-          } else if (error.name === "NotReadableError") {
-            // NFC is disabled in settings
-            setNfcHardwareEnabled("disabled")
-            setSystemChecks((prev) => ({ ...prev, hardware: false }))
-            console.log("❌ NFC Hardware: Disabled in device settings")
-          } else if (error.name === "NotSupportedError") {
-            // No NFC hardware
-            setNfcHardwareEnabled("not_supported")
-            setSystemChecks((prev) => ({ ...prev, hardware: false }))
-            console.log("❌ NFC Hardware: Not supported on this device")
-          } else {
-            setNfcHardwareEnabled("unknown")
-            console.log("⚠️ NFC Hardware: Unknown status -", error.message)
-          }
-        }
-      } else {
-        setNfcHardwareEnabled("not_supported")
-        console.log("❌ NFC Hardware: Web NFC API not available")
-      }
-    } catch (error) {
-      setNfcHardwareEnabled("error")
-      console.error("❌ Error checking NFC hardware:", error)
-    }
-  }
-
   const initializeNFC = async () => {
-    console.log("🔧 Initializing NFC...")
+    console.log("🔧 Initializing built-in phone NFC...")
     setNfcStatus("checking")
 
-    // Check all prerequisites
-    if (!systemChecks.https) {
-      setNfcStatus("not_secure")
+    try {
+      // Basic checks for Web NFC API
+      const isHttps = window.location.protocol === "https:"
+      const hasNDEFReader = "NDEFReader" in window
+      const isAndroid = /Android/.test(navigator.userAgent)
+      const isChrome = /Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent)
+
+      console.log("📋 Basic NFC Checks:", {
+        isHttps,
+        hasNDEFReader,
+        isAndroid,
+        isChrome,
+      })
+
+      // Check HTTPS requirement
+      if (!isHttps) {
+        setNfcStatus("not_secure")
+        setScanResult({
+          success: false,
+          message: "NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman.",
+        })
+        return
+      }
+
+      // Check Web NFC API availability
+      if (!hasNDEFReader) {
+        console.log("❌ Web NFC API not available")
+        setNfcSupported(false)
+        setNfcStatus("not_supported")
+        setScanResult({
+          success: false,
+          message: "Web NFC API tidak tersedia. Gunakan Chrome di Android dengan NFC aktif.",
+        })
+        return
+      }
+
+      console.log("✅ Web NFC API tersedia")
+      setNfcSupported(true)
+      setNfcStatus("supported")
+
+      // Auto-start NFC scanning
+      await startNFCScanning()
+    } catch (error) {
+      console.error("❌ NFC initialization error:", error)
+      setNfcStatus("error")
       setScanResult({
         success: false,
-        message: "NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman (https://).",
+        message: "Gagal menginisialisasi NFC: " + error.message,
       })
-      return
     }
-
-    if (!systemChecks.browser) {
-      setNfcStatus("browser_not_supported")
-      setScanResult({
-        success: false,
-        message: "Gunakan browser Chrome untuk mengakses fitur NFC.",
-      })
-      return
-    }
-
-    if (!systemChecks.android) {
-      setNfcStatus("platform_not_supported")
-      setScanResult({
-        success: false,
-        message: "NFC hanya didukung pada perangkat Android.",
-      })
-      return
-    }
-
-    if (!systemChecks.nfcApi) {
-      setNfcStatus("api_not_supported")
-      setScanResult({
-        success: false,
-        message: "Web NFC API tidak tersedia pada browser ini.",
-      })
-      return
-    }
-
-    if (nfcHardwareEnabled === "not_supported") {
-      setNfcStatus("hardware_not_supported")
-      setScanResult({
-        success: false,
-        message: "Perangkat ini tidak memiliki hardware NFC.",
-      })
-      return
-    }
-
-    if (nfcHardwareEnabled === "disabled") {
-      setNfcStatus("hardware_disabled")
-      setScanResult({
-        success: false,
-        message: "NFC dinonaktifkan di pengaturan perangkat. Mohon aktifkan NFC terlebih dahulu.",
-      })
-      return
-    }
-
-    console.log("✅ All prerequisites met, starting NFC...")
-    setNfcSupported(true)
-    setNfcStatus("supported")
-
-    // Auto-start NFC scanning
-    await startNFCScanning()
   }
 
   const cleanupNFC = () => {
     console.log("🧹 Cleaning up NFC...")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
-    }
-    if (permissionCheckInterval.current) {
-      clearInterval(permissionCheckInterval.current)
     }
     setNfcReaderActive(false)
     setIsScanning(false)
@@ -368,7 +254,7 @@ const PresensiSholat = () => {
     }
 
     try {
-      console.log("🎯 Starting NFC scanning...")
+      console.log("🎯 Starting built-in NFC scanning...")
       setNfcStatus("starting")
       setIsScanning(true)
 
@@ -380,24 +266,23 @@ const PresensiSholat = () => {
       // Create new abort controller
       abortControllerRef.current = new AbortController()
 
-      // Create NDEFReader instance
+      // Create NDEFReader instance for built-in phone NFC
       const ndef = new window.NDEFReader()
       nfcReaderRef.current = ndef
 
-      console.log("📡 Requesting NFC scan permission...")
+      console.log("📡 Starting NFC scan with built-in phone NFC...")
 
-      // Start scanning with proper error handling
+      // Start scanning
       await ndef.scan({ signal: abortControllerRef.current.signal })
 
-      console.log("✅ NFC scanning started successfully")
+      console.log("✅ Built-in NFC scanning started successfully")
       setNfcReaderActive(true)
       setNfcStatus("scanning")
       setNfcPermission("granted")
-      setSystemChecks((prev) => ({ ...prev, permissions: true }))
 
-      // Listen for NFC tags
+      // Listen for NFC tags from built-in phone NFC
       ndef.addEventListener("reading", ({ message, serialNumber }) => {
-        console.log("🏷️ NFC tag detected:", { message, serialNumber })
+        console.log("🏷️ NFC tag detected from built-in phone:", { message, serialNumber })
         handleNFCRead(serialNumber)
       })
 
@@ -409,37 +294,25 @@ const PresensiSholat = () => {
           message: "Error membaca NFC tag: " + error.message,
         })
       })
-
-      // Start periodic permission monitoring
-      startPermissionMonitoring()
     } catch (error) {
-      console.error("❌ Failed to start NFC scanning:", error)
+      console.error("❌ Failed to start built-in NFC scanning:", error)
       setNfcStatus("error")
       setIsScanning(false)
       setNfcReaderActive(false)
 
       let errorMessage = "Gagal memulai NFC scanning: "
-      let statusCode = "error"
 
       if (error.name === "NotAllowedError") {
         setNfcPermission("denied")
-        setSystemChecks((prev) => ({ ...prev, permissions: false }))
-        statusCode = "permission_denied"
         errorMessage += "Akses NFC ditolak. Mohon berikan izin untuk menggunakan NFC."
       } else if (error.name === "NotSupportedError") {
-        statusCode = "not_supported"
         errorMessage += "NFC tidak didukung pada perangkat ini."
       } else if (error.name === "NotReadableError") {
-        statusCode = "hardware_disabled"
-        errorMessage += "NFC tidak dapat dibaca. Pastikan NFC aktif di pengaturan perangkat."
-      } else if (error.name === "InvalidStateError") {
-        statusCode = "invalid_state"
-        errorMessage += "NFC dalam keadaan tidak valid. Coba restart aplikasi."
+        errorMessage += "NFC tidak dapat dibaca. Pastikan NFC aktif di pengaturan HP."
       } else {
         errorMessage += error.message
       }
 
-      setNfcStatus(statusCode)
       setScanResult({
         success: false,
         message: errorMessage,
@@ -447,38 +320,10 @@ const PresensiSholat = () => {
     }
   }
 
-  const startPermissionMonitoring = () => {
-    // Monitor permissions every 5 seconds
-    permissionCheckInterval.current = setInterval(async () => {
-      try {
-        if ("permissions" in navigator) {
-          const permission = await navigator.permissions.query({ name: "nfc" })
-          if (permission.state !== nfcPermission) {
-            setNfcPermission(permission.state)
-            console.log("🔄 Permission state changed:", permission.state)
-
-            if (permission.state === "denied" && nfcReaderActive) {
-              stopNFCScanning()
-              setScanResult({
-                success: false,
-                message: "Izin NFC dicabut. Mohon berikan izin kembali.",
-              })
-            }
-          }
-        }
-      } catch (error) {
-        console.log("⚠️ Permission monitoring error:", error)
-      }
-    }, 5000)
-  }
-
   const stopNFCScanning = () => {
-    console.log("⏹️ Stopping NFC scanning...")
+    console.log("⏹️ Stopping built-in NFC scanning...")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
-    }
-    if (permissionCheckInterval.current) {
-      clearInterval(permissionCheckInterval.current)
     }
     setNfcReaderActive(false)
     setIsScanning(false)
@@ -486,16 +331,13 @@ const PresensiSholat = () => {
   }
 
   const restartNFCScanning = async () => {
-    console.log("🔄 Restarting NFC scanning...")
+    console.log("🔄 Restarting built-in NFC scanning...")
     stopNFCScanning()
-
-    // Re-check hardware status
-    await checkNFCHardware()
 
     // Wait a moment before restarting
     setTimeout(async () => {
       await startNFCScanning()
-    }, 1500)
+    }, 1000)
   }
 
   const handleNFCRead = async (serialNumber) => {
@@ -504,7 +346,7 @@ const PresensiSholat = () => {
       return
     }
 
-    console.log("🔍 Processing NFC tag:", serialNumber)
+    console.log("🔍 Processing NFC tag from built-in phone:", serialNumber)
 
     // Convert serial number to uid_kartu format
     const uid_kartu = serialNumber || ""
@@ -754,215 +596,102 @@ const PresensiSholat = () => {
 
   const ScanInterface = () => (
     <div className="space-y-6">
-      {/* Comprehensive System Status */}
+      {/* Simplified NFC Status for Built-in Phone NFC */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Status Sistem NFC</h3>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
-          >
-            <FaSync className="w-3 h-3 mr-1" />
-            Refresh
-          </button>
-        </div>
-
-        {/* System Checks Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-          <div
-            className={`p-3 rounded-lg ${systemChecks.https ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
+          <h3 className="text-lg font-semibold text-gray-900">Status NFC HP</h3>
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <FaWifi className={`w-4 h-4 ${systemChecks.https ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.https ? "text-green-800" : "text-red-800"}`}>
-                HTTPS {systemChecks.https ? "✅" : "❌"}
+              {nfcSupported ? (
+                <FaMobile className="w-4 h-4 text-green-500" />
+              ) : (
+                <FaMobile className="w-4 h-4 text-red-500" />
+              )}
+              <span className={`text-sm ${nfcSupported ? "text-green-600" : "text-red-600"}`}>
+                Web NFC {nfcSupported ? "Didukung" : "Tidak Didukung"}
               </span>
             </div>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg ${systemChecks.browser ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
             <div className="flex items-center space-x-2">
-              <FaMobile className={`w-4 h-4 ${systemChecks.browser ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.browser ? "text-green-800" : "text-red-800"}`}>
-                Chrome {systemChecks.browser ? "✅" : "❌"}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg ${systemChecks.android ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
-            <div className="flex items-center space-x-2">
-              <FaMobile className={`w-4 h-4 ${systemChecks.android ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.android ? "text-green-800" : "text-red-800"}`}>
-                Android {systemChecks.android ? "✅" : "❌"}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg ${systemChecks.nfcApi ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
-            <div className="flex items-center space-x-2">
-              <FaCreditCard className={`w-4 h-4 ${systemChecks.nfcApi ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.nfcApi ? "text-green-800" : "text-red-800"}`}>
-                NFC API {systemChecks.nfcApi ? "✅" : "❌"}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg ${systemChecks.permissions ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
-            <div className="flex items-center space-x-2">
-              <FaShieldAlt className={`w-4 h-4 ${systemChecks.permissions ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.permissions ? "text-green-800" : "text-red-800"}`}>
-                Permission {systemChecks.permissions ? "✅" : "❌"}
-              </span>
-            </div>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg ${systemChecks.hardware ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
-          >
-            <div className="flex items-center space-x-2">
-              <FaCreditCard className={`w-4 h-4 ${systemChecks.hardware ? "text-green-600" : "text-red-600"}`} />
-              <span className={`text-sm font-medium ${systemChecks.hardware ? "text-green-800" : "text-red-800"}`}>
-                NFC Hardware {systemChecks.hardware ? "✅" : "❌"}
-              </span>
+              {nfcReaderActive ? (
+                <div className="flex items-center space-x-1">
+                  <div className="animate-pulse">
+                    <FaCreditCard className="w-4 h-4 text-green-500" />
+                  </div>
+                  <span className="text-sm text-green-600">NFC HP Aktif</span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-1">
+                  <FaCreditCard className="w-4 h-4 text-red-500" />
+                  <span className="text-sm text-red-600">NFC HP Tidak Aktif</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Detailed Status Information */}
-        <div className="space-y-3">
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-1">Browser & Platform:</p>
-            <p className="text-sm font-mono">{browserInfo}</p>
-          </div>
-
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-1">NFC Status:</p>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm">
-                Permission:{" "}
-                <span className={`font-medium ${nfcPermission === "granted" ? "text-green-600" : "text-red-600"}`}>
-                  {nfcPermission}
-                </span>
-              </span>
-              <span className="text-sm">
-                Hardware:{" "}
-                <span className={`font-medium ${nfcHardwareEnabled === "enabled" ? "text-green-600" : "text-red-600"}`}>
-                  {nfcHardwareEnabled}
-                </span>
-              </span>
-              <span className="text-sm">
-                Scanner:{" "}
-                <span className={`font-medium ${nfcReaderActive ? "text-green-600" : "text-red-600"}`}>
-                  {nfcReaderActive ? "Active" : "Inactive"}
-                </span>
-              </span>
-            </div>
-          </div>
+        {/* Browser Info */}
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <p className="text-xs text-gray-600">{browserInfo}</p>
+          {nfcPermission !== "unknown" && <p className="text-xs text-gray-600">NFC Permission: {nfcPermission}</p>}
         </div>
 
         {/* Status Messages */}
         {nfcStatus === "initializing" && (
-          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
-              <p className="text-blue-800">Menginisialisasi sistem NFC...</p>
+              <p className="text-blue-800">Menginisialisasi NFC HP...</p>
+            </div>
+          </div>
+        )}
+
+        {nfcStatus === "checking" && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+              <p className="text-blue-800">Memeriksa NFC HP...</p>
             </div>
           </div>
         )}
 
         {nfcStatus === "not_secure" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-              <p className="text-red-800">Koneksi tidak aman. NFC memerlukan HTTPS.</p>
+              <p className="text-red-800">NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman (https://).</p>
             </div>
           </div>
         )}
 
-        {nfcStatus === "browser_not_supported" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+        {nfcStatus === "not_supported" && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-              <p className="text-red-800">Browser tidak didukung. Gunakan Chrome di Android.</p>
-            </div>
-          </div>
-        )}
-
-        {nfcStatus === "platform_not_supported" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-              <p className="text-red-800">Platform tidak didukung. NFC hanya tersedia di Android.</p>
-            </div>
-          </div>
-        )}
-
-        {nfcStatus === "hardware_disabled" && (
-          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <FaExclamationTriangle className="w-5 h-5 text-yellow-600" />
               <div className="flex-1">
-                <p className="text-yellow-800 font-medium">NFC dinonaktifkan di pengaturan perangkat</p>
-                <p className="text-yellow-700 text-sm mt-1">Buka Pengaturan → Koneksi → NFC dan aktifkan NFC</p>
+                <p className="text-red-800">Web NFC API tidak tersedia.</p>
+                <p className="text-red-600 text-sm mt-1">Gunakan Chrome di Android dan pastikan NFC HP aktif.</p>
               </div>
-            </div>
-          </div>
-        )}
-
-        {nfcStatus === "hardware_not_supported" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-              <p className="text-red-800">Perangkat ini tidak memiliki hardware NFC.</p>
-            </div>
-          </div>
-        )}
-
-        {nfcStatus === "permission_denied" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FaShieldAlt className="w-5 h-5 text-red-600" />
-                <div className="flex-1">
-                  <p className="text-red-800 font-medium">Izin NFC ditolak</p>
-                  <p className="text-red-700 text-sm mt-1">Refresh halaman dan berikan izin akses NFC</p>
-                </div>
-              </div>
-              <button
-                onClick={restartNFCScanning}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Coba Lagi
-              </button>
             </div>
           </div>
         )}
 
         {nfcStatus === "starting" && (
-          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-600 border-t-transparent"></div>
-              <p className="text-yellow-800">Memulai NFC Scanner... Mohon berikan izin akses NFC.</p>
+              <p className="text-yellow-800">Memulai NFC HP... Mohon berikan izin akses NFC.</p>
             </div>
           </div>
         )}
 
         {nfcStatus === "scanning" && (
-          <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div className="animate-pulse">
                   <FaSync className="w-5 h-5 text-green-600" />
                 </div>
-                <p className="text-green-800 font-medium">NFC Scanner aktif - siap membaca kartu</p>
+                <p className="text-green-800">NFC HP aktif - siap membaca kartu</p>
               </div>
               <div className="flex space-x-2">
                 <button
@@ -985,11 +714,18 @@ const PresensiSholat = () => {
         )}
 
         {nfcStatus === "error" && (
-          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                <p className="text-red-800">Error pada NFC Scanner</p>
+                <div className="flex-1">
+                  <p className="text-red-800">Error pada NFC HP</p>
+                  {nfcPermission === "denied" && (
+                    <p className="text-red-600 text-sm mt-1">
+                      Akses NFC ditolak. Refresh halaman dan berikan izin NFC.
+                    </p>
+                  )}
+                </div>
               </div>
               <button
                 onClick={restartNFCScanning}
@@ -1002,11 +738,11 @@ const PresensiSholat = () => {
         )}
 
         {nfcStatus === "stopped" && (
-          <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <FaStop className="w-5 h-5 text-gray-600" />
-                <p className="text-gray-800">NFC Scanner dihentikan</p>
+                <p className="text-gray-800">NFC HP dihentikan</p>
               </div>
               <button
                 onClick={startNFCScanning}
@@ -1036,27 +772,31 @@ const PresensiSholat = () => {
                     <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   </div>
                 </div>
-                <p className="text-gray-600 font-medium">Tempelkan kartu NFC ke perangkat</p>
-                <p className="text-sm text-gray-500">Scanner aktif dan siap membaca</p>
+                <p className="text-gray-600 font-medium">Tempelkan kartu NFC ke HP</p>
+                <p className="text-sm text-gray-500">NFC HP aktif dan siap membaca</p>
               </div>
-            ) : nfcStatus === "initializing" || nfcStatus === "starting" ? (
+            ) : nfcStatus === "initializing" || nfcStatus === "starting" || nfcStatus === "checking" ? (
               <div className="flex flex-col items-center space-y-4">
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
                 <p className="text-blue-600 font-medium">
-                  {nfcStatus === "initializing" ? "Menginisialisasi NFC..." : "Memulai NFC Scanner..."}
+                  {nfcStatus === "initializing"
+                    ? "Menginisialisasi NFC HP..."
+                    : nfcStatus === "checking"
+                      ? "Memeriksa NFC HP..."
+                      : "Memulai NFC HP..."}
                 </p>
               </div>
             ) : (
               <div className="flex flex-col items-center space-y-4">
                 <FaMobile className="w-20 h-20 text-gray-400" />
-                <p className="text-gray-600 font-medium">NFC Scanner tidak aktif</p>
+                <p className="text-gray-600 font-medium">NFC HP tidak aktif</p>
                 <p className="text-sm text-gray-500">
-                  {nfcSupported ? "Periksa status sistem di atas" : "Sistem tidak mendukung NFC"}
+                  {nfcSupported ? "Periksa status di atas" : "NFC HP tidak didukung"}
                 </p>
               </div>
             )}
 
-            {(isSearching || nfcStatus === "initializing" || nfcStatus === "starting") && (
+            {(isSearching || nfcStatus === "initializing" || nfcStatus === "starting" || nfcStatus === "checking") && (
               <div className="absolute inset-0 bg-blue-600 opacity-20 animate-pulse"></div>
             )}
           </div>
@@ -1100,7 +840,9 @@ const PresensiSholat = () => {
               {isSearching ? "Mencari..." : "Cari"}
             </button>
           </div>
-          <p className="text-sm text-gray-500 mt-2">Gunakan input manual untuk testing atau jika NFC tidak tersedia</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Gunakan input manual untuk testing atau jika NFC HP tidak tersedia
+          </p>
         </div>
       )}
 
