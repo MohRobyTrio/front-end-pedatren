@@ -189,10 +189,10 @@ const Scan = () => {
             }
 
             const data = await response.json()
-            setStudentData(data)
+            setStudentData(data.data)
             console.log(data);
-            
-            setStatus(`Data santri ditemukan: ${data.nama_santri}`)
+
+            setStatus(`Data santri ditemukan: ${data.data.nama_santri}`)
         } catch (error) {
             setError("Error: " + error.message)
             setStatus("Gagal mencari data santri")
@@ -209,11 +209,12 @@ const Scan = () => {
         setSuccess("")
 
         try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}presensi/scan`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     uid_santri: studentData.uid_kartu, // Using uid_kartu as uid_santri based on response
