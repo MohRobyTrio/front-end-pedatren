@@ -781,7 +781,7 @@ const PerizinanCard = ({
                                 : "bg-gray-300 text-gray-600"
                                 }`}>
                                 {(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
-                                    data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali")
+                                    data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali)")
                                 ? "✓": "3"}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Keluar</span>
@@ -797,8 +797,8 @@ const PerizinanCard = ({
                                     ? "bg-red-500 text-white"
                                     : "bg-gray-300 text-gray-600"
                                 }`}>
-                                {data.status === "kembali tepat waktu" ? '✓' :
-                                 (data.status === "telat(belum kembali)" || data.status === "telat(sudah kembali)") ? '!' : '4'}
+                                {data.status == "kembali tepat waktu" ? '✓' :
+                                 (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)") ? '!' : '4'}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Kembali</span>
                         </div>
