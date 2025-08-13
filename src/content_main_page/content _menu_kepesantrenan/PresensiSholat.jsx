@@ -27,6 +27,7 @@ import { getCookie } from "../../utils/cookieUtils"
 import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiInfo, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
 import { API_BASE_URL } from "../../hooks/config"
 import blankProfile from "../../assets/blank_profile.png";
+import { ModalSelectSantri } from "../../components/ModalSelectSantri"
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
@@ -1097,10 +1098,13 @@ const Scan = () => {
     const [statusResponse, setStatusResponse] = useState("")
     const [inputMode, setInputMode] = useState("nfc") // "nfc" or "manual"
     const [manualNIS, setManualNIS] = useState("")
+    const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santriData, setSantriData] = useState("");
 
     useEffect(() => {
         checkNFCSupport()
     }, [])
+
 
     useEffect(() => {
         if (nfcSupported && inputMode === "nfc") {
@@ -1247,15 +1251,23 @@ const Scan = () => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}presensi/scan`, {
+            const endpoint =
+                inputMode === "manual"
+                    ? `${API_BASE_URL}presensi/manual`
+                    : `${API_BASE_URL}presensi/scan`
+
+            const body =
+                inputMode === "manual"
+                    ? { santri_id: studentData.id } // gunakan santri_id untuk manual
+                    : { uid_kartu: studentData.uid_kartu }
+
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    uid_kartu: studentData.uid_kartu, // Using uid_kartu as uid_santri based on response
-                }),
+                body: JSON.stringify(body),
             })
             const result = await response.json()
 
@@ -1284,6 +1296,12 @@ const Scan = () => {
             setLoading(false)
         }
     }
+
+    useEffect(() => {
+        console.log("Data Santri", santriData);
+        // searchStudent(santriData?.id);
+        setStudentData(santriData)
+    }, [santriData])
 
     const resetScan = () => {
         setStudentData(null)
@@ -1398,7 +1416,7 @@ const Scan = () => {
                             }`}
                     >
                         <FiHardDrive className="mr-2" />
-                        Card Reader
+                        Reader
                     </button>
                     <button
                         onClick={() => inputMode !== "manual" && toggleInputMode("manual")}
@@ -1441,34 +1459,45 @@ const Scan = () => {
                         </div>
                     ) : inputMode === "manual" ? (
                         <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Masukkan NIS Santri</label>
-                                <input
-                                    type="text"
-                                    value={manualNIS}
-                                    onChange={(e) => setManualNIS(e.target.value)}
-                                    placeholder="Contoh: 12345678"
-                                    className="w-full px-3 sm:px-4 py-3 sm:py-4 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    onKeyPress={(e) => e.key === "Enter" && searchStudentByNIS()}
-                                />
-                            </div>
                             <button
-                                onClick={searchStudentByNIS}
-                                disabled={loading || !manualNIS.trim()}
-                                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 sm:py-4 px-4 rounded-lg font-medium text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                onClick={() => setShowSelectSantri(true)}
+                                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 sm:py-4 px-4 rounded-lg font-medium text-base flex items-center justify-center"
                             >
                                 {loading ? (
                                     <>
                                         <FiRefreshCw className="animate-spin mr-2" />
-                                        Mencari...
+                                        Memuat Santri...
                                     </>
                                 ) : (
                                     <>
                                         <FiUser className="mr-2" />
-                                        Cari Santri
+                                        Pilih Santri
                                     </>
                                 )}
                             </button>
+
+                            {/* {showSelectSantri && (
+            <div className="bg-white shadow-md rounded-lg p-4 max-h-60 overflow-y-auto">
+                {students.length === 0 ? (
+                    <p className="text-gray-500 text-center">Tidak ada data santri</p>
+                ) : (
+                    students.map((s) => (
+                        <div
+                            key={s.id}
+                            className="p-2 rounded-lg hover:bg-blue-50 cursor-pointer"
+                            onClick={() => {
+                                setStudentData(s)
+                                setShowSelectSantri(false)
+                                recordAttendance() // langsung submit presensi setelah pilih
+                            }}
+                        >
+                            <p className="font-medium">{s.name}</p>
+                            <p className="text-sm text-gray-500">{s.nis}</p>
+                        </div>
+                    ))
+                )}
+            </div>
+        )} */}
                         </div>
                     ) : (
                         <div className="text-center">
@@ -1534,7 +1563,7 @@ const Scan = () => {
                             </div>
 
                             {/* Instructions */}
-                            <div className="bg-blue-50 rounded-lg p-4">
+                            {/* <div className="bg-blue-50 rounded-lg p-4">
                                 <div className="flex items-start space-x-3">
                                     <FiInfo className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
                                     <div className="text-left">
@@ -1547,7 +1576,7 @@ const Scan = () => {
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             {/* Action Button */}
                             {/* {nis && (
@@ -1634,7 +1663,7 @@ const Scan = () => {
                                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama Santri</label>
                                 <input
                                     type="text"
-                                    value={studentData.nama_santri || ""}
+                                    value={studentData.nama_santri || studentData.label || ""}
                                     readOnly
                                     className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
                                 />
@@ -1650,15 +1679,17 @@ const Scan = () => {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">UID Kartu</label>
-                                <input
-                                    type="text"
-                                    value={studentData.uid_kartu || ""}
-                                    readOnly
-                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
-                                />
-                            </div>
+                            {inputMode !== "manual" && (
+                                <div>
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">UID Kartu</label>
+                                    <input
+                                        type="text"
+                                        value={studentData.uid_kartu || ""}
+                                        readOnly
+                                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex space-x-3 mt-6">
@@ -1701,6 +1732,12 @@ const Scan = () => {
                         </button>
                     </div>
                 )}
+
+                <ModalSelectSantri
+                    isOpen={showSelectSantri}
+                    onClose={() => setShowSelectSantri(false)}
+                    onSantriSelected={(santri) => setSantriData(santri)}
+                />
             </div>
         </div>
     )
