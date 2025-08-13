@@ -24,7 +24,7 @@ import {
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
-import { FiCheck, FiCreditCard, FiEdit3, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
+import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiInfo, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
 import { API_BASE_URL } from "../../hooks/config"
 import blankProfile from "../../assets/blank_profile.png";
 
@@ -1218,7 +1218,7 @@ const Scan = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    nis: manualNIS.trim(),
+                    uid_kartu: manualNIS.trim(),
                 }),
             })
 
@@ -1290,22 +1290,77 @@ const Scan = () => {
         setError("")
         setSuccess("")
         setManualNIS("")
-        setStatus(inputMode === "nfc" ? "Tempelkan kartu NFC..." : "Masukkan NIS santri...")
-        if (inputMode === "nfc") {
-            startNFCScanning()
+
+        switch (inputMode) {
+            case "manual":
+                setStatus("Masukkan NIS santri...")
+                break
+            case "nfc":
+                setStatus("Tempelkan kartu NFC...")
+                startNFCScanning()
+                break
+            case "reader":
+                setStatus("Letakkan kartu pada reader...")
+                // startReaderScanning()
+                break
+            default:
+                setStatus("Pilih mode input...")
         }
     }
 
-    const toggleInputMode = () => {
-        const newMode = inputMode === "nfc" ? "manual" : "nfc"
-        setInputMode(newMode)
+    const toggleInputMode = (mode) => {
+        // mode bisa "manual", "nfc", atau "reader"
+        setInputMode(mode)
         setStudentData(null)
         setError("")
         setSuccess("")
         setManualNIS("")
         setIsScanning(false)
-        setStatus(newMode === "nfc" ? "Tempelkan kartu NFC..." : "Masukkan NIS santri...")
+
+        switch (mode) {
+            case "manual":
+                setStatus("Masukkan NIS santri...")
+                break
+            case "nfc":
+                setStatus("Tempelkan kartu NFC...")
+                break
+            case "reader":
+                setStatus("Letakkan kartu pada reader...")
+                break
+        }
     }
+
+    const inputRef = useRef(null);
+    const [nis, setNis] = useState("");
+
+    useEffect(() => {
+        // Tangkap semua input dari reader
+        const handleKeyPress = (e) => {
+            // Biasanya reader mengirim angka + Enter
+            if (e.key === "Enter") {
+                e.preventDefault();
+                submitForm(nis);
+            } else if (/^[0-9]$/.test(e.key)) {
+                // Tambahkan angka ke state
+                setNis(prev => prev + e.key);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    }, [nis]);
+
+    // useEffect(() => {
+    //     searchStudent();
+    // }, [manualNIS]);
+
+    const submitForm = (nisValue) => {
+        console.log("Submit NIS:", nisValue);
+        searchStudent(nisValue);
+        // searchStudentByNIS(); // Panggil fungsi untuk mencari santri berdasarkan NIS
+        // Lakukan request API atau logic lainnya
+        setNis(""); // reset
+    };
 
     return (
         <div className="min-h-screen p-3 sm:p-4">
@@ -1327,20 +1382,28 @@ const Scan = () => {
 
                 <div className="flex bg-white rounded-xl p-1 shadow-lg mb-4 sm:mb-6">
                     <button
-                        onClick={() => inputMode !== "nfc" && toggleInputMode()}
+                        onClick={() => inputMode !== "nfc" && toggleInputMode("nfc")}
                         className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "nfc" ? "bg-blue-500 text-white shadow-md" : "text-gray-600 hover:bg-gray-50"
                             }`}
                     >
                         <FiCreditCard className="mr-2" />
-                        Kartu NFC
+                        NFC
                     </button>
                     <button
-                        onClick={() => inputMode !== "manual" && toggleInputMode()}
+                        onClick={() => inputMode !== "reader" && toggleInputMode("reader")}
+                        className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "reader" ? "bg-blue-500 text-white shadow-md" : "text-gray-600 hover:bg-gray-50"
+                            }`}
+                    >
+                        <FiHardDrive className="mr-2" />
+                        Card Reader
+                    </button>
+                    <button
+                        onClick={() => inputMode !== "manual" && toggleInputMode("manual")}
                         className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "manual" ? "bg-blue-500 text-white shadow-md" : "text-gray-600 hover:bg-gray-50"
                             }`}
                     >
                         <FiEdit3 className="mr-2" />
-                        Input NIS
+                        Manual
                     </button>
                 </div>
 
@@ -1373,7 +1436,7 @@ const Scan = () => {
                                 </div>
                             )}
                         </div>
-                    ) : (
+                    ) : inputMode === "manual" ? (
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Masukkan NIS Santri</label>
@@ -1403,6 +1466,123 @@ const Scan = () => {
                                     </>
                                 )}
                             </button>
+                        </div>
+                    ) : (
+                        // <form
+                        //     onSubmit={(e) => {
+                        //         e.preventDefault();
+                        //         submitForm(nis);
+                        //     }}
+                        // >
+                        //     <input
+                        //         ref={inputRef}
+                        //         type="text"
+                        //         value={nis}
+                        //         placeholder="Masukkan NIS"
+                        //         className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        //         readOnly // supaya user tidak bisa ketik manual
+                        //     />
+                        // </form>
+                        <div className="text-center">
+                            <div className="relative mb-6">
+                                {/* Card Reader Visual */}
+                                <div className="mx-auto w-32 h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-lg relative overflow-hidden">
+                                    {/* Card Slot */}
+                                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gray-600 rounded-full"></div>
+                                    {/* LED Indicator */}
+                                    <div
+                                        className={`absolute top-4 right-3 w-2 h-2 rounded-full ${nis ? "bg-green-400 animate-pulse" : "bg-red-400"}`}
+                                    ></div>
+                                    {/* Reader Brand */}
+                                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 font-mono">
+                                        READER
+                                    </div>
+                                    {/* Scanning Animation */}
+                                    {nis && <div className="absolute inset-0 bg-blue-500 opacity-20 animate-pulse"></div>}
+                                </div>
+
+                                {/* Status Icon */}
+                                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                                    {nis ? (
+                                        <div className="bg-green-100 p-2 rounded-full">
+                                            <FiCheck className="text-green-600 text-lg" />
+                                        </div>
+                                    ) : (
+                                        <div className="bg-blue-100 p-2 rounded-full animate-bounce">
+                                            <FiCreditCard className="text-blue-600 text-lg" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Status Text */}
+                            <div className="mb-4">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                    {nis ? "Kartu Terdeteksi!" : "Siap Membaca Kartu"}
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    {nis ? "Data kartu berhasil dibaca" : "Letakkan kartu pada card reader"}
+                                </p>
+                            </div>
+
+                            {/* NIS Display */}
+                            <div className="bg-gray-50 rounded-lg p-4 mb-4 hidden">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Nomor Induk Santri (NIS)</label>
+                                <div className="relative">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={nis}
+                                        placeholder="Menunggu input dari card reader..."
+                                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-center text-lg font-mono tracking-wider focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                        readOnly
+                                    />
+                                    {nis && (
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                            <FiCheck className="text-green-500 text-xl" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Instructions */}
+                            <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                                <div className="flex items-start space-x-3">
+                                    <FiInfo className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
+                                    <div className="text-left">
+                                        <h4 className="font-medium text-blue-800 mb-1">Cara Penggunaan:</h4>
+                                        <ul className="text-sm text-blue-700 space-y-1">
+                                            <li>• Pastikan card reader terhubung dengan baik</li>
+                                            <li>• Letakkan kartu pada slot reader</li>
+                                            <li>• Tunggu hingga NIS muncul secara otomatis</li>
+                                            <li>• Tekan tombol "Proses Presensi" untuk melanjutkan</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Button */}
+                            {nis && (
+                                <button
+                                    onClick={() => submitForm(nis)}
+                                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    <div className="flex items-center justify-center space-x-2">
+                                        <FiCheck className="text-lg" />
+                                        <span>Proses Presensi</span>
+                                    </div>
+                                </button>
+                            )}
+
+                            {/* Clear Button */}
+                            {nis && (
+                                <button
+                                    onClick={() => setNis("")}
+                                    className="mt-3 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
+                                >
+                                    Bersihkan Input
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
