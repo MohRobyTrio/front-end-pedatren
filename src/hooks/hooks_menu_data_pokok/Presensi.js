@@ -82,7 +82,7 @@ const useFetchPresensiSholat = (filters) => {
     } finally {
       setLoadingPresensi(false);
     }
-  }, [currentPage, filters, limit, token, clearAuthData, navigate]);
+  }, [currentPage, filters, limit, token]);
 
   useEffect(() => {
     fetchData();
