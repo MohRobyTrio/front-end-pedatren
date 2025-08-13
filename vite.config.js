@@ -8,10 +8,10 @@ import strip from '@rollup/plugin-strip';
 export default defineConfig({
   plugins: [
     react(),
-    strip({
-      include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
-      functions: ['console.log', 'console.debug', 'console.warn', 'console.error'],
-    }),
+    // strip({
+    //   include: ['**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx'],
+    //   functions: ['console.log', 'console.debug', 'console.warn', 'console.error'],
+    // }),
     tailwindcss(),
     viteCompression({
       algorithm: 'brotliCompress',

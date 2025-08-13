@@ -175,7 +175,7 @@ const Scan = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          card_id: uid_kartu, // Use decimal UID
+          uid_kartu: uid_kartu, // Use decimal UID
         }),
       })
 
