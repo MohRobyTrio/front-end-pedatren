@@ -19,6 +19,7 @@ import {
   FaSync,
   FaUser,
   FaMobile,
+  FaKeyboard,
 } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
@@ -118,15 +119,17 @@ const PresensiSholat = () => {
   const [todayAttendance, setTodayAttendance] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
-  const [isScanning, setIsScanning] = useState(false) // Will be set to true after NFC init
+  const [isScanning, setIsScanning] = useState(false)
   const [scanResult, setScanResult] = useState(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // NFC states - Auto-start ready
+  // NFC states - Enhanced detection
   const [nfcSupported, setNfcSupported] = useState(false)
   const [nfcReaderActive, setNfcReaderActive] = useState(false)
   const [nfcStatus, setNfcStatus] = useState("initializing")
+  const [nfcPermission, setNfcPermission] = useState("unknown")
+  const [browserInfo, setBrowserInfo] = useState("")
 
   // Student data states
   const [studentData, setStudentData] = useState(null)
@@ -134,18 +137,30 @@ const PresensiSholat = () => {
   const [isSearching, setIsSearching] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
+  // Manual input states
+  const [showManualInput, setShowManualInput] = useState(false)
+  const [manualUID, setManualUID] = useState("")
+
   // Refs
   const abortControllerRef = useRef(null)
   const nfcReaderRef = useRef(null)
+  const manualInputRef = useRef(null)
 
-  // Auto-initialize NFC when component mounts
+  // Auto-initialize when component mounts
   useEffect(() => {
     const initializeApp = async () => {
+      console.log("🚀 Initializing Prayer Attendance App...")
+
+      // Detect browser info
+      detectBrowserInfo()
+
       // Start time updates
       const timer = setInterval(() => setCurrentTime(new Date()), 1000)
 
-      // Auto-initialize NFC scanning
-      await initializeNFC()
+      // Auto-initialize NFC scanning with delay to ensure proper mounting
+      setTimeout(async () => {
+        await initializeNFC()
+      }, 500)
 
       return () => {
         clearInterval(timer)
@@ -156,26 +171,95 @@ const PresensiSholat = () => {
     initializeApp()
   }, [])
 
+  const detectBrowserInfo = () => {
+    const userAgent = navigator.userAgent
+    const isChrome = /Chrome/.test(userAgent)
+    const isAndroid = /Android/.test(userAgent)
+    const isHttps = window.location.protocol === "https:"
+
+    const info = `Browser: ${isChrome ? "Chrome" : "Other"}, Platform: ${isAndroid ? "Android" : "Other"}, HTTPS: ${isHttps ? "Yes" : "No"}`
+    setBrowserInfo(info)
+    console.log("🔍 Browser Info:", info)
+  }
+
   const initializeNFC = async () => {
-    console.log("Initializing NFC...")
+    console.log("🔧 Initializing NFC...")
     setNfcStatus("checking")
 
-    // Check if Web NFC API is supported
-    if ("NDEFReader" in window) {
-      console.log("Web NFC API supported")
+    try {
+      // Enhanced NFC support detection
+      const hasNDEFReader = "NDEFReader" in window
+      const hasNavigator = "navigator" in window
+      const isSecureContext = window.isSecureContext
+      const isHttps = window.location.protocol === "https:"
+
+      console.log("📋 NFC Support Check:", {
+        hasNDEFReader,
+        hasNavigator,
+        isSecureContext,
+        isHttps,
+        userAgent: navigator.userAgent,
+      })
+
+      if (!isHttps) {
+        setNfcStatus("not_secure")
+        setScanResult({
+          success: false,
+          message: "NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman.",
+        })
+        return
+      }
+
+      if (!hasNDEFReader) {
+        console.log("❌ NDEFReader not available")
+        setNfcSupported(false)
+        setNfcStatus("not_supported")
+        setScanResult({
+          success: false,
+          message: "Browser tidak mendukung Web NFC API. Gunakan Chrome di Android.",
+        })
+        return
+      }
+
+      console.log("✅ Web NFC API detected")
       setNfcSupported(true)
       setNfcStatus("supported")
 
-      // Auto-start NFC scanning immediately
+      // Check permissions
+      await checkNFCPermissions()
+
+      // Auto-start NFC scanning
       await startNFCScanning()
-    } else {
-      console.log("Web NFC API not supported")
-      setNfcSupported(false)
-      setNfcStatus("not_supported")
+    } catch (error) {
+      console.error("❌ NFC initialization error:", error)
+      setNfcStatus("error")
+      setScanResult({
+        success: false,
+        message: "Gagal menginisialisasi NFC: " + error.message,
+      })
+    }
+  }
+
+  const checkNFCPermissions = async () => {
+    try {
+      if ("permissions" in navigator) {
+        const permission = await navigator.permissions.query({ name: "nfc" })
+        setNfcPermission(permission.state)
+        console.log("🔐 NFC Permission:", permission.state)
+
+        permission.addEventListener("change", () => {
+          setNfcPermission(permission.state)
+          console.log("🔄 NFC Permission changed:", permission.state)
+        })
+      }
+    } catch (error) {
+      console.log("⚠️ Cannot check NFC permissions:", error)
+      setNfcPermission("unknown")
     }
   }
 
   const cleanupNFC = () => {
+    console.log("🧹 Cleaning up NFC...")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
@@ -185,12 +269,12 @@ const PresensiSholat = () => {
 
   const startNFCScanning = async () => {
     if (!nfcSupported) {
-      console.log("NFC not supported, cannot start scanning")
+      console.log("❌ NFC not supported, cannot start scanning")
       return
     }
 
     try {
-      console.log("Starting NFC scanning...")
+      console.log("🎯 Starting NFC scanning...")
       setNfcStatus("starting")
       setIsScanning(true)
 
@@ -202,25 +286,28 @@ const PresensiSholat = () => {
       // Create new abort controller
       abortControllerRef.current = new AbortController()
 
-      // Use the native NDEFReader from Web NFC API
+      // Create NDEFReader instance
       const ndef = new window.NDEFReader()
       nfcReaderRef.current = ndef
 
-      // Start scanning
+      console.log("📡 Requesting NFC scan permission...")
+
+      // Start scanning with proper error handling
       await ndef.scan({ signal: abortControllerRef.current.signal })
 
-      console.log("NFC scanning started successfully")
+      console.log("✅ NFC scanning started successfully")
       setNfcReaderActive(true)
       setNfcStatus("scanning")
+      setNfcPermission("granted")
 
       // Listen for NFC tags
       ndef.addEventListener("reading", ({ message, serialNumber }) => {
-        console.log("NFC tag detected:", { message, serialNumber })
+        console.log("🏷️ NFC tag detected:", { message, serialNumber })
         handleNFCRead(serialNumber)
       })
 
       ndef.addEventListener("readingerror", (error) => {
-        console.error("NFC reading error:", error)
+        console.error("❌ NFC reading error:", error)
         setNfcStatus("error")
         setScanResult({
           success: false,
@@ -228,32 +315,33 @@ const PresensiSholat = () => {
         })
       })
     } catch (error) {
-      console.error("Failed to start NFC scanning:", error)
+      console.error("❌ Failed to start NFC scanning:", error)
       setNfcStatus("error")
       setIsScanning(false)
       setNfcReaderActive(false)
 
+      let errorMessage = "Gagal memulai NFC scanning: "
+
       if (error.name === "NotAllowedError") {
-        setScanResult({
-          success: false,
-          message: "Akses NFC ditolak. Mohon berikan izin untuk menggunakan NFC.",
-        })
+        setNfcPermission("denied")
+        errorMessage += "Akses NFC ditolak. Mohon berikan izin untuk menggunakan NFC."
       } else if (error.name === "NotSupportedError") {
-        setScanResult({
-          success: false,
-          message: "NFC tidak didukung pada perangkat ini.",
-        })
+        errorMessage += "NFC tidak didukung pada perangkat ini."
+      } else if (error.name === "NotReadableError") {
+        errorMessage += "NFC tidak dapat dibaca. Pastikan NFC aktif di pengaturan."
       } else {
-        setScanResult({
-          success: false,
-          message: "Gagal memulai NFC scanning: " + error.message,
-        })
+        errorMessage += error.message
       }
+
+      setScanResult({
+        success: false,
+        message: errorMessage,
+      })
     }
   }
 
   const stopNFCScanning = () => {
-    console.log("Stopping NFC scanning...")
+    console.log("⏹️ Stopping NFC scanning...")
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
@@ -263,7 +351,7 @@ const PresensiSholat = () => {
   }
 
   const restartNFCScanning = async () => {
-    console.log("Restarting NFC scanning...")
+    console.log("🔄 Restarting NFC scanning...")
     stopNFCScanning()
 
     // Wait a moment before restarting
@@ -274,11 +362,11 @@ const PresensiSholat = () => {
 
   const handleNFCRead = async (serialNumber) => {
     if (isProcessing) {
-      console.log("Already processing, ignoring new scan")
+      console.log("⏳ Already processing, ignoring new scan")
       return
     }
 
-    console.log("Processing NFC tag:", serialNumber)
+    console.log("🔍 Processing NFC tag:", serialNumber)
 
     // Convert serial number to uid_kartu format
     const uid_kartu = serialNumber || ""
@@ -294,13 +382,25 @@ const PresensiSholat = () => {
     await searchStudent(uid_kartu)
   }
 
+  const handleManualInput = async () => {
+    if (!manualUID.trim()) {
+      setScanResult({
+        success: false,
+        message: "Mohon masukkan UID kartu",
+      })
+      return
+    }
+
+    await searchStudent(manualUID.trim())
+  }
+
   const searchStudent = async (uid_kartu) => {
     setIsSearching(true)
     setIsProcessing(true)
     setScanResult(null)
 
     try {
-      console.log("Searching student with UID:", uid_kartu)
+      console.log("🔍 Searching student with UID:", uid_kartu)
 
       const token = sessionStorage.getItem("token") || getCookie("token")
       const response = await fetch(
@@ -319,7 +419,7 @@ const PresensiSholat = () => {
       }
 
       const data = await response.json()
-      console.log("Student search result:", data)
+      console.log("📋 Student search result:", data)
 
       if (data && data.nama_santri) {
         setStudentData({
@@ -330,6 +430,8 @@ const PresensiSholat = () => {
           uid_santri: data.uid_santri || data.id,
         })
         setShowStudentForm(true)
+        setShowManualInput(false)
+        setManualUID("")
         setScanResult({
           success: true,
           message: "Santri ditemukan!",
@@ -342,13 +444,13 @@ const PresensiSholat = () => {
         })
         playNotificationSound(false)
 
-        // Auto-clear error after 3 seconds and restart scanning
+        // Auto-clear error after 3 seconds
         setTimeout(() => {
           setScanResult(null)
         }, 3000)
       }
     } catch (error) {
-      console.error("Error searching student:", error)
+      console.error("❌ Error searching student:", error)
       setScanResult({
         success: false,
         message: "Gagal mencari data santri: " + error.message,
@@ -371,7 +473,7 @@ const PresensiSholat = () => {
     setIsSaving(true)
 
     try {
-      console.log("Saving attendance for:", studentData.uid_santri)
+      console.log("💾 Saving attendance for:", studentData.uid_santri)
 
       const token = sessionStorage.getItem("token") || getCookie("token")
       const response = await fetch("http://localhost:8000/api/presensi/scan", {
@@ -390,7 +492,7 @@ const PresensiSholat = () => {
       }
 
       const result = await response.json()
-      console.log("Attendance save result:", result)
+      console.log("✅ Attendance save result:", result)
 
       // Show success message
       setScanResult({
@@ -412,7 +514,7 @@ const PresensiSholat = () => {
         }
       }, 2000)
     } catch (error) {
-      console.error("Error saving attendance:", error)
+      console.error("❌ Error saving attendance:", error)
       setScanResult({
         success: false,
         message: "Gagal menyimpan presensi: " + error.message,
@@ -424,7 +526,7 @@ const PresensiSholat = () => {
   }
 
   const handleCancelForm = () => {
-    console.log("Canceling form")
+    console.log("❌ Canceling form")
     setShowStudentForm(false)
     setStudentData(null)
     setScanResult(null)
@@ -462,7 +564,7 @@ const PresensiSholat = () => {
         oscillator.stop(audioContext.currentTime + 0.5)
       }
     } catch (error) {
-      console.log("Audio notification error:", error)
+      console.log("🔊 Audio notification error:", error)
     }
   }
 
@@ -514,7 +616,7 @@ const PresensiSholat = () => {
 
   const ScanInterface = () => (
     <div className="space-y-6">
-      {/* NFC Status */}
+      {/* Enhanced NFC Status */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900">Status NFC Scanner</h3>
@@ -547,6 +649,12 @@ const PresensiSholat = () => {
           </div>
         </div>
 
+        {/* Browser Info */}
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <p className="text-xs text-gray-600">{browserInfo}</p>
+          {nfcPermission !== "unknown" && <p className="text-xs text-gray-600">NFC Permission: {nfcPermission}</p>}
+        </div>
+
         {/* Status Messages */}
         {nfcStatus === "initializing" && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -557,13 +665,23 @@ const PresensiSholat = () => {
           </div>
         )}
 
+        {nfcStatus === "not_secure" && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <FaExclamationTriangle className="w-5 h-5 text-red-600" />
+              <p className="text-red-800">NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman (https://).</p>
+            </div>
+          </div>
+        )}
+
         {nfcStatus === "not_supported" && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-              <p className="text-red-800">
-                Browser tidak mendukung Web NFC API. Gunakan Chrome di Android atau browser yang mendukung NFC.
-              </p>
+              <div className="flex-1">
+                <p className="text-red-800">Browser tidak mendukung Web NFC API.</p>
+                <p className="text-red-600 text-sm mt-1">Gunakan Chrome di Android dengan NFC aktif.</p>
+              </div>
             </div>
           </div>
         )}
@@ -572,7 +690,7 @@ const PresensiSholat = () => {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex items-center space-x-2">
               <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-600 border-t-transparent"></div>
-              <p className="text-yellow-800">Memulai NFC Scanner...</p>
+              <p className="text-yellow-800">Memulai NFC Scanner... Mohon berikan izin akses NFC.</p>
             </div>
           </div>
         )}
@@ -611,7 +729,14 @@ const PresensiSholat = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                <p className="text-red-800">Error pada NFC Scanner</p>
+                <div className="flex-1">
+                  <p className="text-red-800">Error pada NFC Scanner</p>
+                  {nfcPermission === "denied" && (
+                    <p className="text-red-600 text-sm mt-1">
+                      Akses NFC ditolak. Refresh halaman dan berikan izin NFC.
+                    </p>
+                  )}
+                </div>
               </div>
               <button
                 onClick={restartNFCScanning}
@@ -661,10 +786,12 @@ const PresensiSholat = () => {
                 <p className="text-gray-600 font-medium">Tempelkan kartu NFC ke perangkat</p>
                 <p className="text-sm text-gray-500">Scanner aktif dan siap membaca</p>
               </div>
-            ) : nfcStatus === "initializing" ? (
+            ) : nfcStatus === "initializing" || nfcStatus === "starting" ? (
               <div className="flex flex-col items-center space-y-4">
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
-                <p className="text-blue-600 font-medium">Menginisialisasi NFC...</p>
+                <p className="text-blue-600 font-medium">
+                  {nfcStatus === "initializing" ? "Menginisialisasi NFC..." : "Memulai NFC Scanner..."}
+                </p>
               </div>
             ) : (
               <div className="flex flex-col items-center space-y-4">
@@ -676,12 +803,53 @@ const PresensiSholat = () => {
               </div>
             )}
 
-            {(isSearching || nfcStatus === "initializing") && (
+            {(isSearching || nfcStatus === "initializing" || nfcStatus === "starting") && (
               <div className="absolute inset-0 bg-blue-600 opacity-20 animate-pulse"></div>
             )}
           </div>
+
+          {/* Manual Input Toggle */}
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={() => setShowManualInput(!showManualInput)}
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2"
+            >
+              <FaKeyboard className="w-4 h-4" />
+              <span>{showManualInput ? "Sembunyikan" : "Input Manual"}</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Manual Input */}
+      {showManualInput && (
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Input Manual UID Kartu</h3>
+          <div className="flex space-x-4">
+            <input
+              ref={manualInputRef}
+              type="text"
+              value={manualUID}
+              onChange={(e) => setManualUID(e.target.value)}
+              placeholder="Masukkan UID kartu (contoh: 0722142575)"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleManualInput()
+                }
+              }}
+            />
+            <button
+              onClick={handleManualInput}
+              disabled={isSearching || !manualUID.trim()}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            >
+              {isSearching ? "Mencari..." : "Cari"}
+            </button>
+          </div>
+          <p className="text-sm text-gray-500 mt-2">Gunakan input manual untuk testing atau jika NFC tidak tersedia</p>
+        </div>
+      )}
 
       {/* Student Form */}
       {showStudentForm && studentData && (
