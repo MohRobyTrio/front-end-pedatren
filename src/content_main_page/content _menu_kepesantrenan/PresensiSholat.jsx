@@ -1181,7 +1181,7 @@ const Scan = () => {
 
             const data = await response.json()
 
-            if (!response.ok || data.success == false) {
+            if (!response.ok || data.success == false || data.data.status == false) {
                 setStatusResponse(data.status || "")
                 throw new Error(data.message || "Santri tidak ditemukan")
             }
