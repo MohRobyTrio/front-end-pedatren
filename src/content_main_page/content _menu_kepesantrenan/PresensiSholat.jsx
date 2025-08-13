@@ -1085,8 +1085,6 @@ const PresensiSholat = () => {
 
 export default PresensiSholat
 
-import { NDEFReader } from "ndef-reader"
-
 const Scan = () => {
     const [isScanning, setIsScanning] = useState(false)
     const [studentData, setStudentData] = useState(null)
