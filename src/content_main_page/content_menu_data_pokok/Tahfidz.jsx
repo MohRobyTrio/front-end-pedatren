@@ -1065,7 +1065,7 @@ export const TahfidzRekap = () => {
                                 </button>
                             ) : (
                                 <>
-                                    <Access action="tambah">
+                                    {/* <Access action="tambah">
                                         <button
                                             onClick={() => {
                                                 setShowFormModal(true)
@@ -1075,7 +1075,7 @@ export const TahfidzRekap = () => {
                                         >
                                             <FaPlus /> Tambah
                                         </button>
-                                    </Access>
+                                    </Access> */}
 
                                     {/* <button
                                         onClick={() => setOpenModalImport(true)}

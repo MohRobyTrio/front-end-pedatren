@@ -77,8 +77,8 @@ export const menuItems = [
 
 export const menuDataPokokItems = [
     { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik /> },
-    { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
-    { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
+    // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
+    // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     { id: "kitab", icon: "fa-book", text: "Kitab", link: "/kitab", content: <Kitab /> },
     { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap /> },
     { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData /> },
@@ -107,10 +107,10 @@ export const menuKepesantrenanItems = [
     // { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pesantren", content: <PresensiPesantren /> },
     // { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung /> },
-    { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam /> },
     { id: "sholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat /> },
     { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat /> },
     { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat /> },
+    { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
 
 export const menuKepegawaianItems = [

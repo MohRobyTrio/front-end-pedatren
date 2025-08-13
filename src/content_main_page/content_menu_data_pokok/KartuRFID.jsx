@@ -48,6 +48,7 @@ const KartuRFID = () => {
                                     <th className="px-3 py-2 border-b w-10">#</th>
                                     <th className="px-3 py-2 border-b">Nama Santri</th>
                                     <th className="px-3 py-2 border-b">NIS</th>
+                                    <th className="px-3 py-2 border-b">UID Kartu</th>
                                     <th className="px-3 py-2 border-b">Status</th>
                                     <th className="px-3 py-2 border-b">Tanggal Terbit</th>
                                     <th className="px-3 py-2 border-b">Tanggal Kadaluarsa</th>
@@ -71,6 +72,7 @@ const KartuRFID = () => {
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">{item.nis}</td>
+                                            <td className="px-3 py-2 border-b">{item.uid_kartu}</td>
                                             <td className="px-3 py-2 border-b w-30">
                                                 <span
                                                     className={`text-sm font-semibold px-3 py-1 rounded-full ${item.aktif

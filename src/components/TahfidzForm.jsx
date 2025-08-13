@@ -230,10 +230,15 @@ const TahfidzForm = ({ student, onSuccess }) => {
                         required
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                     >
-                        <option value="">Pilih status</option>
                         <option value="on_progress">On Progress</option>
                         <option value="tuntas">Tuntas</option>
                     </select>
+                    {formData.status === "tuntas" && (
+                        <p className="mt-2 text-sm text-red-600 italic">
+                            * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
+                        </p>
+                    )}
+
                 </div>
             </div>
 

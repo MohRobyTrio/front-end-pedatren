@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FaCalendarAlt, FaBook, FaFileAlt, FaSave, FaUndo, FaTasks, FaListOl, FaStickyNote, FaFlag, FaStar } from "react-icons/fa"
 
 const NadhomanForm = ({ student, onSuccess }) => {
@@ -25,6 +25,8 @@ const NadhomanForm = ({ student, onSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleInputChange = (e) => {
+        console.log(e);
+        
         const { name, value } = e.target
         setFormData((prev) => ({
             ...prev,
@@ -62,6 +64,10 @@ const NadhomanForm = ({ student, onSuccess }) => {
             setIsSubmitting(false)
         }
     }
+
+    useEffect(() => {
+        console.log("Form data changed:", formData)
+    }, [formData])
 
     const handleReset = () => {
         setFormData({
@@ -206,10 +212,14 @@ const NadhomanForm = ({ student, onSuccess }) => {
                             required
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                         >
-                            <option value="">Pilih status</option>
                             <option value="on_progress">On Progress</option>
                             <option value="tuntas">Tuntas</option>
                         </select>
+                            {formData.status == "tuntas" && (
+                                <p className="mt-2 text-sm text-red-600 italic">
+                                    * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
+                                </p>
+                            )}
                     </div>
 
                 </div>
