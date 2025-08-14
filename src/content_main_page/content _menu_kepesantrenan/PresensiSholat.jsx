@@ -142,6 +142,19 @@ const PresensiSholat = () => {
     const nfcReaderRef = useRef(null)
     const manualInputRef = useRef(null)
 
+    useEffect(() => {
+        const savedView = sessionStorage.getItem("currentView");
+        if (savedView) {
+            setCurrentView(savedView);
+        }
+    }, []);
+
+    // Simpan state ke sessionStorage setiap kali currentView berubah
+    const handleSetView = (view) => {
+        setCurrentView(view);
+        sessionStorage.setItem("currentView", view);
+    };
+
     // Auto-initialize when component mounts
     useEffect(() => {
         const initializeApp = async () => {
@@ -263,285 +276,6 @@ const PresensiSholat = () => {
         setIsScanning(false)
     }
 
-    const startNFCScanning = async () => {
-        if (!nfcSupported) return
-
-        try {
-            const ndef = new window.NDEFReader()
-            await ndef.scan()
-            setIsScanning(true)
-            setScanResult(null)
-
-            ndef.addEventListener("reading", async ({ serialNumber }) => {
-                console.log("UID Kartu (Hex):", serialNumber)
-
-                let uidDecimal = null
-                try {
-                    // Remove all ':' characters
-                    const bytes = serialNumber.split(":") // ["2F","8B","29","2B"]
-                    const reversed = bytes.reverse().join("") // "2B298B2F"
-                    uidDecimal = BigInt("0x" + reversed).toString(10)
-
-                    // Pad leading zero to make it 10 digits
-                    uidDecimal = uidDecimal.padStart(10, "0")
-                    console.log("UID Kartu (Decimal):", uidDecimal)
-                } catch (e) {
-                    console.error("Gagal konversi UID ke desimal:", e)
-                    uidDecimal = serialNumber // fallback
-                }
-
-                setIsScanning(false)
-                searchStudent(uidDecimal)
-            })
-
-            ndef.addEventListener("readingerror", () => {
-                setScanResult({
-                    success: false,
-                    message: "Error membaca NFC tag",
-                })
-                setIsScanning(false)
-            })
-        } catch (error) {
-            console.error("Gagal memulai NFC:", error)
-            setScanResult({
-                success: false,
-                message: "Gagal memulai NFC: " + error.message,
-            })
-            setIsScanning(false)
-        }
-    }
-
-    const stopNFCScanning = () => {
-        console.log("⏹️ Stopping NFC scanning...")
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort()
-        }
-        setNfcReaderActive(false)
-        setIsScanning(false)
-        setNfcStatus("stopped")
-    }
-
-    const restartNFCScanning = async () => {
-        console.log("🔄 Restarting NFC scanning...")
-        stopNFCScanning()
-
-        // Wait a moment before restarting
-        setTimeout(async () => {
-            await startNFCScanning()
-        }, 1000)
-    }
-
-    const handleNFCRead = async (serialNumber) => {
-        if (isProcessing) {
-            console.log("⏳ Already processing, ignoring new scan")
-            return
-        }
-
-        console.log("🔍 Processing NFC tag:", serialNumber)
-
-        // Convert serial number to uid_kartu format
-        const uid_kartu = serialNumber || ""
-
-        if (!uid_kartu.trim()) {
-            setScanResult({
-                success: false,
-                message: "UID kartu tidak valid atau kosong",
-            })
-            return
-        }
-
-        await searchStudent(uid_kartu)
-    }
-
-    const handleManualInput = async () => {
-        if (!manualUID.trim()) {
-            setScanResult({
-                success: false,
-                message: "Mohon masukkan UID kartu",
-            })
-            return
-        }
-
-        await searchStudent(manualUID.trim())
-    }
-
-    const searchStudent = async (uid_kartu) => {
-        setIsSearching(true)
-        setIsProcessing(true)
-        setScanResult(null)
-
-        try {
-            console.log("🔍 Searching student with UID:", uid_kartu)
-
-            const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(
-                `http://localhost:8000/api/presensi/cari-santri?uid_kartu=${encodeURIComponent(uid_kartu)}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(token && { Authorization: `Bearer ${token}` }),
-                    },
-                },
-            )
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`)
-            }
-
-            const data = await response.json()
-            console.log("📋 Student search result:", data)
-
-            if (data && data.nama_santri) {
-                setStudentData({
-                    nama_santri: data.nama_santri,
-                    nis: data.nis,
-                    uid_kartu: data.uid_kartu,
-                    foto_profil: data.foto_profil,
-                    uid_santri: data.uid_santri || data.id,
-                })
-                setShowStudentForm(true)
-                setShowManualInput(false)
-                setManualUID("")
-                setScanResult({
-                    success: true,
-                    message: "Santri ditemukan!",
-                })
-                playNotificationSound(true)
-            } else {
-                setScanResult({
-                    success: false,
-                    message: `Santri tidak ditemukan dengan UID: ${uid_kartu}`,
-                })
-                playNotificationSound(false)
-
-                // Auto-clear error after 3 seconds
-                setTimeout(() => {
-                    setScanResult(null)
-                }, 3000)
-            }
-        } catch (error) {
-            console.error("❌ Error searching student:", error)
-            setScanResult({
-                success: false,
-                message: "Gagal mencari data santri: " + error.message,
-            })
-            playNotificationSound(false)
-        } finally {
-            setIsSearching(false)
-            setIsProcessing(false)
-        }
-    }
-
-    const handleConfirmAttendance = async () => {
-        if (!studentData || !studentData.uid_santri) return
-
-        setIsSaving(true)
-
-        try {
-            console.log("💾 Saving attendance for:", studentData.uid_santri)
-
-            const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch("http://localhost:8000/api/presensi/scan", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` }),
-                },
-                body: JSON.stringify({
-                    uid_santri: studentData.uid_santri,
-                }),
-            })
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`)
-            }
-
-            const result = await response.json()
-            console.log("✅ Attendance save result:", result)
-
-            // Show success message
-            setScanResult({
-                success: true,
-                message: "Presensi berhasil disimpan!",
-            })
-
-            // Reset form
-            setShowStudentForm(false)
-            setStudentData(null)
-
-            playNotificationSound(true)
-
-            // Auto-restart scanning after 2 seconds
-            setTimeout(() => {
-                setScanResult(null)
-                if (nfcSupported && !nfcReaderActive) {
-                    startNFCScanning()
-                }
-            }, 2000)
-        } catch (error) {
-            console.error("❌ Error saving attendance:", error)
-            setScanResult({
-                success: false,
-                message: "Gagal menyimpan presensi: " + error.message,
-            })
-            playNotificationSound(false)
-        } finally {
-            setIsSaving(false)
-        }
-    }
-
-    const handleCancelForm = () => {
-        console.log("❌ Canceling form")
-        setShowStudentForm(false)
-        setStudentData(null)
-        setScanResult(null)
-
-        // Restart scanning if not active
-        if (nfcSupported && !nfcReaderActive) {
-            startNFCScanning()
-        }
-    }
-
-    const playNotificationSound = (success) => {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-            const oscillator = audioContext.createOscillator()
-            const gainNode = audioContext.createGain()
-
-            oscillator.connect(gainNode)
-            gainNode.connect(audioContext.destination)
-
-            if (success) {
-                // Success sound: two ascending tones
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
-                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.15)
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
-                oscillator.start(audioContext.currentTime)
-                oscillator.stop(audioContext.currentTime + 0.3)
-            } else {
-                // Error sound: two descending tones
-                oscillator.frequency.setValueAtTime(400, audioContext.currentTime)
-                oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.3)
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5)
-                oscillator.start(audioContext.currentTime)
-                oscillator.stop(audioContext.currentTime + 0.5)
-            }
-        } catch (error) {
-            console.log("🔊 Audio notification error:", error)
-        }
-    }
-
-    const attendanceStats = {
-        total: todayAttendance.length,
-        hadir: todayAttendance.filter((s) => s.status === "hadir").length,
-        terlambat: todayAttendance.filter((s) => s.status === "terlambat").length,
-        alpha: todayAttendance.filter((s) => s.status === "alpha").length,
-        izin: todayAttendance.filter((s) => s.status === "izin").length,
-    }
-
     if (!hasAccess("presensi_sholat")) {
         return <Navigate to="/not-found" replace />
     }
@@ -570,7 +304,7 @@ const PresensiSholat = () => {
                         </div>
                         <div className="flex items-center space-x-4 mt-4 md:mt-0">
                             <button
-                                onClick={() => setCurrentView("scan")}
+                                onClick={() => handleSetView("scan")}
                                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${currentView === "scan" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                     }`}
                             >
@@ -578,7 +312,7 @@ const PresensiSholat = () => {
                                 <span>Scan</span>
                             </button>
                             <button
-                                onClick={() => setCurrentView("list")}
+                                onClick={() => handleSetView("list")}
                                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${currentView === "list" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                     }`}
                             >
@@ -611,7 +345,8 @@ const PresensiSholat = () => {
                 )}
 
                 {currentView === "scan" && <Scan />}
-                {currentView === "list" && dataPresensi && dataPresensi.length > 0 && (
+                {/* {currentView === "list" && dataPresensi && dataPresensi.length > 0 && ( */}
+                {currentView === "list" && (
                     <AttendanceList
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
@@ -619,17 +354,17 @@ const PresensiSholat = () => {
                         setFilterStatus={setFilterStatus}
                         loadingPresensi={loadingPresensi}
                         dataPresensi={dataPresensi}
-                        totals={totals}
+                        totals={totalData}
                         jadwalSholat={jadwalSholat}
                     />
                 )}
-                {currentView === "list" && (!dataPresensi || dataPresensi.length === 0) && !loadingPresensi && (
+                {/* {currentView === "list" && (!dataPresensi || dataPresensi.length === 0) && !loadingPresensi && (
                     <div className="bg-white rounded-xl shadow-lg p-8 text-center">
                         <FaUserCheck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">Tidak Ada Data Presensi</h3>
                         <p className="text-gray-600">Belum ada data presensi untuk filter yang dipilih</p>
                     </div>
-                )}
+                )} */}
                 {currentView === "report" && (
                     <div className="bg-white rounded-xl shadow-lg p-8 text-center">
                         <FaCalendarAlt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -651,7 +386,6 @@ const AttendanceList = memo(
         loadingPresensi,
         dataPresensi = [],
         totals,
-        jadwalSholat,
     }) => {
         console.log("attendance", dataPresensi)
 
@@ -700,6 +434,25 @@ const AttendanceList = memo(
                                 <span>Export</span>
                             </button>
                         </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div className="text-2xl font-bold text-green-600">{totals.total_hadir}</div>
+                        <div className="text-gray-600">Hadir</div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div className="text-2xl font-bold text-yellow-600">{totals.total_tidak_hadir}</div>
+                        <div className="text-gray-600">Tidak Hadir</div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div className="text-2xl font-bold text-red-600">{totals.total_presensi_tercatat}</div>
+                        <div className="text-gray-600">Presensi</div>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                        <div className="text-2xl font-bold text-blue-600">{totals.total_santri}</div>
+                        <div className="text-gray-600">Santri</div>
                     </div>
                 </div>
 
@@ -768,10 +521,10 @@ const AttendanceList = memo(
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
                                                     className={`px-2 py-1 text-xs rounded-full ${student.status === "Hadir"
-                                                            ? "bg-green-100 text-green-800"
-                                                            : student.status === "Terlambat"
-                                                                ? "bg-yellow-100 text-yellow-800"
-                                                                : "bg-red-100 text-red-800"
+                                                        ? "bg-green-100 text-green-800"
+                                                        : student.status === "Terlambat"
+                                                            ? "bg-yellow-100 text-yellow-800"
+                                                            : "bg-red-100 text-red-800"
                                                         }`}
                                                 >
                                                     {student.status}
@@ -808,8 +561,7 @@ const Scan = () => {
     const [nfcSupported, setNfcSupported] = useState(false)
     const [status, setStatus] = useState("Tempelkan kartu NFC...")
     const [statusResponse, setStatusResponse] = useState("")
-    const [inputMode, setInputMode] = useState("nfc") // "nfc" or "manual"
-    const [manualNIS, setManualNIS] = useState("")
+    const [inputMode, setInputMode] = useState("reader")
     const [showSelectSantri, setShowSelectSantri] = useState(false)
     const [santriData, setSantriData] = useState("")
 
@@ -818,17 +570,68 @@ const Scan = () => {
     }, [])
 
     useEffect(() => {
-        if (nfcSupported && inputMode === "nfc") {
-            startNFCScanning()
+        if (inputMode === "nfc") {
+            if (!nfcSupported) {
+                setStatusResponse("Error")
+                setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
+            } else {
+                startNFCScanning()
+            }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nfcSupported, inputMode])
 
     const checkNFCSupport = () => {
         if ("NDEFReader" in window) {
+            handleSetView("nfc")
             setNfcSupported(true)
         } else {
-            setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
+            handleSetView("reader")
             setNfcSupported(false)
+        }
+    }
+
+    useEffect(() => {
+        const savedView = sessionStorage.getItem("inputMode");
+        if (savedView) {
+            setInputMode(savedView);
+        }
+    }, []);
+
+    // Simpan state ke sessionStorage setiap kali inputMode berubah
+    const handleSetView = (view) => {
+        setInputMode(view);
+        sessionStorage.setItem("inputMode", view);
+    };
+
+    const playNotificationSound = (success) => {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+            const oscillator = audioContext.createOscillator()
+            const gainNode = audioContext.createGain()
+
+            oscillator.connect(gainNode)
+            gainNode.connect(audioContext.destination)
+
+            if (success) {
+                // Success sound: two ascending tones
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
+                oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.15)
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+                oscillator.start(audioContext.currentTime)
+                oscillator.stop(audioContext.currentTime + 0.3)
+            } else {
+                // Error sound: two descending tones
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime)
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.3)
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5)
+                oscillator.start(audioContext.currentTime)
+                oscillator.stop(audioContext.currentTime + 0.5)
+            }
+        } catch (error) {
+            console.log("🔊 Audio notification error:", error)
         }
     }
 
@@ -854,8 +657,10 @@ const Scan = () => {
 
                     // Pad leading zero to make it 10 digits
                     uidDecimal = uidDecimal.padStart(10, "0")
+                    playNotificationSound(true)
                     console.log("UID Kartu (Decimal):", uidDecimal)
                 } catch (e) {
+                    playNotificationSound(false)
                     console.error("Gagal konversi UID ke desimal:", e)
                     uidDecimal = serialNumber // fallback
                 }
@@ -914,45 +719,6 @@ const Scan = () => {
         }
     }
 
-    const searchStudentByNIS = async () => {
-        if (!manualNIS.trim()) {
-            setError("Masukkan NIS terlebih dahulu")
-            return
-        }
-
-        setLoading(true)
-        setError("")
-        setStudentData(null)
-
-        try {
-            const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}presensi/cari-santri`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    uid_kartu: manualNIS.trim(),
-                }),
-            })
-
-            const data = await response.json()
-
-            if (!response.ok) {
-                throw new Error(data.message || "Santri tidak ditemukan")
-            }
-
-            setStudentData(data.data)
-            setStatus(`Data santri ditemukan: ${data.data.nama_santri}`)
-        } catch (error) {
-            setError("Error: " + error.message)
-            setStatus("Gagal mencari data santri")
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const recordAttendance = async () => {
         if (!studentData) return
 
@@ -991,7 +757,6 @@ const Scan = () => {
             setTimeout(() => {
                 setStudentData(null)
                 setSuccess("")
-                setManualNIS("")
                 setStatus(inputMode === "nfc" ? "Tempelkan kartu NFC..." : "Masukkan NIS santri...")
                 if (inputMode === "nfc") {
                     startNFCScanning() // Continue scanning
@@ -1007,7 +772,6 @@ const Scan = () => {
 
     useEffect(() => {
         console.log("Data Santri", santriData)
-        // searchStudent(santriData?.id);
         setStudentData(santriData)
     }, [santriData])
 
@@ -1015,11 +779,10 @@ const Scan = () => {
         setStudentData(null)
         setError("")
         setSuccess("")
-        setManualNIS("")
 
         switch (inputMode) {
             case "manual":
-                setStatus("Masukkan NIS santri...")
+                setStatus("Pilih santri...")
                 break
             case "nfc":
                 setStatus("Tempelkan kartu NFC...")
@@ -1027,7 +790,6 @@ const Scan = () => {
                 break
             case "reader":
                 setStatus("Letakkan kartu pada reader...")
-                // startReaderScanning()
                 break
             default:
                 setStatus("Pilih mode input...")
@@ -1035,12 +797,10 @@ const Scan = () => {
     }
 
     const toggleInputMode = (mode) => {
-        // mode bisa "manual", "nfc", atau "reader"
-        setInputMode(mode)
+        handleSetView(mode)
         setStudentData(null)
         setError("")
         setSuccess("")
-        setManualNIS("")
         setIsScanning(false)
 
         switch (mode) {
@@ -1074,17 +834,12 @@ const Scan = () => {
 
         window.addEventListener("keydown", handleKeyPress)
         return () => window.removeEventListener("keydown", handleKeyPress)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nis])
-
-    // useEffect(() => {
-    //     searchStudent();
-    // }, [manualNIS]);
 
     const submitForm = (nisValue) => {
         console.log("Submit NIS:", nisValue)
         searchStudent(nisValue)
-        // searchStudentByNIS(); // Panggil fungsi untuk mencari santri berdasarkan NIS
-        // Lakukan request API atau logic lainnya
         setNis("") // reset
     }
 
@@ -1182,29 +937,6 @@ const Scan = () => {
                                     </>
                                 )}
                             </button>
-
-                            {/* {showSelectSantri && (
-            <div className="bg-white shadow-md rounded-lg p-4 max-h-60 overflow-y-auto">
-                {students.length === 0 ? (
-                    <p className="text-gray-500 text-center">Tidak ada data santri</p>
-                ) : (
-                    students.map((s) => (
-                        <div
-                            key={s.id}
-                            className="p-2 rounded-lg hover:bg-blue-50 cursor-pointer"
-                            onClick={() => {
-                                setStudentData(s)
-                                setShowSelectSantri(false)
-                                recordAttendance() // langsung submit presensi setelah pilih
-                            }}
-                        >
-                            <p className="font-medium">{s.name}</p>
-                            <p className="text-sm text-gray-500">{s.nis}</p>
-                        </div>
-                    ))
-                )}
-            </div>
-        )} */}
                         </div>
                     ) : (
                         <div className="text-center">
@@ -1268,44 +1000,6 @@ const Scan = () => {
                                     )}
                                 </div>
                             </div>
-
-                            {/* Instructions */}
-                            {/* <div className="bg-blue-50 rounded-lg p-4">
-                                <div className="flex items-start space-x-3">
-                                    <FiInfo className="text-blue-500 text-lg mt-0.5 flex-shrink-0" />
-                                    <div className="text-left">
-                                        <h4 className="font-medium text-blue-800 mb-1">Cara Penggunaan:</h4>
-                                        <ul className="text-sm text-blue-700 space-y-1">
-                                            <li>• Pastikan card reader terhubung dengan baik</li>
-                                            <li>• Letakkan kartu pada slot reader</li>
-                                            <li>• Tunggu hingga NIS muncul secara otomatis</li>
-                                            <li>• Tekan tombol &quot;Proses Presensi&quot; untuk melanjutkan</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div> */}
-
-                            {/* Action Button */}
-                            {/* {nis && (
-                                <button
-                                    onClick={() => submitForm(nis)}
-                                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
-                                >
-                                    <div className="flex items-center justify-center space-x-2">
-                                        <FiCheck className="text-lg" />
-                                        <span>Proses Presensi</span>
-                                    </div>
-                                </button>
-                            )}
-
-                            {nis && (
-                                <button
-                                    onClick={() => setNis("")}
-                                    className="mt-3 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
-                                >
-                                    Bersihkan Input
-                                </button>
-                            )} */}
                         </div>
                     )}
                 </div>
@@ -1314,7 +1008,7 @@ const Scan = () => {
                     <div className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 mb-4 sm:mb-6">
                         <div className="flex items-start">
                             <div className="flex-shrink-0">
-                                <FiX className="text-red-400 text-lg sm:text-xl mt-0.5" />
+                                <FiX onClick={() => setError("")} className="text-red-400 text-lg sm:text-xl mt-0.5" />
                             </div>
                             <div className="ml-3">
                                 <h3 className="text-sm font-medium text-red-800">{statusResponse || "Data Tidak Ditemukan"}</h3>

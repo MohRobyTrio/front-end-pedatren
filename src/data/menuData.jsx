@@ -61,7 +61,7 @@ import Users from "../content_main_page/content_menu_manage/Users";
 import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import { Nadhoman, NadhomanAllData } from "../content_main_page/content_menu_data_pokok/Nadhoman";
-import { Tahfidz, TahfidzRekap, TahfidzSetoran } from "../content_main_page/content_menu_data_pokok/Tahfidz";
+import { Tahfidz, TahfidzRekap } from "../content_main_page/content_menu_data_pokok/Tahfidz";
 import PresensiSholat from "../content_main_page/content _menu_kepesantrenan/PresensiSholat";
 import Kitab from "../content_main_page/content_menu_data_pokok/Kitab";
 import KartuRFID from "../content_main_page/content_menu_data_pokok/KartuRFID";

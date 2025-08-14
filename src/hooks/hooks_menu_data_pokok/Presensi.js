@@ -15,6 +15,7 @@ const useFetchPresensiSholat = (filters) => {
   const [totalData, setTotalData] = useState(0); // Jika API mendukung pagination
   const [totalPages, setTotalPages] = useState(1); // Jika API mendukung pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [jadwalSholat, setJadwalSholat] = useState("");
   const lastRequest = useRef("");
   const token = sessionStorage.getItem("token") || getCookie("token");
 
@@ -72,8 +73,9 @@ const useFetchPresensiSholat = (filters) => {
       setDataPresensi(Array.isArray(data.data) ? data.data : []);
       
       // Jika API ada total data/pagination, sesuaikan
-      setTotalData(data.total_data || 0);
+      setTotalData(data.totals || {});
       setTotalPages(data.total_pages || 1);
+      setJadwalSholat(data.jadwal_sholat || "");
 
     } catch (err) {
       console.error("Fetch error:", err);
@@ -103,6 +105,7 @@ const useFetchPresensiSholat = (filters) => {
     currentPage,
     setCurrentPage,
     fetchData,
+    jadwalSholat
   };
 };
 
