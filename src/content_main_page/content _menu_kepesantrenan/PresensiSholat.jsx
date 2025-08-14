@@ -1,32 +1,17 @@
 "use client"
 import { OrbitProgress } from "react-loading-indicators"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react"
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import useFetchPresensi from "../../hooks/hooks_menu_data_pokok/Presensi"
-import {
-    FaQrcode,
-    FaUserCheck,
-    FaCalendarAlt,
-    FaSearch,
-    FaDownload,
-    FaCheckCircle,
-    FaTimesCircle,
-    FaExclamationTriangle,
-    FaCreditCard,
-    FaStop,
-    FaSync,
-    FaUser,
-    FaMobile,
-    FaKeyboard,
-} from "react-icons/fa"
+import { FaQrcode, FaUserCheck, FaCalendarAlt, FaSearch, FaDownload } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
-import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiInfo, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
+import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiRefreshCw, FiUser, FiWifi, FiX } from "react-icons/fi"
 import { API_BASE_URL } from "../../hooks/config"
-import blankProfile from "../../assets/blank_profile.png";
+import blankProfile from "../../assets/blank_profile.png"
 import { ModalSelectSantri } from "../../components/ModalSelectSantri"
 
 const PresensiSholat = () => {
@@ -88,25 +73,25 @@ const PresensiSholat = () => {
             rombel: rombelTerpilih,
         }),
         [
-            blokTerpilih,
             filters,
-            jurusanTerpilih,
-            kabupatenTerpilih,
-            kamarTerpilih,
-            kecamatanTerpilih,
-            kelasTerpilih,
-            lembagaTerpilih,
             negaraTerpilih,
             provinsiTerpilih,
-            rombelTerpilih,
+            kabupatenTerpilih,
+            kecamatanTerpilih,
             wilayahTerpilih,
+            blokTerpilih,
+            kamarTerpilih,
+            lembagaTerpilih,
+            jurusanTerpilih,
+            kelasTerpilih,
+            rombelTerpilih,
         ],
     )
 
     const {
         dataPresensi,
         loadingPresensi,
-        error,
+        errorPresensi,
         limit,
         setLimit,
         totalData,
@@ -114,7 +99,14 @@ const PresensiSholat = () => {
         currentPage,
         setCurrentPage,
         fetchData,
+        jadwalSholat,
+        totals,
+        responseFilter,
     } = useFetchPresensi(updatedFilters)
+
+    // useEffect(() => {
+    //     console.log(dataPresensi);
+    // }, [dataPresensi])
 
     // Main states - Auto-start in scan mode
     const [currentView, setCurrentView] = useState("scan")
@@ -233,7 +225,7 @@ const PresensiSholat = () => {
             await checkNFCPermissions()
 
             // Auto-start NFC scanning
-            await startNFCScanning()
+            // await startNFCScanning()
         } catch (error) {
             console.error("❌ NFC initialization error:", error)
             setNfcStatus("error")
@@ -272,75 +264,50 @@ const PresensiSholat = () => {
     }
 
     const startNFCScanning = async () => {
-        if (!nfcSupported) {
-            console.log("❌ NFC not supported, cannot start scanning")
-            return
-        }
+        if (!nfcSupported) return
 
         try {
-            console.log("🎯 Starting NFC scanning...")
-            setNfcStatus("starting")
-            setIsScanning(true)
-
-            // Cleanup previous controller
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort()
-            }
-
-            // Create new abort controller
-            abortControllerRef.current = new AbortController()
-
-            // Create NDEFReader instance
             const ndef = new window.NDEFReader()
-            nfcReaderRef.current = ndef
+            await ndef.scan()
+            setIsScanning(true)
+            setScanResult(null)
 
-            console.log("📡 Requesting NFC scan permission...")
+            ndef.addEventListener("reading", async ({ serialNumber }) => {
+                console.log("UID Kartu (Hex):", serialNumber)
 
-            // Start scanning with proper error handling
-            await ndef.scan({ signal: abortControllerRef.current.signal })
+                let uidDecimal = null
+                try {
+                    // Remove all ':' characters
+                    const bytes = serialNumber.split(":") // ["2F","8B","29","2B"]
+                    const reversed = bytes.reverse().join("") // "2B298B2F"
+                    uidDecimal = BigInt("0x" + reversed).toString(10)
 
-            console.log("✅ NFC scanning started successfully")
-            setNfcReaderActive(true)
-            setNfcStatus("scanning")
-            setNfcPermission("granted")
+                    // Pad leading zero to make it 10 digits
+                    uidDecimal = uidDecimal.padStart(10, "0")
+                    console.log("UID Kartu (Decimal):", uidDecimal)
+                } catch (e) {
+                    console.error("Gagal konversi UID ke desimal:", e)
+                    uidDecimal = serialNumber // fallback
+                }
 
-            // Listen for NFC tags
-            ndef.addEventListener("reading", ({ message, serialNumber }) => {
-                console.log("🏷️ NFC tag detected:", { message, serialNumber })
-                handleNFCRead(serialNumber)
+                setIsScanning(false)
+                searchStudent(uidDecimal)
             })
 
-            ndef.addEventListener("readingerror", (error) => {
-                console.error("❌ NFC reading error:", error)
-                setNfcStatus("error")
+            ndef.addEventListener("readingerror", () => {
                 setScanResult({
                     success: false,
-                    message: "Error membaca NFC tag: " + error.message,
+                    message: "Error membaca NFC tag",
                 })
+                setIsScanning(false)
             })
         } catch (error) {
-            console.error("❌ Failed to start NFC scanning:", error)
-            setNfcStatus("error")
-            setIsScanning(false)
-            setNfcReaderActive(false)
-
-            let errorMessage = "Gagal memulai NFC scanning: "
-
-            if (error.name === "NotAllowedError") {
-                setNfcPermission("denied")
-                errorMessage += "Akses NFC ditolak. Mohon berikan izin untuk menggunakan NFC."
-            } else if (error.name === "NotSupportedError") {
-                errorMessage += "NFC tidak didukung pada perangkat ini."
-            } else if (error.name === "NotReadableError") {
-                errorMessage += "NFC tidak dapat dibaca. Pastikan NFC aktif di pengaturan."
-            } else {
-                errorMessage += error.message
-            }
-
+            console.error("Gagal memulai NFC:", error)
             setScanResult({
                 success: false,
-                message: errorMessage,
+                message: "Gagal memulai NFC: " + error.message,
             })
+            setIsScanning(false)
         }
     }
 
@@ -460,11 +427,6 @@ const PresensiSholat = () => {
                 message: "Gagal mencari data santri: " + error.message,
             })
             playNotificationSound(false)
-
-            // Auto-clear error after 3 seconds
-            setTimeout(() => {
-                setScanResult(null)
-            }, 3000)
         } finally {
             setIsSearching(false)
             setIsProcessing(false)
@@ -580,447 +542,6 @@ const PresensiSholat = () => {
         izin: todayAttendance.filter((s) => s.status === "izin").length,
     }
 
-    const ScanInterface = () => (
-        <div className="space-y-6">
-            {/* Enhanced NFC Status */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Status NFC Scanner</h3>
-                    <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-2">
-                            {nfcSupported ? (
-                                <FaMobile className="w-4 h-4 text-green-500" />
-                            ) : (
-                                <FaMobile className="w-4 h-4 text-red-500" />
-                            )}
-                            <span className={`text-sm ${nfcSupported ? "text-green-600" : "text-red-600"}`}>
-                                Web NFC {nfcSupported ? "Didukung" : "Tidak Didukung"}
-                            </span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            {nfcReaderActive ? (
-                                <div className="flex items-center space-x-1">
-                                    <div className="animate-pulse">
-                                        <FaCreditCard className="w-4 h-4 text-green-500" />
-                                    </div>
-                                    <span className="text-sm text-green-600">Scanner Aktif</span>
-                                </div>
-                            ) : (
-                                <div className="flex items-center space-x-1">
-                                    <FaCreditCard className="w-4 h-4 text-red-500" />
-                                    <span className="text-sm text-red-600">Scanner Tidak Aktif</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Browser Info */}
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-600">{browserInfo}</p>
-                    {nfcPermission !== "unknown" && <p className="text-xs text-gray-600">NFC Permission: {nfcPermission}</p>}
-                </div>
-
-                {/* Status Messages */}
-                {nfcStatus === "initializing" && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div className="flex items-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
-                            <p className="text-blue-800">Menginisialisasi NFC Scanner...</p>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "not_secure" && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div className="flex items-center space-x-2">
-                            <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                            <p className="text-red-800">NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman (https://).</p>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "not_supported" && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div className="flex items-center space-x-2">
-                            <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                            <div className="flex-1">
-                                <p className="text-red-800">Browser tidak mendukung Web NFC API.</p>
-                                <p className="text-red-600 text-sm mt-1">Gunakan Chrome di Android dengan NFC aktif.</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "starting" && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <div className="flex items-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-600 border-t-transparent"></div>
-                            <p className="text-yellow-800">Memulai NFC Scanner... Mohon berikan izin akses NFC.</p>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "scanning" && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <div className="animate-pulse">
-                                    <FaSync className="w-5 h-5 text-green-600" />
-                                </div>
-                                <p className="text-green-800">NFC Scanner aktif - siap membaca kartu</p>
-                            </div>
-                            <div className="flex space-x-2">
-                                <button
-                                    onClick={restartNFCScanning}
-                                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                                >
-                                    <FaSync className="w-3 h-3 mr-1" />
-                                    Restart
-                                </button>
-                                <button
-                                    onClick={stopNFCScanning}
-                                    className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
-                                >
-                                    <FaStop className="w-3 h-3 mr-1" />
-                                    Stop
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "error" && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <FaExclamationTriangle className="w-5 h-5 text-red-600" />
-                                <div className="flex-1">
-                                    <p className="text-red-800">Error pada NFC Scanner</p>
-                                    {nfcPermission === "denied" && (
-                                        <p className="text-red-600 text-sm mt-1">
-                                            Akses NFC ditolak. Refresh halaman dan berikan izin NFC.
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                            <button
-                                onClick={restartNFCScanning}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                Coba Lagi
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {nfcStatus === "stopped" && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <FaStop className="w-5 h-5 text-gray-600" />
-                                <p className="text-gray-800">NFC Scanner dihentikan</p>
-                            </div>
-                            <button
-                                onClick={startNFCScanning}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                            >
-                                Mulai Scan
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Scan Area */}
-            <div className="bg-white rounded-xl shadow-lg p-8">
-                <div className="text-center">
-                    <div className="mx-auto w-64 h-64 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden">
-                        {isSearching ? (
-                            <div className="flex flex-col items-center space-y-4">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
-                                <p className="text-blue-600 font-medium">Mencari santri...</p>
-                            </div>
-                        ) : nfcReaderActive ? (
-                            <div className="flex flex-col items-center space-y-4">
-                                <div className="relative">
-                                    <FaMobile className="w-20 h-20 text-blue-400" />
-                                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                                    </div>
-                                </div>
-                                <p className="text-gray-600 font-medium">Tempelkan kartu NFC ke perangkat</p>
-                                <p className="text-sm text-gray-500">Scanner aktif dan siap membaca</p>
-                            </div>
-                        ) : nfcStatus === "initializing" || nfcStatus === "starting" ? (
-                            <div className="flex flex-col items-center space-y-4">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div>
-                                <p className="text-blue-600 font-medium">
-                                    {nfcStatus === "initializing" ? "Menginisialisasi NFC..." : "Memulai NFC Scanner..."}
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center space-y-4">
-                                <FaMobile className="w-20 h-20 text-gray-400" />
-                                <p className="text-gray-600 font-medium">NFC Scanner tidak aktif</p>
-                                <p className="text-sm text-gray-500">
-                                    {nfcSupported ? "Klik tombol untuk memulai scanning" : "Browser tidak mendukung NFC"}
-                                </p>
-                            </div>
-                        )}
-
-                        {(isSearching || nfcStatus === "initializing" || nfcStatus === "starting") && (
-                            <div className="absolute inset-0 bg-blue-600 opacity-20 animate-pulse"></div>
-                        )}
-                    </div>
-
-                    {/* Manual Input Toggle */}
-                    <div className="flex justify-center space-x-4">
-                        <button
-                            onClick={() => setShowManualInput(!showManualInput)}
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2"
-                        >
-                            <FaKeyboard className="w-4 h-4" />
-                            <span>{showManualInput ? "Sembunyikan" : "Input Manual"}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Manual Input */}
-            {showManualInput && (
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Input Manual UID Kartu</h3>
-                    <div className="flex space-x-4">
-                        <input
-                            ref={manualInputRef}
-                            type="text"
-                            value={manualUID}
-                            onChange={(e) => setManualUID(e.target.value)}
-                            placeholder="Masukkan UID kartu (contoh: 0722142575)"
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            onKeyPress={(e) => {
-                                if (e.key === "Enter") {
-                                    handleManualInput()
-                                }
-                            }}
-                        />
-                        <button
-                            onClick={handleManualInput}
-                            disabled={isSearching || !manualUID.trim()}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                        >
-                            {isSearching ? "Mencari..." : "Cari"}
-                        </button>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">Gunakan input manual untuk testing atau jika NFC tidak tersedia</p>
-                </div>
-            )}
-
-            {/* Student Form */}
-            {showStudentForm && studentData && (
-                <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Konfirmasi Presensi</h3>
-
-                    <div className="flex items-center space-x-4 mb-6">
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
-                            {studentData.foto_profil ? (
-                                <img
-                                    src={studentData.foto_profil || "/placeholder.svg"}
-                                    alt={studentData.nama_santri}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.target.style.display = "none"
-                                        e.target.nextSibling.style.display = "flex"
-                                    }}
-                                />
-                            ) : null}
-                            <div
-                                className="w-full h-full flex items-center justify-center"
-                                style={{ display: studentData.foto_profil ? "none" : "flex" }}
-                            >
-                                <FaUser className="w-8 h-8 text-gray-400" />
-                            </div>
-                        </div>
-                        <div className="flex-1">
-                            <h4 className="text-xl font-semibold text-gray-900">{studentData.nama_santri}</h4>
-                            <p className="text-gray-600">NIS: {studentData.nis}</p>
-                            <p className="text-gray-600">UID Kartu: {studentData.uid_kartu}</p>
-                            <p className="text-sm text-gray-500">Waktu: {currentTime.toLocaleString("id-ID")}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex space-x-4">
-                        <button
-                            onClick={handleConfirmAttendance}
-                            disabled={isSaving}
-                            className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
-                        >
-                            {isSaving ? (
-                                <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                                    <span>Menyimpan...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <FaCheckCircle className="w-4 h-4" />
-                                    <span>OK - Konfirmasi</span>
-                                </>
-                            )}
-                        </button>
-                        <button
-                            onClick={handleCancelForm}
-                            disabled={isSaving}
-                            className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
-                        >
-                            Batal
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Scan Result */}
-            {scanResult && !showStudentForm && (
-                <div
-                    className={`bg-white rounded-xl shadow-lg p-6 border-l-4 ${scanResult.success ? "border-green-500" : "border-red-500"
-                        }`}
-                >
-                    <div className="flex items-center space-x-4">
-                        {scanResult.success ? (
-                            <FaCheckCircle className="w-8 h-8 text-green-500" />
-                        ) : (
-                            <FaTimesCircle className="w-8 h-8 text-red-500" />
-                        )}
-                        <div className="flex-1">
-                            <h3 className={`text-lg font-semibold ${scanResult.success ? "text-green-600" : "text-red-600"}`}>
-                                {scanResult.success ? "Berhasil" : "Gagal"}
-                            </h3>
-                            <p className="text-gray-600">{scanResult.message}</p>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    )
-
-    const AttendanceList = () => (
-        <div className="space-y-6 mb-8">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                    <div className="relative flex-1 max-w-md">
-                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <input
-                            type="text"
-                            placeholder="Cari nama atau kelas..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                            <option value="all">Semua Status</option>
-                            <option value="hadir">Hadir</option>
-                            <option value="terlambat">Terlambat</option>
-                            <option value="alpha">Alpha</option>
-                            <option value="izin">Izin</option>
-                        </select>
-                        <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
-                            <FaDownload className="w-4 h-4" />
-                            <span>Export</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <div className="text-2xl font-bold text-gray-900">{attendanceStats.total}</div>
-                    <div className="text-gray-600">Total</div>
-                </div>
-                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <div className="text-2xl font-bold text-green-600">{attendanceStats.hadir}</div>
-                    <div className="text-gray-600">Hadir</div>
-                </div>
-                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <div className="text-2xl font-bold text-yellow-600">{attendanceStats.terlambat}</div>
-                    <div className="text-gray-600">Terlambat</div>
-                </div>
-                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <div className="text-2xl font-bold text-red-600">{attendanceStats.alpha}</div>
-                    <div className="text-gray-600">Alpha</div>
-                </div>
-                <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <div className="text-2xl font-bold text-blue-600">{attendanceStats.izin}</div>
-                    <div className="text-gray-600">Izin</div>
-                </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nama Santri
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIS</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nama Sholat
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tanggal
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Waktu Presensi
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Metode
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {loadingPresensi ? (
-                                <tr>
-                                    <td colSpan="7" className="text-center py-6">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </td>
-                                </tr>
-                            ) : dataPresensi.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" className="text-center py-6">
-                                        Tidak ada data
-                                    </td>
-                                </tr>
-                            ) : (
-                                dataPresensi.map((student, index) => (
-                                    <tr key={student.id || index} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">{student.nama_santri}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.nis}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.nama_sholat}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.tanggal}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.waktu_presensi}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.status}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.metode}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    )
-
     if (!hasAccess("presensi_sholat")) {
         return <Navigate to="/not-found" replace />
     }
@@ -1041,6 +562,11 @@ const PresensiSholat = () => {
                                 })}{" "}
                                 - {currentTime.toLocaleTimeString("id-ID")}
                             </p>
+                            {jadwalSholat && (
+                                <p className="text-sm text-blue-600 mt-1">
+                                    {jadwalSholat.nama_sholat} - {jadwalSholat.jam_mulai} s/d {jadwalSholat.jam_selesai}
+                                </p>
+                            )}
                         </div>
                         <div className="flex items-center space-x-4 mt-4 md:mt-0">
                             <button
@@ -1059,20 +585,51 @@ const PresensiSholat = () => {
                                 <FaUserCheck className="w-4 h-4" />
                                 <span>Daftar</span>
                             </button>
-                            {/* <button
-                                onClick={() => setCurrentView("report")}
-                                className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${currentView === "report" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                    }`}
-                            >
-                                <FaCalendarAlt className="w-4 h-4" />
-                                <span>Laporan</span>
-                            </button> */}
                         </div>
                     </div>
                 </div>
 
+                {totals && currentView === "list" && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className="bg-white rounded-lg shadow p-4">
+                            <div className="text-2xl font-bold text-green-600">{totals.total_hadir}</div>
+                            <div className="text-sm text-gray-600">Hadir</div>
+                        </div>
+                        <div className="bg-white rounded-lg shadow p-4">
+                            <div className="text-2xl font-bold text-red-600">{totals.total_tidak_hadir}</div>
+                            <div className="text-sm text-gray-600">Tidak Hadir</div>
+                        </div>
+                        <div className="bg-white rounded-lg shadow p-4">
+                            <div className="text-2xl font-bold text-blue-600">{totals.total_presensi_tercatat}</div>
+                            <div className="text-sm text-gray-600">Tercatat</div>
+                        </div>
+                        <div className="bg-white rounded-lg shadow p-4">
+                            <div className="text-2xl font-bold text-gray-600">{totals.total_santri}</div>
+                            <div className="text-sm text-gray-600">Total Santri</div>
+                        </div>
+                    </div>
+                )}
+
                 {currentView === "scan" && <Scan />}
-                {currentView === "list" && <AttendanceList />}
+                {currentView === "list" && dataPresensi && dataPresensi.length > 0 && (
+                    <AttendanceList
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        filterStatus={filterStatus}
+                        setFilterStatus={setFilterStatus}
+                        loadingPresensi={loadingPresensi}
+                        dataPresensi={dataPresensi}
+                        totals={totals}
+                        jadwalSholat={jadwalSholat}
+                    />
+                )}
+                {currentView === "list" && (!dataPresensi || dataPresensi.length === 0) && !loadingPresensi && (
+                    <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+                        <FaUserCheck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Tidak Ada Data Presensi</h3>
+                        <p className="text-gray-600">Belum ada data presensi untuk filter yang dipilih</p>
+                    </div>
+                )}
                 {currentView === "report" && (
                     <div className="bg-white rounded-xl shadow-lg p-8 text-center">
                         <FaCalendarAlt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -1085,7 +642,162 @@ const PresensiSholat = () => {
     )
 }
 
-export default PresensiSholat
+const AttendanceList = memo(
+    ({
+        searchTerm,
+        setSearchTerm,
+        filterStatus,
+        setFilterStatus,
+        loadingPresensi,
+        dataPresensi = [],
+        totals,
+        jadwalSholat,
+    }) => {
+        console.log("attendance", dataPresensi)
+
+        const handleSearchChange = useCallback(
+            (e) => {
+                setSearchTerm(e.target.value)
+            },
+            [setSearchTerm],
+        )
+
+        const handleFilterChange = useCallback(
+            (e) => {
+                setFilterStatus(e.target.value)
+            },
+            [setFilterStatus],
+        )
+
+        return (
+            <div className="space-y-6 mb-8">
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                        <div className="relative flex-1 max-w-md">
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Cari nama atau kelas..."
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <select
+                                value={filterStatus}
+                                onChange={handleFilterChange}
+                                className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="all">Semua Status</option>
+                                <option value="Hadir">Hadir</option>
+                                <option value="Terlambat">Terlambat</option>
+                                <option value="Alpha">Alpha</option>
+                                <option value="Izin">Izin</option>
+                            </select>
+                            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
+                                <FaDownload className="w-4 h-4" />
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nama Santri
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        NIS
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Jenis Kelamin
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nama Sholat
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tanggal
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Waktu Presensi
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Metode
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {loadingPresensi ? (
+                                    <tr>
+                                        <td colSpan="8" className="text-center py-6">
+                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                        </td>
+                                    </tr>
+                                ) : !dataPresensi || dataPresensi.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="8" className="text-center py-6">
+                                            Tidak ada data
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    dataPresensi.map((student, index) => (
+                                        <tr key={student.presensi_id || index} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm font-medium text-gray-900">{student.nama_santri}</div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.nis}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <span
+                                                    className={`px-2 py-1 text-xs rounded-full ${student.jenis_kelamin === "l" ? "bg-blue-100 text-blue-800" : "bg-pink-100 text-pink-800"
+                                                        }`}
+                                                >
+                                                    {student.jenis_kelamin === "l" ? "Laki-laki" : "Perempuan"}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.nama_sholat}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.tanggal}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{student.waktu_presensi}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span
+                                                    className={`px-2 py-1 text-xs rounded-full ${student.status === "Hadir"
+                                                            ? "bg-green-100 text-green-800"
+                                                            : student.status === "Terlambat"
+                                                                ? "bg-yellow-100 text-yellow-800"
+                                                                : "bg-red-100 text-red-800"
+                                                        }`}
+                                                >
+                                                    {student.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span
+                                                    className={`px-2 py-1 text-xs rounded-full ${student.metode === "Kartu" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                                                        }`}
+                                                >
+                                                    {student.metode}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        )
+    },
+)
+
+AttendanceList.displayName = "AttendanceList"
 
 const Scan = () => {
     const [isScanning, setIsScanning] = useState(false)
@@ -1098,13 +810,12 @@ const Scan = () => {
     const [statusResponse, setStatusResponse] = useState("")
     const [inputMode, setInputMode] = useState("nfc") // "nfc" or "manual"
     const [manualNIS, setManualNIS] = useState("")
-    const [showSelectSantri, setShowSelectSantri] = useState(false);
-    const [santriData, setSantriData] = useState("");
+    const [showSelectSantri, setShowSelectSantri] = useState(false)
+    const [santriData, setSantriData] = useState("")
 
     useEffect(() => {
         checkNFCSupport()
     }, [])
-
 
     useEffect(() => {
         if (nfcSupported && inputMode === "nfc") {
@@ -1125,7 +836,7 @@ const Scan = () => {
         if (!nfcSupported) return
 
         try {
-            const ndef = new NDEFReader()
+            const ndef = new window.NDEFReader()
             await ndef.scan()
             setIsScanning(true)
             setStatus("Silakan tempelkan kartu NFC...")
@@ -1251,10 +962,7 @@ const Scan = () => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const endpoint =
-                inputMode === "manual"
-                    ? `${API_BASE_URL}presensi/manual`
-                    : `${API_BASE_URL}presensi/scan`
+            const endpoint = inputMode === "manual" ? `${API_BASE_URL}presensi/manual` : `${API_BASE_URL}presensi/scan`
 
             const body =
                 inputMode === "manual"
@@ -1298,7 +1006,7 @@ const Scan = () => {
     }
 
     useEffect(() => {
-        console.log("Data Santri", santriData);
+        console.log("Data Santri", santriData)
         // searchStudent(santriData?.id);
         setStudentData(santriData)
     }, [santriData])
@@ -1348,37 +1056,37 @@ const Scan = () => {
         }
     }
 
-    const inputRef = useRef(null);
-    const [nis, setNis] = useState("");
+    const inputRef = useRef(null)
+    const [nis, setNis] = useState("")
 
     useEffect(() => {
         // Tangkap semua input dari reader
         const handleKeyPress = (e) => {
             // Biasanya reader mengirim angka + Enter
             if (e.key === "Enter") {
-                e.preventDefault();
-                submitForm(nis);
+                e.preventDefault()
+                submitForm(nis)
             } else if (/^[0-9]$/.test(e.key)) {
                 // Tambahkan angka ke state
-                setNis(prev => prev + e.key);
+                setNis((prev) => prev + e.key)
             }
-        };
+        }
 
-        window.addEventListener("keydown", handleKeyPress);
-        return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [nis]);
+        window.addEventListener("keydown", handleKeyPress)
+        return () => window.removeEventListener("keydown", handleKeyPress)
+    }, [nis])
 
     // useEffect(() => {
     //     searchStudent();
     // }, [manualNIS]);
 
     const submitForm = (nisValue) => {
-        console.log("Submit NIS:", nisValue);
-        searchStudent(nisValue);
+        console.log("Submit NIS:", nisValue)
+        searchStudent(nisValue)
         // searchStudentByNIS(); // Panggil fungsi untuk mencari santri berdasarkan NIS
         // Lakukan request API atau logic lainnya
-        setNis(""); // reset
-    };
+        setNis("") // reset
+    }
 
     return (
         <div className="min-h-screen p-3 sm:p-4">
@@ -1399,7 +1107,6 @@ const Scan = () => {
 
                     <p className="text-sm sm:text-base text-gray-600">{status}</p>
                 </div>
-
 
                 <div className="flex bg-white rounded-xl p-1 shadow-lg mb-4 sm:mb-6">
                     <button
@@ -1642,8 +1349,8 @@ const Scan = () => {
                                         alt="Foto Profil"
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = blankProfile;
+                                            e.target.onerror = null
+                                            e.target.src = blankProfile
                                         }}
                                     />
                                 ) : (
@@ -1742,3 +1449,5 @@ const Scan = () => {
         </div>
     )
 }
+
+export default PresensiSholat
