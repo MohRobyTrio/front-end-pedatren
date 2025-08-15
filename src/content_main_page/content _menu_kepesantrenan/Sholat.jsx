@@ -7,11 +7,12 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import useFetchSholat from "../../hooks/hook_menu_kepesantrenan/Sholat";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
+import { ModalAddOrEditSholat } from "../../components/modal/ModalFormSholat";
 
 const Sholat = () => {
 
     const [openModal, setOpenModal] = useState(false);
-    const [lembagaData, setLembagaData] = useState("");
+    const [sholatData, setSholatData] = useState("");
     const [feature, setFeature] = useState("");
     const { sholat, loadingSholat, error, fetchSholat, handleDelete } = useFetchSholat();
 
@@ -26,12 +27,13 @@ const Sholat = () => {
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setFeature(1);
+                        setSholatData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            {/* <ModalAddOrEditGolongan isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchGolongan} feature={feature} /> */}
+            <ModalAddOrEditSholat isOpen={openModal} onClose={() => setOpenModal(false)} data={sholatData} refetchData={fetchSholat} feature={feature} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -86,7 +88,7 @@ const Sholat = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <button
                                                     onClick={() => {
-                                                        setLembagaData(item);
+                                                        setSholatData(item);
                                                         setFeature(2);
                                                         setOpenModal(true);
                                                     }}

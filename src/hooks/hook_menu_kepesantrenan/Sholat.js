@@ -81,7 +81,7 @@ const useFetchSholat = () => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}crud/${id}/sholat`, {
+            const response = await fetch(`${API_BASE_URL}sholat/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
