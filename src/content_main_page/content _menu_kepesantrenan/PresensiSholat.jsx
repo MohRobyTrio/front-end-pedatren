@@ -12,6 +12,7 @@ import blankProfile from "../../assets/blank_profile.png"
 import { ModalSelectSantri } from "../../components/ModalSelectSantri"
 import useFetchSholat from "../../hooks/hook_menu_kepesantrenan/Sholat"
 import useFetchJadwalSholat from "../../hooks/hook_menu_kepesantrenan/JadwalSholat"
+import ToggleStatus from "../../components/ToggleStatus"
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
@@ -232,7 +233,7 @@ const AttendanceList = memo(
         }
 
         return (
-            <div className="space-y-6 mb-8">
+            <div className="space-y-6">
                 <div className="bg-white rounded-xl shadow-lg p-6">
                     <div className="flex flex-col space-y-4">
                         {/* Filter Toggle Button */}
@@ -362,7 +363,7 @@ const AttendanceList = memo(
                                     </div>
 
                                     {/* Show All Toggle */}
-                                    <div className="space-y-2">
+                                    {/* <div className="space-y-2">
                                         <label className="flex items-center text-sm font-medium text-gray-700">
                                             <FaEye className="w-4 h-4 mr-2 text-gray-500" />
                                             Tampilan
@@ -387,7 +388,21 @@ const AttendanceList = memo(
                                                 <span className="ml-2 text-sm text-gray-600">Tampilkan Semua</span>
                                             </label>
                                         </div>
+                                    </div> */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaEye className="w-4 h-4 mr-2 text-gray-500" />
+                                            Tampilan
+                                        </label>
+                                        <div className="flex items-center space-x-3">
+                                            <ToggleStatus
+                                                active={filters.showAll}
+                                                onClick={() => handleAdvancedFilterChange("showAll", !filters.showAll)}
+                                            />
+                                            <span className="text-sm text-gray-600">Tampilkan Semua</span>
+                                        </div>
                                     </div>
+
 
                                     {/* Empty space for alignment */}
                                     <div></div>
