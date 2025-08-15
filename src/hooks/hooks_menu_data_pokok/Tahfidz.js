@@ -47,9 +47,6 @@ const useFetchTahfidz = (filters) => {
         url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
       if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan")
         url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
-      if (filters?.tahun_ajaran) {
-        url += `&tahun_ajaran=${encodeURIComponent(filters.tahun_ajaran)}`;
-      }
       if (filters?.jenisKelamin)
         url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
       if (filters?.wilayah && filters.wilayah !== "Semua Wilayah") url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
@@ -59,6 +56,8 @@ const useFetchTahfidz = (filters) => {
         if (filters?.jurusan && filters.jurusan !== "Semua Jurusan") url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
         if (filters?.kelas && filters.kelas !== "Semua Kelas") url += `&kelas=${encodeURIComponent(filters.kelas)}`;
         if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+        if (filters?.urutBerdasarkan) url += `&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`;
+        if (filters?.urutSecara) url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`;
 
       if (!force && lastRequest.current === url) {
         console.log("Skip Fetch: URL sama dengan request sebelumnya");
@@ -109,7 +108,8 @@ const useFetchTahfidz = (filters) => {
         setLoadingTahfidz(false);
       }
     },
-    [currentPage, filters, limit, token, clearAuthData, navigate]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentPage, filters, limit, debouncedSearchTerm]
   );
 
   // Fetch detail tahfidz per santri

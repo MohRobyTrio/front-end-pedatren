@@ -524,29 +524,42 @@ export const TahfidzRekap = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const [currentView, setCurrentView] = useState("rekap") // 'rekap' or 'tahfidz'
-    const [selectedStudentForTahfidz, setSelectedStudentForTahfidz] = useState(null)
+    // Inisialisasi state dari sessionStorage
+    const [currentView, setCurrentView] = useState(() => {
+        return sessionStorage.getItem("tahfidz_view_state") || "rekap";
+    });
+    const [selectedStudentForTahfidz, setSelectedStudentForTahfidz] = useState(() => {
+        const saved = sessionStorage.getItem("tahfidz_selected_student");
+        return saved ? JSON.parse(saved) : null;
+    });
 
+    // Saat klik Pilih
     const handleSelectStudent = (student) => {
-        setSelectedStudentForTahfidz(student)
-        setCurrentView("tahfidz")
-    }
+        setSelectedStudentForTahfidz(student);
+        setCurrentView("tahfidz");
 
+        sessionStorage.setItem("tahfidz_selected_student", JSON.stringify(student));
+        sessionStorage.setItem("tahfidz_view_state", "tahfidz");
+    };
+
+    // Saat klik Kembali
     const handleBackToRekap = () => {
-        setCurrentView("rekap")
-        setSelectedStudentForTahfidz(null)
-        fetchData(true);
-    }
+        setCurrentView("rekap");
+        setSelectedStudentForTahfidz(null);
+
+        sessionStorage.setItem("tahfidz_view_state", "rekap");
+        sessionStorage.removeItem("tahfidz_selected_student");
+    };
 
     const openModal = (item) => {
-        setSelectedItem(item)
-        setIsModalOpen(true)
-    }
+        setSelectedItem(item);
+        setIsModalOpen(true);
+    };
 
     const closeModal = () => {
-        setSelectedItem(null)
-        setIsModalOpen(false)
-    }
+        setSelectedItem(null);
+        setIsModalOpen(false);
+    };
 
     const [filters, setFilters] = useState({
         tahunAjaran: "",
@@ -634,7 +647,7 @@ export const TahfidzRekap = () => {
         totalPages,
         currentPage,
         setCurrentPage,
-        fetchData,
+        // fetchData,
     } = useFetchTahfidz(updatedFilters)
 
     const [showFilters, setShowFilters] = useState(false)
@@ -662,10 +675,8 @@ export const TahfidzRekap = () => {
         urutBerdasarkan: [
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
-            { label: "NIS", value: "nis" },
-            { label: "Tanggal", value: "tanggal" },
-            { label: "Surat", value: "surat" },
-            { label: "Nilai", value: "nilai" },
+            { label: "NIUP", value: "niup" },
+            { label: "Jenis Kelamin", value: "jenis_kelamin" },
         ],
         urutSecara: [
             { label: "Urut Secara", value: "" },
@@ -682,7 +693,7 @@ export const TahfidzRekap = () => {
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             {currentView === "tahfidz" ? (
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <div className="flex items-center gap-4 justify-between">
+                    <div className="flex items-center gap-4 justify-between mb-4">
                         <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
                             Informasi Santri Terpilih
                         </h3>

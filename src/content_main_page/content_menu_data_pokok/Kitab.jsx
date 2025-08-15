@@ -1,5 +1,5 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { useState } from "react";
 // import useFetchGolongan from "../../hooks/hooks_menu_kepegawaian/Kitab";
 // import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
@@ -7,13 +7,16 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchKitab from "../../hooks/hooks_menu_data_pokok/Kitab";
+import ToggleStatus from "../../components/ToggleStatus";
+import { ModalAddOrEditKitab, ModalDetailKitab } from "../../components/modal/ModalFormKitab";
 
 const Kitab = () => {
-    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [lembagaData, setLembagaData] = useState("");
     const [feature, setFeature] = useState("");
-    const { kitab, loadingKitab, error, fetchKitab, handleDelete } = useFetchKitab();
+    const { kitab, loadingKitab, error, fetchKitab, handleToggleStatus } = useFetchKitab();
 
     if (!hasAccess("kitab")) {
         return <Navigate to="/not-found" replace />;
@@ -31,7 +34,13 @@ const Kitab = () => {
                 </div>
             </div>
 
-            {/* <ModalAddOrEditGolongan isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchGolongan} feature={feature} /> */}
+            <ModalAddOrEditKitab isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchKitab} feature={feature} />
+
+            <ModalDetailKitab
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -69,7 +78,10 @@ const Kitab = () => {
                                     </tr>
                                 ) : (
                                     kitab.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                            setSelectedId(item.id);
+                                            setIsModalOpen(true);
+                                        }}>
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nama_kitab}</td>
                                             <td className="px-3 py-2 border-b">{item.total_bait}</td>
@@ -84,22 +96,19 @@ const Kitab = () => {
                                                 </span>
                                             </td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
-                                                <button
-                                                    onClick={() => {
-                                                        setLembagaData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                >
-                                                    <FaTrash />
-                                                </button>
+                                                <div className="flex justify-center items-center space-x-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setLembagaData(item);
+                                                            setFeature(2);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <ToggleStatus active={item.status == 1} onClick={() => handleToggleStatus(item)} />
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
