@@ -193,34 +193,27 @@ const DataPerizinan = () => {
     }
 
     return (
-        <div className="flex-1 pl-3 sm:pl-6 pt-4 sm:pt-6 pb-4 sm:pb-6 overflow-y-auto bg-gray-50">
-            {/* Compact Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-                <div>
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Data Perizinan</h1>
-                    <p className="text-sm text-gray-600 hidden sm:block">Kelola dan pantau perizinan santri</p>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Data Perizinan</h1>
+                <div className="flex items-center space-x-2">
                     <Access action="tambah">
                         <button
                             onClick={() => {
-                                setFeature(1)
-                                setShowFormModal(true)
+                                setFeature(1);
+                                setShowFormModal(true);
                             }}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-sm flex-1 sm:flex-none justify-center"
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"
                         >
-                            <FaPlus className="text-xs" />
-                            <span className="hidden sm:inline">Tambah Perizinan</span>
-                            <span className="sm:hidden">Tambah</span>
+                            <FaPlus />Tambah
                         </button>
                     </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-sm flex-1 sm:flex-none justify-center"
+                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                        <FaFileExport className="text-xs" />
-                        <span className="hidden sm:inline">Export</span>
-                        <span className="sm:hidden">Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
@@ -234,116 +227,126 @@ const DataPerizinan = () => {
                 nama={selectedName}
             />
 
-            {/* Compact Filter & Search Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4">
-                <div className="p-3 sm:p-4">
-                    <div
-                        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 w-full ${showFilters ? "mb-4" : ""}`}
-                    >
-                        <Filters
-                            showFilters={showFilters}
-                            filterOptions={filterNegara}
-                            onChange={handleFilterChangeNegara}
-                            selectedFilters={selectedNegara}
-                        />
-                        <Filters
-                            showFilters={showFilters}
-                            filterOptions={filterWilayah}
-                            onChange={handleFilterChangeWilayah}
-                            selectedFilters={selectedWilayah}
-                        />
-                        <Filters
-                            showFilters={showFilters}
-                            filterOptions={filterLembaga}
-                            onChange={handleFilterChangeLembaga}
-                            selectedFilters={selectedLembaga}
-                        />
-                        <Filters
-                            showFilters={showFilters}
-                            filterOptions={filter3}
-                            onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                            selectedFilters={filters}
-                        />
-                        <Filters
-                            showFilters={showFilters}
-                            filterOptions={filter4}
-                            onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                            selectedFilters={filters}
-                        />
-                    </div>
-                    <SearchBar
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                        totalData={totalData}
-                        limit={limit}
-                        toggleLimit={(e) => setLimit(Number(e.target.value))}
-                        toggleFilters={() => setShowFilters(!showFilters)}
-                        showViewButtons={false}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div
+                    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""
+                        }`}
+                >
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterNegara}
+                        onChange={handleFilterChangeNegara}
+                        selectedFilters={selectedNegara}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterWilayah}
+                        onChange={handleFilterChangeWilayah}
+                        selectedFilters={selectedWilayah}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterLembaga}
+                        onChange={handleFilterChangeLembaga}
+                        selectedFilters={selectedLembaga}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filter3}
+                        onChange={(newFilters) =>
+                            setFilters((prev) => ({ ...prev, ...newFilters }))
+                        }
+                        selectedFilters={filters}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filter4}
+                        onChange={(newFilters) =>
+                            setFilters((prev) => ({ ...prev, ...newFilters }))
+                        }
+                        selectedFilters={filters}
                     />
                 </div>
-            </div>
 
-            {/* Content Area */}
-            <div className="space-y-3">
-                {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-center gap-2">
-                        <FaExclamationTriangle className="text-red-500 flex-shrink-0 text-sm" />
-                        <div>
-                            <p className="font-medium text-sm">Terjadi Kesalahan</p>
-                            <p className="text-xs">{error}</p>
-                        </div>
-                    </div>
-                )}
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalData}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                    showViewButtons={false}
+                />
 
-                {loading ? (
-                    <div className="flex justify-center items-center py-12">
-                        <div className="text-center">
-                            <OrbitProgress variant="disc" color="#059669" size="small" text="" textColor="" />
-                            <p className="text-gray-600 mt-3 text-sm">Memuat data...</p>
+                <div>
+                    {error && (
+                        <div className="bg-red-50 text-red-600 p-3 rounded mb-4">
+                            Error: {error}
                         </div>
-                    </div>
-                ) : data.length > 0 ? (
+                    )}
+
                     <div className="space-y-3">
-                        {data.map((perizinan) => (
-                            <PerizinanCard
-                                key={perizinan.id}
-                                data={perizinan}
-                                openModal={openModal}
-                                setShowFormModal={setShowFormModal}
-                                setFeature={setFeature}
-                                setSelectedId={setSelectedId}
-                                setSelectedName={setSelectedName}
-                                refetchData={fetchData}
-                                userRole={capitalizeFirstLetter}
-                            />
-                        ))}
+                        {loading ? (
+                            <div className="col-span-3 flex justify-center items-center">
+                                <OrbitProgress
+                                    variant="disc"
+                                    color="#2a6999"
+                                    size="small"
+                                    text=""
+                                    textColor=""
+                                />
+                            </div>
+                        ) : data.length > 0 ? (
+                            <div className="">
+                                {data.map((perizinan) => (
+                                    <PerizinanCard
+                                        key={perizinan.id}
+                                        data={perizinan}
+                                        openModal={openModal}
+                                        setShowFormModal={setShowFormModal}
+                                        setFeature={setFeature}
+                                        setSelectedId={setSelectedId}
+                                        setSelectedName={setSelectedName}
+                                        refetchData={fetchData}
+                                        userRole={capitalizeFirstLetter}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <FaClipboardList className="text-2xl text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                    Tidak Ada Data
+                                </h3>
+                                <p className="text-gray-600 mb-4 text-sm">
+                                    Belum ada data perizinan yang sesuai dengan filter
+                                </p>
+                                <Access action="tambah">
+                                    <button
+                                        onClick={() => {
+                                            setFeature(1);
+                                            setShowFormModal(true);
+                                        }}
+                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 mx-auto text-sm"
+                                    >
+                                        <FaPlus className="text-xs" />
+                                        <span>Tambah Perizinan</span>
+                                    </button>
+                                </Access>
+                            </div>
+                        )}
                     </div>
-                ) : (
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                            <FaClipboardList className="text-2xl text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Tidak Ada Data</h3>
-                        <p className="text-gray-600 mb-4 text-sm">Belum ada data perizinan yang sesuai dengan filter</p>
-                        <Access action="tambah">
-                            <button
-                                onClick={() => {
-                                    setFeature(1)
-                                    setShowFormModal(true)
-                                }}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 mx-auto text-sm"
-                            >
-                                <FaPlus className="text-xs" />
-                                <span>Tambah Perizinan</span>
-                            </button>
-                        </Access>
-                    </div>
-                )}
+                </div>
 
                 {data.length > 0 && (
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-                        <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
-                    </div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
+                        className="mt-6"
+                    />
                 )}
             </div>
 
@@ -358,9 +361,16 @@ const DataPerizinan = () => {
                 endpoint="export/perizinan"
             />
 
-            {isModalOpen && <ModalDetail title="Detail Perizinan" menu={17} item={selectedItem} onClose={closeModal} />}
+            {isModalOpen && (
+                <ModalDetail
+                    title="Detail Perizinan"
+                    menu={17}
+                    item={selectedItem}
+                    onClose={closeModal}
+                />
+            )}
         </div>
-    )
+    );
 }
 
 // Compact Perizinan Card Component
@@ -571,7 +581,7 @@ const PerizinanCard = ({
     const StatusIcon = statusConfig.icon
 
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3 overflow-hidden hover:shadow-md transition-all duration-300">
             {/* Compact Header */}
             <div
                 className={`${statusConfig.bg} px-3 sm:px-4 py-2 sm:py-3 border-b ${statusConfig.border} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2`}
@@ -663,7 +673,7 @@ const PerizinanCard = ({
                                     e.target.src = blankProfile
                                 }}
                             />
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm border border-white">
+                            <div className="absolute -top-0 -right-1 w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm border border-white">
                                 {data.jenis_kelamin == "p" ? "♀" : "♂"}
                             </div>
                         </div>
