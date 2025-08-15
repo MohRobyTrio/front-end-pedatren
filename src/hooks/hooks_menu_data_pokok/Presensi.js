@@ -30,6 +30,21 @@ const useFetchPresensiSholat = (filters) => {
     if (filters?.tanggal) {
       url += `&tanggal=${encodeURIComponent(filters.tanggal)}`;
     }
+    if (filters?.sholat_id) {
+      url += `&sholat_id=${encodeURIComponent(filters.sholat_id)}`;
+    }
+    if (filters?.metode) {
+      url += `&metode=${encodeURIComponent(filters.metode)}`;
+    }
+    if (filters?.jenis_kelamin) {
+      url += `&jenis_kelamin=${encodeURIComponent(filters.jenis_kelamin)}`;
+    }
+    if (filters?.status) {
+      url += `&status=${encodeURIComponent(filters.status)}`;
+    }
+    if (filters?.showAll) {
+      url += `&all=${encodeURIComponent(filters.showAll)}`;
+    }
 
     if (!force && lastRequest.current === url) {
       console.log("Skip Fetch: URL sama dengan request sebelumnya");

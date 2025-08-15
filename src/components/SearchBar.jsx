@@ -12,7 +12,8 @@ const SearchBar = ({
     showViewButtons = true, // Prop baru dengan default true
     showFilterButtons = true,
     showSearch = true,
-    showLimit = true
+    showLimit = true,
+    showTotalData = true
 }) => {
     const [viewMode, setViewMode] = useState("table");
 
@@ -30,7 +31,7 @@ const SearchBar = ({
     };
 
     return (
-        <div className="flex flex-col md:flex-row-reverse justify-between md:items-center items-left mb-4 w-95 md:w-auto space-y-2">
+        <div className="flex flex-col md:flex-row-reverse justify-between md:items-center items-left w-95 md:w-auto space-y-2">
             <div className="flex items-center space-x-2">
                 {showSearch && (
                     <input
@@ -78,7 +79,9 @@ const SearchBar = ({
                         <option value="100">100</option>
                     </select>
                 )}
-                <span>Total Data: {totalData || 0}</span>
+                {showTotalData && (
+                    <span>Total Data: {totalData || 0}</span>
+                )}
             </div>
         </div>
     );

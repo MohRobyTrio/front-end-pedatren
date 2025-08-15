@@ -32,6 +32,8 @@ const LoginPage = () => {
       if (roles.includes("Ustadz")) {
         sessionStorage.setItem("dataPokok", "true");
         return navigate("/tahfidz", { replace: true });
+      } else if (roles.includes("biktren")) {
+        return navigate("/perizinan", { replace: true });
       } else {
         return navigate("/dashboard", { replace: true });
       }

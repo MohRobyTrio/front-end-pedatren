@@ -1,11 +1,8 @@
 "use client"
 import { OrbitProgress } from "react-loading-indicators"
-import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react"
-import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
-import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
-import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
+import { useEffect, useRef, useState, memo } from "react"
 import useFetchPresensi from "../../hooks/hooks_menu_data_pokok/Presensi"
-import { FaQrcode, FaUserCheck, FaCalendarAlt, FaSearch, FaDownload } from "react-icons/fa"
+import { FaQrcode, FaUserCheck, FaCalendarAlt, FaTimes, FaEye, FaCheckCircle, FaUsers, FaClock, FaCalendar, FaFilter } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
@@ -13,134 +10,37 @@ import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiRefreshCw, FiUser, FiWif
 import { API_BASE_URL } from "../../hooks/config"
 import blankProfile from "../../assets/blank_profile.png"
 import { ModalSelectSantri } from "../../components/ModalSelectSantri"
+import useFetchSholat from "../../hooks/hook_menu_kepesantrenan/Sholat"
+import useFetchJadwalSholat from "../../hooks/hook_menu_kepesantrenan/JadwalSholat"
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
-        tahunAjaran: "",
+        tanggal: "",
+        sholat_id: "",
+        jadwal_id: "",
+        metode: "",
         status: "",
-        jenisKelamin: "",
-        tingkatHafalan: "",
-        targetHafalan: "",
-        jenisSetoran: "",
-        nilai: "",
-        ustadz: "",
-        urutBerdasarkan: "",
-        urutSecara: "",
-        negara: "",
-        provinsi: "",
-        kabupaten: "",
-        kecamatan: "",
-        wilayah: "",
-        blok: "",
-        kamar: "",
-        lembaga: "",
-        jurusan: "",
-        kelas: "",
-        rombel: "",
+        jenis_kelamin: "",
+        showAll: false,
     })
 
-    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
-    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
-    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
-
-    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
-    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
-    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
-    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
-
-    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
-    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
-    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
-
-    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
-    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
-    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
-    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
-
-    const updatedFilters = useMemo(
-        () => ({
-            ...filters,
-            negara: negaraTerpilih,
-            provinsi: provinsiTerpilih,
-            kabupaten: kabupatenTerpilih,
-            kecamatan: kecamatanTerpilih,
-            wilayah: wilayahTerpilih,
-            blok: blokTerpilih,
-            kamar: kamarTerpilih,
-            lembaga: lembagaTerpilih,
-            jurusan: jurusanTerpilih,
-            kelas: kelasTerpilih,
-            rombel: rombelTerpilih,
-        }),
-        [
-            filters,
-            negaraTerpilih,
-            provinsiTerpilih,
-            kabupatenTerpilih,
-            kecamatanTerpilih,
-            wilayahTerpilih,
-            blokTerpilih,
-            kamarTerpilih,
-            lembagaTerpilih,
-            jurusanTerpilih,
-            kelasTerpilih,
-            rombelTerpilih,
-        ],
-    )
+    useEffect(() => {
+        console.log("filters", filters);
+    }, [filters])
 
     const {
         dataPresensi,
         loadingPresensi,
-        errorPresensi,
-        limit,
-        setLimit,
         totalData,
-        totalPages,
-        currentPage,
-        setCurrentPage,
         fetchData,
         jadwalSholat,
         totals,
-        responseFilter,
-    } = useFetchPresensi(updatedFilters)
-
-    // useEffect(() => {
-    //     console.log(dataPresensi);
-    // }, [dataPresensi])
+    } = useFetchPresensi(filters)
 
     // Main states - Auto-start in scan mode
     const [currentView, setCurrentView] = useState("scan")
-    const [scanMode, setScanMode] = useState("nfc")
-    const [attendanceData, setAttendanceData] = useState([])
-    const [todayAttendance, setTodayAttendance] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
-    const [filterStatus, setFilterStatus] = useState("all")
-    const [isScanning, setIsScanning] = useState(false)
-    const [scanResult, setScanResult] = useState(null)
     const [currentTime, setCurrentTime] = useState(new Date())
-    const [isProcessing, setIsProcessing] = useState(false)
-
-    // NFC states - Enhanced detection
-    const [nfcSupported, setNfcSupported] = useState(false)
-    const [nfcReaderActive, setNfcReaderActive] = useState(false)
-    const [nfcStatus, setNfcStatus] = useState("initializing")
-    const [nfcPermission, setNfcPermission] = useState("unknown")
-    const [browserInfo, setBrowserInfo] = useState("")
-
-    // Student data states
-    const [studentData, setStudentData] = useState(null)
-    const [showStudentForm, setShowStudentForm] = useState(false)
-    const [isSearching, setIsSearching] = useState(false)
-    const [isSaving, setIsSaving] = useState(false)
-
-    // Manual input states
-    const [showManualInput, setShowManualInput] = useState(false)
-    const [manualUID, setManualUID] = useState("")
-
-    // Refs
-    const abortControllerRef = useRef(null)
-    const nfcReaderRef = useRef(null)
-    const manualInputRef = useRef(null)
 
     useEffect(() => {
         const savedView = sessionStorage.getItem("currentView");
@@ -166,14 +66,8 @@ const PresensiSholat = () => {
             // Start time updates
             const timer = setInterval(() => setCurrentTime(new Date()), 1000)
 
-            // Auto-initialize NFC scanning with delay to ensure proper mounting
-            setTimeout(async () => {
-                await initializeNFC()
-            }, 500)
-
             return () => {
                 clearInterval(timer)
-                cleanupNFC()
             }
         }
 
@@ -187,93 +81,7 @@ const PresensiSholat = () => {
         const isHttps = window.location.protocol === "https:"
 
         const info = `Browser: ${isChrome ? "Chrome" : "Other"}, Platform: ${isAndroid ? "Android" : "Other"}, HTTPS: ${isHttps ? "Yes" : "No"}`
-        setBrowserInfo(info)
         console.log("🔍 Browser Info:", info)
-    }
-
-    const initializeNFC = async () => {
-        console.log("🔧 Initializing NFC...")
-        setNfcStatus("checking")
-
-        try {
-            // Enhanced NFC support detection
-            const hasNDEFReader = "NDEFReader" in window
-            const hasNavigator = "navigator" in window
-            const isSecureContext = window.isSecureContext
-            const isHttps = window.location.protocol === "https:"
-
-            console.log("📋 NFC Support Check:", {
-                hasNDEFReader,
-                hasNavigator,
-                isSecureContext,
-                isHttps,
-                userAgent: navigator.userAgent,
-            })
-
-            if (!isHttps) {
-                setNfcStatus("not_secure")
-                setScanResult({
-                    success: false,
-                    message: "NFC memerlukan HTTPS. Pastikan menggunakan koneksi aman.",
-                })
-                return
-            }
-
-            if (!hasNDEFReader) {
-                console.log("❌ NDEFReader not available")
-                setNfcSupported(false)
-                setNfcStatus("not_supported")
-                setScanResult({
-                    success: false,
-                    message: "Browser tidak mendukung Web NFC API. Gunakan Chrome di Android.",
-                })
-                return
-            }
-
-            console.log("✅ Web NFC API detected")
-            setNfcSupported(true)
-            setNfcStatus("supported")
-
-            // Check permissions
-            await checkNFCPermissions()
-
-            // Auto-start NFC scanning
-            // await startNFCScanning()
-        } catch (error) {
-            console.error("❌ NFC initialization error:", error)
-            setNfcStatus("error")
-            setScanResult({
-                success: false,
-                message: "Gagal menginisialisasi NFC: " + error.message,
-            })
-        }
-    }
-
-    const checkNFCPermissions = async () => {
-        try {
-            if ("permissions" in navigator) {
-                const permission = await navigator.permissions.query({ name: "nfc" })
-                setNfcPermission(permission.state)
-                console.log("🔐 NFC Permission:", permission.state)
-
-                permission.addEventListener("change", () => {
-                    setNfcPermission(permission.state)
-                    console.log("🔄 NFC Permission changed:", permission.state)
-                })
-            }
-        } catch (error) {
-            console.log("⚠️ Cannot check NFC permissions:", error)
-            setNfcPermission("unknown")
-        }
-    }
-
-    const cleanupNFC = () => {
-        console.log("🧹 Cleaning up NFC...")
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort()
-        }
-        setNfcReaderActive(false)
-        setIsScanning(false)
     }
 
     if (!hasAccess("presensi_sholat")) {
@@ -344,14 +152,14 @@ const PresensiSholat = () => {
                     </div>
                 )}
 
-                {currentView === "scan" && <Scan />}
+                {currentView === "scan" && <Scan refetch={fetchData} />}
                 {/* {currentView === "list" && dataPresensi && dataPresensi.length > 0 && ( */}
                 {currentView === "list" && (
                     <AttendanceList
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
-                        filterStatus={filterStatus}
-                        setFilterStatus={setFilterStatus}
+                        filters={filters}
+                        setFilters={setFilters}
                         loadingPresensi={loadingPresensi}
                         dataPresensi={dataPresensi}
                         totals={totalData}
@@ -379,61 +187,230 @@ const PresensiSholat = () => {
 
 const AttendanceList = memo(
     ({
-        searchTerm,
         setSearchTerm,
-        filterStatus,
-        setFilterStatus,
+        filters,
+        setFilters,
         loadingPresensi,
         dataPresensi = [],
         totals,
     }) => {
         console.log("attendance", dataPresensi)
+        const [showFilters, setShowFilters] = useState(false)
+        const { sholat } = useFetchSholat();
+        const { jadwalSholat } = useFetchJadwalSholat();
 
-        const handleSearchChange = useCallback(
-            (e) => {
-                setSearchTerm(e.target.value)
-            },
-            [setSearchTerm],
-        )
+        // Mock data for dropdowns - replace with actual API calls
+        const sholatOptions = sholat.map((item) => ({
+            value: item.id,
+            label: item.nama_sholat,
+        }))
 
-        const handleFilterChange = useCallback(
-            (e) => {
-                setFilterStatus(e.target.value)
-            },
-            [setFilterStatus],
-        )
+        const jadwalOptions = jadwalSholat.map((item) => ({
+            value: item.id,
+            label: `${item.sholat.nama_sholat} (${item.jam_mulai} s.d. ${item.jam_selesai})`,
+        }))
+
+        const handleAdvancedFilterChange = (key, value) => {
+            setFilters((prev) => ({
+                ...prev,
+                [key]: value,
+            }))
+        }
+
+        const resetFilters = () => {
+            setFilters({
+                tanggal: "",
+                sholat_id: "",
+                jadwal_id: "",
+                metode: "",
+                status: "all",
+                jenis_kelamin: "",
+                showAll: false,
+            })
+            setSearchTerm("")
+            // setFilterStatus("all")
+        }
 
         return (
             <div className="space-y-6 mb-8">
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                        <div className="relative flex-1 max-w-md">
-                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <input
-                                type="text"
-                                placeholder="Cari nama atau kelas..."
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            />
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <select
-                                value={filterStatus}
-                                onChange={handleFilterChange}
-                                className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    <div className="flex flex-col space-y-4">
+                        {/* Filter Toggle Button */}
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-gray-900">Filter Data Presensi</h3>
+                            <button
+                                onClick={() => setShowFilters(!showFilters)}
+                                className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${showFilters ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                    }`}
                             >
-                                <option value="all">Semua Status</option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Terlambat">Terlambat</option>
-                                <option value="Alpha">Alpha</option>
-                                <option value="Izin">Izin</option>
-                            </select>
-                            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
-                                <FaDownload className="w-4 h-4" />
-                                <span>Export</span>
+                                <FaFilter className="w-4 h-4" />
+                                <span>{showFilters ? "Sembunyikan Filter" : "Tampilkan Filter"}</span>
                             </button>
                         </div>
+
+                        {/* Advanced Filters Panel */}
+                        {showFilters && (
+                            <div className="border-t pt-6 mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {/* Date Filter */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaCalendar className="w-4 h-4 mr-2 text-blue-500" />
+                                            Tanggal
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={filters.tanggal}
+                                            onChange={(e) => handleAdvancedFilterChange("tanggal", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Sholat Filter */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaClock className="w-4 h-4 mr-2 text-green-500" />
+                                            Jenis Sholat
+                                        </label>
+                                        <select
+                                            value={filters.sholat_id}
+                                            onChange={(e) => handleAdvancedFilterChange("sholat_id", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="">Semua Sholat</option>
+                                            {sholatOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Jadwal Filter */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaCalendarAlt className="w-4 h-4 mr-2 text-purple-500" />
+                                            Jadwal
+                                        </label>
+                                        <select
+                                            value={filters.jadwal_id}
+                                            onChange={(e) => handleAdvancedFilterChange("jadwal_id", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="">Semua Jadwal</option>
+                                            {jadwalOptions.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Method Filter */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FiCreditCard className="w-4 h-4 mr-2 text-indigo-500" />
+                                            Metode
+                                        </label>
+                                        <select
+                                            value={filters.metode}
+                                            onChange={(e) => handleAdvancedFilterChange("metode", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="">Semua Metode</option>
+                                            <option value="kartu">Kartu</option>
+                                            <option value="manual">Manual</option>
+                                            {/* <option value="NFC">NFC</option> */}
+                                        </select>
+                                    </div>
+
+                                    {/* Gender Filter */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaUsers className="w-4 h-4 mr-2 text-pink-500" />
+                                            Jenis Kelamin
+                                        </label>
+                                        <select
+                                            value={filters.jenis_kelamin}
+                                            onChange={(e) => handleAdvancedFilterChange("jenis_kelamin", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="">Semua</option>
+                                            <option value="L">Laki-laki</option>
+                                            <option value="P">Perempuan</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Status Filter (Advanced) */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaCheckCircle className="w-4 h-4 mr-2 text-orange-500" />
+                                            Status Detail
+                                        </label>
+                                        <select
+                                            value={filters.status}
+                                            onChange={(e) => handleAdvancedFilterChange("status", e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="all">Semua Status</option>
+                                            <option value="Hadir">Hadir</option>
+                                            <option value="Terlambat">Terlambat</option>
+                                            <option value="Alpha">Alpha</option>
+                                            <option value="Izin">Izin</option>
+                                            <option value="Sakit">Sakit</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Show All Toggle */}
+                                    <div className="space-y-2">
+                                        <label className="flex items-center text-sm font-medium text-gray-700">
+                                            <FaEye className="w-4 h-4 mr-2 text-gray-500" />
+                                            Tampilan
+                                        </label>
+                                        <div className="flex items-center space-x-3">
+                                            <label className="flex items-center cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={filters.showAll}
+                                                    onChange={(e) => handleAdvancedFilterChange("showAll", e.target.checked)}
+                                                    className="sr-only"
+                                                />
+                                                <div
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${filters.showAll ? "bg-blue-600" : "bg-gray-200"
+                                                        }`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${filters.showAll ? "translate-x-6" : "translate-x-1"
+                                                            }`}
+                                                    />
+                                                </div>
+                                                <span className="ml-2 text-sm text-gray-600">Tampilkan Semua</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* Empty space for alignment */}
+                                    <div></div>
+                                </div>
+
+                                {/* Filter Actions */}
+                                <div className="flex items-center justify-between mt-6 pt-4 border-t">
+                                    <div className="text-sm text-gray-500">
+                                        Filter aktif: {Object.values(filters).filter((v) => v && v !== "all" && v !== false).length} dari{" "}
+                                        {Object.keys(filters).length}
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            onClick={resetFilters}
+                                            className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                                        >
+                                            <FaTimes className="w-4 h-4" />
+                                            <span>Reset</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -502,7 +479,7 @@ const AttendanceList = memo(
                                     </tr>
                                 ) : (
                                     dataPresensi.map((student, index) => (
-                                        <tr key={student.presensi_id || index} className="hover:bg-gray-50 transition-colors">
+                                        <tr key={index} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm font-medium text-gray-900">{student.nama_santri}</div>
                                             </td>
@@ -552,7 +529,7 @@ const AttendanceList = memo(
 
 AttendanceList.displayName = "AttendanceList"
 
-const Scan = () => {
+const Scan = ({ refetch }) => {
     const [isScanning, setIsScanning] = useState(false)
     const [studentData, setStudentData] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -567,6 +544,7 @@ const Scan = () => {
 
     useEffect(() => {
         checkNFCSupport()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -766,6 +744,7 @@ const Scan = () => {
             setError("Error: " + error.message)
             setStatus("Gagal menyimpan presensi")
         } finally {
+            refetch(true)
             setLoading(false)
         }
     }
