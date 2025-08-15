@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { FaCalendarAlt, FaQuran, FaSave, FaUndo, FaTasks, FaListOl, FaStar, FaFlag, FaStickyNote } from "react-icons/fa"
 import DropdownSurah from "../hooks/hook_dropdown/DropdownSurah";
 import useSurahDetail from "../hooks/hook_dropdown/useSurahDetail";
@@ -10,7 +10,6 @@ import { getCookie } from "../utils/cookieUtils";
 import useLogout from "../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import useFetchTahunAjaran from "../hooks/hooks_menu_akademik/TahunAjaran";
-import { set } from "react-hook-form";
 
 const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     const { clearAuthData } = useLogout()
@@ -50,7 +49,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     // Ambil nomor surah dari nama yang dipilih
     const nomorSurat = getNomorSuratByNama(formData.surat);
 
-    const { surahDetail, loading } = useSurahDetail(nomorSurat);
+    const { surahDetail } = useSurahDetail(nomorSurat);
 
     const handleInputChangeayat = (e) => {
         const { name, value } = e.target;
@@ -151,8 +150,6 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                 navigate("/login");
                 return;
             }
-
-            setIsSubmitting(false);
             
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
@@ -187,6 +184,8 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                 title: "Oops!",
                 text: `Terjadi kesalahan saat mengirim data. ${error}`,
             });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 

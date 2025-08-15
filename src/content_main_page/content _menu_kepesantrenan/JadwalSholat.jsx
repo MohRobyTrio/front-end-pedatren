@@ -7,11 +7,12 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchJadwalSholat from "../../hooks/hook_menu_kepesantrenan/JadwalSholat";
+import { ModalAddOrEditJadwalSholat } from "../../components/modal/ModalFormJadwalSholat";
 
 const JadwalSholat = () => {
     
     const [openModal, setOpenModal] = useState(false);
-    const [lembagaData, setLembagaData] = useState("");
+    const [jadwalSholatData, setJadwalSholatData] = useState("");
     const [feature, setFeature] = useState("");
     const { jadwalSholat, loadingJadwalSholat, error, fetchJadwalSholat, handleDelete } = useFetchJadwalSholat();
 
@@ -27,11 +28,12 @@ const JadwalSholat = () => {
                     <button onClick={() => {
                         setFeature(1);
                         setOpenModal(true);
+                        setJadwalSholatData(null);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            {/* <ModalAddOrEditGolongan isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchGolongan} feature={feature} /> */}
+            <ModalAddOrEditJadwalSholat isOpen={openModal} onClose={() => setOpenModal(false)} data={jadwalSholatData} refetchData={fetchJadwalSholat} feature={feature} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -72,23 +74,13 @@ const JadwalSholat = () => {
                                     jadwalSholat.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
-                                            <td className="px-3 py-2 border-b">{item.sholat.nama_sholat}</td>
+                                            <td className="px-3 py-2 border-b">{item?.sholat?.nama_sholat || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.jam_mulai} s.d. {item.jam_selesai}</td>
                                             <td className="px-3 py-2 border-b">{item.berlaku_mulai} s.d. {item.berlaku_sampai}</td>
-                                            {/* <td className="px-3 py-2 border-b w-30">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td> */}
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <button
                                                     onClick={() => {
-                                                        setLembagaData(item);
+                                                        setJadwalSholatData(item);
                                                         setFeature(2);
                                                         setOpenModal(true);
                                                     }}

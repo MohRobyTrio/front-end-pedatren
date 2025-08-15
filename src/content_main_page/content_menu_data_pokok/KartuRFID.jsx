@@ -7,11 +7,12 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchKartuRFID from "../../hooks/hooks_menu_data_pokok/KartuRFID";
+import { ModalAddKartuRFID } from "../../components/modal/ModalFormKartuRFID";
 
 const KartuRFID = () => {
-    
     const [openModal, setOpenModal] = useState(false);
     const [lembagaData, setLembagaData] = useState("");
+    const [selectedId, setSelectedId] = useState(null);
     const [feature, setFeature] = useState("");
     const { karturfid, loadingKartuRFID, error, fetchKartuRFID, handleDelete } = useFetchKartuRFID();
 
@@ -27,11 +28,18 @@ const KartuRFID = () => {
                     <button onClick={() => {
                         setFeature(1);
                         setOpenModal(true);
+                        setSelectedId(null);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            {/* <ModalAddOrEditGolongan isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchGolongan} feature={feature} /> */}
+            <ModalAddKartuRFID
+                isOpen={openModal}
+                onClose={() => setOpenModal(false)}
+                refetchData={fetchKartuRFID}
+                feature={feature}
+                id={selectedId}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (

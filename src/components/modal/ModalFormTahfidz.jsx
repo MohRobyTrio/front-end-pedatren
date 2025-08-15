@@ -10,7 +10,6 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
-import DropdownHubungan from "../../hooks/hook_dropdown/DropdownHubungan";
 import { ModalSelectSantri } from "../ModalSelectSantri";
 import blankProfile from "../../assets/blank_profile.png";
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran";
@@ -356,7 +355,6 @@ export const MultiStepModal = ({ isOpen, onClose, formState }) => {
 
 export const ModalAddTahfidz = ({ isOpen, onClose, refetchData, feature, id }) => {
     const { menuSantri } = useDropdownSantri();
-    const { menuHubungan } = DropdownHubungan();
     const { allTahunAjaran } = useFetchTahunAjaran();
     const { menuSurah } = DropdownSurah();
     const { clearAuthData } = useLogout();
@@ -392,7 +390,7 @@ export const ModalAddTahfidz = ({ isOpen, onClose, refetchData, feature, id }) =
 
     }, [formData.surat, nomorSurat]);
     // Panggil hook pakai nomor
-    const { surahDetail, loading } = useSurahDetail(nomorSurat);
+    const { surahDetail } = useSurahDetail(nomorSurat);
 
     const menuAyat =
         surahDetail?.jumlah_ayat
@@ -499,26 +497,6 @@ export const ModalAddTahfidz = ({ isOpen, onClose, refetchData, feature, id }) =
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if(feature == 1) {
-        //     console.log("hahah");
-
-        //     setFormData({ ...formData, santri_id: santri.id })
-        // }
-
-        // if (formData.nik.length < 16) {
-        //     await Swal.fire({
-        //         title: "Oops!",
-        //         text: "NIK minimal 16 karakter",
-        //         icon: "warning",
-        //         confirmButtonText: "OK",
-        //     });
-        //     return;
-        // }
-
-        const isTambah = feature == 1;
-        const metod = isTambah ? "POST" : "PUT";
-        const endpoint = isTambah ? "pengunjung" : `pengunjung/${id}`;
-
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
             text: "Pastikan semua data sudah benar!",
@@ -545,7 +523,7 @@ export const ModalAddTahfidz = ({ isOpen, onClose, refetchData, feature, id }) =
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}tahfidz`, {
-                method: metod,
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`

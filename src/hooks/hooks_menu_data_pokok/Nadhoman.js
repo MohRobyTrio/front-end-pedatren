@@ -54,10 +54,33 @@ const useFetchNadhoman = (filters) => {
 
       if (currentPage > 1) url += `&page=${currentPage}`;
       if (debouncedSearchTerm)
-        url += `&nama_santri=${encodeURIComponent(debouncedSearchTerm)}`;
-
-      if (filters?.nama_kitab)
-        url += `&nama_kitab=${encodeURIComponent(filters.nama_kitab)}`;
+        url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+      if (filters?.negara && filters.negara !== "Semua Negara")
+        url += `&negara=${encodeURIComponent(filters.negara)}`;
+      if (filters?.provinsi && filters.provinsi !== "Semua Provinsi")
+        url += `&provinsi=${encodeURIComponent(filters.provinsi)}`;
+      if (filters?.kabupaten && filters.kabupaten !== "Semua Kabupaten")
+        url += `&kabupaten=${encodeURIComponent(filters.kabupaten)}`;
+      if (filters?.kecamatan && filters.kecamatan !== "Semua Kecamatan")
+        url += `&kecamatan=${encodeURIComponent(filters.kecamatan)}`;
+      if (filters?.jenisKelamin)
+        url += `&jenis_kelamin=${encodeURIComponent(filters.jenisKelamin)}`;
+      if (filters?.wilayah && filters.wilayah !== "Semua Wilayah")
+        url += `&wilayah=${encodeURIComponent(filters.wilayah)}`;
+      if (filters?.blok && filters.blok !== "Semua Blok")
+        url += `&blok=${encodeURIComponent(filters.blok)}`;
+      if (filters?.kamar && filters.kamar !== "Semua Kamar")
+        url += `&kamar=${encodeURIComponent(filters.kamar)}`;
+      if (filters?.lembaga && filters.lembaga !== "Semua Lembaga")
+        url += `&lembaga=${encodeURIComponent(filters.lembaga)}`;
+      if (filters?.jurusan && filters.jurusan !== "Semua Jurusan")
+        url += `&jurusan=${encodeURIComponent(filters.jurusan)}`;
+      if (filters?.kelas && filters.kelas !== "Semua Kelas")
+        url += `&kelas=${encodeURIComponent(filters.kelas)}`;
+      if (filters?.rombel && filters.rombel !== "Semua Rombel")
+        url += `&rombel=${encodeURIComponent(filters.rombel)}`;
+      if (filters?.urutBerdasarkan) url += `&sort_by=${encodeURIComponent(filters.urutBerdasarkan)}`;
+        if (filters?.urutSecara) url += `&sort_order=${encodeURIComponent(filters.urutSecara)}`;
 
       if (!force && lastRequest.current === url) {
         console.log("Skip Fetch: URL sama dengan request sebelumnya");
@@ -74,7 +97,8 @@ const useFetchNadhoman = (filters) => {
         });
 
         if (response.status === 401) return handleUnauthorized();
-        if (!response.ok) throw new Error(`${response.status} - ${response.statusText}`);
+        if (!response.ok)
+          throw new Error(`${response.status} - ${response.statusText}`);
 
         const data = await response.json();
         setDataNadhoman(Array.isArray(data.data) ? data.data : []);
@@ -104,7 +128,8 @@ const useFetchNadhoman = (filters) => {
         });
 
         if (response.status === 401) return handleUnauthorized();
-        if (!response.ok) throw new Error(`${response.status} - ${response.statusText}`);
+        if (!response.ok)
+          throw new Error(`${response.status} - ${response.statusText}`);
 
         const data = await response.json();
         setDetailNadhoman(data);
