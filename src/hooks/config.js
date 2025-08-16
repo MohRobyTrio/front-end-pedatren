@@ -25,12 +25,13 @@ export const rolesWithAccess = {
   khadam: ["admin", "superadmin"],
   tahfidz: ["admin", "superadmin", "ustadz"],
   nadhoman: ["admin", "superadmin", "ustadz"],
-  ///Fitur///
   karturfid: ["admin", "superadmin"],
   kitab: ["admin", "superadmin"],
   sholat: ["admin", "superadmin"],
   jadwal_sholat: ["admin", "superadmin"],
   presensi_sholat: ["admin", "superadmin", "ustadz"],
+  ///Fitur///
+  
   ///Manage///
   manage: ["admin", "superadmin"],
   tambahakun: ['admin', 'superadmin']

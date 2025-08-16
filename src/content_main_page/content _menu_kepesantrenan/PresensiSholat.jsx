@@ -2,7 +2,7 @@
 import { OrbitProgress } from "react-loading-indicators"
 import { useEffect, useRef, useState, memo } from "react"
 import useFetchPresensi from "../../hooks/hooks_menu_data_pokok/Presensi"
-import { FaQrcode, FaUserCheck, FaCalendarAlt, FaTimes, FaEye, FaCheckCircle, FaUsers, FaClock, FaCalendar, FaFilter } from "react-icons/fa"
+import { FaQrcode, FaCalendarAlt, FaTimes, FaEye, FaCheckCircle, FaUsers, FaClock, FaCalendar, FaFilter, FaList } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
@@ -35,7 +35,8 @@ const PresensiSholat = () => {
         totalData,
         fetchData,
         jadwalSholat,
-        totals,
+        jadwalMendatang,
+        statusPresensi,
     } = useFetchPresensi(filters)
 
     // Main states - Auto-start in scan mode
@@ -95,8 +96,8 @@ const PresensiSholat = () => {
                 <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Presensi Sholat</h1>
-                            <p className="text-gray-600 mt-1">
+                            <h1 className="text-2xl font-bold text-gray-800 mb-2">Presensi Sholat</h1>
+                            <p className="text-gray-600">
                                 {currentTime.toLocaleDateString("id-ID", {
                                     weekday: "long",
                                     year: "numeric",
@@ -105,11 +106,6 @@ const PresensiSholat = () => {
                                 })}{" "}
                                 - {currentTime.toLocaleTimeString("id-ID")}
                             </p>
-                            {jadwalSholat && (
-                                <p className="text-sm text-blue-600 mt-1">
-                                    {jadwalSholat.nama_sholat} - {jadwalSholat.jam_mulai} s/d {jadwalSholat.jam_selesai}
-                                </p>
-                            )}
                         </div>
                         <div className="flex items-center space-x-4 mt-4 md:mt-0">
                             <button
@@ -125,36 +121,163 @@ const PresensiSholat = () => {
                                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${currentView === "list" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                     }`}
                             >
-                                <FaUserCheck className="w-4 h-4" />
-                                <span>Daftar</span>
+                                <FaList className="w-4 h-4" />
+                                <span>List</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {totals && currentView === "list" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {/* Current Jadwal Sholat */}
+                    {jadwalSholat && (
+                        <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl border border-purple-100 p-6">
+                            <div className="flex items-center space-x-3 mb-3">
+                                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <FaClock className="w-5 h-5 text-purple-600" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-purple-900">Jadwal Saat Ini</h3>
+                                    <p className="text-xs text-purple-600">Sholat Berlangsung</p>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-lg font-semibold text-purple-900">{jadwalSholat.nama_sholat}</span>
+                                    <span className="text-sm px-2 py-1 bg-purple-100 text-purple-700 rounded-full">Aktif</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-purple-700">
+                                    <FaClock className="w-3 h-3" />
+                                    <span>
+                                        {jadwalSholat.jam_mulai} - {jadwalSholat.jam_selesai}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Jadwal Mendatang */}
+                    {jadwalMendatang && (
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 p-6">
+                            <div className="flex items-center space-x-3 mb-3">
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <FaClock className="w-5 h-5 text-blue-600" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-medium text-blue-900">Jadwal Mendatang</h3>
+                                    <p className="text-xs text-blue-600">Sholat Berikutnya</p>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-lg font-semibold text-blue-900">{jadwalMendatang.nama_sholat}</span>
+                                    <span className="text-sm px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                                        {jadwalMendatang.tanggal}
+                                    </span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-blue-700">
+                                    <FaClock className="w-3 h-3" />
+                                    <span>
+                                        {jadwalMendatang.jam_mulai} - {jadwalMendatang.jam_selesai}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Status Presensi */}
+                    {statusPresensi && (
+                        <div
+                            className={`rounded-xl border p-6 ${statusPresensi === "waktunya_presensi"
+                                    ? "bg-gradient-to-br from-green-50 to-emerald-50 border-green-100"
+                                    : statusPresensi === "belum_waktunya"
+                                        ? "bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-100"
+                                        : "bg-gradient-to-br from-red-50 to-rose-50 border-red-100"
+                                }`}
+                        >
+                            <div className="flex items-center space-x-3 mb-3">
+                                <div
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center ${statusPresensi === "waktunya_presensi"
+                                            ? "bg-green-100"
+                                            : statusPresensi === "belum_waktunya"
+                                                ? "bg-yellow-100"
+                                                : "bg-red-100"
+                                        }`}
+                                >
+                                    <FaClock
+                                        className={`w-5 h-5 ${statusPresensi === "waktunya_presensi"
+                                                ? "text-green-600"
+                                                : statusPresensi === "belum_waktunya"
+                                                    ? "text-yellow-600"
+                                                    : "text-red-600"
+                                            }`}
+                                    />
+                                </div>
+                                <div>
+                                    <h3
+                                        className={`text-sm font-medium ${statusPresensi === "waktunya_presensi"
+                                                ? "text-green-900"
+                                                : statusPresensi === "belum_waktunya"
+                                                    ? "text-yellow-900"
+                                                    : "text-red-900"
+                                            }`}
+                                    >
+                                        Status Presensi
+                                    </h3>
+                                    <p
+                                        className={`text-xs ${statusPresensi === "waktunya_presensi"
+                                                ? "text-green-600"
+                                                : statusPresensi === "belum_waktunya"
+                                                    ? "text-yellow-600"
+                                                    : "text-red-600"
+                                            }`}
+                                    >
+                                        Kondisi Saat Ini
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <span
+                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusPresensi === "waktunya_presensi"
+                                            ? "bg-green-100 text-green-800"
+                                            : statusPresensi === "belum_waktunya"
+                                                ? "bg-yellow-100 text-yellow-800"
+                                                : "bg-red-100 text-red-800"
+                                        }`}
+                                >
+                                    {statusPresensi === "waktunya_presensi"
+                                        ? "Waktunya Presensi"
+                                        : statusPresensi === "belum_waktunya"
+                                            ? "Belum Waktunya"
+                                            : "Sudah Lewat"}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* {totalData && currentView === "list" && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div className="bg-white rounded-lg shadow p-4">
-                            <div className="text-2xl font-bold text-green-600">{totals.total_hadir}</div>
+                            <div className="text-2xl font-bold text-green-600">{totalData.total_hadir}</div>
                             <div className="text-sm text-gray-600">Hadir</div>
                         </div>
                         <div className="bg-white rounded-lg shadow p-4">
-                            <div className="text-2xl font-bold text-red-600">{totals.total_tidak_hadir}</div>
+                            <div className="text-2xl font-bold text-red-600">{totalData.total_tidak_hadir}</div>
                             <div className="text-sm text-gray-600">Tidak Hadir</div>
                         </div>
                         <div className="bg-white rounded-lg shadow p-4">
-                            <div className="text-2xl font-bold text-blue-600">{totals.total_presensi_tercatat}</div>
+                            <div className="text-2xl font-bold text-blue-600">{totalData.total_presensi_tercatat}</div>
                             <div className="text-sm text-gray-600">Tercatat</div>
                         </div>
                         <div className="bg-white rounded-lg shadow p-4">
-                            <div className="text-2xl font-bold text-gray-600">{totals.total_santri}</div>
+                            <div className="text-2xl font-bold text-gray-600">{totalData.total_santri}</div>
                             <div className="text-sm text-gray-600">Total Santri</div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 {currentView === "scan" && <Scan refetch={fetchData} />}
-                {/* {currentView === "list" && dataPresensi && dataPresensi.length > 0 && ( */}
                 {currentView === "list" && (
                     <AttendanceList
                         searchTerm={searchTerm}
@@ -167,13 +290,6 @@ const PresensiSholat = () => {
                         jadwalSholat={jadwalSholat}
                     />
                 )}
-                {/* {currentView === "list" && (!dataPresensi || dataPresensi.length === 0) && !loadingPresensi && (
-                    <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-                        <FaUserCheck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Tidak Ada Data Presensi</h3>
-                        <p className="text-gray-600">Belum ada data presensi untuk filter yang dipilih</p>
-                    </div>
-                )} */}
                 {currentView === "report" && (
                     <div className="bg-white rounded-xl shadow-lg p-8 text-center">
                         <FaCalendarAlt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -435,15 +551,15 @@ const AttendanceList = memo(
                         <div className="text-gray-600">Hadir</div>
                     </div>
                     <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                        <div className="text-2xl font-bold text-yellow-600">{totals.total_tidak_hadir}</div>
+                        <div className="text-2xl font-bold text-red-600">{totals.total_tidak_hadir}</div>
                         <div className="text-gray-600">Tidak Hadir</div>
                     </div>
                     <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                        <div className="text-2xl font-bold text-red-600">{totals.total_presensi_tercatat}</div>
+                        <div className="text-2xl font-bold text-blue-600">{totals.total_presensi_tercatat}</div>
                         <div className="text-gray-600">Presensi</div>
                     </div>
                     <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-                        <div className="text-2xl font-bold text-blue-600">{totals.total_santri}</div>
+                        <div className="text-2xl font-bold text-gray-600">{totals.total_santri}</div>
                         <div className="text-gray-600">Santri</div>
                     </div>
                 </div>

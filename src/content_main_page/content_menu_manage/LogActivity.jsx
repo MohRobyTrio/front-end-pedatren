@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react"
+import { useState, Fragment, useEffect } from "react"
 import SearchBar from "../../components/SearchBar"
 import Filters from "../../components/Filters"
 import { OrbitProgress } from "react-loading-indicators"
@@ -6,15 +6,21 @@ import Pagination from "../../components/Pagination"
 import useFetchLogActivity from "../../hooks/hooks_menu_manage/LogActivity"
 import { FaUser, FaClock, FaLink, FaTimes } from "react-icons/fa"
 import { Dialog, Transition } from "@headlessui/react"
+import { useLocation } from "react-router-dom"
 
 const LogActivity = () => {
     const [searchTerm, setSearchTerm] = useState("")
     const [showFilters, setShowFilters] = useState(false)
     const [selectedLog, setSelectedLog] = useState(null)
     const [showDetailModal, setShowDetailModal] = useState(false)
+    const location = useLocation()
 
-    const { logs, loading, error, limit, setLimit, totalPages, currentPage, setCurrentPage, totalData } =
-        useFetchLogActivity()
+    const { logs, loading, error, fetchLogs, limit, setLimit, totalPages, currentPage, setCurrentPage, totalData } = useFetchLogActivity()
+
+    useEffect(() => {
+        fetchLogs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.pathname])
 
     const [filters, setFilters] = useState({
         log_name: "",

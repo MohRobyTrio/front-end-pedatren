@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../hooks/config";
 import { getCookie } from "../utils/cookieUtils";
 import blankProfile from "../assets/blank_profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Formulir = () => {
     const { biodata_id } = useParams();

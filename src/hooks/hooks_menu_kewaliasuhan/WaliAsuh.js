@@ -33,7 +33,7 @@ const useFetchWaliAsuh = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/waliasuh?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
@@ -59,7 +59,7 @@ const useFetchWaliAsuh = (filters) => {
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
         if (filters?.jenisWaliAsuh) url += `&jenis_wali_asuh=${encodeURIComponent(filters.jenisWaliAsuh)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -124,6 +124,7 @@ const useFetchWaliAsuh = (filters) => {
         setSearchTerm,
         error,
         limit,
+        fetchData,
         setLimit,
         totalDataWaliAsuh,
         totalPages,

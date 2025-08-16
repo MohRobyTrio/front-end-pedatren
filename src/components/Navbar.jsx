@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons"
 import { ModalAddUser, ModalUpdatePassword, ModalUpdateProfil } from "./modal/ModalFormProfil"
 import Access from "./Access"
+import { useKeepAliveRef } from "keepalive-for-react"
 
 // Custom hook untuk efek mengetik
 function useTypingOnHover(text, speed = 110) {
@@ -56,10 +57,14 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
     const [openModalAddUser, setOpenModalAddUser] = useState(false)
     const userName = localStorage.getItem("name") || sessionStorage.getItem("name")
     const [typedPusdatren, isTyping, onPusdatrenHover, onPusdatrenOut] = useTypingOnHover("PUSDATREN", 110)
+    const aliveRef = useKeepAliveRef()
 
     const handleLogout = async () => {
         try {
             await logout()
+            aliveRef?.current?.clear();
+            aliveRef.current?.refresh();
+            aliveRef.current?.destroy();
             navigate("/login")
         } catch (error) {
             console.error("Logout gagal:", error.message)
