@@ -29,10 +29,14 @@ const LoginPage = () => {
         return
       }
       const roles = getRolesString();
-      if (roles.includes("Ustadz")) {
+      const lowerRoles = String(roles) // pastikan jadi string dulu
+        .split(",")                   // ubah jadi array
+        .map(role => role.trim().toLowerCase());
+      if (lowerRoles.includes("ustadz")) {
         sessionStorage.setItem("dataPokok", "true");
         return navigate("/tahfidz", { replace: true });
-      } else if (roles.includes("biktren")) {
+      } else if (lowerRoles.includes("biktren")) {
+        sessionStorage.setItem("kepesantrenan", "true");
         return navigate("/perizinan", { replace: true });
       } else {
         return navigate("/dashboard", { replace: true });

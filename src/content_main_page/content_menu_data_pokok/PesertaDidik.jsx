@@ -12,7 +12,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import { FaChartLine, FaEdit, FaFileExport, FaFileImport, FaPlus, FaTable, FaArrowLeft } from "react-icons/fa"
+import { FaEdit, FaFileExport, FaFileImport, FaPlus, FaArrowLeft } from "react-icons/fa"
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { useMultiStepFormPesertaDidik } from "../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
 import { jenisBerkasList } from "../../data/menuData"
@@ -22,7 +22,6 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { ModalExport } from "../../components/modal/ModalExport"
 import { Link, Navigate } from "react-router-dom"
 import ModalImport from "../../components/modal/ModalImport"
-import StatistikChart from "../../components/StatistikChart"
 import { hasAccess } from "../../utils/hasAccess"
 
 const PesertaDidik = () => {
@@ -45,7 +44,7 @@ const PesertaDidik = () => {
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wargaPesantren: "",
-        status: "",
+        status: "santri",
         jenisKelamin: "",
         smartcard: "",
         pemberkasan: "",
@@ -149,12 +148,13 @@ const PesertaDidik = () => {
             { label: "Perempuan", value: "perempuan" },
         ],
         status: [
-            { label: "Semua Status", value: "" },
+            // { label: "Semua Status", value: "" },
             { label: "Santri", value: "santri" },
             { label: "Santri Non Pelajar", value: "santri non pelajar" },
             { label: "Pelajar", value: "pelajar" },
             { label: "Pelajar Non Santri", value: "pelajar non santri" },
-            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "" },
+            { label: "Santri Sekaligus Pelajar", value: "santri-pelajar" },
         ],
         angkatanPelajar: generateDropdownTahun({
             placeholder: "Semua Angkatan Pelajar",
@@ -220,7 +220,7 @@ const PesertaDidik = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
                 <h1 className="text-xl md:text-2xl font-bold">{showStatistik ? "Statistik Data Santri" : "Data Santri"}</h1>
 
@@ -270,11 +270,11 @@ const PesertaDidik = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
-                {showStatistik ? (
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10">
+                {/* {showStatistik ? (
                     <StatistikChart data={pesertaDidik} loading={loadingPesertaDidik} totalData={totalDataPesertaDidik} />
                 ) : (
-                    <>
+                    <> */}
                         <div
                             className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
                         >
@@ -413,8 +413,8 @@ const PesertaDidik = () => {
                         {totalPages > 1 && (
                             <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                         )}
-                    </>
-                )}
+                    {/* </>
+                )} */}
             </div>
 
             <ModalExport

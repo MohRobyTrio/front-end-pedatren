@@ -122,7 +122,7 @@ const Khadam = () => {
         ],
     }
 
-    const filter5 = {
+    // const filter5 = {
         // Sudah
         // wargaPesantren: [
         //     { label: "Warga Pesantren", value: "" },
@@ -139,20 +139,20 @@ const Khadam = () => {
         //     { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
         //     { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
         // ]
-    }
+    // }
 
-    const filter4 = {
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        phoneNumber: [
-            { label: "Phone Number", value: "" },
-            { label: "Memiliki Phone Number", value: "memiliki phone number" },
-            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        ]
-    };
+    // const filter4 = {
+    //     // smartcard: [
+    //     //     { label: "Smartcard", value: "" },
+    //     //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //     //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    //     // ],
+    //     phoneNumber: [
+    //         { label: "Phone Number", value: "" },
+    //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //         { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    //     ]
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
@@ -191,7 +191,7 @@ const Khadam = () => {
     };
 
     if (!hasAccess("khadam")) {
-        return <Navigate     to="/not-found" replace />;
+        return <Navigate to="/not-found" replace />;
     }
 
     return (

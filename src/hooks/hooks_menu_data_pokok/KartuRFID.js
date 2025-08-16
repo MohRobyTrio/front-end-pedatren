@@ -81,7 +81,7 @@ const useFetchKartuRFID = () => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}crud/${id}/karturfid`, {
+            const response = await fetch(`${API_BASE_URL}kartu/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

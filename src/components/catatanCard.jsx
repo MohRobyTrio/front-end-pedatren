@@ -121,9 +121,9 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
 
                     {/* Main Content - Horizontal Layout */}
                     <div className="p-4">
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex flex-col lg:flex-row gap-4">
                             {/* Photo Section */}
-                            <div className="flex-shrink-0 flex justify-center sm:justify-start">
+                            <div className="flex-shrink-0 flex justify-center lg:justify-start">
                                 <div 
                                     className="cursor-pointer"
                                     onClick={(e) => {
@@ -132,7 +132,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                         openModal(data.Biodata_uuid);
                                     }}
                                 >
-                                    <div className="w-24 h-24 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-200 shadow-sm border-2 border-white">
+                                    <div className="w-24 h-24 lg:w-20 lg:h-20 rounded-lg overflow-hidden bg-gray-200 shadow-sm border-2 border-white">
                                             <img 
                                                 src={data.foto_catatan || "/placeholder.svg"}
                                                 alt={data.nama_santri}
@@ -205,7 +205,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                             </div>
 
                             {/* Recorder Section */}
-                            <div className="flex-shrink-0 sm:w-48">
+                            <div className="flex-shrink-0 lg:w-48">
                                 <div 
                                     className="cursor-pointer"
                                     onClick={(e) => {
