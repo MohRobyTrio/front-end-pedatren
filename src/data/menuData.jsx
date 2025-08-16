@@ -66,6 +66,7 @@ import KartuRFID from "../content_main_page/content_menu_data_pokok/KartuRFID";
 import Sholat from "../content_main_page/content _menu_kepesantrenan/Sholat";
 import JadwalSholat from "../content_main_page/content _menu_kepesantrenan/JadwalSholat";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
+import LogActivity from "../content_main_page/content_menu_manage/LogActivity";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -171,6 +172,7 @@ export const menuAkademikItems =[
 
 export const menuManageItems =[
     { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users /> },
+    { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity /> },
 ];
 
 export const subKelembagaanItems = [
