@@ -166,8 +166,8 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
     const startNFCScanning = async () => {
         if (!nfcSupported) return
 
+        setIsScanning(true)
         try {
-            setIsScanning(true)
             const ndef = new window.NDEFReader()
             await ndef.scan()
 
@@ -461,31 +461,39 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
         setIsChangingRfid(false)
     }
 
-useEffect(() => {
-    if (currentStep !== 2) return;
+    useEffect(() => {
+        if (currentStep !== 2) return;
 
-    const handleKeyPress = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            // submitForm(idCard) jika mau submit saat Enter
-        } else if (/^[0-9]$/.test(e.key)) {
-            setIdCard((prev) => {
-                let newId = prev + e.key;
+        const handleKeyPress = (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                // submitForm(idCard) jika mau submit saat Enter
+            } else if (/^[0-9]$/.test(e.key)) {
+                setIdCard((prev) => {
+                    let newId = prev + e.key;
 
-                // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
-                if (newId.length > 10) {
-                    newId = e.key; // reset dan mulai dari digit ini
-                }
+                    // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
+                    if (newId.length > 10) {
+                        newId = e.key; // reset dan mulai dari digit ini
+                    }
 
-                return newId;
-            });
-        }
-    };
+                    return newId;
+                });
+            }
+        };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-}, [currentStep]);
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    }, [currentStep]);
 
+    useEffect(() => {
+        if (currentStep == 2 && inputMode == "scnfcan") {
+            setIsScanning(true);
+            startNFCScanning();
+        };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentStep, inputMode]);
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
