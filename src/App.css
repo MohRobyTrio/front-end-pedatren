@@ -1,8 +1,16 @@
 /* @import "tailwindcss"; */
 /* @import 'flowbite'; */
-body {
+/* body {
   overflow-y: hidden;
-}
+} */
+
+/* :root {
+  --vh: 1vh; 
+} */
+
+/* .full-height {
+  height: calc(var(--vh, 1vh) * 100);
+} */
 
 
 .no-scrollbar::-webkit-scrollbar {

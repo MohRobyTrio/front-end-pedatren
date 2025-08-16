@@ -176,14 +176,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                         </ul>
                     </nav>
 
-                    <div className="mt-3 px-2">
-                        <MenuHeader
-                            name="Kesantrian"
-                            isOpen={dropdowns.dataPokok}
-                            onClick={() => toggleDropdown("dataPokok")}
-                        />
-                        {dropdowns.dataPokok && <DropdownMenu items={menuDataPokokItems} />}
-                    </div>
+                    <Access action="kesantrian">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Kesantrian"
+                                isOpen={dropdowns.dataPokok}
+                                onClick={() => toggleDropdown("dataPokok")}
+                            />
+                            {dropdowns.dataPokok && <DropdownMenu items={menuDataPokokItems} />}
+                        </div>
+                    </Access>
 
                     <Access action="kewaliasuhan">
                         <div className="mt-3 px-2">

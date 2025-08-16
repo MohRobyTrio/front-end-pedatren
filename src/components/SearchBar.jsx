@@ -6,10 +6,10 @@ const SearchBar = ({
     totalData,
     toggleFilters,
     // totalFiltered, 
-    toggleView,
+    // toggleView,
     limit,
     toggleLimit,
-    showViewButtons = true, // Prop baru dengan default true
+    // showViewButtons = true, // Prop baru dengan default true
     showFilterButtons = true,
     showSearch = true,
     showLimit = true,
@@ -24,14 +24,14 @@ const SearchBar = ({
         }
     }, []);
 
-    const handleViewChange = (mode) => {
-        setViewMode(mode);
-        sessionStorage.setItem("viewMode", mode);
-        toggleView(mode);
-    };
+    // const handleViewChange = (mode) => {
+    //     setViewMode(mode);
+    //     sessionStorage.setItem("viewMode", mode);
+    //     toggleView(mode);
+    // };
 
     return (
-        <div className="flex flex-col md:flex-row-reverse justify-between md:items-center items-left w-95 md:w-auto space-y-2">
+        <div className="flex flex-col md:flex-row-reverse justify-between mb-4 md:items-center items-left w-95 md:w-auto space-y-2">
             <div className="flex items-center space-x-2">
                 {showSearch && (
                     <input

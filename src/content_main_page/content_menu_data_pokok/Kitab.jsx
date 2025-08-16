@@ -98,7 +98,8 @@ const Kitab = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <div className="flex justify-center items-center space-x-2">
                                                     <button
-                                                        onClick={() => {
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             setLembagaData(item);
                                                             setFeature(2);
                                                             setOpenModal(true);

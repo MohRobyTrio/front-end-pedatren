@@ -11,8 +11,7 @@ import { ModalAddKartuRFID } from "../../components/modal/ModalFormKartuRFID";
 
 const KartuRFID = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [lembagaData, setLembagaData] = useState("");
-    const [selectedId, setSelectedId] = useState(null);
+    const [kartuData, setKartuData] = useState("");
     const [feature, setFeature] = useState("");
     const { karturfid, loadingKartuRFID, error, fetchKartuRFID, handleDelete } = useFetchKartuRFID();
 
@@ -27,8 +26,8 @@ const KartuRFID = () => {
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setFeature(1);
+                        setKartuData(null);
                         setOpenModal(true);
-                        setSelectedId(null);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
@@ -37,8 +36,8 @@ const KartuRFID = () => {
                 isOpen={openModal}
                 onClose={() => setOpenModal(false)}
                 refetchData={fetchKartuRFID}
+                data={kartuData}
                 feature={feature}
-                id={selectedId}
             />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -70,13 +69,13 @@ const KartuRFID = () => {
                             <tbody className="text-gray-800">
                                 {loadingKartuRFID ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center p-4">
+                                        <td colSpan="8" className="text-center p-4">
                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                         </td>
                                     </tr>
                                 ) : karturfid.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                        <td colSpan="8" className="text-center py-6">Tidak ada data</td>
                                     </tr>
                                 ) : (
                                     karturfid.map((item, index) => (
@@ -100,7 +99,7 @@ const KartuRFID = () => {
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <button
                                                     onClick={() => {
-                                                        setLembagaData(item);
+                                                        setKartuData(item);
                                                         setFeature(2);
                                                         setOpenModal(true);
                                                     }}
