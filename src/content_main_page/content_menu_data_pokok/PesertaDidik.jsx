@@ -220,9 +220,11 @@ const PesertaDidik = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-                <h1 className="text-xl md:text-2xl font-bold">{showStatistik ? "Statistik Data Santri" : "Data Santri"}</h1>
+                <h1 className="text-xl md:text-2xl font-bold">
+                    {showStatistik ? "Statistik Data Peserta Didik" : "Semua Data"}
+                </h1>
 
                 <div className="flex flex-wrap items-center gap-2">
                     {showStatistik ? (
@@ -270,7 +272,7 @@ const PesertaDidik = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10">
+            <div className="mb-10">
                 {/* {showStatistik ? (
                     <StatistikChart data={pesertaDidik} loading={loadingPesertaDidik} totalData={totalDataPesertaDidik} />
                 ) : (

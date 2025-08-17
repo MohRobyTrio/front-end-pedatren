@@ -16,6 +16,8 @@ const useFetchPresensiSholat = (filters) => {
   const [totalPages, setTotalPages] = useState(1); // Jika API mendukung pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [jadwalSholat, setJadwalSholat] = useState("");
+  const [jadwalMendatang, setJadwalMendatang] = useState(null);
+  const [statusPresensi, setStatusPresensi] = useState("");
   const lastRequest = useRef("");
   const token = sessionStorage.getItem("token") || getCookie("token");
 
@@ -91,6 +93,8 @@ const useFetchPresensiSholat = (filters) => {
       setTotalData(data.totals || {});
       setTotalPages(data.total_pages || 1);
       setJadwalSholat(data.jadwal_sholat || "");
+      setJadwalMendatang(data.jadwal_mendatang || null);
+      setStatusPresensi(data.status_presensi || "");
 
     } catch (err) {
       console.error("Fetch error:", err);
@@ -120,7 +124,9 @@ const useFetchPresensiSholat = (filters) => {
     currentPage,
     setCurrentPage,
     fetchData,
-    jadwalSholat
+    jadwalSholat,
+    jadwalMendatang,
+    statusPresensi,
   };
 };
 

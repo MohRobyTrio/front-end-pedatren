@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { KeepAlive, useKeepAliveRef } from 'keepalive-for-react';
 import { useLocation, useOutlet } from 'react-router-dom';
+import { KeepAliveContext } from '../utils/KeepAliveContext';
 
 const MainPage = () => {
     const [dropdowns, setDropdowns] = useState(() => ({
@@ -78,7 +79,7 @@ const MainPage = () => {
     const currentCacheKey = useMemo(() => location.pathname, [location.pathname]);
 
     // console.log(location.pathname)
-        useEffect(() => {
+    useEffect(() => {
         if (contentRef.current) {
             contentRef.current.scrollTo(0, 0);
         } else {
@@ -86,44 +87,46 @@ const MainPage = () => {
         }
     }, [location.pathname]);
 
-    
+
 
     return (
         <>
-            <div className="flex h-screen overflow-hidden">
+            <KeepAliveContext.Provider value={aliveRef}>
+                <div className="flex h-screen overflow-hidden">
 
-                <Navbar
-                    toggleDropdownProfil={toggleDropdownProfil}
-                    toggleSidebar={toggleSidebar}
-                    isOpen={isOpen}
-                    profilRef={profilRef} // Tambahkan ref ke Navbar
-                    toggleButtonRef={toggleButtonRef}
-                />
-                <div ref={sidebarRef}>
-                    <Sidebar
-                        dropdowns={dropdowns}
-                        toggleDropdown={toggleDropdown}
-                        isSidebarOpen={isSidebarOpen}
+                    <Navbar
+                        toggleDropdownProfil={toggleDropdownProfil}
+                        toggleSidebar={toggleSidebar}
+                        isOpen={isOpen}
+                        profilRef={profilRef} // Tambahkan ref ke Navbar
+                        toggleButtonRef={toggleButtonRef}
                     />
+                    <div ref={sidebarRef}>
+                        <Sidebar
+                            dropdowns={dropdowns}
+                            toggleDropdown={toggleDropdown}
+                            isSidebarOpen={isSidebarOpen}
+                        />
 
-                </div>
+                    </div>
 
-                <div ref={contentRef} className="pr-6 sm:ml-56 overflow-x-hidden w-full max-w-full">
-                    <div className="pt-8 mt-8">
-                        {/* <Outlet /> */}
-                        <KeepAlive
-                            transition
-                            aliveRef={aliveRef}
-                            activeCacheKey={currentCacheKey}
-                            max={20} // Simpan hingga 20 halaman
-                        >
-                            <Suspense fallback={<div>Loading...</div>}>
-                                {outlet}
-                            </Suspense>
-                        </KeepAlive>
+                    <div ref={contentRef} className="pr-6 sm:ml-56 overflow-x-hidden w-full max-w-full">
+                        <div className="pt-8 mt-8">
+                            {/* <Outlet /> */}
+                            <KeepAlive
+                                transition
+                                aliveRef={aliveRef}
+                                activeCacheKey={currentCacheKey}
+                                max={20} // Simpan hingga 20 halaman
+                            >
+                                <Suspense fallback={<div>Loading...</div>}>
+                                    {outlet}
+                                </Suspense>
+                            </KeepAlive>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </KeepAliveContext.Provider>
         </>
     );
 };

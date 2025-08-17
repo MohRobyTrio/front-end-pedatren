@@ -67,6 +67,12 @@ import Sholat from "../content_main_page/content _menu_kepesantrenan/Sholat";
 import JadwalSholat from "../content_main_page/content _menu_kepesantrenan/JadwalSholat";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 import LogActivity from "../content_main_page/content_menu_manage/LogActivity";
+import ContainerPesertaDidik from "../content_main_page/content_menu_data_pokok/ContainerPesertaDidik";
+import Pengajar from "../content_main_page/content_menu_data_pokok/Pengajar";
+import Pengurus from "../content_main_page/content_menu_data_pokok/Pengurus";
+import Karyawan from "../content_main_page/content_menu_data_pokok/Karyawan";
+import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
+import ContainerPegawai from "../content_main_page/content_menu_kepegawaian/ContainerPegawai";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -75,7 +81,7 @@ export const menuItems = [
 ];
 
 export const menuDataPokokItems = [
-    { id: "santri", icon: "fa-users", text: "Santri", link: "/santri", content: <PesertaDidik />, access: "santri" },
+    { id: "cpesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <ContainerPesertaDidik />, access: "santri" },
     // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
     { id: "kitab", icon: "fa-book", text: "Kitab", link: "/kitab", content: <Kitab />, access: "kitab" },
@@ -84,12 +90,17 @@ export const menuDataPokokItems = [
     { id: "karturfid", icon: "fa-id-card", text: "Kartu RFID", link: "/karturfid", content: <KartuRFID />, access: "karturfid" },
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga />, access: "kelembagaan" },
     { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah />, access: "kewilayahan" },
-    // { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pengajar", content: <Pengajar /> },
-    // { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pengurus", content: <Pengurus /> },
-    // { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/karyawan", content: <Karyawan /> },
-    // { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/wali-kelas", content: <WaliKelas /> },
+    
     // { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
+
+export const subMenuPegawai = [
+    { id: "pegawai", icon: "fa-briefcase", text: "Semua", link: "/pegawai", content: <Pegawai /> },
+    { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pegawai/pengajar", content: <Pengajar /> },
+    { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pegawai/pengurus", content: <Pengurus /> },
+    { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/pegawai/karyawan", content: <Karyawan /> },
+    { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/pegawai/wali-kelas", content: <WaliKelas /> },
+]
 
 export const menuKewaliasuhanItems = [
     { id: "waliasuh", icon: "fa-user-shield", text: "Wali Asuh", link: "/wali-asuh", content: <WaliAsuh /> },
@@ -113,7 +124,7 @@ export const menuKepesantrenanItems = [
 ];
 
 export const menuKepegawaianItems = [
-    { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <Pegawai /> },
+    { id: "cpegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <ContainerPegawai /> },
     { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai /> },
     // { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pegawai", content: <PresensiPegawai /> },
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan />, access: "golongan" },
@@ -207,9 +218,10 @@ export const tabsFormulir = [
 ];
 
 export const subPesertaDidik = [
+    { id: "pesertadidik", text: "Semua", link: "/peserta-didik", content: <PesertaDidik /> },
     { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri /> },
-    { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <SantriNonDomisili /> },
     { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar /> },
+    { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <SantriNonDomisili /> },
     { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung /> }
 ];
 

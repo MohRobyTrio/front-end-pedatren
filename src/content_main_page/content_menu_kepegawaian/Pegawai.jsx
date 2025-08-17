@@ -221,10 +221,10 @@ const Pegawai = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
                 {/* Judul */}
-                <h1 className="text-xl md:text-2xl font-bold">Pegawai</h1>
+                <h1 className="text-xl md:text-2xl font-bold">Semua Data</h1>
 
                 {/* Semua tombol di satu div */}
                 <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ const Pegawai = () => {
 
 
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />

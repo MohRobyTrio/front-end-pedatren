@@ -242,7 +242,7 @@ const Pengajar = () => {
     ];
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Pengajar</h1>
                 <div className="flex items-center">
@@ -275,7 +275,7 @@ const Pengajar = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 overflow-x-auto">
+            <div className="mb-10 overflow-x-auto">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     {/* <Filters showFilters={showFilters} filterOptions={filterGolongan} onChange={handleFilterChangeGolongan} selectedFilters={selectedGolongan} /> */}

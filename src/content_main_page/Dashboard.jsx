@@ -18,16 +18,26 @@ import useFetchAlumni from "../hooks/hooks_menu_data_pokok/Alumni"
 import useFetchWaliAsuh from "../hooks/hooks_menu_kewaliasuhan/WaliAsuh"
 import useFetchPerizinan from "../hooks/hook_menu_kepesantrenan/Perizinan"
 import { hasAccess } from "../utils/hasAccess"
+import { useEffectOnActive } from "keepalive-for-react"
 
 const Dashboard = () => {
     const filtersPerizinanDMI = useMemo(() => ({ status: "sudah berada diluar pondok" }), [])
     const filtersPerizinanTBK = useMemo(() => ({ status: "telat(belum kembali)" }), [])
-    const { loadingSantri, totalDataSantri } = useFetchSantri()
-    const { loadingKhadam, totalDataKhadam } = useFetchKhadam()
-    const { loadingAlumni, totalDataAlumni } = useFetchAlumni()
-    const { loadingWaliAsuh, totalDataWaliAsuh } = useFetchWaliAsuh()
-    const { loading: loadingPerizinanDMI, totalData: totalDataPerizinanDMI } = useFetchPerizinan(filtersPerizinanDMI)
-    const { loading: loadingPerizinanTBK, totalData: totalDataPerizinanTBK } = useFetchPerizinan(filtersPerizinanTBK)
+    const { loadingSantri, totalDataSantri, fetchData } = useFetchSantri()
+    const { loadingKhadam, totalDataKhadam, fetchData: fetchDataKhadam } = useFetchKhadam()
+    const { loadingAlumni, totalDataAlumni, fetchData: fetchDataAlumni } = useFetchAlumni()
+    const { loadingWaliAsuh, totalDataWaliAsuh, fetchData: fetchDataWaliAsuh } = useFetchWaliAsuh()
+    const { loading: loadingPerizinanDMI, totalData: totalDataPerizinanDMI, fetchData: fetchDataPerizinanDMI } = useFetchPerizinan(filtersPerizinanDMI)
+    const { loading: loadingPerizinanTBK, totalData: totalDataPerizinanTBK, fetchData: fetchDataPerizinanTBK } = useFetchPerizinan(filtersPerizinanTBK)
+
+    useEffectOnActive(() => {
+        fetchData(true);
+        fetchDataKhadam(true);
+        fetchDataAlumni(true);
+        fetchDataWaliAsuh(true);
+        fetchDataPerizinanDMI(true);
+        fetchDataPerizinanTBK(true);
+    }, []);
 
     const LoadingSpinner = () => {
         return (
@@ -91,6 +101,8 @@ const Dashboard = () => {
     if (!hasAccess("dashboard")) {
         return <Navigate to="/not-found" replace />;
     }
+
+
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
