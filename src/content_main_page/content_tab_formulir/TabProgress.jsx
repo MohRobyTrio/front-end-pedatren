@@ -530,7 +530,7 @@ const TabProgress = () => {
 
 
 									{/* Tombol keluar di pojok kanan bawah */}
-									{!afektif.tanggal_selesai && (
+									{/* {!afektif.tanggal_selesai && (
 										<div className="absolute bottom-5 right-5">
 											<Access action="keluar">
 												<button
@@ -546,7 +546,7 @@ const TabProgress = () => {
 												</button>
 											</Access>
 										</div>
-									)}
+									)} */}
 								</div>
 								<div className="text-xs text-gray-400 italic ">
 									📌 Klik kartu ini untuk melihat detail nilai
@@ -559,7 +559,7 @@ const TabProgress = () => {
 								</div>
 							) : selectedDataId == afektif.id && selectedAfektifDetail && (
 								<div className=" bg-white shadow-md rounded-lg p-6">
-									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedAfektifDetail?.tanggal_selesai || selectedAfektifDetail?.tanggal_selesai == "-")} />
+									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} />
 									<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 										{/* Kolom Kiri */}
 										<div className="flex flex-col gap-4">
@@ -665,11 +665,12 @@ const TabProgress = () => {
 													type="date"
 													value={startDate}
 													onChange={(e) => setStartDate(e.target.value)}
-													disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
-													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedAfektifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+													// disabled={!canEdit || !!selectedAfektifDetail.tanggal_selesai}
+													disabled
+													className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed`}
 												/>
 											</div>
-											<div>
+											{/* <div>
 												<label className="block text-sm font-semibold text-gray-700">Tanggal Selesai</label>
 												<input
 													type="date"
@@ -677,7 +678,7 @@ const TabProgress = () => {
 													onChange={(e) => setEndDate(e.target.value)}
 													disabled
 													className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed" />
-											</div>
+											</div> */}
 										</div>
 
 										{/* Tombol Aksi */}
@@ -825,7 +826,7 @@ const TabProgress = () => {
 
 
 									{/* Tombol keluar di pojok kanan bawah */}
-									{!kognitif.tanggal_selesai && (
+									{/* {!kognitif.tanggal_selesai && (
 										<div className="absolute bottom-5 right-5">
 											<Access action="keluar">
 												<button
@@ -841,7 +842,7 @@ const TabProgress = () => {
 												</button>
 											</Access>
 										</div>
-									)}
+									)} */}
 								</div>
 								<div className="text-xs text-gray-400 italic ">
 									📌 Klik kartu ini untuk melihat detail nilai
@@ -854,7 +855,7 @@ const TabProgress = () => {
 								</div>
 							) : selectedDataId == kognitif.id && selectedKognitifDetail && (
 								<div className=" bg-white shadow-md rounded-lg p-6">
-								<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={canEdit && (!selectedKognitifDetail?.tanggal_selesai || selectedKognitifDetail?.tanggal_selesai == "-")} />
+								<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} />
 								<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									{/* Kolom Kiri */}
 									<div className="flex flex-col gap-4">
@@ -954,10 +955,10 @@ const TabProgress = () => {
 												value={startDate}
 												onChange={(e) => setStartDate(e.target.value)}
 												disabled={!canEdit || !!selectedKognitifDetail.tanggal_selesai}
-												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedKognitifDetail.tanggal_selesai ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""}`}
+												className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed`}
 											/>
 										</div>
-										<div>
+										{/* <div>
 											<label className="block text-sm font-semibold text-gray-700">Tanggal Selesai</label>
 											<input
 												type="date"
@@ -965,7 +966,7 @@ const TabProgress = () => {
 												onChange={(e) => setEndDate(e.target.value)}
 												disabled
 												className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500 cursor-not-allowed" />
-										</div>
+										</div> */}
 									</div>
 
 									{/* Kolom Kanan */}
