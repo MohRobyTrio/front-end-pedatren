@@ -94,7 +94,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                         e.stopPropagation();
                                         openEditModal(data);
                                     }}
-                                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-medium"
+                                    className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-800 text-white rounded text-xs font-medium cursor-pointer"
                                     title="Edit Catatan"
                                 >
                                     <FontAwesomeIcon icon={faPenToSquare} className="text-xs" />
@@ -102,7 +102,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                 </button>
                             </Access>
                             
-                            <Access action={'keluar'}>
+                            {/* <Access action={'keluar'}>
                                 <button
                                     type="button"
                                     onClick={(e) => {
@@ -115,7 +115,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                     <FontAwesomeIcon icon={faRightFromBracket} className="text-xs" />
                                     <span>Selesai</span>
                                 </button>
-                            </Access>
+                            </Access> */}
                         </div>
                     </div>
 

@@ -5,54 +5,54 @@ import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../../hooks/config";
 import { getCookie } from "../../../utils/cookieUtils";
-import useDropdownWaliAsuh from "../../../hooks/hook_dropdown/DropdownWaliAsuh";
+// import useDropdownWaliAsuh from "../../../hooks/hook_dropdown/DropdownWaliAsuh";
 import useLogout from "../../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
-import { ModalSelectWaliAsuh } from "../../ModalSelectWaliAsuh";
-import { WaliAsuhInfoCard } from "../../CardInfo";
+// import { ModalSelectWaliAsuh } from "../../ModalSelectWaliAsuh";
+// import { WaliAsuhInfoCard } from "../../CardInfo";
 
 export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { menuWaliAsuh } = useDropdownWaliAsuh();
-    const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
-    const [waliAsuh, setWaliAsuh] = useState("");
+    // const { menuWaliAsuh } = useDropdownWaliAsuh();
+    // const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
+    // const [waliAsuh, setWaliAsuh] = useState("");
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
     const [formData, setFormData] = useState({
-        id_wali_asuh: "",
+        // id_wali_asuh: "",
         kepedulian_nilai: "",
         kepedulian_tindak_lanjut: "",
         kebersihan_nilai: "",
         kebersihan_tindak_lanjut: "",
         akhlak_nilai: "",
         akhlak_tindak_lanjut: "",
-        tanggal_buat: "",
+        // tanggal_buat: "",
     });   
 
     useEffect(() => {
-        setWaliAsuh("");
+        // setWaliAsuh("");
         if (isOpen) {
             setFormData({
-                id_wali_asuh: "",
+                // id_wali_asuh: "",
                 kepedulian_nilai: "",
                 kepedulian_tindak_lanjut: "",
                 kebersihan_nilai: "",
                 kebersihan_tindak_lanjut: "",
                 akhlak_nilai: "",
                 akhlak_tindak_lanjut: "",
-                tanggal_buat: "",
+                // tanggal_buat: "",
             });
         }
     }, [isOpen]);
     
-    useEffect(() => {
-        if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
-            // console.log("data wali Asuh berubah");
-            setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [waliAsuh, isOpen]);
+    // useEffect(() => {
+    //     if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
+    //         // console.log("data wali Asuh berubah");
+    //         setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [waliAsuh, isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -187,7 +187,8 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                 as="h3"
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
-                                {waliAsuh && "Tambah Data Baru"}
+                                Tambah Data Baru
+                                {/* {waliAsuh && "Tambah Data Baru"} */}
                             </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
@@ -195,7 +196,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
 
-                                            {!waliAsuh && (
+                                            {/* {!waliAsuh && (
                                                 <div className="mb-4 flex justify-center">
                                                     <div className="w-full max-w-2xl text-center">
 
@@ -213,10 +214,10 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                 </div>
 
                                             )}
-                                            <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} />
+                                            <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} /> */}
 
                                             {/* FORM ISI */}
-                                            {waliAsuh && (
+                                            {/* {waliAsuh && ( */}
                                             <div className="space-y-4">
                                                 {/* <div>
                                                     <label htmlFor="id_wali_asuh" className="block text-gray-700">
@@ -245,7 +246,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                 <div>
                                                     <label htmlFor="kepedulian_nilai" className="block text-gray-700">Nilai Kepedulian *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, kepedulian_nilai: e.target.value })}
                                                         value={formData.kepedulian_nilai}
                                                         required
@@ -275,7 +276,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                 <div>
                                                     <label htmlFor="kebersihan_nilai" className="block text-gray-700">Nilai Kebersihan *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, kebersihan_nilai: e.target.value })}
                                                         value={formData.kebersihan_nilai}
                                                         required
@@ -301,11 +302,11 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                     />
                                                 </div>
                                                 
-                                                {/* Kebersihan */}
+                                                {/* Akhlak */}
                                                 <div>
                                                     <label htmlFor="akhlak_nilai" className="block text-gray-700">Nilai Akhlak *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, akhlak_nilai: e.target.value })}
                                                         value={formData.akhlak_nilai}
                                                         required
@@ -331,7 +332,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                     />
                                                 </div>
 
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="tanggal_buat" className="block text-gray-700">Tanggal Buat *</label>
                                                     <input
                                                         type="date"
@@ -342,23 +343,23 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>                                            
+                                                </div>                                             */}
                                             </div>
-                                            )}
+                                            {/* )} */}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Footer Button */}
                                 <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
-                                    {waliAsuh && (
+                                    {/* {waliAsuh && ( */}
                                         <button
                                             type="submit"
                                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                                         >
                                             Simpan
                                         </button>
-                                    )}
+                                    {/* )} */}
                                     <button
                                         type="button"
                                         onClick={onClose}
@@ -372,11 +373,11 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
                     </Transition.Child>
                 </div>
             </Dialog>
-            <ModalSelectWaliAsuh
+            {/* <ModalSelectWaliAsuh
                 isOpen={showSelectWaliAsuh}
                 onClose={() => setShowSelectWaliAsuh(false)}
                 onWaliAsuhSelected={(waliAsuh) => setWaliAsuh(waliAsuh)}
-            />
+            /> */}
         </Transition>
     );
 };
@@ -384,13 +385,13 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
 export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, refetchData }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const { menuWaliAsuh } = useDropdownWaliAsuh();
-    const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
-    const [waliAsuh, setWaliAsuh] = useState("");
+    // const { menuWaliAsuh } = useDropdownWaliAsuh();
+    // const [showSelectWaliAsuh, setShowSelectWaliAsuh] = useState(false);
+    // const [waliAsuh, setWaliAsuh] = useState("");
     const optionsNilai = ['A', 'B', 'C', 'D', 'E'];
 
     const [formData, setFormData] = useState({
-        id_wali_asuh: "",
+        // id_wali_asuh: "",
         kebahasaan_nilai: "",
         kebahasaan_tindak_lanjut: "",
         baca_kitab_kuning_nilai: "",
@@ -403,22 +404,22 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
         tulis_alquran_tindak_lanjut: "",
         baca_alquran_nilai: "",
         baca_alquran_tindak_lanjut: "",
-        tanggal_buat: "",
+        // tanggal_buat: "",
     });    
 
-    useEffect(() => {
-        if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
-            // console.log("data wali Asuh berubah");
-            setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [waliAsuh, isOpen]);
+    // useEffect(() => {
+    //     if (isOpen && waliAsuh?.id && formData.id_wali_asuh !== waliAsuh.id) {
+    //         // console.log("data wali Asuh berubah");
+    //         setFormData((prev) => ({ ...prev, id_wali_asuh: waliAsuh.id }));
+    //     }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [waliAsuh, isOpen]);
 
     useEffect(() => {
-        setWaliAsuh("");
+        // setWaliAsuh("");
         if (isOpen) {
             setFormData({
-                id_wali_asuh: "",
+                // id_wali_asuh: "",
                 kebahasaan_nilai: "",
                 kebahasaan_tindak_lanjut: "",
                 baca_kitab_kuning_nilai: "",
@@ -431,7 +432,7 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                 tulis_alquran_tindak_lanjut: "",
                 baca_alquran_nilai: "",
                 baca_alquran_tindak_lanjut: "",
-                tanggal_buat: "",
+                // tanggal_buat: "",
             });
         }
     }, [isOpen]);
@@ -568,14 +569,15 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                 as="h3"
                                 className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
                             >
-                                {waliAsuh && "Tambah Data Baru"}
+                                Tambah Data Baru
+                                {/* {waliAsuh && "Tambah Data Baru"} */}
                             </Dialog.Title>
                             <form className="w-full" onSubmit={handleSubmit}>
                                 {/* Header */}
                                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[70vh]">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
-                                            {!waliAsuh && (
+                                            {/* {!waliAsuh && (
                                                 <div className="mb-4 flex justify-center">
                                                     <div className="w-full max-w-2xl text-center">
 
@@ -593,10 +595,10 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                 </div>
 
                                             )}
-                                            <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} />
+                                            <WaliAsuhInfoCard waliAsuh={waliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} /> */}
 
                                             {/* FORM ISI */}
-                                            {waliAsuh && (
+                                            {/* {waliAsuh && ( */}
 
                                             <div className="space-y-4">
                                                 {/* <div>
@@ -619,11 +621,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     </p>
                                                 </div> */}
 
-                                                {/* Kepedulian */}
+                                                {/* Kebahasaan */}
                                                 <div>
                                                     <label htmlFor="kebahasaan_nilai" className="block text-gray-700">Nilai Kebahasaan *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, kebahasaan_nilai: e.target.value })}
                                                         value={formData.kebahasaan_nilai}
                                                         required
@@ -649,11 +651,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
 
-                                                {/* Kebersihan */}
+                                                {/* Baca Kitab Kuning */}
                                                 <div>
                                                     <label htmlFor="baca_kitab_kuning_nilai" className="block text-gray-700">Nilai Baca Kitab Kuning *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, baca_kitab_kuning_nilai: e.target.value })}
                                                         value={formData.baca_kitab_kuning_nilai}
                                                         required
@@ -679,11 +681,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
                                                 
-                                                {/* Kebersihan */}
+                                                {/* Hafalan Tahfidz */}
                                                 <div>
                                                     <label htmlFor="hafalan_tahfidz_nilai" className="block text-gray-700">Nilai Hafalan Tahfidz *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, hafalan_tahfidz_nilai: e.target.value })}
                                                         value={formData.hafalan_tahfidz_nilai}
                                                         required
@@ -709,11 +711,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
 
-                                                {/* Kebersihan */}
+                                                {/* Furudul Ainiyah */}
                                                 <div>
                                                     <label htmlFor="furudul_ainiyah_nilai" className="block text-gray-700">Nilai Furudul Ainiyah *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, furudul_ainiyah_nilai: e.target.value })}
                                                         value={formData.furudul_ainiyah_nilai}
                                                         required
@@ -739,11 +741,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
 
-                                                {/* Kebersihan */}
+                                                {/* Tulis Al-Quran */}
                                                 <div>
                                                     <label htmlFor="tulis_alquran_nilai" className="block text-gray-700">Nilai Tulis Al-Quran *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, tulis_alquran_nilai: e.target.value })}
                                                         value={formData.tulis_alquran_nilai}
                                                         required
@@ -769,11 +771,11 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
 
-                                                {/* Kebersihan */}
+                                                {/* Baca Al-Quran */}
                                                 <div>
                                                     <label htmlFor="baca_alquran_nilai" className="block text-gray-700">Nilai Baca Al-Quran *</label>
                                                     <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuWaliAsuh.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                         onChange={(e) => setFormData({ ...formData, baca_alquran_nilai: e.target.value })}
                                                         value={formData.baca_alquran_nilai}
                                                         required
@@ -799,7 +801,7 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                     />
                                                 </div>
 
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="tanggal_buat" className="block text-gray-700">Tanggal Buat *</label>
                                                     <input
                                                         type="date"
@@ -810,23 +812,23 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
-                                                </div>                                            
+                                                </div>                                             */}
                                             </div>
-                                            )}
+                                            {/* )} */}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Footer Button */}
                                 <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
-                                    {waliAsuh && (
+                                    {/* {waliAsuh && ( */}
                                         <button
                                             type="submit"
                                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                                         >
                                             Simpan
                                         </button>
-                                    )}
+                                    {/* )} */}
                                     <button
                                         type="button"
                                         onClick={onClose}
@@ -840,14 +842,15 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
                     </Transition.Child>
                 </div>
             </Dialog>
-            <ModalSelectWaliAsuh
+            {/* <ModalSelectWaliAsuh
                 isOpen={showSelectWaliAsuh}
                 onClose={() => setShowSelectWaliAsuh(false)}
                 onWaliAsuhSelected={(waliAsuh) => setWaliAsuh(waliAsuh)}
-            />
+            /> */}
         </Transition>
     );
 };
+
 
 export const ModalKeluarProgressFormulir = ({ isOpen, onClose, id, refetchData, endpoint }) => {
     const { clearAuthData } = useLogout();

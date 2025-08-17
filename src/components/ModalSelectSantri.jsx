@@ -6,10 +6,10 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected }) => {
     const [search, setSearch] = useState("");
 
     const {
-         menuSantri
+         menuSantriCatatan
         } = useDropdownSantri();
 
-    const menuSantriFilter = menuSantri.filter((s) =>
+    const menuSantriFilter = menuSantriCatatan.filter((s) =>
         s.value.toLowerCase().includes(search.toLowerCase()) ||
         s.nis?.toString().includes(search)
     );
