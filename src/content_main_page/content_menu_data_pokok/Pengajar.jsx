@@ -256,10 +256,9 @@ const Pengajar = () => {
 
     return (
         <div className="flex-1">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Pengajar</h1>
-                <div className="flex items-center">
-                    <div className="flex items-center space-x-2">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold">Data Pengajar</h1>
+                    <div className="flex flex-wrap items-center gap-2">
                         {/* <button
                             onClick={() => downloadFile(`${API_BASE_URL}export/pengajar`, setExportLoading)}
                             disabled={exportLoading}
@@ -297,13 +296,12 @@ const Pengajar = () => {
                         <button
                             onClick={() => setOpenModalExport(true)}
                             // disabled={exportLoading}
-                            className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                            className={`bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
                         >
                             <FaFileExport />
                             <span>Export</span>
                         </button>
                     </div>
-                </div>
             </div>
             <div className="mb-10 overflow-x-auto">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
