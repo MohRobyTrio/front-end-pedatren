@@ -12,21 +12,25 @@ import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerj
 import ModalDetail from "../../components/modal/ModalDetail";
 // import { downloadFile } from "../../utils/downloadFile";
 // import { API_BASE_URL } from "../../hooks/config";
-import { FaFileExport } from "react-icons/fa";
+import { FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
+import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
+import MultiStepFormPegawai from "../../components/modal/ModalFormPegawai";
+import ModalImport from "../../components/modal/ModalImport";
+import Access from "../../components/Access";
 
 const Pengurus = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
@@ -63,7 +67,7 @@ const Pengurus = () => {
         kecamatan: kecamatanTerpilih
     }), [filters, kabupatenTerpilih, kecamatanTerpilih, negaraTerpilih, provinsiTerpilih]);
 
-    const { pengurus, loadingPengurus, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPengurus, totalPages, currentPage, setCurrentPage } = useFetchPengurus(updatedFilters);
+    const { pengurus, loadingPengurus, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPengurus, totalPages, currentPage, setCurrentPage, fetchData } = useFetchPengurus(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -176,6 +180,15 @@ const Pengurus = () => {
         // { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
 
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
+
+    const handleImportSuccess = () => {
+        fetchData(true)
+    }
+
     return (
         <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
@@ -200,23 +213,40 @@ const Pengurus = () => {
                             </>
                         )}
                     </button> */}
+                    <Access action="tambah">
+                        <button
+                            onClick={() => setShowFormModal(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus />
+                            Tambah
+                        </button>
+                    </Access>
+
+                    <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                    >
+                        <FaFileImport />
+                        Import
+                    </button>
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                                <FaFileExport />
-                                <span>Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
             <div className="mb-10 overflow-x-auto">
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                </div>                
+                </div>
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -254,7 +284,7 @@ const Pengurus = () => {
                                             className="w-20 h-24 object-cover"
                                             src={item.foto_profil}
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = blankProfile;
                                             }}
                                         />
@@ -329,6 +359,27 @@ const Pengurus = () => {
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
+
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data Pegawai"
+                    endpoint="import/pegawai"
+                    templateUrl="/template/kepegawaian_template_pusdatren.xlsx"
+                    templateName="template_pegawai.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
+
+                {showFormModal && (
+                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
                 )}
             </div>
         </div>

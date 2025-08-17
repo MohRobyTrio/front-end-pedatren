@@ -13,22 +13,27 @@ import ModalDetail from "../../components/modal/ModalDetail";
 // import { API_BASE_URL } from "../../hooks/config";
 // import { FaFileExport } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import MultiStepFormPegawai from "../../components/modal/ModalFormPegawai";
+import ModalImport from "../../components/modal/ModalImport";
+import { FaFileImport, FaPlus } from "react-icons/fa";
+import Access from "../../components/Access";
+import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
 
 const WaliKelas = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
     };
-    
+
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wafathidup: "",
@@ -71,7 +76,7 @@ const WaliKelas = () => {
         rombel: rombelTerpilih
     }), [filters, jurusanTerpilih, kabupatenTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih]);
 
-    const { waliKelas, loadingWaliKelas, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliKelas, totalPages, currentPage, setCurrentPage } = useFetchWaliKelas(updatedFilters);
+    const { waliKelas, loadingWaliKelas, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliKelas, totalPages, currentPage, setCurrentPage, fetchData } = useFetchWaliKelas(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -109,12 +114,38 @@ const WaliKelas = () => {
         ]
     };
 
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
+
+    const handleImportSuccess = () => {
+        fetchData(true)
+    }
+
     return (
         <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Wali Kelas</h1>
-                {/* <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
+                    <Access action="tambah">
+                        <button
+                            onClick={() => setShowFormModal(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus />
+                            Tambah
+                        </button>
+                    </Access>
+
                     <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                    >
+                        <FaFileImport />
+                        Import
+                    </button>
+                    {/* <button
                         onClick={() => downloadFile(`${API_BASE_URL}export/walikelas`, setExportLoading)}
                         disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -130,8 +161,8 @@ const WaliKelas = () => {
                                 <span>Export</span>
                             </>
                         )}
-                    </button>
-                </div> */}
+                    </button> */}
+                </div>
             </div>
             <div className="">
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
@@ -177,7 +208,7 @@ const WaliKelas = () => {
                                             className="w-20 h-24 object-cover"
                                             src={item.foto_profil}
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = blankProfile;
                                             }}
                                         />
@@ -224,7 +255,7 @@ const WaliKelas = () => {
                                             <tr key={item.id || index} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => openModal(item)}>
                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.niup || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.nik_or_Passport|| "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nik_or_Passport || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.JenisKelamin || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.lembaga || "-"}</td>
@@ -254,6 +285,27 @@ const WaliKelas = () => {
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
+
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data Pegawai"
+                    endpoint="import/pegawai"
+                    templateUrl="/template/kepegawaian_template_pusdatren.xlsx"
+                    templateName="template_pegawai.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
+
+                {showFormModal && (
+                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
                 )}
             </div>
         </div>

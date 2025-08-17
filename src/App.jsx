@@ -12,9 +12,10 @@ import Formulir from './content_main_page/Formulir';
 import {
     menuAkademikItems,
     menuAlumni,
-    menuDataPokokItems, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
+    menuDataPokokItems, menuHafalan, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
     menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems,
     menuManageItems,
+    menuSholat,
     subKelembagaanItems,
     subMenuPegawai,
     subPelajaranItems,
@@ -31,6 +32,7 @@ import Profile from './content_main_page/Profile';
 import { getRolesString } from './utils/getRolesString';
 import ContainerPesertaDidik from './content_main_page/content_menu_data_pokok/ContainerPesertaDidik';
 import ContainerPegawai from './content_main_page/content_menu_kepegawaian/ContainerPegawai';
+import Transaksi from './content_main_page/content _menu_kepesantrenan/Transaksi';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -203,10 +205,13 @@ function App() {
                             ...subPelajaranItems,
                             ...menuManageItems,
                             ...menuAlumni,
+                            ...menuSholat,
+                            ...menuHafalan
                         ].map((tab) => (
                             <Route key={tab.id} path={tab.link} element={tab.content} />
                         ))}
                         <Route path="/profile" element={<Profile />} />
+                        <Route path="/transaksi" element={<Transaksi />} />
                         {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
                     </Route>
                 </Route>

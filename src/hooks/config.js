@@ -9,13 +9,16 @@ export const rolesWithAccess = {
   keluar: ['admin', 'superadmin'],
   approve: ['biktren', 'kamtib', 'pengasuh'],
   ///Menu///
-  kesantrian: ['admin', 'superadmin', 'ustadz'],
+  kesantrian: ['admin', 'superadmin'],
   kelembagaan: ['admin', 'superadmin'],
   kewilayahan: ['admin', 'superadmin'],
   kewaliasuhan: ["admin", "superadmin"],
   kepegawaian: ["admin", "superadmin"],
   akademik: ['admin', 'superadmin'],
   golongan: ["admin", "superadmin"],
+  hafalan: ["admin", "superadmin", "ustadz"],
+  csholat: ["admin", "superadmin", "ustadz"],
+  belanja: ["admin", "superadmin"],
   ///SubMenu///
   dashboard: ["admin", "superadmin"],
   santri: ["admin", "superadmin"],
@@ -30,6 +33,7 @@ export const rolesWithAccess = {
   sholat: ["admin", "superadmin"],
   jadwal_sholat: ["admin", "superadmin"],
   presensi_sholat: ["admin", "superadmin", "ustadz"],
+  transaksi: ["admin", "superadmin"],
   ///Fitur///
   
   ///Manage///

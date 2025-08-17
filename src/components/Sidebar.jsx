@@ -2,7 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import {
     menuAkademikItems,
     menuAlumni,
+    menuBelanja,
     menuDataPokokItems,
+    menuHafalan,
     menuItems,
     menuKepegawaianItems,
     menuKepesantrenanItems,
@@ -10,6 +12,7 @@ import {
     menuKewilayahanItems,
     // menuMahromItems,
     menuManageItems,
+    menuSholat,
     subKelembagaanItems,
     subPelajaranItems,
     // subPesertaDidik
@@ -56,13 +59,16 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
         kewilayahan: menuKewilayahanItems,
         pelajaran: subPelajaranItems,
         alumni: menuAlumni,
+        csholat: menuSholat,
+        hafalan: menuHafalan,
+        belanja: menuBelanja,
     };
 
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
                 // const isPeserta = item.id == "pesertadidik";
-                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran" || item.id == "kewilayahan" || item.id == "alumni";
+                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran" || item.id == "kewilayahan" || item.id == "alumni" || item.id == "csholat" || item.id == "hafalan" || item.id == "belanja";
                 // const isOpen = isPeserta ? true : dropdowns[item.id];
                 const isOpen = dropdowns[item.id];
 
@@ -95,9 +101,11 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
 
     const SubMenuDropdown = ({ subData, parentId }) => {
         if (!Array.isArray(subData)) return null;
+        
         return (
             <ul className="ml-7 mt-1">
                 {subData.map((subItem) => {
+                    if (subItem.access && !hasAccess(subItem.access)) return null;
                     const isActive = location.pathname === subItem.link;
 
                     // Gunakan warna merah untuk peserta didik, biru untuk lainnya

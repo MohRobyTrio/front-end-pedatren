@@ -103,6 +103,7 @@ const useFetchPresensiSholat = (filters) => {
     } finally {
       setLoadingPresensi(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filters, limit, token]);
 
   useEffect(() => {

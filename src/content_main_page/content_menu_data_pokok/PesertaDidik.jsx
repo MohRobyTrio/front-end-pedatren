@@ -223,7 +223,7 @@ const PesertaDidik = () => {
         <div className="flex-1">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
                 <h1 className="text-xl md:text-2xl font-bold">
-                    {showStatistik ? "Statistik Data Peserta Didik" : "Semua Data"}
+                    {showStatistik ? "Statistik Data Peserta Didik" : "Data Peserta Didik"}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -434,7 +434,7 @@ const PesertaDidik = () => {
                 isOpen={openModalImport}
                 onClose={() => setOpenModalImport(false)}
                 onSuccess={handleImportSuccess}
-                title="Import Data Santri"
+                title="Import Data"
                 endpoint="import/santri"
                 templateUrl="/template/pesertadidik_template_pusdatren.xlsx"
                 templateName="template_santri.xlsx"

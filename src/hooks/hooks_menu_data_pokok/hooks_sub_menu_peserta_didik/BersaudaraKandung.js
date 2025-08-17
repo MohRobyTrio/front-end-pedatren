@@ -32,7 +32,7 @@ const useFetchPesertaDidikBersaudara = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/pesertadidik-bersaudara?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -62,7 +62,7 @@ const useFetchPesertaDidikBersaudara = (filters) => {
         if (filters?.rombel && filters.rombel !== "Semua Rombel") url += `&rombel=${encodeURIComponent(filters.rombel)}`;
         if (filters?.statusSaudara && filters.statusSaudara !== "Status Saudara") url += `&status_saudara=${encodeURIComponent(filters.statusSaudara)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -132,7 +132,8 @@ const useFetchPesertaDidikBersaudara = (filters) => {
         totalDataBersaudara,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

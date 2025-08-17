@@ -51,9 +51,6 @@ import Kamar from "../content_main_page/content_menu_kewilayahan/Kamar";
 import Jurusan from "../content_main_page/content_menu_akademik/Jurusan";
 import Kelas from "../content_main_page/content_menu_akademik/Kelas";
 import Rombel from "../content_main_page/content_menu_akademik/Rombel";
-import JamPelajaran from "../content_main_page/content_menu_akademik/JamPelajaran";
-import JadwalPelajaran from "../content_main_page/content_menu_akademik/JadwalPelajaran";
-import MataPelajaran from "../content_main_page/content_menu_akademik/MataPelajaran";
 import TahunAjaran from "../content_main_page/content_menu_akademik/TahunAjaran";
 import Semester from "../content_main_page/content_menu_akademik/Semester";
 import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
@@ -73,6 +70,7 @@ import Pengurus from "../content_main_page/content_menu_data_pokok/Pengurus";
 import Karyawan from "../content_main_page/content_menu_data_pokok/Karyawan";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import ContainerPegawai from "../content_main_page/content_menu_kepegawaian/ContainerPegawai";
+import Transaksi from "../content_main_page/content _menu_kepesantrenan/Transaksi";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -84,9 +82,8 @@ export const menuDataPokokItems = [
     { id: "cpesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <ContainerPesertaDidik />, access: "santri" },
     // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
     // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
-    { id: "kitab", icon: "fa-book", text: "Kitab", link: "/kitab", content: <Kitab />, access: "kitab" },
-    { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap />, access: "tahfidz" },
-    { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData />, access: "nadhoman" },
+    // { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap />, access: "tahfidz" },
+    // { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData />, access: "nadhoman" },
     { id: "karturfid", icon: "fa-id-card", text: "Kartu RFID", link: "/karturfid", content: <KartuRFID />, access: "karturfid" },
     { id: "kelembagaan", icon: "fa-building-columns", text: "Kelembagaan", link: "/kelembagaan", content: <Lembaga />, access: "kelembagaan" },
     { id: "kewilayahan", icon: "fa-map", text: "Kewilayahan", link: "/kewilayahan", content: <Wilayah />, access: "kewilayahan" },
@@ -94,8 +91,14 @@ export const menuDataPokokItems = [
     // { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
 
+export const menuHafalan = [
+    { id: "kitab", icon: "fa-book", text: "Kitab", link: "/hafalan/kitab", content: <Kitab />, access: "kitab" },
+    { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/hafalan/tahfidz", content: <TahfidzRekap />, access: "tahfidz" },
+    { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/hafalan/nadhoman", content: <NadhomanAllData />, access: "nadhoman" },
+]
+
 export const subMenuPegawai = [
-    { id: "pegawai", icon: "fa-briefcase", text: "Semua", link: "/pegawai", content: <Pegawai /> },
+    { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <Pegawai /> },
     { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pegawai/pengajar", content: <Pengajar /> },
     { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pegawai/pengurus", content: <Pengurus /> },
     { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/pegawai/karyawan", content: <Karyawan /> },
@@ -117,11 +120,25 @@ export const menuKepesantrenanItems = [
     // { id: "presensipesantren", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pesantren", content: <PresensiPesantren /> },
     // { id: "reservasimakan", icon: "fa-cutlery", text: "Reservasi Makan", link: "/reservasi-makan", content: <ReservasiMakan /> },
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung />, access: "kunjungan" },
-    { id: "sholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat />, access: "sholat" },
-    { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat />, access: "jadwal_sholat" },
-    { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat />, access: "presensi_sholat" },
+    { id: "hafalan", icon: "fa-book", text: "Hafalan", link: "/hafalan", content: <Kitab />, access: "hafalan" },
+    { id: "csholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat />, access: "csholat" },
+    { id: "belanja", icon: "fa-shopping-cart", text: "Belanja", link: "/belanja/transaksi", content: <Transaksi />, access: "belanja" },
+    // { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat />, access: "jadwal_sholat" },
+    // { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat />, access: "presensi_sholat" },
     { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam />, access: "khadam" },
 ];
+
+export const menuBelanja = [
+    // { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/belanja/outlet",},
+    // { id: "kategori", icon: "fa-shopping-cart", text: "Kategori", link: "/belanja/kategori",},
+    { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/belanja/transaksi", content: <Transaksi />, access: "transaksi" },
+]
+
+export const menuSholat = [
+    { id: "sholat", icon: "fa-mosque", text: "Nama Sholat", link: "/sholat", content: <Sholat />, access: "sholat" },
+    { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/sholat/jadwal-sholat", content: <JadwalSholat />, access: "jadwal_sholat" },
+    { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/sholat/presensi-sholat", content: <PresensiSholat />, access: "presensi_sholat" },
+]
 
 export const menuKepegawaianItems = [
     { id: "cpegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <ContainerPegawai /> },
@@ -177,7 +194,7 @@ export const menuAkademikItems =[
     // { id: "presensisantri", icon: "fa-calendar-check", text: "Presensi Santri", link: "/presensi-santri", content: <PresensiSantri /> }
     // { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
     // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
-    { id: "pelajaran", icon: "fa-book-open", text: "Pelajaran", link: "/pelajaran", content: <MataPelajaran /> },
+    // { id: "pelajaran", icon: "fa-book-open", text: "Pelajaran", link: "/pelajaran", content: <MataPelajaran /> },
     { id: "alumni", icon: "fa-user-graduate", text: "Alumni", link: "/alumni", content: <Alumni /> },
 ];
 
@@ -194,9 +211,9 @@ export const subKelembagaanItems = [
 ];
 
 export const subPelajaranItems = [
-    { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/pelajaran/mata-pelajaran", content: <MataPelajaran /> },
-    { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/pelajaran/jam-pelajaran", content: <JamPelajaran /> },
-    { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/pelajaran/jadwal-pelajaran", content: <JadwalPelajaran /> },
+    // { id: "matapelajaran", icon: "fa-book-open", text: "Mata Pelajaran", link: "/pelajaran/mata-pelajaran", content: <MataPelajaran /> },
+    // { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/pelajaran/jam-pelajaran", content: <JamPelajaran /> },
+    // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/pelajaran/jadwal-pelajaran", content: <JadwalPelajaran /> },
 ];
 
 export const tabsFormulir = [
@@ -218,7 +235,7 @@ export const tabsFormulir = [
 ];
 
 export const subPesertaDidik = [
-    { id: "pesertadidik", text: "Semua", link: "/peserta-didik", content: <PesertaDidik /> },
+    { id: "pesertadidik", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik /> },
     { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri /> },
     { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar /> },
     { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <SantriNonDomisili /> },

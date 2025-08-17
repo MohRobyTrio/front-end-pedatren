@@ -31,7 +31,7 @@ const useFetchPengajar = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/pengajar?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -55,7 +55,7 @@ const useFetchPengajar = (filters) => {
         if (filters?.umur) url += `&umur=${encodeURIComponent(filters.umur)}`;
         if (filters?.totalMateriAjar) url += `&materi_ajar=${encodeURIComponent(filters.totalMateriAjar)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -127,7 +127,8 @@ const useFetchPengajar = (filters) => {
         totalDataPengajar,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

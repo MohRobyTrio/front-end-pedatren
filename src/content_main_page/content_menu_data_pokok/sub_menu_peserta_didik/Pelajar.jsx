@@ -13,22 +13,27 @@ import ModalDetail from "../../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../../components/modal/ModalExport";
-import { FaFileExport } from "react-icons/fa";
+import { FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
+import ModalImport from "../../../components/modal/ModalImport";
+import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik";
+import Access from "../../../components/Access";
+import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik";
+import { jenisBerkasList } from "../../../data/menuData";
 
 const Pelajar = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -85,7 +90,7 @@ const Pelajar = () => {
     }), [blokTerpilih, filters, jurusanTerpilih, kabupatenTerpilih, kamarTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih, wilayahTerpilih]);
 
     // const { pesertaDidik, loadingPesertaDidik, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPesertaDidik, totalPages, currentPage, setCurrentPage } = useFetchPeserta(updatedFilters);
-    const { pelajar, loadingPelajar, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPelajar, totalPages, currentPage, setCurrentPage } = useFetchPelajar(updatedFilters);
+    const { pelajar, loadingPelajar, searchTerm, setSearchTerm, error, limit, setLimit, totalDataPelajar, totalPages, currentPage, setCurrentPage, fetchData } = useFetchPelajar(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -205,6 +210,15 @@ const Pelajar = () => {
         { label: "Ayah Kandung", value: "ayah_kandung" }
     ];
 
+    const handleImportSuccess = () => {
+        fetchData(true)
+    }
+
+    const [showFormModal, setShowFormModal] = useState(false)
+    const [openModalImport, setOpenModalImport] = useState(false)
+
+    const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
+
     return (
         <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
@@ -214,6 +228,21 @@ const Pelajar = () => {
                     <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>
                 </div> */}
                 <div className="flex items-center space-x-2">
+                    <Access action="tambah">
+                        <button
+                            onClick={() => setShowFormModal(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus /> Tambah
+                        </button>
+                    </Access>
+
+                    <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                    >
+                        <FaFileImport /> Import
+                    </button>
                     <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
@@ -327,7 +356,7 @@ const Pelajar = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pelajar" /> 
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/pelajar" />
 
                 {isModalOpen && (
                     <ModalDetail
@@ -340,6 +369,27 @@ const Pelajar = () => {
 
                 {totalPages > 1 && (
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
+                )}
+
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data"
+                    endpoint="import/santri"
+                    templateUrl="/template/pesertadidik_template_pusdatren.xlsx"
+                    templateName="template_santri.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
+
+                {showFormModal && (
+                    <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
                 )}
             </div>
         </div>

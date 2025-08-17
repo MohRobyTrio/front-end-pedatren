@@ -31,7 +31,7 @@ const useFetchSantriNonDomisili = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/santri-nondomisili?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -65,7 +65,7 @@ const useFetchSantriNonDomisili = (filters) => {
         //     }
         // });
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -137,7 +137,8 @@ const useFetchSantriNonDomisili = (filters) => {
         totalDataSantriNonDomisili,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

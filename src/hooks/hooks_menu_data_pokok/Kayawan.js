@@ -32,7 +32,7 @@ const useFetchKaryawan = (filters) => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/karyawan?limit=${limit}`;
         if (currentPage > 1) {
             url += `&page=${currentPage}`;
@@ -53,7 +53,7 @@ const useFetchKaryawan = (filters) => {
         if (filters?.jenisJabatan) url += `&jabatan=${encodeURIComponent(filters.jenisJabatan)}`;
         if (filters?.golonganJabatan && filters.golonganJabatan !== "Pilih Golongan Jabatan") url += `&golongan=${encodeURIComponent(filters.golonganJabatan)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -125,7 +125,8 @@ const useFetchKaryawan = (filters) => {
         totalDataKaryawan,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     };
 };
 

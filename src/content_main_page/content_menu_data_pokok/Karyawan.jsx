@@ -12,21 +12,25 @@ import useDropdownGolonganJabatan from '../../hooks/hook_dropdown/DropdownGolong
 import ModalDetail from '../../components/modal/ModalDetail';
 // import { downloadFile } from '../../utils/downloadFile';
 // import { API_BASE_URL } from '../../hooks/config';
-import { FaFileExport } from 'react-icons/fa';
+import { FaFileExport, FaFileImport, FaPlus } from 'react-icons/fa';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
+import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
+import ModalImport from '../../components/modal/ModalImport';
+import Access from '../../components/Access';
+import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 
 const Karyawan = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
@@ -65,7 +69,7 @@ const Karyawan = () => {
         lembaga: lembagaTerpilih,
     }), [filters, kabupatenTerpilih, kecamatanTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih]);
 
-    const { karyawan, loadingKaryawan, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKaryawan, totalPages, currentPage, setCurrentPage } = useFetchKaryawan(updatedFilters);
+    const { karyawan, loadingKaryawan, searchTerm, setSearchTerm, error, limit, setLimit, totalDataKaryawan, totalPages, currentPage, setCurrentPage, fetchData } = useFetchKaryawan(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -173,6 +177,15 @@ const Karyawan = () => {
         // { label: "Ibu Kandung", value: "ibu_kandung" }
     ];
 
+    const [openModalImport, setOpenModalImport] = useState(false)
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormPegawai(() => setShowFormModal(false), fetchData);
+
+    const handleImportSuccess = () => {
+        fetchData(true)
+    }
+
     return (
         <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
@@ -202,13 +215,30 @@ const Karyawan = () => {
                             </>
                         )}
                     </button> */}
+                        <Access action="tambah">
+                            <button
+                                onClick={() => setShowFormModal(true)}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                            >
+                                <FaPlus />
+                                Tambah
+                            </button>
+                        </Access>
+
+                        <button
+                            onClick={() => setOpenModalImport(true)}
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaFileImport />
+                            Import
+                        </button>
                         <button
                             onClick={() => setOpenModalExport(true)}
                             // disabled={exportLoading}
                             className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                         >
-                                    <FaFileExport />
-                                    <span>Export</span>
+                            <FaFileExport />
+                            <span>Export</span>
                         </button>
                     </div>
                 </div>
@@ -258,7 +288,7 @@ const Karyawan = () => {
                                             className="w-20 h-24 object-cover"
                                             src={item.foto_profil}
                                             onError={(e) => {
-                                                e.target.onerror = null; 
+                                                e.target.onerror = null;
                                                 e.target.src = blankProfile;
                                             }}
                                         />
@@ -334,7 +364,7 @@ const Karyawan = () => {
                 )}
 
                 <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/karyawan" />
-                
+
                 {isModalOpen && (
                     <ModalDetail
                         title="Karyawan"
@@ -348,6 +378,26 @@ const Karyawan = () => {
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
 
+                <ModalImport
+                    isOpen={openModalImport}
+                    onClose={() => setOpenModalImport(false)}
+                    onSuccess={handleImportSuccess}
+                    title="Import Data Pegawai"
+                    endpoint="import/pegawai"
+                    templateUrl="/template/kepegawaian_template_pusdatren.xlsx"
+                    templateName="template_pegawai.xlsx"
+                    instructions={[
+                        "Download template terlebih dahulu",
+                        "Isi data sesuai format template (header di baris 2)",
+                        "Jangan mengubah nama kolom/header",
+                        "Pastikan format tanggal menggunakan YYYY-MM-DD",
+                        "Upload file yang sudah diisi dan klik 'Import Data'",
+                    ]}
+                />
+
+                {showFormModal && (
+                    <MultiStepFormPegawai isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
+                )}
             </div>
         </div>
     )

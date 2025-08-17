@@ -40,8 +40,8 @@ const LoginPage = () => {
                 .split(",")                   // ubah jadi array
                 .map(role => role.trim().toLowerCase());
             if (lowerRoles.includes("ustadz")) {
-                sessionStorage.setItem("dataPokok", "true");
-                return navigate("/tahfidz", { replace: true });
+                sessionStorage.setItem("kepesantrenan", "true");
+                return navigate("/hafalan/tahfidz", { replace: true });
             } else if (lowerRoles.includes("biktren")) {
                 sessionStorage.setItem("kepesantrenan", "true");
                 return navigate("/perizinan", { replace: true });

@@ -29,7 +29,7 @@ const useFetchWaliKelas = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (force = false) => {
         let url = `${API_BASE_URL}data-pokok/walikelas?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
@@ -46,7 +46,7 @@ const useFetchWaliKelas = (filters) => {
         if (filters?.genderRombel) url += `&gender_rombel=${encodeURIComponent(filters.genderRombel)}`;
         if (filters?.phoneNumber) url += `&phone_number=${encodeURIComponent(filters.phoneNumber)}`;
 
-        if (lastRequest.current === url) {
+        if (!force && lastRequest.current === url) {
             console.log("Skip Fetch: URL sama dengan request sebelumnya");
             return;
         }
@@ -117,6 +117,7 @@ const useFetchWaliKelas = (filters) => {
         totalPages,
         currentPage,
         setCurrentPage,
+        fetchData
     };
 };
 
