@@ -13,12 +13,13 @@ import ModalDetail from "../../../components/modal/ModalDetail";
 import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../../components/modal/ModalExport";
-import { FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
 import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik";
 import ModalImport from "../../../components/modal/ModalImport";
 import Access from "../../../components/Access";
 import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik";
 import { jenisBerkasList } from "../../../data/menuData";
+import { Link } from "react-router-dom";
 
 const BersaudaraKandung = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -139,43 +140,37 @@ const BersaudaraKandung = () => {
         }),
     }
     const filter5 = {
-        // Sudah
         wargaPesantren: [
             { label: "Warga Pesantren", value: "" },
             { label: "Memiliki NIUP", value: "memiliki niup" },
-            { label: "Tanpa NIUP", value: "tanpa niup" }
+            { label: "Tanpa NIUP", value: "tanpa niup" },
         ],
-        // Sudah
-        pemberkasan: [
-            { label: "Pemberkasan", value: "" },
-            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Tidak Ada KK", value: "tidak ada kk" },
-            { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
-            { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
-        ],
-        // Sudah
         urutBerdasarkan: [
             { label: "Urut Berdasarkan", value: "" },
             { label: "Nama", value: "nama" },
             { label: "NIUP", value: "niup" },
-            { label: "Jenis Kelamin", value: "jenis_kelamin" }
+            { label: "Angkatan", value: "angkatan" },
+            { label: "Jenis Kelamin", value: "jenis kelamin" },
+            { label: "Tempat Lahir", value: "tempat lahir" },
         ],
-        // Sudah
         urutSecara: [
             { label: "Urut Secara", value: "" },
             { label: "A-Z / 0-9 (Ascending)", value: "asc" },
-            { label: "Z-A / 9-0 (Descending)", value: "desc" }
-        ]
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
+        ],
+        // phoneNumber: [
+        //     { label: "Phone Number", value: "" },
+        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" },
+        // ],
     }
     const filter6 = {
-        // Sudah
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        ],
+        // // Sudah
+        // smartcard: [
+        //     { label: "Smartcard", value: "" },
+        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        // ],
         // Sudah
         phoneNumber: [
             { label: "Phone Number", value: "" },
@@ -321,6 +316,7 @@ const BersaudaraKandung = () => {
                                         <th className="px-3 py-2 border-b">Ayah Kandung</th>
                                         <th className="px-3 py-2 border-b">Tgl Update Bio</th>
                                         <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -349,6 +345,18 @@ const BersaudaraKandung = () => {
                                                 <td className="px-3 py-2 border-b">{item.ayah_kandung || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}

@@ -44,7 +44,7 @@ const PesertaDidik = () => {
     const [filters, setFilters] = useState({
         phoneNumber: "",
         wargaPesantren: "",
-        status: "santri",
+        status: "",
         jenisKelamin: "",
         smartcard: "",
         pemberkasan: "",
@@ -148,13 +148,13 @@ const PesertaDidik = () => {
             { label: "Perempuan", value: "perempuan" },
         ],
         status: [
-            // { label: "Semua Status", value: "" },
+            { label: "Semua Status", value: "" },
             { label: "Santri", value: "santri" },
             { label: "Santri Non Pelajar", value: "santri non pelajar" },
             { label: "Pelajar", value: "pelajar" },
             { label: "Pelajar Non Santri", value: "pelajar non santri" },
-            { label: "Santri-Pelajar/Pelajar-Santri", value: "" },
-            { label: "Santri Sekaligus Pelajar", value: "santri-pelajar" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" },
+            // { label: "Santri Sekaligus Pelajar", value: "" },
         ],
         angkatanPelajar: generateDropdownTahun({
             placeholder: "Semua Angkatan Pelajar",

@@ -15,9 +15,10 @@ import ModalDetail from "../../components/modal/ModalDetail";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import MultiStepFormPegawai from "../../components/modal/ModalFormPegawai";
 import ModalImport from "../../components/modal/ModalImport";
-import { FaFileImport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileImport, FaPlus } from "react-icons/fa";
 import Access from "../../components/Access";
 import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
+import { Link } from "react-router-dom";
 
 const WaliKelas = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -104,15 +105,16 @@ const WaliKelas = () => {
             { label: "Putra", value: "putra" },
             { label: "Putri", value: "putri" }
         ],
-    }
-
-    const filter4 = {
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
-    };
+    }
+
+    // const filter4 = {
+        
+    // };
 
     const [openModalImport, setOpenModalImport] = useState(false)
     const [showFormModal, setShowFormModal] = useState(false);
@@ -165,11 +167,11 @@ const WaliKelas = () => {
                 </div>
             </div>
             <div className="">
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
@@ -235,8 +237,9 @@ const WaliKelas = () => {
                                         <th className="px-3 py-2 border-b">Kelas Rombel</th>
                                         <th className="px-3 py-2 border-b">Gender Rombel</th>
                                         <th className="px-3 py-2 border-b">Jumlah Murid</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Wali Kelas</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Wali Kelas</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Update Wali Kelas</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input Wali Kelas</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -262,8 +265,20 @@ const WaliKelas = () => {
                                                 <td className="px-3 py-2 border-b">{item.Kelas || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.GenderRombel || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.JumlahMurid || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}

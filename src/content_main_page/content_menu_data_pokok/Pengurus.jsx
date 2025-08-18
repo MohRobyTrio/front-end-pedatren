@@ -12,13 +12,14 @@ import useDropdownSatuanKerja from "../../hooks/hook_dropdown/DropdownSatuanKerj
 import ModalDetail from "../../components/modal/ModalDetail";
 // import { downloadFile } from "../../utils/downloadFile";
 // import { API_BASE_URL } from "../../hooks/config";
-import { FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
+import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
 import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
 import MultiStepFormPegawai from "../../components/modal/ModalFormPegawai";
 import ModalImport from "../../components/modal/ModalImport";
 import Access from "../../components/Access";
+import { Link } from "react-router-dom";
 
 const Pengurus = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -107,21 +108,10 @@ const Pengurus = () => {
         golonganJabatan: menuGolonganJabatan
     }
     const filter5 = {
-        // Sudah
         wargaPesantren: [
             { label: "Warga Pesantren", value: "" },
             { label: "Memiliki NIUP", value: "memiliki niup" },
             { label: "Tanpa NIUP", value: "tanpa niup" }
-        ],
-        // Sudah
-        pemberkasan: [
-            { label: "Pemberkasan", value: "" },
-            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Memiliki KK", value: "memiliki kk" },
-            { label: "Memiliki Akta Kelahiran", value: "memiliki akta kelahiran" },
-            { label: "Memiliki Ijazah", value: "memiliki ijazah" }
         ],
         umur: [
             { label: "Semua Umur", value: "" },
@@ -129,25 +119,30 @@ const Pengurus = () => {
             { label: "20-29 Tahun", value: "20-29" },
             { label: "30-39 Tahun", value: "30-39" },
             { label: "40-49 Tahun", value: "40-49" },
-            { label: "50-59 Tahun", value: "50-59" },
+            { label: "50-59 Tahun", value: "50-49" },
             { label: "60-65 Tahun", value: "60-65" },
             { label: "> 65 Tahun", value: "65-200" }
-        ]
-    }
-    const filter6 = {
-        // Sudah
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
-        // Sudah
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
-    };
+    }
+    // const filter6 = {
+    //     // Sudah
+    //     smartcard: [
+    //         { label: "Smartcard", value: "" },
+    //         { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //         { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    //     ],
+    //     // Sudah
+    //     phoneNumber: [
+    //         { label: "Phone Number", value: "" },
+    //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //         { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    //     ]
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
@@ -245,7 +240,7 @@ const Pengurus = () => {
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter6} onChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
@@ -311,6 +306,7 @@ const Pengurus = () => {
                                         <th className="px-3 py-2 border-b">Jenis</th>
                                         <th className="px-3 py-2 border-b">Golongan</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -336,6 +332,18 @@ const Pengurus = () => {
                                                 <td className="px-3 py-2 border-b">{item.jenis_jabatan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}

@@ -11,7 +11,7 @@ import DropdownGolongan from '../../hooks/hook_dropdown/DropdownGolongan';
 import DropdownLembaga from '../../hooks/hook_dropdown/DropdownLembaga';
 import ModalDetail from '../../components/modal/ModalDetail';
 // import { downloadFile } from '../../utils/downloadFile';
-import { FaFileExport, FaFileImport, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaFileExport, FaFileImport, FaPlus } from 'react-icons/fa';
 // import { API_BASE_URL } from '../../hooks/config';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
@@ -19,6 +19,7 @@ import Access from '../../components/Access';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import ModalImport from '../../components/modal/ModalImport';
+import { Link } from 'react-router-dom';
 
 
 const Pengajar = () => {
@@ -173,21 +174,10 @@ const Pengajar = () => {
     }
 
     const filter4 = {
-        // Sudah
         wargaPesantren: [
             { label: "Warga Pesantren", value: "" },
             { label: "Memiliki NIUP", value: "memiliki niup" },
             { label: "Tanpa NIUP", value: "tanpa niup" }
-        ],
-        // Sudah
-        pemberkasan: [
-            { label: "Pemberkasan", value: "" },
-            { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-            { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-            { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-            { label: "Memiliki KK", value: "memiliki kk" },
-            { label: "Memiliki Akta Kelahiran", value: "memiliki akta kelahiran" },
-            { label: "Memiliki Ijazah", value: "memiliki ijazah" }
         ],
         umur: [
             { label: "Semua Umur", value: "" },
@@ -198,23 +188,28 @@ const Pengajar = () => {
             { label: "50-59 Tahun", value: "50-49" },
             { label: "60-65 Tahun", value: "60-65" },
             { label: "> 65 Tahun", value: "65-200" }
-        ]
-    }
-
-    const filter5 = {
-        // Sudah
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
         ],
-        // Sudah
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
-    };
+    }
+
+    // const filter5 = {
+    //     // Sudah
+    //     smartcard: [
+    //         { label: "Smartcard", value: "" },
+    //         { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //         { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    //     ],
+    //     // Sudah
+    //     phoneNumber: [
+    //         { label: "Phone Number", value: "" },
+    //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //         { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    //     ]
+    // };
 
     const fieldsExports = [
         { label: "No. KK", value: "no_kk" },
@@ -258,8 +253,8 @@ const Pengajar = () => {
         <div className="flex-1">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
                 <h1 className="text-xl md:text-2xl font-bold">Data Pengajar</h1>
-                    <div className="flex flex-wrap items-center gap-2">
-                        {/* <button
+                <div className="flex flex-wrap items-center gap-2">
+                    {/* <button
                             onClick={() => downloadFile(`${API_BASE_URL}export/pengajar`, setExportLoading)}
                             disabled={exportLoading}
                             className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer ${exportLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
@@ -276,42 +271,42 @@ const Pengajar = () => {
                                 </>
                             )}
                         </button> */}
-                        <Access action="tambah">
-                            <button
-                                onClick={() => setShowFormModal(true)}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                            >
-                                <FaPlus />
-                                Tambah
-                            </button>
-                        </Access>
+                    <Access action="tambah">
+                        <button
+                            onClick={() => setShowFormModal(true)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus />
+                            Tambah
+                        </button>
+                    </Access>
 
-                        <button
-                            onClick={() => setOpenModalImport(true)}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
-                        >
-                            <FaFileImport />
-                            Import
-                        </button>
-                        <button
-                            onClick={() => setOpenModalExport(true)}
-                            // disabled={exportLoading}
-                            className={`bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
-                        >
-                            <FaFileExport />
-                            <span>Export</span>
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => setOpenModalImport(true)}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                    >
+                        <FaFileImport />
+                        Import
+                    </button>
+                    <button
+                        onClick={() => setOpenModalExport(true)}
+                        // disabled={exportLoading}
+                        className={`bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base`}
+                    >
+                        <FaFileExport />
+                        <span>Export</span>
+                    </button>
+                </div>
             </div>
             <div className="mb-10 overflow-x-auto">
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     {/* <Filters showFilters={showFilters} filterOptions={filterGolongan} onChange={handleFilterChangeGolongan} selectedFilters={selectedGolongan} /> */}
                     {/* <Filters showFilters={showFilters} filterOptions={filter2} onChange={(newFilters) => { setFilters((prev) => ({ ...prev, ...newFilters })); if (newFilters.kategori) setSelectedKategori(newFilters.kategori); }} selectedFilters={filters} /> */}
                     <Filters showFilters={showFilters} filterOptions={filter2} onChange={handleFilterChange} selectedFilters={selectedFilters} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
                     <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter5} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
                 <SearchBar
                     searchTerm={searchTerm}
@@ -378,8 +373,9 @@ const Pengajar = () => {
                                         <th className="px-3 py-2 border-b">Masa Kerja</th>
                                         <th className="px-3 py-2 border-b">Golongan</th>
                                         <th className="px-3 py-2 border-b">Pendidikan Terakhir</th>
-                                        <th className="px-3 py-2 border-b">Tgl Update Bio</th>
-                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b">Tgl Update Bio</th>
+                                        <th className="px-3 py-2 border-b">Tgl Input Bio</th> */}
 
                                     </tr>
                                 </thead>
@@ -407,8 +403,20 @@ const Pengajar = () => {
                                                 <td className="px-3 py-2 border-b">{item.masa_kerja || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.golongan || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
-                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}
