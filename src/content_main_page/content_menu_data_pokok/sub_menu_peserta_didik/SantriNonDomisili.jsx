@@ -217,7 +217,7 @@ const SantriNonDomisili = () => {
     return (
         <div className="flex-1">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-                <h1 className="text-xl md:text-2xl font-bold">Data Santri-Non-Domisili</h1>
+                <h1 className="text-xl md:text-2xl font-bold">Data Non-Domisili</h1>
                 {/* <div className="flex items-center space-x-2">
                     <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer">Export</button>
                     <button className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer">Statistik</button>

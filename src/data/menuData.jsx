@@ -238,7 +238,7 @@ export const subPesertaDidik = [
     { id: "pesertadidik", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik /> },
     { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri /> },
     { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar /> },
-    { id: "santri-non-domisili", text: "Santri-Non-Domisili", link: "/peserta-didik/santri-non-domisili", content: <SantriNonDomisili /> },
+    { id: "santri-non-domisili", text: "Non-Domisili", link: "/peserta-didik/non-domisili", content: <SantriNonDomisili /> },
     { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung /> }
 ];
 
