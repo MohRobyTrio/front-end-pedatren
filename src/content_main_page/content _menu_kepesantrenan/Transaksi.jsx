@@ -33,6 +33,7 @@ import {
 } from "react-icons/fi"
 import useFetchTransaksi from "../../hooks/hook_menu_kepesantrenan/belanja/Transaksi"
 import Pagination from "../../components/Pagination"
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 
 const Transaksi = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
@@ -46,6 +47,18 @@ const Transaksi = () => {
 
     const { dataTransaksi, loadingTransaksi, totalData, fetchData, totalPembayaran, currentPage, setCurrentPage, totalPages } = useFetchTransaksi(filters)
 
+    useEffect(() => {
+        const savedView = sessionStorage.getItem("currentViewTransaksi")
+        if (savedView) {
+            setCurrentView(savedView)
+        }
+    }, [])
+
+    // Simpan state ke sessionStorage setiap kali currentView berubah
+    const handleSetView = (view) => {
+        setCurrentView(view)
+        sessionStorage.setItem("currentViewTransaksi", view)
+    }
     // const dummyTransaksi = [
     //     {
     //         transaksi_id: 1,
@@ -192,7 +205,7 @@ const Transaksi = () => {
                         {/* Action Buttons */}
                         <div className="flex space-x-2">
                             <button
-                                onClick={() => setCurrentView("scan")}
+                                onClick={() => handleSetView("scan")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "scan" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                             >
@@ -200,7 +213,7 @@ const Transaksi = () => {
                                 Scan Pembayaran
                             </button>
                             <button
-                                onClick={() => setCurrentView("list")}
+                                onClick={() => handleSetView("list")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "list" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                             >
@@ -443,7 +456,7 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
             )}
 
             {/* Transaction Table */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="bg-white rounded-xl shadow-lg">
                 <div className="px-6 py-4 border-b border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-900">Riwayat Transaksi</h3>
                 </div>
@@ -454,7 +467,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                     </div>
                 ) : (
                     <>
-                        <div className="overflow-x-auto">
+                            <DoubleScrollbarTable>
+                        {/* <div className="overflow-x-auto"> */}
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
@@ -572,7 +586,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                     )}
                                 </tbody>
                             </table>
-                        </div>
+                        {/* </div> */}
+                            </DoubleScrollbarTable>
                         <div className="pb-6 pr-6">
                             <Pagination
                                 currentPage={currentPage}

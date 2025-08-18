@@ -29,7 +29,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                         className={`flex items-center justify-center px-4 h-10 border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 
                             ${currentPage === 1 ? "opacity-50 cursor-not-allowed text-gray-500" : "bg-white text-gray-500"}`}
                     >
-                        <span className="sr-only">Previous</span>
+                        {/* <span className="sr-only">Previous</span> */}
                         <svg className="w-3 h-3 rtl:rotate-180" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 1 1 5l4 4" />
                         </svg>
@@ -59,7 +59,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                         className={`flex items-center justify-center px-4 h-10 border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 
                             ${currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : "bg-white text-gray-500"}`}
                     >
-                        <span className="sr-only">Next</span>
+                        {/* <span className="sr-only">Next</span> */}
                         <svg className="w-3 h-3 rtl:rotate-180" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m1 9 4-4-4-4" />
                         </svg>
