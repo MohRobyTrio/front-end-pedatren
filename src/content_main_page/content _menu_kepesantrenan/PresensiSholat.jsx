@@ -910,7 +910,7 @@ const Scan = ({ refetch }) => {
 
         switch (mode) {
             case "manual":
-                setStatus("Masukkan NIS santri...")
+                setStatus("Pilih santri...")
                 break
             case "nfc":
                 setStatus("Tempelkan kartu NFC...")
