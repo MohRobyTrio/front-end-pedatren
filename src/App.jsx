@@ -12,6 +12,7 @@ import Formulir from './content_main_page/Formulir';
 import {
     menuAkademikItems,
     menuAlumni,
+    menuBelanja,
     menuDataPokokItems, menuHafalan, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
     menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems,
     menuManageItems,
@@ -206,7 +207,8 @@ function App() {
                             ...menuManageItems,
                             ...menuAlumni,
                             ...menuSholat,
-                            ...menuHafalan
+                            ...menuHafalan,
+                            ...menuBelanja
                         ].map((tab) => (
                             <Route key={tab.id} path={tab.link} element={tab.content} />
                         ))}

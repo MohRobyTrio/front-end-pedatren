@@ -34,6 +34,7 @@ export const rolesWithAccess = {
   jadwal_sholat: ['supervisor', 'superadmin'],
   presensi_sholat: ['supervisor', 'superadmin', 'ustadz'],
   transaksi: ['supervisor', 'superadmin'],
+  kategori: ['supervisor', 'superadmin'],
   ///Fitur///
   
   ///Manage///

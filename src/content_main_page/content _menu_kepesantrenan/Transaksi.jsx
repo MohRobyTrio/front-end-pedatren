@@ -31,7 +31,7 @@ import {
     FiShoppingBag,
     FiArrowRight,
 } from "react-icons/fi"
-import useFetchTransaksi from "../../hooks/hooks_menu_data_pokok/Transaksi"
+import useFetchTransaksi from "../../hooks/hook_menu_kepesantrenan/belanja/Transaksi"
 
 const Transaksi = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
