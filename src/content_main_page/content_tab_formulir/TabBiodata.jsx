@@ -254,7 +254,7 @@ const TabBiodata = () => {
                 kabupaten: biodata.kabupaten_id || '',
                 kecamatan: biodata.kecamatan_id || '',
 
-                smartcard: biodata.smartcard || '',
+                // smartcard: biodata.smartcard || '',
                 status: biodata.status ? '1' : '0',
             };
 
@@ -1378,7 +1378,7 @@ const TabBiodata = () => {
 
                     <hr className="border-t border-gray-300 my-4" />
 
-                    <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                    {/* <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="smartcard" className="md:w-1/4 text-black">
                             SmartCard
                         </label>
@@ -1395,7 +1395,7 @@ const TabBiodata = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label className="lg:w-1/4 text-black">

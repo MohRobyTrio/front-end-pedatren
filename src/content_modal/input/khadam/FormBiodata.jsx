@@ -554,7 +554,7 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab, sele
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="smartcard" className="md:w-1/4 text-black">
                         SmartCard
                     </label>
@@ -571,7 +571,7 @@ const FormBiodataKhadam = ({ register, watch, setValue, control, activeTab, sele
                             />
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     )

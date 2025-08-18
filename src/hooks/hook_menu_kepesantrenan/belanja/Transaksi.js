@@ -15,7 +15,7 @@ const useFetchTransaksi = (filters) => {
   const [totalData, setTotalData] = useState(0); // Jika API mendukung pagination
   const [totalPages, setTotalPages] = useState(1); // Jika API mendukung pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [jadwalSholat, setJadwalSholat] = useState("");
+  const [totalPembayaran, setTotalPembayaran] = useState(0);
   const [jadwalMendatang, setJadwalMendatang] = useState(null);
   const [statusTransaksi, setStatusTransaksi] = useState("");
   const lastRequest = useRef("");
@@ -90,9 +90,9 @@ const useFetchTransaksi = (filters) => {
       setDataTransaksi(Array.isArray(data.data) ? data.data : []);
       
       // Jika API ada total data/pagination, sesuaikan
-      setTotalData(data.totals || {});
+      setTotalData(data.total_data || {});
       setTotalPages(data.total_pages || 1);
-      setJadwalSholat(data.jadwal_sholat || "");
+      setTotalPembayaran(data.total_pembayaran || 0);
       setJadwalMendatang(data.jadwal_mendatang || null);
       setStatusTransaksi(data.status_presensi || "");
 
@@ -125,7 +125,7 @@ const useFetchTransaksi = (filters) => {
     currentPage,
     setCurrentPage,
     fetchData,
-    jadwalSholat,
+    totalPembayaran,
     jadwalMendatang,
     statusTransaksi,
   };

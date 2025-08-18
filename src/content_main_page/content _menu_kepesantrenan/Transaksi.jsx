@@ -32,6 +32,7 @@ import {
     FiArrowRight,
 } from "react-icons/fi"
 import useFetchTransaksi from "../../hooks/hook_menu_kepesantrenan/belanja/Transaksi"
+import Pagination from "../../components/Pagination"
 
 const Transaksi = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
@@ -43,7 +44,7 @@ const Transaksi = () => {
         status: "",
     })
 
-    const { dataTransaksi, loadingTransaksi, totalData, fetchData } = useFetchTransaksi(filters)
+    const { dataTransaksi, loadingTransaksi, totalData, fetchData, totalPembayaran, currentPage, setCurrentPage, totalPages } = useFetchTransaksi(filters)
 
     // const dummyTransaksi = [
     //     {
@@ -93,12 +94,15 @@ const Transaksi = () => {
     //     },
     // ]
 
-    const dummyTotals = {
-        total_transaksi: 0,
-        total_berhasil: 0,
-        total_pending: 0,
-        total_gagal: 0,
-        total_pendapatan: 0,
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page)
+        }
+    }
+
+    const totals = {
+        total_data: totalData,
+        total_pembayaran: totalPembayaran,
     }
 
     // const dataTransaksi = dummyTransaksi
@@ -219,7 +223,11 @@ const Transaksi = () => {
                         setFilters={setFilters}
                         loadingTransaksi={loadingTransaksi}
                         dataTransaksi={dataTransaksi}
-                        totals={dummyTotals}
+                        totals={totals}
+                        fetchData={fetchData}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageChange={handlePageChange}
                     />
                 )}
             </div>
@@ -227,7 +235,7 @@ const Transaksi = () => {
     )
 }
 
-const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi, dataTransaksi = [], totals }) => {
+const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi, dataTransaksi = [], totals, fetchData, currentPage, totalPages, handlePageChange }) => {
     console.log("transactions", dataTransaksi)
     const [showFilters, setShowFilters] = useState(false)
 
@@ -258,7 +266,7 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
     }
 
     const handleRefresh = () => {
-        // fetchData(true)
+        fetchData(true)
     }
 
     return (
@@ -281,8 +289,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                 onClick={handleRefresh}
                                 disabled={loadingTransaksi}
                                 className={`w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : "hover:bg-green-700"
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-green-700"
                                     }`}
                             >
                                 <FaSync className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`} />
@@ -383,20 +391,20 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
 
             {/* Transaction Statistics */}
             {totals && (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <div className="flex items-center">
                             <div className="p-3 rounded-full bg-green-100">
                                 <FaCheckCircle className="h-6 w-6 text-green-600" />
                             </div>
                             <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-500">Total Berhasil</p>
-                                <p className="text-2xl font-bold text-gray-900">{totals.total_berhasil || 0}</p>
+                                <p className="text-sm font-medium text-gray-500">Total Data</p>
+                                <p className="text-2xl font-bold text-gray-900">{totals.total_data || 0}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-lg">
+                    {/* <div className="bg-white p-6 rounded-xl shadow-lg">
                         <div className="flex items-center">
                             <div className="p-3 rounded-full bg-red-100">
                                 <FaTimesCircle className="h-6 w-6 text-red-600" />
@@ -418,7 +426,7 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                 <p className="text-2xl font-bold text-gray-900">{totals.total_transaksi || 0}</p>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <div className="flex items-center">
@@ -426,8 +434,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                 <FaUsers className="h-6 w-6 text-purple-600" />
                             </div>
                             <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-500">Total Pendapatan</p>
-                                <p className="text-2xl font-bold text-gray-900">Rp {totals.total_pendapatan?.toLocaleString()}</p>
+                                <p className="text-sm font-medium text-gray-500">Total Pembayaran</p>
+                                <p className="text-2xl font-bold text-gray-900">Rp {totals.total_pembayaran?.toLocaleString()}</p>
                             </div>
                         </div>
                     </div>
@@ -442,111 +450,137 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
 
                 {loadingTransaksi ? (
                     <div className="flex justify-center items-center py-12">
-                        <OrbitProgress variant="track-disc" dense color="#3B82F6" size="medium" text="" textColor="" />
+                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Pembeli
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Item & Kategori
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Jumlah & Total
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                                            No
+                                        </th>
+                                        <th className="pr-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Pembeli
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Outlet
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Kategori
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Total Bayar
+                                        </th>
+                                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Metode
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Status
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Waktu
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {dataTransaksi.length > 0 ? (
-                                    dataTransaksi.map((transaksi) => (
-                                        <tr key={transaksi.transaksi_id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10">
+                                    </th> */}
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Waktu
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {dataTransaksi.length > 0 ? (
+                                        dataTransaksi.map((item, i) => (
+                                            <tr key={item.id} className="hover:bg-gray-50">
+                                                <td className="px-5 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-900">{(currentPage - 1) * 25 + i + 1 || "-"}</div>
+                                                </td>
+                                                <td className="pr-6 py-4 whitespace-nowrap">
+                                                    <div className="flex items-center">
+                                                        {/* <div className="flex-shrink-0 h-10 w-10">
                                                         <img
                                                             className="h-10 w-10 rounded-full object-cover"
-                                                            src={transaksi.foto_profil || blankProfile}
+                                                            src={item.foto_profil || blankProfile}
                                                             alt=""
                                                             onError={(e) => {
                                                                 e.target.onerror = null
                                                                 e.target.src = blankProfile
                                                             }}
                                                         />
+                                                    </div> */}
+                                                        <div>
+                                                            <div className="text-sm font-medium text-gray-900">{item.santri.biodata.nama || "-"}</div>
+                                                            <div className="text-sm text-gray-500">
+                                                                NIS: {item.santri.nis || "-"} | UID: {item.santri.kartu?.uid_kartu || "-"}
+                                                            </div>
+
+                                                        </div>
                                                     </div>
-                                                    <div className="ml-4">
-                                                        <div className="text-sm font-medium text-gray-900">{transaksi.nama_pembeli}</div>
-                                                        <div className="text-sm text-gray-500">{transaksi.nis || transaksi.id_pembeli}</div>
+                                                </td>
+                                                {/* <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm text-gray-900">{item.outlet.nama_outlet}</div>
+                                                <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div>
+                                            </td> */}
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-900">{item.outlet.nama_outlet}</div>
+                                                    {/* <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div> */}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {/* <div className="text-sm text-gray-900">{item.outlet.nama_outlet}</div> */}
+                                                    <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-medium text-green-600">
+                                                        Rp {item.total_bayar?.toLocaleString()}
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-900">{transaksi.nama_item}</div>
-                                                <div className="text-sm text-gray-500">{transaksi.kategori}</div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-900">
-                                                    {transaksi.jumlah} x Rp {transaksi.harga_satuan?.toLocaleString()}
-                                                </div>
-                                                <div className="text-sm font-medium text-green-600">
-                                                    Total: Rp {transaksi.total_harga?.toLocaleString()}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                </td>
+                                                {/* <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${transaksi.metode === "nfc"
+                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.metode === "nfc"
                                                         ? "bg-blue-100 text-blue-800"
-                                                        : transaksi.metode === "reader"
+                                                        : item.metode === "reader"
                                                             ? "bg-purple-100 text-purple-800"
                                                             : "bg-gray-100 text-gray-800"
                                                         }`}
                                                 >
-                                                    {transaksi.metode === "nfc" ? "NFC" : transaksi.metode === "reader" ? "Reader" : "Manual"}
+                                                    {item.metode === "nfc" ? "NFC" : item.metode === "reader" ? "Reader" : "Manual"}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            </td> */}
+                                                {/* <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${transaksi.status === "berhasil"
+                                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.status === "berhasil"
                                                         ? "bg-green-100 text-green-800"
-                                                        : transaksi.status === "gagal"
+                                                        : item.status === "gagal"
                                                             ? "bg-red-100 text-red-800"
                                                             : "bg-yellow-100 text-yellow-800"
                                                         }`}
                                                 >
-                                                    {transaksi.status === "berhasil"
+                                                    {item.status === "berhasil"
                                                         ? "Berhasil"
-                                                        : transaksi.status === "gagal"
+                                                        : item.status === "gagal"
                                                             ? "Gagal"
                                                             : "Pending"}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {new Date(transaksi.created_at).toLocaleString("id-ID")}
+                                            </td> */}
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {new Date(item.tanggal).toLocaleString("id-ID")}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                                                Tidak ada data transaksi
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                                            Tidak ada data transaksi
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="pb-6 pr-6">
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                handlePageChange={handlePageChange}
+                            />
+                        </div>
+                    </>
                 )}
             </div>
         </div>
@@ -953,7 +987,7 @@ const Scan = ({ refetch }) => {
                             }`}
                     >
                         <FiHardDrive className="mr-2" />
-                        Card Reader
+                        Reader
                     </button>
                     <button
                         onClick={() => toggleInputMode("manual")}
