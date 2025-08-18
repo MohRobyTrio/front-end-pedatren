@@ -1,13 +1,11 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
-// import useFetchGolongan from "../../hooks/hooks_menu_kepegawaian/ViewOutlet";
-// import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
-import ToggleStatus from "../../components/ToggleStatus";
 import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet";
+import { ModalAddOrEditOutlet } from "../../components/modal/ModalFormOutlet";
 
 const ViewOutlet = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +13,7 @@ const ViewOutlet = () => {
     const [openModal, setOpenModal] = useState(false);
     const [lembagaData, setLembagaData] = useState("");
     const [feature, setFeature] = useState("");
-    const { dataOutlet, loadingDataOutlet, error, fetchDataOutlet, handleToggleStatus } = useFetchDataOutlet();
+    const { dataOutlet, loadingDataOutlet, error, fetchDataOutlet, handleDelete } = useFetchDataOutlet();
 
     // if (!hasAccess("dataOutlet")) {
     //     return <Navigate to="/not-found" replace />;
@@ -33,9 +31,9 @@ const ViewOutlet = () => {
                 </div>
             </div>
 
-            {/* <ModalAddOrEditDataOutlet isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchDataOutlet} feature={feature} />
+            <ModalAddOrEditOutlet isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchDataOutlet} feature={feature} />
 
-            <ModalDetailDataOutlet
+            {/* <ModalDetailDataOutlet
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 id={selectedId}
@@ -122,7 +120,12 @@ const ViewOutlet = () => {
                                                     >
                                                         <FaEdit />
                                                     </button>
-                                                    <ToggleStatus active={item.status == 1} onClick={() => handleToggleStatus(item)} />
+                                                    <button
+                                                        onClick={() => handleDelete(item.id)}
+                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
