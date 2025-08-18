@@ -505,9 +505,9 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                                         />
                                                     </div> */}
                                                         <div>
-                                                            <div className="text-sm font-medium text-gray-900">{item.santri.biodata.nama || "-"}</div>
+                                                            <div className="text-sm font-medium text-gray-900">{item?.santri?.biodata.nama || "-"}</div>
                                                             <div className="text-sm text-gray-500">
-                                                                NIS: {item.santri.nis || "-"} | UID: {item.santri.kartu?.uid_kartu || "-"}
+                                                                NIS: {item?.santri?.nis || "-"} | UID: {item?.santri.kartu?.uid_kartu || "-"}
                                                             </div>
 
                                                         </div>
@@ -518,16 +518,16 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                                 <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div>
                                             </td> */}
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-900">{item.outlet.nama_outlet}</div>
+                                                    <div className="text-sm text-gray-900">{item?.outlet?.nama_outlet || "-"}</div>
                                                     {/* <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div> */}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     {/* <div className="text-sm text-gray-900">{item.outlet.nama_outlet}</div> */}
-                                                    <div className="text-sm text-gray-500">{item.kategori.nama_kategori}</div>
+                                                    <div className="text-sm text-gray-500">{item?.kategori?.nama_kategori || "-"}</div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="text-sm font-medium text-green-600">
-                                                        Rp {item.total_bayar?.toLocaleString()}
+                                                        Rp {item?.total_bayar?.toLocaleString() || "-"}
                                                     </div>
                                                 </td>
                                                 {/* <td className="px-6 py-4 whitespace-nowrap">
@@ -559,7 +559,7 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                                 </span>
                                             </td> */}
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {new Date(item.tanggal).toLocaleString("id-ID")}
+                                                    {new Date(item?.tanggal).toLocaleString("id-ID") || "-"}
                                                 </td>
                                             </tr>
                                         ))

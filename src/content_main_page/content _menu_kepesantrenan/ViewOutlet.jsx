@@ -5,7 +5,7 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet";
-import { ModalAddOrEditOutlet } from "../../components/modal/ModalFormOutlet";
+import { ModalAddOrEditOutlet, ModalDetailOutlet } from "../../components/modal/ModalFormOutlet";
 
 const ViewOutlet = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,9 +15,9 @@ const ViewOutlet = () => {
     const [feature, setFeature] = useState("");
     const { dataOutlet, loadingDataOutlet, error, fetchDataOutlet, handleDelete } = useFetchDataOutlet();
 
-    // if (!hasAccess("dataOutlet")) {
-    //     return <Navigate to="/not-found" replace />;
-    // }
+    if (!hasAccess("outlet")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -33,11 +33,11 @@ const ViewOutlet = () => {
 
             <ModalAddOrEditOutlet isOpen={openModal} onClose={() => setOpenModal(false)} data={lembagaData} refetchData={fetchDataOutlet} feature={feature} />
 
-            {/* <ModalDetailDataOutlet
+            <ModalDetailOutlet
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 id={selectedId}
-            /> */}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (

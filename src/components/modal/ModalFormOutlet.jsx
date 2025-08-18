@@ -378,6 +378,17 @@ export const ModalDetailOutlet = ({ isOpen, onClose, id }) => {
         }
     }, [isOpen, id])
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "-"
+        return new Date(dateString).toLocaleString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    }
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -403,38 +414,85 @@ export const ModalDetailOutlet = ({ isOpen, onClose, id }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-lg w-full h-full relative max-h-[90vh] flex flex-col">
-                            <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-2xl w-full h-full relative max-h-[90vh] flex flex-col">
+                            <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                            <div className="pt-6">
+                            <div className="pt-6 px-6">
                                 <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Outlet</Dialog.Title>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto pr-8 pl-8 pt-4 text-left">
+                            <div className="flex-1 overflow-y-auto px-6 pt-4 text-left">
                                 {loading ? (
                                     <div className="flex h-24 justify-center items-center">
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </div>
                                 ) : data ? (
-                                    <div className="space-y-2">
-                                        {[
-                                            ["Nama Outlet", data.data.nama_outlet],
-                                            ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
-                                        ].map(([label, value]) => (
-                                            <div key={label} className="flex">
-                                                <div className="w-35 font-semibold text-gray-700">{label}</div>
-                                                <div className="flex-1 text-gray-900">: {value}</div>
+                                    <div className="space-y-6">
+                                        <div className="bg-gray-50 p-4 rounded-lg">
+                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Informasi Outlet</h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                {[
+                                                    //   ["ID", data.data.id],
+                                                    ["Nama Outlet", data.data.nama_outlet],
+                                                    ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
+                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
+                                                    ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
+                                                ].map(([label, value]) => (
+                                                    <div key={label} className="flex flex-col">
+                                                        <span className="text-sm font-medium text-gray-600">{label}</span>
+                                                        <span className="text-sm text-gray-900 mt-1">{value}</span>
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        </div>
+
+                                        <div className="bg-blue-50 p-4 rounded-lg">
+                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Kategori Terkait</h3>
+                                            {data.data.kategori && data.data.kategori.length > 0 ? (
+                                                <div className="space-y-3">
+                                                    {data.data.kategori.map((kategori) => (
+                                                        <div key={kategori.id} className="bg-white p-3 rounded border border-blue-200">
+                                                            <div className="flex justify-between items-start">
+                                                                <h4 className="font-medium text-gray-800">{kategori.nama_kategori}</h4>
+                                                                <span
+                                                                    className={`px-2 py-1 text-xs rounded-full ${kategori.status == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                                                        }`}
+                                                                >
+                                                                    {kategori.status == 1 ? "Aktif" : "Nonaktif"}
+                                                                </span>
+                                                            </div>
+                                                            {/* <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                                <div>
+                                  <span className="font-medium">ID Kategori:</span> {kategori.id}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Dibuat:</span> {formatDate(kategori.created_at)}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Status Pivot:</span>{" "}
+                                  {kategori.pivot.status == 1 ? "Aktif" : "Nonaktif"}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Terhubung:</span>{" "}
+                                  {formatDate(kategori.pivot.created_at)}
+                                </div>
+                              </div> */}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-gray-500 text-sm">Tidak ada kategori terkait</p>
+                                            )}
+                                        </div>
                                     </div>
                                 ) : (
                                     <p className="text-red-500">Gagal memuat data outlet.</p>
                                 )}
                             </div>
 
-                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-4 py-3 rounded-b-lg border-t border-gray-300">
+                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-6 py-3 rounded-b-lg border-t border-gray-300">
                                 <button
                                     onClick={onClose}
                                     className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"

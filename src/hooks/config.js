@@ -35,6 +35,7 @@ export const rolesWithAccess = {
   presensi_sholat: ['admin', 'superadmin', 'ustadz'],
   transaksi: ['admin', 'superadmin'],
   kategori: ['admin', 'superadmin'],
+  outlet: ['admin', 'superadmin'],
   ///Fitur///
   
   ///Manage///
