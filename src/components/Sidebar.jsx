@@ -68,9 +68,22 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
         <ul className="mt-1 ml-2">
             {items.map((item) => {
                 // const isPeserta = item.id == "pesertadidik";
-                const hasSubmenu = item.id == "pesertadidik" || item.id == "kelembagaan" || item.id == "pelajaran" || item.id == "kewilayahan" || item.id == "alumni" || item.id == "csholat" || item.id == "hafalan" || item.id == "belanja";
+                const hasSubmenu =
+                    item.id == "pesertadidik" ||
+                    item.id == "kelembagaan" ||
+                    item.id == "pelajaran" ||
+                    item.id == "kewilayahan" ||
+                    item.id == "alumni" ||
+                    item.id == "csholat" ||
+                    item.id == "hafalan" ||
+                    item.id == "belanja";
                 // const isOpen = isPeserta ? true : dropdowns[item.id];
-                const isOpen = dropdowns[item.id];
+                // const isOpen = dropdowns[item.id];
+
+                const stored = sessionStorage.getItem(`submenu-${item.id}`);
+                const isOpen =
+                    dropdowns[item.id] ??
+                    (stored ? JSON.parse(stored) : false);
 
                 if (item.access && !hasAccess(item.access)) return null;
 
@@ -84,6 +97,11 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                                 // if (hasSubmenu && !isPeserta) {
                                 if (hasSubmenu) {
                                     e.preventDefault(); // Cegah navigasi untuk dropdown lain selain peserta didik
+                                    const newState = !isOpen;
+                                    sessionStorage.setItem(
+                                        `submenu-${item.id}`,
+                                        JSON.stringify(newState)
+                                    );
                                 }
                                 if (hasSubmenu) {
                                     toggleDropdown(item.id);
