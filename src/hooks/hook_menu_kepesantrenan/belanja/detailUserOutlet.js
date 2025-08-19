@@ -171,7 +171,7 @@ const useFetchDataUserOutlet = () => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}userOutlet/${id}`, {
+            const response = await fetch(`${API_BASE_URL}detail-user-outlet/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

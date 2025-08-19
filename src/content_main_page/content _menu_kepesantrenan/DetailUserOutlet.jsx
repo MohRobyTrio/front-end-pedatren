@@ -7,9 +7,11 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchDataUserOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/detailUserOutlet";
+import { ModalAddOrEditUserOutltet, ModalDetailUserOutltet } from "../../components/modal/ModalFormDetailUserOutlet";
 
 const UserOutlet = () => {
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [userOutletData, setUserOutletData] = useState("");
     const [feature, setFeature] = useState("");
@@ -19,9 +21,9 @@ const UserOutlet = () => {
         fetchDataUserOutlet,
         handleDelete } = useFetchDataUserOutlet();
 
-    // if (!hasAccess("userOutlet")) {
-    //     return <Navigate to="/not-found" replace />;
-    // }
+    if (!hasAccess("user_outlet")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -36,7 +38,13 @@ const UserOutlet = () => {
                 </div>
             </div>
 
-            {/* <ModalAddOrEditUserOutlet isOpen={openModal} onClose={() => setOpenModal(false)} data={userOutletData} refetchData={fetchUserOutlet} feature={feature} /> */}
+            <ModalAddOrEditUserOutltet isOpen={openModal} onClose={() => setOpenModal(false)} data={userOutletData} refetchData={fetchDataUserOutlet} feature={feature} />
+
+            <ModalDetailUserOutltet
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                id={selectedId}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -74,18 +82,21 @@ const UserOutlet = () => {
                                     </tr>
                                 ) : (
                                     dataUserOutlet.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                            setSelectedId(item.id);
+                                            setIsModalOpen(true);
+                                        }}>
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">
-                                            <div className="flex items-center">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">{item?.user?.name || "-"}</div>
-                                                    <div className="text-sm text-gray-500">
-                                                        Email: {item?.user?.email || "-"}
-                                                    </div>
+                                                <div className="flex items-center">
+                                                    <div>
+                                                        <div className="text-sm font-medium text-gray-900">{item?.user?.name || "-"}</div>
+                                                        <div className="text-sm text-gray-500">
+                                                            Email: {item?.user?.email || "-"}
+                                                        </div>
 
+                                                    </div>
                                                 </div>
-                                            </div>
                                             </td>
                                             <td className="px-3 py-2 border-b">{item?.outlet?.nama_outlet || "-"}</td>
                                             <td className="px-3 py-2 border-b w-30">

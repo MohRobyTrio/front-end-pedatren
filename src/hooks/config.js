@@ -36,6 +36,7 @@ export const rolesWithAccess = {
   transaksi: ['admin', 'superadmin'],
   kategori: ['admin', 'superadmin'],
   outlet: ['admin', 'superadmin'],
+  user_outlet: ['admin', 'superadmin'],
   ///Fitur///
   
   ///Manage///

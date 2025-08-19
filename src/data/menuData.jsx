@@ -133,7 +133,7 @@ export const menuKepesantrenanItems = [
 
 export const menuBelanja = [
     { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/belanja/outlet", content: <ViewOutlet />, access: "outlet" },
-    { id: "detailuseroutlet", icon: "fa-shopping-cart", text: "User Outlet", link: "/belanja/user-outlet", content: <UserOutlet />, access: "outlet" },
+    { id: "detailuseroutlet", icon: "fa-shopping-cart", text: "User Outlet", link: "/belanja/user-outlet", content: <UserOutlet />, access: "user_outlet" },
     { id: "kategori", icon: "fa-shopping-cart", text: "Kategori", link: "/belanja/kategori", content: <Kategori />, access: "kategori" },
     { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/belanja/transaksi", content: <Transaksi />, access: "transaksi" },
 ]
