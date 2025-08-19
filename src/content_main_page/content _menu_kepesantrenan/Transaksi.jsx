@@ -457,7 +457,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
 
                                                                 </div>
                                                             </div>
-                                                        </td>                                
+                                                        </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="text-sm text-gray-900">{item?.outlet?.nama_outlet || "-"}</div>
                                                         </td>
@@ -469,7 +469,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                                                                 Rp {item?.total_bayar?.toLocaleString() || "-"}
                                                             </div>
                                                         </td>
-                                                        
+
                                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                             {new Date(item?.tanggal).toLocaleString("id-ID") || "-"}
                                                         </td>
@@ -1074,12 +1074,31 @@ const Scan = ({ refetch }) => {
                                         <span className="absolute left-3 top-2 text-gray-500">Rp</span>
                                         <input
                                             type="number"
-                                            value={hargaSatuan}
-                                            onChange={(e) => setHargaSatuan(Number(e.target.value) || 1)}
+                                            value={hargaSatuan === "" ? "" : hargaSatuan}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+
+                                                if (val === "") {
+                                                    setHargaSatuan("");
+                                                    return;
+                                                }
+
+                                                let num = Number(val);
+
+                                                // minimal 1
+                                                if (isNaN(num) || num < 1) {
+                                                    num = 1;
+                                                }
+
+                                                // hapus leading zero (kecuali angka 0)
+                                                setHargaSatuan(num);
+                                            }}
                                             placeholder="0"
                                             min="0"
                                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
+
+
                                     </div>
                                 </div>
 
@@ -1087,12 +1106,31 @@ const Scan = ({ refetch }) => {
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
                                     <input
                                         type="number"
-                                        value={jumlah}
-                                        onChange={(e) => setJumlah(Number(e.target.value) || 1)}
-                                        min="1"
+                                        value={jumlah === "" ? "" : jumlah}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+
+                                            // Boleh kosong
+                                            if (val === "") {
+                                                setJumlah("");
+                                                return;
+                                            }
+
+                                            // Convert ke number
+                                            let num = Number(val);
+
+                                            // Jika kurang dari 1 (minus atau 0), set jadi 1
+                                            if (isNaN(num) || num < 1) {
+                                                num = 1;
+                                            }
+
+                                            setJumlah(num);
+                                        }}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
                                 </div>
+
+
                             </div>
 
                             <div>
