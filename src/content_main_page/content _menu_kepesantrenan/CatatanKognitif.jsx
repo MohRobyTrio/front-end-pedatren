@@ -15,8 +15,9 @@ import { ModalAddProgressKognitif } from "../../components/modal/ModalFormCatata
 import Access from "../../components/Access";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { hasAccess } from "../../utils/hasAccess";
 
 
 const CatatanKognitif = () => {
@@ -196,6 +197,10 @@ const CatatanKognitif = () => {
     }
 
     const [showFormModal, setShowFormModal] = useState(false);
+
+    if (!hasAccess("catatan_kognitif")) {
+            return <Navigate to="/not-found" replace />;
+        }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
