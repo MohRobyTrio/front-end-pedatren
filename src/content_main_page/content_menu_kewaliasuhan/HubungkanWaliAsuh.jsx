@@ -254,7 +254,7 @@ const HubungkanWaliAsuh = () => {
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -451,7 +451,7 @@ const HubungkanWaliAsuh = () => {
                 onSubmit={handleSubmit}
                 className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-fit"
               >
-                <div className="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+                <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4">
                   <h2 className="text-xl font-semibold text-white flex items-center space-x-2">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -463,7 +463,7 @@ const HubungkanWaliAsuh = () => {
                     </svg>
                     <span>Pilih Wali Asuh</span>
                   </h2>
-                  <p className="text-purple-100 text-sm mt-1">Hubungkan santri dengan wali asuh</p>
+                  <p className="text-emerald-100 text-sm mt-1">Hubungkan santri dengan wali asuh</p>
                 </div>
 
                 <div className="p-6">
@@ -471,7 +471,7 @@ const HubungkanWaliAsuh = () => {
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">Wali Asuh *</label>
                       <select
-                        className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
+                        className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
                           menuWaliAsuh2.length <= 1
                             ? "bg-gray-50 text-gray-400 cursor-not-allowed"
                             : "bg-white hover:border-gray-300"
@@ -492,7 +492,7 @@ const HubungkanWaliAsuh = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-purple-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -506,8 +506,8 @@ const HubungkanWaliAsuh = () => {
                   </button>
 
                   {selectedSantriIds.length > 0 && (
-                    <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                      <p className="text-sm text-purple-700 font-medium">
+                    <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-700 font-medium">
                         {selectedSantriIds.length} santri dipilih untuk dihubungkan
                       </p>
                     </div>
