@@ -86,7 +86,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
 
       console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2))
       const token = sessionStorage.getItem("token") || getCookie("token")
-      const response = await fetch(`${API_BASE_URL}crud/catatan-afektif`, {
+      const response = await fetch(`${API_BASE_URL}catatan-afektif`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -423,7 +423,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
 
       console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2))
       const token = sessionStorage.getItem("token") || getCookie("token")
-      const response = await fetch(`${API_BASE_URL}crud/catatan-kognitif`, {
+      const response = await fetch(`${API_BASE_URL}catatan-kognitif`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

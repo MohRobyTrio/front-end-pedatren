@@ -32,7 +32,7 @@ const useFetchAfektif = (filters) => {
   }, [searchTerm]);
 
   const fetchData = useCallback(async (force = false) => {
-    let url = `${API_BASE_URL}data-pokok/catatan-afektif?limit=${limit}&page=${currentPage}`;
+    let url = `${API_BASE_URL}catatan-afektif?limit=${limit}&page=${currentPage}`;
 
     // Handle search
     if (debouncedSearchTerm) {
