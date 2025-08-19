@@ -384,7 +384,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                                     </div>
                                     <div className="ml-4">
                                         <p className="text-sm font-medium text-gray-500">Total Data</p>
-                                        <p className="text-2xl font-bold text-gray-900">{(totals?.total_pembayaran ?? 0) || 0}</p>
+                                        <p className="text-2xl font-bold text-gray-900">{(totals?.total_data ?? 0) || 0}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1077,7 +1077,7 @@ const Scan = ({ refetch }) => {
                                             value={hargaSatuan}
                                             onChange={(e) => setHargaSatuan(Number(e.target.value) || 1)}
                                             placeholder="0"
-                                            min="1"
+                                            min="0"
                                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
