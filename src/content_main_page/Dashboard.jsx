@@ -280,57 +280,58 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 pl-6 pt-6 pb-6 bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 mb-10">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-          <div className="space-y-6">
-            <div className="flex items-center gap-6">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="relative">
-                <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
-                  <FontAwesomeIcon icon={faChartLine} className="text-2xl text-white" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
+                  <FontAwesomeIcon icon={faChartLine} className="text-lg sm:text-2xl text-white" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                 </div>
               </div>
               <div>
-                <h1 className="text-5xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-                <p className="text-xl text-slate-600 mt-2">Sistem Manajemen Pesantren</p>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+                <p className="text-base sm:text-lg lg:text-xl text-slate-600 mt-1 sm:mt-2">
+                  Sistem Manajemen Pesantren
+                </p>
               </div>
             </div>
-            {/* <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
-                Pantau dan kelola seluruh data pesantren dalam satu platform terpadu
-                </p> */}
           </div>
 
-          <div className="flex flex-col items-end gap-4">
+          <div className="flex justify-end sm:justify-start">
             <button
               onClick={refreshData}
               disabled={loading}
-              className="group flex items-center gap-3 px-6 py-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+              className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+              title={loading ? "Memuat data..." : "Refresh data"}
             >
               <FontAwesomeIcon
                 icon={faRotateRight}
-                className={`text-sm transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
+                className={`text-base sm:text-lg transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
               />
-              <span className="font-semibold">{loading ? "Memuat..." : "Refresh Data"}</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="space-y-16">
+      <div className="space-y-6 sm:space-y-8">
         {Object.entries(groupedStats).map(([category, categoryStats]) => {
           const config = categoryConfig[category]
           return (
-            <div key={category} className="space-y-8">
-              <div className={`${config.bgColor} rounded-2xl p-5 border border-gray-100`}>
+            <div key={category} className="space-y-3 sm:space-y-4">
+              <div className={`${config.bgColor} rounded-2xl p-3 sm:p-4 border border-gray-100`}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 ${config.iconBg} rounded-lg flex items-center justify-center`}>
-                      <FontAwesomeIcon icon={config.icon} className={`text-sm ${config.textColor}`} />
+                    <div
+                      className={`w-7 h-7 sm:w-8 sm:h-8 ${config.iconBg} rounded-lg flex items-center justify-center`}
+                    >
+                      <FontAwesomeIcon icon={config.icon} className={`text-xs sm:text-sm ${config.textColor}`} />
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-slate-900">{config.title}</h2>
+                      <h2 className="text-base sm:text-lg font-bold text-slate-900">{config.title}</h2>
                     </div>
                   </div>
                   <div className="text-right">
@@ -339,35 +340,37 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                 {categoryStats.map((stat, index) => {
                   const colors = getColorClasses(stat.color)
                   return (
                     <div
                       key={index}
-                      className="group bg-white rounded-3xl border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                      className="group bg-white rounded-2xl sm:rounded-3xl border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
-                      <div className="p-8">
-                        <div className="flex items-start justify-between mb-6">
+                      <div className="p-5 sm:p-6 lg:p-8">
+                        <div className="flex items-start justify-between mb-4 sm:mb-6">
                           <div
-                            className={`w-14 h-14 ${colors.bg} rounded-2xl flex items-center justify-center shadow-sm`}
+                            className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 ${colors.bg} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm`}
                           >
-                            <FontAwesomeIcon icon={stat.icon} className="text-xl text-white" />
+                            <FontAwesomeIcon icon={stat.icon} className="text-base sm:text-lg lg:text-xl text-white" />
                           </div>
                           <div className="text-right">
-                            <div className="text-4xl font-bold text-slate-900 mb-1">{stat.value}</div>
-                            <div className={`w-8 h-1 ${colors.accent} rounded-full ml-auto`}></div>
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
+                              {stat.value}
+                            </div>
+                            <div className={`w-6 h-0.5 sm:w-8 sm:h-1 ${colors.accent} rounded-full ml-auto`}></div>
                           </div>
                         </div>
 
-                        <div className="mb-8">
-                          <h3 className="text-xl font-bold text-slate-900 mb-2">{stat.label}</h3>
-                          <p className="text-slate-500 leading-relaxed">{stat.description}</p>
+                        <div className="mb-4 sm:mb-6 lg:mb-8">
+                          <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">{stat.label}</h3>
+                          <p className="text-sm sm:text-base text-slate-500 leading-relaxed">{stat.description}</p>
                         </div>
 
                         <Link
                           to={stat.link}
-                          className="group/btn w-full flex items-center justify-between px-6 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-2xl font-semibold transition-all duration-200 border border-slate-100 hover:border-slate-200"
+                          className="group/btn w-full flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-xl sm:rounded-2xl font-semibold transition-all duration-200 border border-slate-100 hover:border-slate-200 text-sm sm:text-base"
                         >
                           <span>Lihat Detail</span>
                           <FontAwesomeIcon
