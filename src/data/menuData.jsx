@@ -74,6 +74,9 @@ import Transaksi from "../content_main_page/content _menu_kepesantrenan/Transaks
 import ViewOutlet from "../content_main_page/content _menu_kepesantrenan/ViewOutlet";
 import Kategori from "../content_main_page/content _menu_kepesantrenan/Kategori";
 import UserOutlet from "../content_main_page/content _menu_kepesantrenan/DetailUserOutlet";
+import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
+import Wali from "../content_main_page/content_menu_data_pokok/Wali";
+import ContainerOrangTua from "../content_main_page/content_menu_data_pokok/ContainerOrangTua";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -83,8 +86,7 @@ export const menuItems = [
 
 export const menuDataPokokItems = [
     { id: "cpesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <ContainerPesertaDidik />, access: "santri" },
-    // { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
-    // { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/wali", content: <Wali /> },
+    { id: "corangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <ContainerOrangTua /> },
     // { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap />, access: "tahfidz" },
     // { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData />, access: "nadhoman" },
     { id: "karturfid", icon: "fa-id-card", text: "Kartu RFID", link: "/karturfid", content: <KartuRFID />, access: "karturfid" },
@@ -93,6 +95,11 @@ export const menuDataPokokItems = [
     
     // { id: "khadam", icon: "fa-hands-helping", text: "Khadam", link: "/khadam", content: <Khadam /> },
 ];
+
+export const menuOrangTua = [
+    { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
+    { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/orang-tua/wali", content: <Wali /> },
+]
 
 export const menuHafalan = [
     { id: "kitab", icon: "fa-book", text: "Kitab", link: "/hafalan/kitab", content: <Kitab />, access: "kitab" },
@@ -125,17 +132,17 @@ export const menuKepesantrenanItems = [
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung />, access: "kunjungan" },
     { id: "hafalan", icon: "fa-book", text: "Hafalan", link: "/hafalan", content: <Kitab />, access: "hafalan" },
     { id: "csholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat />, access: "csholat" },
-    { id: "belanja", icon: "fa-shopping-cart", text: "Belanja", link: "/belanja/transaksi", content: <Transaksi />, access: "belanja" },
+    { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/transaksi/belanja", content: <Transaksi />, access: "transaksi" },
     // { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat />, access: "jadwal_sholat" },
     // { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat />, access: "presensi_sholat" },
     { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam />, access: "khadam" },
 ];
 
 export const menuBelanja = [
-    { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/belanja/outlet", content: <ViewOutlet />, access: "outlet" },
-    { id: "detailuseroutlet", icon: "fa-shopping-cart", text: "User Outlet", link: "/belanja/user-outlet", content: <UserOutlet />, access: "user_outlet" },
-    { id: "kategori", icon: "fa-shopping-cart", text: "Kategori", link: "/belanja/kategori", content: <Kategori />, access: "kategori" },
-    { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/belanja/transaksi", content: <Transaksi />, access: "transaksi" },
+    { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/transaksi/outlet", content: <ViewOutlet />, access: "outlet" },
+    { id: "detailuseroutlet", icon: "fa-shopping-cart", text: "User Outlet", link: "/transaksi/user-outlet", content: <UserOutlet />, access: "user_outlet" },
+    { id: "kategori", icon: "fa-shopping-cart", text: "Kategori", link: "/transaksi/kategori", content: <Kategori />, access: "kategori" },
+    { id: "belanja", icon: "fa-shopping-cart", text: "Belanja", link: "/transaksi/belanja", content: <Transaksi />, access: "belanja" },
 ]
 
 export const menuSholat = [

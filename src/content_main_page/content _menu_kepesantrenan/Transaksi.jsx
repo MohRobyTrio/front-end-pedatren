@@ -14,7 +14,7 @@ import {
     FaSync,
 } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
 import { API_BASE_URL } from "../../hooks/config"
 import blankProfile from "../../assets/blank_profile.png"
@@ -34,6 +34,8 @@ import {
 import useFetchTransaksi from "../../hooks/hook_menu_kepesantrenan/belanja/Transaksi"
 import Pagination from "../../components/Pagination"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
+import useDropdownKategori from "../../hooks/hook_dropdown/DropdownKategori"
+import Swal from "sweetalert2"
 
 const Transaksi = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
@@ -182,7 +184,7 @@ const Transaksi = () => {
             {/* Header Section */}
             <div className="bg-white shadow-sm rounded-lg">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 space-y-4 sm:space-y-0">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-4 space-y-4 lg:space-y-0">
                         {/* Transaction Info */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
                             <div className="flex items-center space-x-3">
@@ -203,7 +205,7 @@ const Transaksi = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-2 items-center justify-center">
                             <button
                                 onClick={() => handleSetView("scan")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "scan" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -280,6 +282,18 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
 
     const handleRefresh = () => {
         fetchData(true)
+    }
+
+    const isFilterValid = filters?.outlet_id && filters?.date_from && filters?.date_to
+
+    if (!isFilterValid) {
+        return (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                <p className="text-yellow-700 font-medium">
+                    Silakan pilih <b>Outlet</b>, <b>Tanggal Dari</b>, dan <b>Tanggal Sampai</b> terlebih dahulu.
+                </p>
+            </div>
+        )
     }
 
     return (
@@ -467,8 +481,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                     </div>
                 ) : (
                     <>
-                            <DoubleScrollbarTable>
-                        {/* <div className="overflow-x-auto"> */}
+                        <DoubleScrollbarTable>
+                            {/* <div className="overflow-x-auto"> */}
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
@@ -575,8 +589,8 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                     )}
                                 </tbody>
                             </table>
-                        {/* </div> */}
-                            </DoubleScrollbarTable>
+                            {/* </div> */}
+                        </DoubleScrollbarTable>
                         <div className="pb-6 pr-6">
                             <Pagination
                                 currentPage={currentPage}
@@ -611,7 +625,10 @@ const Scan = ({ refetch }) => {
 
     const [currentStep, setCurrentStep] = useState(1) // 1: Input data, 2: Scan, 3: PIN, 4: Complete
     const [pin, setPin] = useState("")
-    const [showPinInput, setShowPinInput] = useState(false)
+
+    const location = useLocation()
+
+    const { menuKategori } = useDropdownKategori()
 
     // Calculate total when price or quantity changes
     useEffect(() => {
@@ -757,7 +774,7 @@ const Scan = ({ refetch }) => {
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}transaksi/cari-pembeli`, {
+            const response = await fetch(`${API_BASE_URL}presensi/cari-santri`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -768,7 +785,7 @@ const Scan = ({ refetch }) => {
                 }),
             })
 
-            console.log("URL ", `${API_BASE_URL}transaksi/cari-pembeli`)
+            console.log("URL ", `${API_BASE_URL}transaksi/cari-santri`)
 
             const data = await response.json()
 
@@ -795,21 +812,40 @@ const Scan = ({ refetch }) => {
             return
         }
 
+        const confirmResult = await Swal.fire({
+            title: "Yakin ingin mengirim data?",
+            text: "Pastikan semua data sudah benar!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, simpan",
+            cancelButtonText: "Batal",
+        })
+
+        if (!confirmResult.isConfirmed) return
+
         setLoading(true)
         setError("")
         setSuccess("")
 
         try {
+            Swal.fire({
+                background: "transparent",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+                customClass: {
+                    popup: "p-0 shadow-none border-0 bg-transparent",
+                },
+            })
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const endpoint = inputMode === "manual" ? `${API_BASE_URL}transaksi` : `${API_BASE_URL}transaksi/scan`
+            const endpoint = `${API_BASE_URL}transaksi`
 
             const body = {
-                pembeli_id: customerData.id,
-                harga_satuan: Number.parseFloat(hargaSatuan),
-                jumlah: Number.parseInt(jumlah),
-                kategori: kategori,
-                total_harga: totalHarga,
-                metode: inputMode,
+                kategori_id: kategori,
+                total_bayar: totalHarga,
+                pin: pin,
                 ...(inputMode !== "manual" && { uid_kartu: customerData.uid_kartu }),
             }
 
@@ -822,34 +858,85 @@ const Scan = ({ refetch }) => {
                 body: JSON.stringify(body),
             })
 
+            Swal.close()
+
             const data = await response.json()
 
             if (!response.ok || !data.success) {
-                throw new Error(data.message || "Gagal menyimpan transaksi")
+                if (data.error) {
+                    const fieldMap = {
+                        kategori_id: "Kategori",
+                        total_bayar: "Total Bayar",
+                        nama: "Nama",
+                        email: "Email",
+                        // tambahin sesuai field di form
+                    };
+
+                    const ruleMap = {
+                        required: (field) => `${field} wajib diisi.`,
+                        unique: (field) => `${field} sudah digunakan.`,
+                        min: (field) => `${field} terlalu kecil.`,
+                        max: (field) => `${field} terlalu besar.`,
+                        exists: (field) => `${field} tidak ditemukan.`,
+                        numeric: (field) => `${field} harus berupa angka.`,
+                        string: (field) => `${field} harus berupa teks.`,
+                        email: (field) => `${field} harus berupa email valid.`,
+                    };
+
+                    const errorMessages = Object.entries(data.error)
+                        .map(([field, messages]) => {
+                            const label = fieldMap[field] || field; // fallback kalau belum di-map
+                            return messages
+                                .map(msg => {
+                                    // coba cari rule yg cocok dari pesan asli Laravel
+                                    for (const rule in ruleMap) {
+                                        if (msg.toLowerCase().includes(rule)) {
+                                            return ruleMap[rule](label);
+                                        }
+                                    }
+                                    return `${label}: ${msg}`; // fallback
+                                })
+                                .join(", ");
+                        })
+                        .join("\n");
+
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        text: errorMessages,
+                    });
+
+                    return;
+                }
+
+                throw new Error(data.message || "Terjadi kesalahan pada server.");
             }
 
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: data.message,
+            });
+            setIdCard("")
             setSuccess("Transaksi berhasil disimpan!")
-            playNotificationSound(true)
+            resetScan()
+            refetch(true)
 
             // Reset form after successful transaction
-            setTimeout(() => {
-                resetScan()
-                if (refetch) refetch()
-            }, 2000)
+            // setTimeout(() => {
+            //     if (refetch) refetch()
+            // }, 2000)
         } catch (error) {
             setError("Error: " + error.message)
-            playNotificationSound(false)
+            await Swal.fire({
+                icon: "error",
+                title: "Transaksi Gagal",
+                text: error.message,
+            });
         } finally {
             setLoading(false)
         }
     }
-
-    const kategoriOptions = [
-        { value: "makanan_minuman", label: "Makanan & Minuman" },
-        { value: "alat_tulis", label: "Alat Tulis" },
-        { value: "pakaian", label: "Pakaian" },
-        { value: "lainnya", label: "Lainnya" },
-    ]
 
     const resetScan = () => {
         setCustomerData(null)
@@ -861,13 +948,33 @@ const Scan = ({ refetch }) => {
         setSuccess("")
         setStatus("Tempelkan kartu pembayaran...")
         setCurrentStep(1)
-        setShowPinInput(false)
         setPin("")
+    }
+
+    const handleKembali = () => {
+        switch (inputMode) {
+            case "manual":
+                setStatus("Pilih santri...")
+                setCurrentStep(1)
+                break
+            case "nfc":
+                setCurrentStep(2)
+                setStatus("Tempelkan kartu NFC...")
+                startNFCScanning()
+                break
+            case "reader":
+                setStatus("Letakkan kartu pada reader...")
+                setIdCard("")
+                setCurrentStep(1)
+                break
+            default:
+                setStatus("Pilih mode input...")
+        }
     }
 
     const handleNextStep = () => {
         // console.log(idCard);
-
+        setIdCard("")
         switch (inputMode) {
             case "manual":
                 setStatus("Pilih santri...")
@@ -930,23 +1037,33 @@ const Scan = ({ refetch }) => {
     const inputRef = useRef(null)
 
     useEffect(() => {
-        if (currentStep !== 2) return;
+        if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
         // Tangkap semua input dari reader
         const handleKeyPress = (e) => {
             // Biasanya reader mengirim angka + Enter
             if (e.key === "Enter") {
                 e.preventDefault()
-                // submitForm(nis)
+                console.log("Submit ID Card:", idCard);
+
+                searchCustomer(idCard)
             } else if (/^[0-9]$/.test(e.key)) {
                 // Tambahkan angka ke state
-                setIdCard((prev) => prev + e.key)
+                setIdCard((prev) => {
+                    let newId = prev + e.key;
+
+                    // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
+                    if (newId.length > 10) {
+                        newId = e.key; // reset dan mulai dari digit ini
+                    }
+
+                    return newId;
+                });
             }
         }
 
         window.addEventListener("keydown", handleKeyPress)
         return () => window.removeEventListener("keydown", handleKeyPress)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [idCard])
+    }, [currentStep, idCard])
 
     const handlePinSubmit = () => {
         if (!pin || pin.length < 4) {
@@ -957,6 +1074,11 @@ const Scan = ({ refetch }) => {
         // Proceed with transaction
         _recordTransaction()
     }
+
+    useEffect(() => {
+        console.log(customerData);
+        
+    }, [customerData])
 
     return (
         <div className="max-w-2xl mx-auto">
@@ -971,11 +1093,11 @@ const Scan = ({ refetch }) => {
                 </div>
 
                 {/* Input Mode Selection */}
-                <div className="flex flex-col sm:flex-row gap-2 mb-6">
+                <div className="flex bg-white rounded-xl p-1 shadow-lg mb-4 sm:mb-6">
                     <button
                         onClick={() => toggleInputMode("nfc")}
                         disabled={!nfcSupported}
-                        className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium text-sm transition-colors ${inputMode === "nfc"
+                        className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "nfc"
                             ? "bg-blue-600 text-white"
                             : nfcSupported
                                 ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -983,11 +1105,12 @@ const Scan = ({ refetch }) => {
                             }`}
                     >
                         <FiWifi className="mr-2" />
-                        NFC {!nfcSupported && "(Tidak Didukung)"}
+                        NFC
+                        {/* {!nfcSupported && "(No Support)"} */}
                     </button>
                     <button
                         onClick={() => toggleInputMode("reader")}
-                        className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium text-sm transition-colors ${inputMode === "reader" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "reader" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                     >
                         <FiHardDrive className="mr-2" />
@@ -995,7 +1118,7 @@ const Scan = ({ refetch }) => {
                     </button>
                     <button
                         onClick={() => toggleInputMode("manual")}
-                        className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium text-sm transition-colors ${inputMode === "manual" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        className={`flex-1 flex items-center justify-center py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-medium text-sm sm:text-base transition-all ${inputMode === "manual" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                     >
                         <FiEdit3 className="mr-2" />
@@ -1047,8 +1170,9 @@ const Scan = ({ refetch }) => {
                                         <input
                                             type="number"
                                             value={hargaSatuan}
-                                            onChange={(e) => setHargaSatuan(e.target.value)}
+                                            onChange={(e) => setHargaSatuan(Number(e.target.value) || 1)}
                                             placeholder="0"
+                                            min="1"
                                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
@@ -1074,8 +1198,8 @@ const Scan = ({ refetch }) => {
                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                     <option value="">Pilih Kategori</option>
-                                    {kategoriOptions.map((option) => (
-                                        <option key={option.value} value={option.value}>
+                                    {menuKategori.map((option) => (
+                                        <option key={option.kategori_id} value={option.kategori_id}>
                                             {option.label}
                                         </option>
                                     ))}
@@ -1191,7 +1315,7 @@ const Scan = ({ refetch }) => {
                                 </div>
 
                                 {/* NIS Display */}
-                                <div className="bg-gray-50 rounded-lg p-4 mb-4 hidden">
+                                <div className="bg-gray-50 rounded-lg p-4 mb-4">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Nomor Induk Santri (NIS)</label>
                                     <div className="relative">
                                         <input
@@ -1256,7 +1380,7 @@ const Scan = ({ refetch }) => {
                                             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama Pembeli</label>
                                             <input
                                                 type="text"
-                                                value={customerData.nama_pembeli || customerData.label || ""}
+                                                value={customerData.nama_pembeli || customerData.nama_santri || customerData.label || ""}
                                                 readOnly
                                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
                                             />
@@ -1272,17 +1396,17 @@ const Scan = ({ refetch }) => {
                                             />
                                         </div>
 
-                                        {inputMode !== "manual" && (
-                                            <div>
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">UID Kartu</label>
-                                                <input
-                                                    type="text"
-                                                    value={customerData.uid_kartu || ""}
-                                                    readOnly
-                                                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
-                                                />
-                                            </div>
-                                        )}
+                                        <div>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">PIN</label>
+                                            <input
+                                                type="password"
+                                                value={pin}
+                                                onChange={(e) => setPin(e.target.value)}
+                                                placeholder="Masukkan PIN"
+                                                maxLength="6"
+                                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1329,17 +1453,17 @@ const Scan = ({ refetch }) => {
 
                         <div className="flex justify-between mt-6">
                             <button
-                                onClick={() => setCurrentStep(1)}
+                                onClick={() => handleKembali()}
                                 className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg font-medium"
                             >
                                 Kembali
                             </button>
                             <button
-                                onClick={() => setCurrentStep(3)}
-                                disabled={!customerData}
+                                onClick={handlePinSubmit}
+                                disabled={!customerData || !pin || pin.length < 4}
                                 className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg font-medium disabled:opacity-50"
                             >
-                                Lanjut ke PIN
+                                Konfirmasi
                             </button>
                         </div>
                     </div>
@@ -1354,7 +1478,7 @@ const Scan = ({ refetch }) => {
                             value={pin}
                             onChange={(e) => setPin(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest"
-                            placeholder="••••"
+                            placeholder="Masukkan PIN"
                             maxLength="6"
                         />
 

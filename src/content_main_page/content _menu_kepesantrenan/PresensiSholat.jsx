@@ -17,7 +17,7 @@ import {
     FaSync,
 } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
 import { API_BASE_URL } from "../../hooks/config"
 import blankProfile from "../../assets/blank_profile.png"
@@ -668,6 +668,8 @@ const Scan = ({ refetch }) => {
     const [showSelectSantri, setShowSelectSantri] = useState(false)
     const [santriData, setSantriData] = useState("")
 
+    const location = useLocation()
+
     useEffect(() => {
         checkNFCSupport()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -740,7 +742,7 @@ const Scan = ({ refetch }) => {
     }
 
     const startNFCScanning = async () => {
-        if (!nfcSupported) return
+        if (!nfcSupported && location.pathname !== "/belanja/transaksi") return
 
         try {
             const ndef = new window.NDEFReader()
@@ -883,6 +885,7 @@ const Scan = ({ refetch }) => {
     const resetScan = () => {
         setStudentData(null)
         setSantriData(null)
+        setNis("")
         setError("")
         setSuccess("")
 
@@ -926,11 +929,13 @@ const Scan = ({ refetch }) => {
     const [nis, setNis] = useState("")
 
     useEffect(() => {
+        if (location.pathname !== "/sholat/presensi-sholat") return;
         // Tangkap semua input dari reader
         const handleKeyPress = (e) => {
             // Biasanya reader mengirim angka + Enter
             if (e.key === "Enter") {
                 e.preventDefault()
+                console.log("Submit NIS:", nis);
                 submitForm(nis)
             } else if (/^[0-9]$/.test(e.key)) {
                 // Tambahkan angka ke state
