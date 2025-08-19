@@ -74,8 +74,7 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
     useEffect(() => {
         async function fetchData() {
             if (isOpen) {
-                await fetchOutlet();
-                await fetchUsers();
+                await Promise.all([fetchOutlet(), fetchUsers()]);
 
                 if (feature === 2 && data) {
                     setFormData({
