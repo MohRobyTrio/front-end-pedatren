@@ -559,7 +559,7 @@ const TabProgress = () => {
 								</div>
 							) : selectedDataId == afektif.id && selectedAfektifDetail && (
 								<div className=" bg-white shadow-md rounded-lg p-6">
-									<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} />
+									{/* <WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} /> */}
 									<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 										{/* Kolom Kiri */}
 										<div className="flex flex-col gap-4">
@@ -855,7 +855,7 @@ const TabProgress = () => {
 								</div>
 							) : selectedDataId == kognitif.id && selectedKognitifDetail && (
 								<div className=" bg-white shadow-md rounded-lg p-6">
-								<WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} />
+								{/* <WaliAsuhInfoCard waliAsuh={dataWaliAsuh} setShowSelectWaliAsuh={setShowSelectWaliAsuh} showChange={false} /> */}
 								<form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									{/* Kolom Kiri */}
 									<div className="flex flex-col gap-4">

@@ -31,7 +31,7 @@ const useFetchKognitif = (filters) => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async (force = false) => {
-        let url = `${API_BASE_URL}data-pokok/catatan-kognitif?limit=${limit}`;
+        let url = `${API_BASE_URL}catatan-kognitif?limit=${limit}`;
         if (currentPage > 1) url += `&page=${currentPage}`;
         if (debouncedSearchTerm) url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
 
