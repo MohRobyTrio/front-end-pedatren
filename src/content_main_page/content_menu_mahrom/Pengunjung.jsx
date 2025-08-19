@@ -335,21 +335,21 @@ const PengunjungCard = ({ data, openModal, setShowFormModal, setFeature, setSele
           {/* Step 2 - Berlangsung / Ditolak */}
           <div className="flex flex-col items-center">
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai === "ditolak"
+              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai == "ditolak"
                   ? "bg-red-500 text-white"
-                  : data.status_selesai === "berlangsung" || data.status_selesai === "selesai"
+                  : data.status_selesai == "berlangsung" || data.status_selesai == "selesai"
                     ? "bg-green-500 text-white"
                     : "bg-gray-300 text-gray-600"
                 }`}
             >
-              {data.status_selesai === "ditolak"
+              {data.status_selesai == "ditolak"
                 ? "✗"
-                : data.status_selesai === "berlangsung" || data.status_selesai === "selesai"
+                : data.status_selesai == "berlangsung" || data.status_selesai == "selesai"
                   ? "✓"
                   : "2"}
             </div>
             <span className="text-xs text-gray-600 mt-1 font-medium">
-              {data.status_selesai === "ditolak" ? "Ditolak" : "Berlangsung"}
+              {data.status_selesai == "ditolak" ? "Ditolak" : "Berlangsung"}
             </span>
           </div>
 
@@ -358,12 +358,12 @@ const PengunjungCard = ({ data, openModal, setShowFormModal, setFeature, setSele
           {/* Step 3 - Selesai */}
           <div className="flex flex-col items-center">
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai === "selesai"
+              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai == "selesai"
                   ? "bg-green-500 text-white"
                   : "bg-gray-300 text-gray-600"
                 }`}
             >
-              {data.status_selesai === "selesai" ? "✓" : "3"}
+              {data.status_selesai == "selesai" ? "✓" : "3"}
             </div>
             <span className="text-xs text-gray-600 mt-1 font-medium">Selesai</span>
           </div>

@@ -44,7 +44,7 @@ const useFetchDataOutlet = () => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const result = await response.json();
 
-            const dataArray = Array.isArray(result.data.data) ? result.data.data : [];
+            const dataArray = Array.isArray(result.data) ? result.data : [];
 
             setDataOutlet(dataArray);
             sessionStorage.setItem("dataOutletData", JSON.stringify(dataArray));
