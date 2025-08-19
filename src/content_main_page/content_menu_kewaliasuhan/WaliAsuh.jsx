@@ -13,7 +13,8 @@ import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { FaEdit, FaFileExport } from "react-icons/fa";
 import { ModalExport } from "../../components/modal/ModalExport";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const WaliAsuh = () => {
     const navigate = useNavigate();
@@ -214,6 +215,10 @@ const WaliAsuh = () => {
             state: { kondisiTabFormulir: kondisi }
         });
     };
+
+    if (!hasAccess("waliAsuh")) {
+                return <Navigate to="/not-found" replace />;
+            }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">

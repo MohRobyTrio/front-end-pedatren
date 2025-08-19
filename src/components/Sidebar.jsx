@@ -19,12 +19,27 @@ import {
 } from "../data/menuData";
 import Access from "./Access";
 import { hasAccess } from "../utils/hasAccess";
+import { getRolesString } from "../utils/getRolesString";
+
 
 const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const location = useLocation();
+    // Ambil roles dari session/local storage atau context
+    const roles = String(getRolesString())
+        .split(",")
+        .map(role => role.trim().toLowerCase());
+
+    // Filter khusus untuk waliasuh
+    let filteredKewaliasuhanItems = menuKewaliasuhanItems;
+    if (roles.includes("waliasuh")) {
+        filteredKewaliasuhanItems = menuKewaliasuhanItems.filter(item =>
+            ["catatanafektif", "catatankognitif"].includes(item.id)
+        );
+    }
 
     const MenuItem = ({ icon, text, link, onClick, hasSubmenu, isOpen }) => {
         const isActive = location.pathname === link || location.pathname.startsWith(link + "/");
+
 
         return (
             <li className="mb-0.5 ml-2">
@@ -220,18 +235,20 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                                 isOpen={dropdowns.kewaliasuhan}
                                 onClick={() => toggleDropdown("kewaliasuhan")}
                             />
-                            {dropdowns.kewaliasuhan && <DropdownMenu items={menuKewaliasuhanItems} />}
+                            {dropdowns.kewaliasuhan && <DropdownMenu items={filteredKewaliasuhanItems} />}
                         </div>
                     </Access>
 
-                    <div className="mt-3 px-2">
-                        <MenuHeader
-                            name="Kepesantrenan"
-                            isOpen={dropdowns.kepesantrenan}
-                            onClick={() => toggleDropdown("kepesantrenan")}
-                        />
-                        {dropdowns.kepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
-                    </div>
+                    <Access action="kepesantrenan">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Kepesantrenan"
+                                isOpen={dropdowns.kepesantrenan}
+                                onClick={() => toggleDropdown("kepesantrenan")}
+                            />
+                            {dropdowns.kepesantrenan && <DropdownMenu items={menuKepesantrenanItems} />}
+                        </div>
+                    </Access>
 
                     <Access action="kepegawaian">
                         <div className="mt-3 px-2">

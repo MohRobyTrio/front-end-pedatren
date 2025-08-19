@@ -16,7 +16,8 @@ import Access from "../../components/Access";
 import { getCookie } from "../../utils/cookieUtils";
 import Swal from "sweetalert2";
 import useLogout from "../../hooks/Logout";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const CatatanAfektif = () => {
     const { clearAuthData } = useLogout();
@@ -184,12 +185,16 @@ const CatatanAfektif = () => {
 
     const [showFormModal, setShowFormModal] = useState(false);
 
+    if (!hasAccess("catatan_afektif")) {
+            return <Navigate to="/not-found" replace />;
+        }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Catatan Afektif</h1>
                 <div className="flex items-center space-x-2">
-                    <Access action="tambah">
+                    <Access action="catatan_afektif">
                         <button onClick={() => setShowFormModal(true)} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                     </Access>
                 </div>
