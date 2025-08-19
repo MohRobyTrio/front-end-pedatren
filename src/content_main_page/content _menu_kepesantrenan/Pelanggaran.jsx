@@ -128,22 +128,26 @@ const DataPelanggaran = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Pelanggaran</h1>
-                <div className="flex items-center space-x-2">
+        <div className="flex-1 pl-6 pt-6 pb-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+                <h1 className="text-xl md:text-2xl font-bold">Data Pelanggaran</h1>
+                <div className="flex flex-wrap items-center gap-2">
                     <Access action="tambah">
-                        <button onClick={() => {
-                            setFeature(1);
-                            setShowFormModal(true);
-                        }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
+                        <button
+                            onClick={() => {
+                                setFeature(1);
+                                setShowFormModal(true);
+                            }}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
+                        >
+                            <FaPlus /> Tambah
+                        </button>
                     </Access>
                     <button
                         onClick={() => setOpenModalExport(true)}
-                        className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
+                        className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-2 rounded cursor-pointer flex items-center gap-2 text-sm md:text-base"
                     >
-                        <FaFileExport />
-                        <span>Export</span>
+                        <FaFileExport /> Export
                     </button>
                 </div>
             </div>
