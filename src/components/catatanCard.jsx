@@ -128,7 +128,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                     className="cursor-pointer"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setTitleModal("Peserta Didik");
+                                        setTitleModal(`Catatan ${label.replace(/\b\w/g, c => c.toUpperCase())} Peserta Didik`);
                                         openModal(data.Biodata_uuid);
                                     }}
                                 >
@@ -152,7 +152,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                     className="cursor-pointer"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setTitleModal("Peserta Didik");
+                                        setTitleModal(`Catatan ${label.replace(/\b\w/g, c => c.toUpperCase())} Peserta Didik`);
                                         openModal(data.Biodata_uuid);
                                     }}
                                 >
@@ -184,7 +184,7 @@ const SantriAfektifCard = ({ santri, menu, fetchData, label }) => {
                                     className="cursor-pointer"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        setTitleModal("Peserta Didik");
+                                        setTitleModal(`Catatan ${label.replace(/\b\w/g, c => c.toUpperCase())} Peserta Didik`);
                                         openModal(data.Biodata_uuid);
                                     }}
                                 >

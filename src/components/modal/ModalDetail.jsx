@@ -128,11 +128,11 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             }
         };
 
-        if (item?.biodata_id || item?.id_khadam || item?.id || item?.santri_id) {
+        if (item?.biodata_id || item?.id_khadam || item?.id || item?.santri_id || item?.Biodata_uuid || item) {
             fetchData();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [item, item.biodata_id, item.id, item.id_khadam, item.santri_id, menu]);
+    }, [item, item.biodata_id, item.id, item.id_khadam, item.santri_id, item.Biodata_uuid, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
 
