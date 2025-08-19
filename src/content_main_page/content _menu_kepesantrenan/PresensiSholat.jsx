@@ -849,7 +849,7 @@ const Scan = ({ refetch }) => {
             })
             const result = await response.json()
 
-            if (!response.ok || result.success === false) {
+            if (!response.ok || result.success === false || !("data" in result)) {
                 setStatusResponse(result.status || "")
                 throw new Error(result.message || "Gagal menyimpan presensi")
             }
@@ -882,6 +882,7 @@ const Scan = ({ refetch }) => {
 
     const resetScan = () => {
         setStudentData(null)
+        setSantriData(null)
         setError("")
         setSuccess("")
 

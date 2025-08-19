@@ -73,6 +73,7 @@ import ContainerPegawai from "../content_main_page/content_menu_kepegawaian/Cont
 import Transaksi from "../content_main_page/content _menu_kepesantrenan/Transaksi";
 import ViewOutlet from "../content_main_page/content _menu_kepesantrenan/ViewOutlet";
 import Kategori from "../content_main_page/content _menu_kepesantrenan/Kategori";
+import UserOutlet from "../content_main_page/content _menu_kepesantrenan/DetailUserOutlet";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -132,6 +133,7 @@ export const menuKepesantrenanItems = [
 
 export const menuBelanja = [
     { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/belanja/outlet", content: <ViewOutlet />, access: "outlet" },
+    { id: "detailuseroutlet", icon: "fa-shopping-cart", text: "User Outlet", link: "/belanja/user-outlet", content: <UserOutlet />, access: "outlet" },
     { id: "kategori", icon: "fa-shopping-cart", text: "Kategori", link: "/belanja/kategori", content: <Kategori />, access: "kategori" },
     { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/belanja/transaksi", content: <Transaksi />, access: "transaksi" },
 ]

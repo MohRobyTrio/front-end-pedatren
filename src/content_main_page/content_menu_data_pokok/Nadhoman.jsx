@@ -22,6 +22,7 @@ import NadhomanItem from "../../components/NadhomanItem"
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
 import { Navigate } from "react-router-dom"
 import { hasAccess } from "../../utils/hasAccess"
+import blankProfile from "../../assets/blank_profile.png"
 
 export const Nadhoman = ({ nadhoman }) => {
     const [selectedItem, setSelectedItem] = useState(null)
@@ -136,6 +137,10 @@ export const Nadhoman = ({ nadhoman }) => {
                                         src="src\assets\blank_profile.png"
                                         alt={`Foto ${selectedStudent.nama}`}
                                         className="w-24 h-30 md:w-36 md:h-44 rounded-xl object-cover border-3 border-white shadow-lg"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = blankProfile;
+                                        }}
                                     />
                                 </div>
                             </div>

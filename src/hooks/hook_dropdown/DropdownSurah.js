@@ -22,6 +22,7 @@ const DropdownSurah = () => {
             no: surah.nomor,
             value: surah.nomor,
             nama: surah.nama_latin,
+            jumlah_ayat: surah.jumlah_ayat,
             label: `${surah.nomor}. ${surah.nama_latin} (${surah.jumlah_ayat} ayat)`
           }));
 

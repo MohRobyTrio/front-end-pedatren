@@ -1,6 +1,6 @@
 import { FaQuran, FaCalendarAlt, FaUser, FaGraduationCap, FaBook, FaEdit, FaEye } from "react-icons/fa"
 
-const TahfidzItem = ({ data, title, menu }) => {
+const TahfidzItem = ({ data, title }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4">
       <div className="flex items-start justify-between mb-3">
