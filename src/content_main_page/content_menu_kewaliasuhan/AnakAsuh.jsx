@@ -13,7 +13,8 @@ import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { FaEdit, FaFileExport } from "react-icons/fa";
 import { ModalExport } from "../../components/modal/ModalExport";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const AnakAsuh = () => {
     const navigate = useNavigate();
@@ -148,16 +149,16 @@ const AnakAsuh = () => {
     }
 
     // const filterSmartcardPhone = {
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        // phoneNumber: [
-        //     { label: "Phone Number", value: "" },
-        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
-        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        // ]
+    // smartcard: [
+    //     { label: "Smartcard", value: "" },
+    //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    // ],
+    // phoneNumber: [
+    //     { label: "Phone Number", value: "" },
+    //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    // ]
     // };
 
     const fieldsExports = [
@@ -191,6 +192,10 @@ const AnakAsuh = () => {
             state: { kondisiTabFormulir: kondisi }
         });
     };
+
+    if (!hasAccess("anak_asuh")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -309,19 +314,19 @@ const AnakAsuh = () => {
                                             <td className="px-3 py-2 border-b">{item.Group_Waliasuh || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.kota_asal || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.angkatan || "-"}</td>
-                                             <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
-                                                    {/* </Link> */}
-                                                </td>
+                                            <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
+                                                    }}
+                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                {/* </Link> */}
+                                            </td>
 
                                             {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
@@ -333,7 +338,7 @@ const AnakAsuh = () => {
                     </DoubleScrollbarTable>
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/anakasuh" /> 
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/anakasuh" />
 
                 {isModalOpen && (
                     <ModalDetail

@@ -13,8 +13,9 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { FaEdit, FaFileExport, FaPlus } from "react-icons/fa";
 import Access from "../../components/Access";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { ModalExport } from "../../components/modal/ModalExport";
+import { hasAccess } from "../../utils/hasAccess";
 
 
 const GroupKewaliasuhan = () => {
@@ -214,6 +215,10 @@ const GroupKewaliasuhan = () => {
         // { label: "Ayah Kandung", value: "ayah_kandung" }
     ];
 
+    if (!hasAccess("group_kewaliasuhan")) {
+        return <Navigate to="/not-found" replace />;
+    }
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -279,9 +284,9 @@ const GroupKewaliasuhan = () => {
                                     <th className="px-3 py-2 border-b">Jum. Anak Asuh</th>
                                     <th className="px-3 py-2 border-b">Tgl Update Group</th>
                                     <th className="px-3 py-2 border-b">Tgl Input Group</th>
-                                        <Access action={"edit"}>
-                                            <th className="px-3 py-2 border-b">Aksi</th>
-                                        </Access>
+                                    <Access action={"edit"}>
+                                        <th className="px-3 py-2 border-b">Aksi</th>
+                                    </Access>
                                 </tr>
                             </thead>
                             <tbody className="text-gray-800 text-center">
@@ -336,7 +341,7 @@ const GroupKewaliasuhan = () => {
                     </DoubleScrollbarTable>
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/grupwaliasuh" /> 
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/grupwaliasuh" />
 
                 {/* Modal untuk tambah/edit grup */}
                 <ModalFormGrupWaliAsuh

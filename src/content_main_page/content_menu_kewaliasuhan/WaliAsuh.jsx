@@ -21,16 +21,16 @@ const WaliAsuh = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
     const [filters, setFilters] = useState({
         phoneNumber: "",
         smartcard: "",
@@ -172,16 +172,16 @@ const WaliAsuh = () => {
     }
 
     // const filterSmartcardPhone = {
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        // phoneNumber: [
-        //     { label: "Phone Number", value: "" },
-        //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
-        //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
-        // ]
+    // smartcard: [
+    //     { label: "Smartcard", value: "" },
+    //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    // ],
+    // phoneNumber: [
+    //     { label: "Phone Number", value: "" },
+    //     { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //     { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    // ]
     // };
 
     const fieldsExports = [
@@ -216,9 +216,9 @@ const WaliAsuh = () => {
         });
     };
 
-    if (!hasAccess("waliAsuh")) {
-                return <Navigate to="/not-found" replace />;
-            }
+    if (!hasAccess("wali_asuh")) {
+        return <Navigate to="/not-found" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -278,7 +278,7 @@ const WaliAsuh = () => {
                                 <p className="text-center col-span-3">Tidak ada data</p>
                             ) : (
                                 waliAsuh.map((item, index) => (
-                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer"  onClick={() => openModal(item)}>
+                                    <div key={item.id || index} className="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4 cursor-pointer" onClick={() => openModal(item)}>
                                         <img
                                             alt={item.nama || "-"}
                                             className="w-20 h-24 object-cover"
@@ -355,17 +355,17 @@ const WaliAsuh = () => {
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
 
 
-                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
                                             </tr>
@@ -377,7 +377,7 @@ const WaliAsuh = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/waliasuh" /> 
+                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/waliasuh" />
 
                 {isModalOpen && (
                     <ModalDetail
