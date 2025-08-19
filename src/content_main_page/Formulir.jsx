@@ -14,6 +14,7 @@ const Formulir = () => {
     const [tabKondisi, setTabKondisi] = useState('kondisi2'); // default kondisi2
     const [pesertaData, setPesertaData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const prevRoute = sessionStorage.getItem("prevRoute");
 
     // Definisi tab berdasarkan kondisi
     const tabsKondisi1 = [
@@ -124,7 +125,7 @@ const Formulir = () => {
         } finally {
             setIsLoading(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -183,7 +184,7 @@ const Formulir = () => {
             // Cache masih ada → pakai cache
             setPesertaData(JSON.parse(cachedData));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cachedData]); // jalankan saat id berubah
 
     // Tambahkan useEffect untuk listen event dari child component
@@ -364,12 +365,12 @@ const Formulir = () => {
                                         </div>
                                     </div>
                                     <button
-                        onClick={() => navigate(-1)}
-                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors flex items-center gap-2"
-                    >
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                        Kembali
-                    </button>
+                                        onClick={() => navigate(prevRoute || "/")}
+                                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors flex items-center gap-2"
+                                    >
+                                        <FontAwesomeIcon icon={faArrowLeft} />
+                                        Kembali
+                                    </button>
                                 </div>
                             )}
                         </div>

@@ -61,7 +61,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
         alumni: menuAlumni,
         csholat: menuSholat,
         hafalan: menuHafalan,
-        belanja: menuBelanja,
+        transaksi: menuBelanja,
     };
 
     const DropdownMenu = ({ items }) => (
@@ -76,7 +76,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                     item.id == "alumni" ||
                     item.id == "csholat" ||
                     item.id == "hafalan" ||
-                    item.id == "belanja";
+                    item.id == "transaksi";
                 // const isOpen = isPeserta ? true : dropdowns[item.id];
                 // const isOpen = dropdowns[item.id];
 

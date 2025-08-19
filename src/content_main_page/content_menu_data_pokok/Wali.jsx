@@ -95,7 +95,7 @@ const Wali = () => {
             { label: "Pilih Jenis Kelamin Peserta Didik", value: "" },
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" }
-        ]
+        ],
         // pilihWaliDari : [
         //     { label: "Pilih Wali Dari", value: "" },
         //     { label: "Santri": value ""},
@@ -104,25 +104,40 @@ const Wali = () => {
         //     { label: "Pelajar Non Santri": value ""},
         //     { label: "Santri Sekaligus Pelajar": value ""}
         // ]
-    };
-
-    const filter4 = {
         wafatHidup: [
             { label: "Pilih Wafat / Hidup", value: "" },
             { label: "Sudah Wafat", value: "sudah wafat" },
             { label: "Masih Hidup", value: "masih hidup" }
         ],
-        smartcard: [
-            { label: "Smartcard", value: "" },
-            { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-            { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        ],
+        // smartcard: [
+        //     { label: "Smartcard", value: "" },
+        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+        // ],
         phoneNumber: [
             { label: "Phone Number", value: "" },
             { label: "Memiliki Phone Number", value: "memiliki phone number" },
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
         ]
     };
+
+    // const filter4 = {
+    //     wafatHidup: [
+    //         { label: "Pilih Wafat / Hidup", value: "" },
+    //         { label: "Sudah Wafat", value: "sudah wafat" },
+    //         { label: "Masih Hidup", value: "masih hidup" }
+    //     ],
+    //     smartcard: [
+    //         { label: "Smartcard", value: "" },
+    //         { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //         { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    //     ],
+    //     phoneNumber: [
+    //         { label: "Phone Number", value: "" },
+    //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
+    //         { label: "Tidak Ada Phone Number", value: "tidak ada phone number" }
+    //     ]
+    // };
 
     const handleEditClick = (biodataId, kondisi) => {
         navigate(`/formulir/${biodataId}/biodata`, {
@@ -131,15 +146,15 @@ const Wali = () => {
     };
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Wali</h1>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+            <div className="">
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filter3} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
-                    <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} />
+                    {/* <Filters showFilters={showFilters} filterOptions={filter4} onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))} selectedFilters={filters} /> */}
                 </div>
 
                 <SearchBar

@@ -2,14 +2,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import useDropdownSantri from "../hooks/hook_dropdown/DropdownSantri";
 
-export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected }) => {
+export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = false }) => {
     const [search, setSearch] = useState("");
 
-    const {
-         menuSantriCatatan
-        } = useDropdownSantri();
+    const { menuSantri, menuSantriCatatan } = useDropdownSantri();
 
-    const menuSantriFilter = menuSantriCatatan.filter((s) =>
+    // pilih data berdasarkan list
+    const dataSource = list ? menuSantriCatatan : menuSantri;
+
+    const menuSantriFilter = dataSource.filter((s) =>
         s.value.toLowerCase().includes(search.toLowerCase()) ||
         s.nis?.toString().includes(search)
     );

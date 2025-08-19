@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faArrowRight,
@@ -12,32 +12,27 @@ import {
     faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons"
 import { Link, Navigate } from "react-router-dom"
-import useFetchSantri from "../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri"
-import useFetchKhadam from "../hooks/hooks_menu_data_pokok/Khadam"
-import useFetchAlumni from "../hooks/hooks_menu_data_pokok/Alumni"
-import useFetchWaliAsuh from "../hooks/hooks_menu_kewaliasuhan/WaliAsuh"
-import useFetchPerizinan from "../hooks/hook_menu_kepesantrenan/Perizinan"
 import { hasAccess } from "../utils/hasAccess"
-import { useEffectOnActive } from "keepalive-for-react"
+import { API_BASE_URL } from "../hooks/config"
 
 const Dashboard = () => {
-    const filtersPerizinanDMI = useMemo(() => ({ status: "sudah berada diluar pondok" }), [])
-    const filtersPerizinanTBK = useMemo(() => ({ status: "telat(belum kembali)" }), [])
-    const { loadingSantri, totalDataSantri, fetchData } = useFetchSantri()
-    const { loadingKhadam, totalDataKhadam, fetchData: fetchDataKhadam } = useFetchKhadam()
-    const { loadingAlumni, totalDataAlumni, fetchData: fetchDataAlumni } = useFetchAlumni()
-    const { loadingWaliAsuh, totalDataWaliAsuh, fetchData: fetchDataWaliAsuh } = useFetchWaliAsuh()
-    const { loading: loadingPerizinanDMI, totalData: totalDataPerizinanDMI, fetchData: fetchDataPerizinanDMI } = useFetchPerizinan(filtersPerizinanDMI)
-    const { loading: loadingPerizinanTBK, totalData: totalDataPerizinanTBK, fetchData: fetchDataPerizinanTBK } = useFetchPerizinan(filtersPerizinanTBK)
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState({})
 
-    useEffectOnActive(() => {
-        fetchData(true);
-        fetchDataKhadam(true);
-        fetchDataAlumni(true);
-        fetchDataWaliAsuh(true);
-        fetchDataPerizinanDMI(true);
-        fetchDataPerizinanTBK(true);
-    }, []);
+    useEffect(() => {
+        const fetchDashboard = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}dashboard`)
+                const json = await res.json()
+                setData(json)
+            } catch (err) {
+                console.error("Gagal fetch dashboard:", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchDashboard()
+    }, [])
 
     const LoadingSpinner = () => {
         return (
@@ -50,7 +45,7 @@ const Dashboard = () => {
     const stats = [
         {
             label: "Total Santri",
-            value: loadingSantri ? <LoadingSpinner /> : totalDataSantri,
+            value: loading ? <LoadingSpinner /> : data?.santri,
             gradient: "from-emerald-400 to-emerald-600",
             icon: faUsers,
             link: "/santri",
@@ -58,7 +53,7 @@ const Dashboard = () => {
         },
         {
             label: "Total Wali Asuh",
-            value: loadingWaliAsuh ? <LoadingSpinner /> : totalDataWaliAsuh,
+            value: loading ? <LoadingSpinner /> : data?.wali_asuh,
             gradient: "from-blue-400 to-blue-600",
             icon: faUserShield,
             link: "/wali-asuh",
@@ -66,7 +61,7 @@ const Dashboard = () => {
         },
         {
             label: "Total Khadam",
-            value: loadingKhadam ? <LoadingSpinner /> : totalDataKhadam,
+            value: loading ? <LoadingSpinner /> : data?.khadam,
             gradient: "from-purple-400 to-purple-600",
             icon: faUserTie,
             link: "/khadam",
@@ -74,7 +69,7 @@ const Dashboard = () => {
         },
         {
             label: "Total Alumni",
-            value: loadingAlumni ? <LoadingSpinner /> : totalDataAlumni,
+            value: loading ? <LoadingSpinner /> : data?.alumni,
             gradient: "from-indigo-400 to-indigo-600",
             icon: faUserGraduate,
             link: "/alumni",
@@ -82,7 +77,7 @@ const Dashboard = () => {
         },
         {
             label: "Dalam Masa Izin",
-            value: loadingPerizinanDMI ? <LoadingSpinner /> : totalDataPerizinanDMI,
+            value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin,
             gradient: "from-amber-400 to-orange-500",
             icon: faClock,
             link: "/perizinan?status=sudah%20berada%20diluar%20pondok",
@@ -90,7 +85,7 @@ const Dashboard = () => {
         },
         {
             label: "Telat Belum Kembali",
-            value: loadingPerizinanTBK ? <LoadingSpinner /> : totalDataPerizinanTBK,
+            value: loading ? <LoadingSpinner /> : data?.telat_belum_kembali,
             gradient: "from-red-400 to-red-600",
             icon: faExclamationTriangle,
             link: "/perizinan?status=telat(belum%20kembali)",

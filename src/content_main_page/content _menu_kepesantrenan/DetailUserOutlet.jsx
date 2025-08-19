@@ -111,7 +111,8 @@ const UserOutlet = () => {
                                             </td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         setUserOutletData(item);
                                                         setFeature(2);
                                                         setOpenModal(true);

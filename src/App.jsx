@@ -2,7 +2,8 @@ import './App.css'
 import {
     BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate,
     // useLocation, 
-    useParams
+    useParams,
+    useLocation
 } from 'react-router-dom';
 import MainPage from './page/MainPage';
 // import RegisterPage from './page/RegisterPage';
@@ -16,6 +17,7 @@ import {
     menuDataPokokItems, menuHafalan, menuItems, menuKepegawaianItems, menuKepesantrenanItems,
     menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems,
     menuManageItems,
+    menuOrangTua,
     menuSholat,
     subKelembagaanItems,
     subMenuPegawai,
@@ -34,6 +36,8 @@ import { getRolesString } from './utils/getRolesString';
 import ContainerPesertaDidik from './content_main_page/content_menu_data_pokok/ContainerPesertaDidik';
 import ContainerPegawai from './content_main_page/content_menu_kepegawaian/ContainerPegawai';
 import Transaksi from './content_main_page/content _menu_kepesantrenan/Transaksi';
+import ContainerOrangTua from './content_main_page/content_menu_data_pokok/ContainerOrangTua';
+import RouteTracker from './components/RouteTracker';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -152,75 +156,85 @@ const RedirectToBiodata = () => {
 function App() {
     return (
         <Router>
-            <Routes>
-                {/* Public Route: Login hanya bisa diakses saat belum login */}
-                <Route element={<PublicRoute />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    {/* <Route path="/register" element={<RegisterPage />} /> */}
-                    <Route path="/forgot" element={<ForgotPasswordPage />} />
-                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <RouteTracker>
+                <Routes>
+                    {/* Public Route: Login hanya bisa diakses saat belum login */}
+                    <Route element={<PublicRoute />}>
+                        <Route path="/login" element={<LoginPage />} />
+                        {/* <Route path="/register" element={<RegisterPage />} /> */}
+                        <Route path="/forgot" element={<ForgotPasswordPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-                </Route>
-
-                {/* Private Route: Semua halaman ini butuh login */}
-                <Route element={<PrivateRoute />}>
-                    <Route path="/" element={<MainPage />}>
-                        {/* Default redirect ke dashboard */}
-                        <Route index element={<RedirectToDashboard />} />
-
-                        <Route path="formulir/:biodata_id" element={<Formulir />}>
-                            <Route index element={<RedirectToBiodata />} />
-                            {tabsFormulir.map((tab) => (
-                                <Route key={tab.id} path={tab.link} element={tab.content} />
-                            ))}
-                        </Route>
-
-                        <Route path="peserta-didik" element={<ContainerPesertaDidik />}>
-                            {/* <Route index element={<RedirectToBiodata />} /> */}
-                            {subPesertaDidik.map((tab) => (
-                                <Route key={tab.id} path={tab.link} element={tab.content} />
-                            ))}
-                        </Route>
-
-                        <Route path="pegawai" element={<ContainerPegawai />}>
-                            {/* <Route index element={<RedirectToBiodata />} /> */}
-                            {subMenuPegawai.map((tab) => (
-                                <Route key={tab.id} path={tab.link} element={tab.content} />
-                            ))}
-                        </Route>
-
-                        {/* Semua menu */}
-                        {[
-                            ...menuItems,
-                            ...menuDataPokokItems,
-                            ...menuKewaliasuhanItems,
-                            ...menuKepesantrenanItems,
-                            ...menuKepegawaianItems,
-                            ...menuMahromItems,
-                            // ...menuRWSItems,
-                            // ...subPesertaDidik,
-                            // ...menuKelembagaanItems,
-                            ...menuAkademikItems,
-                            ...menuKewilayahanItems,
-                            ...subKelembagaanItems,
-                            ...subPelajaranItems,
-                            ...menuManageItems,
-                            ...menuAlumni,
-                            ...menuSholat,
-                            ...menuHafalan,
-                            ...menuBelanja
-                        ].map((tab) => (
-                            <Route key={tab.id} path={tab.link} element={tab.content} />
-                        ))}
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/transaksi" element={<Transaksi />} />
-                        {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
                     </Route>
-                </Route>
 
-                {/* Catch-all: Not Found */}
-                <Route path="*" element={<NotFound />} />
-            </Routes>
+                    {/* Private Route: Semua halaman ini butuh login */}
+                    <Route element={<PrivateRoute />}>
+                        <Route path="/" element={<MainPage />}>
+                            {/* Default redirect ke dashboard */}
+                            <Route index element={<RedirectToDashboard />} />
+
+                            <Route path="formulir/:biodata_id" element={<Formulir />}>
+                                <Route index element={<RedirectToBiodata />} />
+                                {tabsFormulir.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
+
+                            <Route path="peserta-didik" element={<ContainerPesertaDidik />}>
+                                {/* <Route index element={<RedirectToBiodata />} /> */}
+                                {subPesertaDidik.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
+
+                            <Route path="pegawai" element={<ContainerPegawai />}>
+                                {/* <Route index element={<RedirectToBiodata />} /> */}
+                                {subMenuPegawai.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
+
+                            <Route path="orang-tua" element={<ContainerOrangTua />}>
+                                {/* <Route index element={<RedirectToBiodata />} /> */}
+                                {menuOrangTua.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
+
+                            {/* Semua menu */}
+                            {[
+                                ...menuItems,
+                                ...menuDataPokokItems,
+                                ...menuKewaliasuhanItems,
+                                ...menuKepesantrenanItems,
+                                ...menuKepegawaianItems,
+                                ...menuMahromItems,
+                                // ...menuRWSItems,
+                                // ...subPesertaDidik,
+                                // ...menuKelembagaanItems,
+                                ...menuAkademikItems,
+                                ...menuKewilayahanItems,
+                                ...subKelembagaanItems,
+                                ...subPelajaranItems,
+                                ...menuManageItems,
+                                ...menuAlumni,
+                                ...menuSholat,
+                                ...menuHafalan,
+                                ...menuBelanja,
+                                ...menuOrangTua
+                            ].map((tab) => (
+                                <Route key={tab.id} path={tab.link} element={tab.content} />
+                            ))}
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/transaksi" element={<Transaksi />} />
+                            {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
+                        </Route>
+                    </Route>
+
+                    {/* Catch-all: Not Found */}
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </RouteTracker>
         </Router>
     );
 }
