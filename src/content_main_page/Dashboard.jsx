@@ -11,6 +11,7 @@ import {
   faClock,
   faExclamationTriangle,
   faChartLine,
+  faRotateRight, // Added refresh icon
 } from "@fortawesome/free-solid-svg-icons"
 import { Link, Navigate } from "react-router-dom"
 import { hasAccess } from "../utils/hasAccess"
@@ -20,19 +21,21 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({})
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}dashboard`)
-        const json = await res.json()
-        setData(json)
-      } catch (err) {
-        console.error("Gagal fetch dashboard:", err)
-      } finally {
-        setLoading(false)
-      }
+  const refreshData = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE_URL}dashboard`)
+      const json = await res.json()
+      setData(json)
+    } catch (err) {
+      console.error("Gagal fetch dashboard:", err)
+    } finally {
+      setLoading(false)
     }
-    fetchDashboard()
+  }
+
+  useEffect(() => {
+    refreshData()
   }, [])
 
   const LoadingSpinner = () => {
@@ -294,20 +297,23 @@ const Dashboard = () => {
                 <p className="text-xl text-slate-600 mt-2">Sistem Manajemen Pesantren</p>
               </div>
             </div>
-                {/* <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
+            {/* <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
                 Pantau dan kelola seluruh data pesantren dalam satu platform terpadu
                 </p> */}
           </div>
 
           <div className="flex flex-col items-end gap-4">
-            <div className="flex items-center gap-3 px-6 py-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
-              <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-semibold text-emerald-700">Sistem Aktif</span>
-            </div>
-            {/* <div className="text-right text-sm text-slate-500"> */}
-              {/* <div>Total Kategori: {stats.length}</div> */}
-              {/* <div>Terakhir Update: Hari ini</div> */}
-            {/* </div> */}
+            <button
+              onClick={refreshData}
+              disabled={loading}
+              className="group flex items-center gap-3 px-6 py-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+            >
+              <FontAwesomeIcon
+                icon={faRotateRight}
+                className={`text-sm transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
+              />
+              <span className="font-semibold">{loading ? "Memuat..." : "Refresh Data"}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -317,25 +323,18 @@ const Dashboard = () => {
           const config = categoryConfig[category]
           return (
             <div key={category} className="space-y-8">
-              <div className={`${config.bgColor} rounded-2xl p-8 border border-gray-100`}>
+              <div className={`${config.bgColor} rounded-2xl p-5 border border-gray-100`}>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 ${config.iconBg} rounded-xl flex items-center justify-center`}>
-                      <FontAwesomeIcon icon={config.icon} className={`text-lg ${config.textColor}`} />
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 ${config.iconBg} rounded-lg flex items-center justify-center`}>
+                      <FontAwesomeIcon icon={config.icon} className={`text-sm ${config.textColor}`} />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-slate-900">{config.title}</h2>
-                      <p className="text-slate-600">
-                        {categoryStats.reduce(
-                          (sum, stat) => sum + (typeof stat.value === "number" ? stat.value : 0),
-                          0,
-                        )}{" "}
-                        total data
-                      </p>
+                      <h2 className="text-lg font-bold text-slate-900">{config.title}</h2>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-slate-500">{categoryStats.length} kategori</div>
+                    <div className="text-xs text-slate-500">{categoryStats.length} kategori</div>
                   </div>
                 </div>
               </div>
