@@ -184,7 +184,7 @@ const Transaksi = () => {
 }
 
 const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadingTransaksi, dataTransaksi = [], totals, fetchData, currentPage, totalPages, handlePageChange }) => {
-    console.log("transactions", dataTransaksi)
+    console.log("totals", totals)
     const { dataOutlet } = useFetchDataOutlet();
     const { menuKategori } = useDropdownKategori();
 
