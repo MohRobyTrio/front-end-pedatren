@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaCalendarAlt, FaQuran, FaSave, FaUndo, FaTasks, FaListOl, FaStar, FaFlag, FaStickyNote } from "react-icons/fa"
 import DropdownSurah from "../hooks/hook_dropdown/DropdownSurah";
 import useSurahDetail from "../hooks/hook_dropdown/useSurahDetail";
@@ -19,6 +19,11 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     const matchedTahunAjaran = allTahunAjaran.find(
         (item) => item.tahun_ajaran === student.tahun_ajaran
     );
+    const [surahSearch, setSurahSearch] = useState("");
+    const [showDropdownSurah, setShowDropdownSurah] = useState(false);
+    const [selectedSurah, setSelectedSurah] = useState("");
+
+
     const [formData, setFormData] = useState({
         tahun_ajaran_id: "",
         santri_id: student.santri_id || "",
@@ -29,8 +34,88 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
         ayat_selesai: "",
         nilai: "",
         catatan: "",
-        status: "",
+        status: "proses",
     })
+
+
+
+
+
+    // Ref untuk mendeteksi klik di luar dropdown mata pelajaran
+    const surahWrapperRef = useRef(null);
+
+    const filteredSurah = menuSurah.filter((option) => {
+        const search = surahSearch.toLowerCase();
+        return (
+            option.nama.toLowerCase().includes(search) ||
+            option.value.toString().includes(search) ||
+            option.jumlah_ayat?.toString().includes(search)
+        );
+    });
+
+
+    // Fungsi saat memilih surah dari dropdown
+    const handleSelectSurah = (item) => {
+        // Misal, jika form.surah harus berisi value pilihan:
+        setFormData((prev) => ({
+            ...prev,
+            surat: item.nama,
+        }));
+        // Atau jika kamu ingin menyimpan label di form, sesuaikan saja
+
+
+
+        setSurahSearch(
+            item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label
+        );
+        setSelectedSurah(item.nama_pengajar);
+
+        setShowDropdownSurah(false);
+    };
+
+    useEffect(() => {
+        console.log("selected mapel", formData.surah);
+    }, [formData])
+
+    // useEffect untuk menangani klik di luar dropdown mata pelajaran
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                surahWrapperRef.current &&
+                !surahWrapperRef.current.contains(event.target)
+            ) {
+                setShowDropdownSurah(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+    useEffect(() => {
+        setSurahSearch("");
+    }, []);
+
+
+    useEffect(() => {
+        const selected = menuSurah.find((opt) => opt.value == formData.surat);
+
+        if (selected) {
+            setSurahSearch(
+                selected.kode_mapel ? `(${selected.kode_mapel}) ${selected.label} - ${selected.lembaga}` : selected.label
+            );
+            setSelectedSurah(selected.nama_pengajar);
+        }
+
+        // if (formData) {
+        //     setMataPelajaranSearch("");
+        // }
+    }, [formData.surah, formData, menuSurah]);
+
+
+
+
 
     useEffect(() => {
         setFormData((prev) => ({
@@ -150,7 +235,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                 navigate("/login");
                 return;
             }
-            
+
             if (!response.ok) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
@@ -243,7 +328,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
 
                 {/* Jumlah Hafalan Baru */}
-                <div>
+                {/* <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <FaQuran className="inline mr-2 text-gray-600" />
                         Surat
@@ -270,6 +355,51 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                             </option>
                         ))}
                     </select>
+                </div> */}
+
+                <div className="relative" ref={surahWrapperRef}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <FaQuran className="inline mr-2 text-gray-600" />
+                        Surat
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Cari Surat ..."
+                        value={surahSearch}
+                        onChange={(e) => {
+                            setSurahSearch(e.target.value)
+                            setShowDropdownSurah(true)
+                            if (e.target.value === "") {
+                                setSelectedSurah(null); // reset selectedSurah
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    surat: "",          // reset surat di formData juga
+                                }));
+                            }
+                        }}
+                        onFocus={() => setShowDropdownSurah(true)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    />
+
+                    {showDropdownSurah && surahSearch && filteredSurah.length > 0 && (
+                        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                            {filteredSurah.map((item) => (
+                                <li
+                                    key={item.id}
+                                    onClick={() => handleSelectSurah(item)}
+                                    className="p-2 cursor-pointer hover:bg-gray-50"
+                                >
+                                    {item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {selectedSurah && (
+                        <p className="text-sm text-gray-600 mt-2">
+                            Surah: <strong>{selectedSurah}</strong>
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -345,7 +475,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                         required
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                     >
-                        <option value="on_progress">On Progress</option>
+                        <option value="proses">On Progress</option>
                         <option value="tuntas">Tuntas</option>
                     </select>
                     {formData.status === "tuntas" && (

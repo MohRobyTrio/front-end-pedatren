@@ -507,17 +507,6 @@ const TransactionList = ({ setSearchTerm, filters, setFilters, loadingTransaksi,
                                                 </td>
                                                 <td className="pr-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center">
-                                                        {/* <div className="flex-shrink-0 h-10 w-10">
-                                                        <img
-                                                            className="h-10 w-10 rounded-full object-cover"
-                                                            src={item.foto_profil || blankProfile}
-                                                            alt=""
-                                                            onError={(e) => {
-                                                                e.target.onerror = null
-                                                                e.target.src = blankProfile
-                                                            }}
-                                                        />
-                                                    </div> */}
                                                         <div>
                                                             <div className="text-sm font-medium text-gray-900">{item?.santri?.biodata.nama || "-"}</div>
                                                             <div className="text-sm text-gray-500">

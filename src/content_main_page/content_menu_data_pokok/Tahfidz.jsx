@@ -20,6 +20,7 @@ import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran"
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate } from "react-router-dom"
+import blankProfile from "../../assets/blank_profile.png"
 
 export const Tahfidz = ({ student }) => {
     const [selectedItem, setSelectedItem] = useState(null)
@@ -207,6 +208,10 @@ export const Tahfidz = ({ student }) => {
                                         src="src\assets\blank_profile.png"
                                         alt={`Foto ${selectedStudent.nama}`}
                                         className="w-24 h-30 md:w-38 md:h-46 rounded-xl object-cover border-3 border-white shadow-lg"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = blankProfile;
+                                        }}
                                     />
                                 </div>
                             </div>

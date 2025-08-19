@@ -24,7 +24,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
         fetchKitab();
     }, [location.pathname, fetchKitab]);
 
-    const tahunAjaranAktif = allTahunAjaran?.find(k => k.status === true) || null;
+    const tahunAjaranAktif = allTahunAjaran?.find(k => k.status == true) || null;
 
     const [formData, setFormData] = useState({
         santri_id: student.santri_id || "",
@@ -57,7 +57,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const selectedKitab = kitabAktif.find(k => k.id === Number(formData.kitab_id));
+    const selectedKitab = kitabAktif.find(k => k.id == Number(formData.kitab_id));
     const totalBait = selectedKitab?.total_bait || 0;
 
     const baitOptions = Array.from({ length: totalBait }, (_, i) => i + 1);
