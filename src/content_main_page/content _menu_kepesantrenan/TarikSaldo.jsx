@@ -416,6 +416,10 @@ const Scan = () => {
 
     }, [customerData])
 
+    useEffect(() => {
+        resetScan()
+    }, [inputMode])
+
     return (
         <div className="max-w-2xl mx-auto">
             <div className="p-4 sm:p-6">

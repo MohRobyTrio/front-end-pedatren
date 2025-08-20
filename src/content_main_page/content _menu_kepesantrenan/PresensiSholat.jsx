@@ -475,33 +475,6 @@ const AttendanceList = memo(({ setSearchTerm, filters, setFilters, loadingPresen
                                     </select>
                                 </div>
 
-                                {/* Show All Toggle */}
-                                {/* <div className="space-y-2">
-                                        <label className="flex items-center text-sm font-medium text-gray-700">
-                                            <FaEye className="w-4 h-4 mr-2 text-gray-500" />
-                                            Tampilan
-                                        </label>
-                                        <div className="flex items-center space-x-3">
-                                            <label className="flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={filters.showAll}
-                                                    onChange={(e) => handleAdvancedFilterChange("showAll", e.target.checked)}
-                                                    className="sr-only"
-                                                />
-                                                <div
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${filters.showAll ? "bg-blue-600" : "bg-gray-200"
-                                                        }`}
-                                                >
-                                                    <span
-                                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${filters.showAll ? "translate-x-6" : "translate-x-1"
-                                                            }`}
-                                                    />
-                                                </div>
-                                                <span className="ml-2 text-sm text-gray-600">Tampilkan Semua</span>
-                                            </label>
-                                        </div>
-                                    </div> */}
                                 <div className="space-y-2">
                                     <label className="flex items-center text-sm font-medium text-gray-700">
                                         <FaEye className="w-4 h-4 mr-2 text-gray-500" />
@@ -928,29 +901,6 @@ const Scan = ({ refetch }) => {
     const inputRef = useRef(null)
     const [nis, setNis] = useState("")
 
-    // useEffect(() => {
-    //     console.log("Pathname Presensi:", location.pathname);
-
-    //     if (location.pathname != "/sholat/presensi-sholat") return;
-    //     // Tangkap semua input dari reader
-    //     const handleKeyPress = (e) => {
-    //         // Biasanya reader mengirim angka + Enter
-    //         if (e.key === "Enter") {
-    //             e.preventDefault()
-    //             console.log("Pathname Presensi:", location.pathname);
-    //             console.log("Submit NIS:", nis);
-    //             submitForm(nis)
-    //         } else if (/^[0-9]$/.test(e.key)) {
-    //             // Tambahkan angka ke state
-    //             setNis((prev) => prev + e.key)
-    //         }
-    //     }
-
-    //     window.addEventListener("keydown", handleKeyPress)
-    //     return () => window.removeEventListener("keydown", handleKeyPress)
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [nis])
-
     useEffect(() => {
         // hanya jalan di halaman presensi
         if (location.pathname !== "/sholat/presensi-sholat") return;
@@ -970,7 +920,7 @@ const Scan = ({ refetch }) => {
         window.addEventListener("keydown", handleKeyPress);
 
         return () => window.removeEventListener("keydown", handleKeyPress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nis, location.pathname]); // tambahkan location.pathname supaya cleanup aman
 
 
@@ -979,6 +929,11 @@ const Scan = ({ refetch }) => {
         searchStudent(nisValue)
         setNis("") // reset
     }
+
+    useEffect(() => {
+        resetScan()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inputMode])
 
     return (
         <div className="min-h-screen p-3 sm:p-4">

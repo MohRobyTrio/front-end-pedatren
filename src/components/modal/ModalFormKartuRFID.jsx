@@ -514,26 +514,6 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep, location.pathname]); // tambahkan location.pathname ke dependency
 
-
-    // useEffect(() => {
-    //     if (currentStep !== 2) return;
-
-    //     const handleKeyPress = (e) => {
-    //         if (e.key === "Enter") {
-    //             e.preventDefault();
-    //             // di sini proses idCard sudah dianggap selesai
-    //             // submitForm(idCard) kalau mau langsung submit
-    //             console.log("Final ID:", idCard);
-    //         } else if (/^[0-9]$/.test(e.key)) {
-    //             setIdCard((prev) => prev + e.key);
-    //         }
-    //     };
-
-    //     window.addEventListener("keydown", handleKeyPress);
-    //     return () => window.removeEventListener("keydown", handleKeyPress);
-    // }, [currentStep, idCard]);
-
-
     useEffect(() => {
         if (currentStep == 2 && inputMode == "scnfcan") {
             setIsScanning(true);

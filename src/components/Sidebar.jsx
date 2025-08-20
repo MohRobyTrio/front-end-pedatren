@@ -83,15 +83,6 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
-                const isValidOutlet = (value) => value && value !== "null" && value !== "undefined";
-
-                const outletSession = sessionStorage.getItem("outlet");
-                const outletLocal = localStorage.getItem("outlet");
-                if (
-                    item.id === "belanja" && !isValidOutlet(outletSession) && !isValidOutlet(outletLocal)
-                ) {
-                    return null; // Jangan tampilkan menu belanja
-                }
                 // const isPeserta = item.id == "pesertadidik";
                 const hasSubmenu =
                     item.id == "pesertadidik" ||

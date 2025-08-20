@@ -307,32 +307,9 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                 <>
                     <div className="bg-white rounded-xl shadow-lg p-6">
                         <div className="flex flex-col space-y-4">
-                            {/* Filter Toggle Button */}
-                            {/* <div className="flex items-center justify-between"> */}
-                            {/* <h3 className="text-lg font-semibold text-gray-900">Filter Data Transaksi</h3>
-                                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                                    <button
-                                        onClick={() => setShowFilters(!showFilters)}
-                                        className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${showFilters ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                            }`}
-                                    >
-                                        <FaFilter className="w-4 h-4" />
-                                        <span>{showFilters ? "Sembunyikan Filter" : "Tampilkan Filter"}</span>
-                                    </button>
-                                    <button
-                                        onClick={handleRefresh}
-                                        disabled={loadingTransaksi}
-                                        className={`w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : "hover:bg-green-700"
-                                            }`}
-                                    >
-                                        <FaSync className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`} />
-                                        <span>{loadingTransaksi ? "Merefresh..." : "Refresh"}</span>
-                                    </button>
-                                </div> */}
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                                <div className="relative flex-1 max-w-md pr-4">
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 w-full">
+                                {/* Search Input */}
+                                <div className="relative flex-1">
                                     <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                     <input
                                         type="text"
@@ -342,33 +319,48 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                                         className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                     />
                                 </div>
-                                <div className="flex items-center space-x-3">
-                                    <select
-                                        value={filters.kategori_id}
-                                        onChange={(e) => handleAdvancedFilterChange("kategori_id", e.target.value)}
-                                        className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                                    >
-                                        <option value="">Semua Kategori</option>
-                                        {menuKategori.map((option) => (
-                                            <option key={option.kategori_id} value={option.kategori_id}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        onClick={handleRefresh}
-                                        disabled={loadingTransaksi}
-                                        className={`w-full sm:w-auto px-4 py-3 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : "hover:bg-green-700"
-                                            }`}
-                                    >
-                                        <FaSync className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`} />
-                                        <span>{loadingTransaksi ? "Merefresh..." : "Refresh"}</span>
-                                    </button>
+
+                                {/* Filter + Refresh Button */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    {/* Select (2/3 di md ke atas) */}
+                                    <div className="md:col-span-2">
+                                        <select
+                                            value={filters.kategori_id}
+                                            onChange={(e) =>
+                                                handleAdvancedFilterChange("kategori_id", e.target.value)
+                                            }
+                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                                        >
+                                            <option value="">Semua Kategori</option>
+                                            {menuKategori.map((option) => (
+                                                <option key={option.kategori_id} value={option.kategori_id}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Button (1/3 di md ke atas) */}
+                                    <div className="md:col-span-1">
+                                        <button
+                                            onClick={handleRefresh}
+                                            disabled={loadingTransaksi}
+                                            className={`w-full px-4 py-3 rounded-lg flex items-center justify-center gap-2 bg-green-600 text-white transition-all ${loadingTransaksi
+                                                    ? "opacity-50 cursor-not-allowed"
+                                                    : "hover:bg-green-700"
+                                                }`}
+                                        >
+                                            <FaSync
+                                                className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`}
+                                            />
+                                            <span>{loadingTransaksi ? "Merefresh..." : "Refresh"}</span>
+                                        </button>
+                                    </div>
                                 </div>
-                                {/* </div> */}
+
                             </div>
+
+
                         </div>
                     </div>
 
@@ -836,6 +828,10 @@ const Scan = ({ refetch }) => {
         setPin("")
     }
 
+    useEffect(() => {
+        resetScan()
+    }, [inputMode])
+
     const handleKembali = () => {
         switch (inputMode) {
             case "manual":
@@ -894,7 +890,7 @@ const Scan = ({ refetch }) => {
     }
 
     const inputRef = useRef(null)
-    
+
     useEffect(() => {
         // jalankan hanya di halaman /transaksi/belanja
         if (location.pathname !== "/transaksi/belanja") return;
