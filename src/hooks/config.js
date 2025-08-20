@@ -30,6 +30,7 @@ export const rolesWithAccess = {
   wali_asuh: ['admin', 'superadmin'],
   anak_asuh: ['admin', 'superadmin'],
   group_kewaliasuhan: ['admin', 'superadmin'],
+  hubungkan_wali_asuh: ['admin', 'superadmin'],
   kunjungan: ['admin', 'superadmin'],
   khadam: ['admin', 'superadmin'],
   tahfidz: ['admin', 'superadmin', 'ustadz'],
