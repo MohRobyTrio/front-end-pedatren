@@ -106,7 +106,7 @@ const useFetchTransaksi = (filters) => {
         setDataTransaksi(Array.isArray(data.data) ? data.data : []);
 
         // Jika API ada total data/pagination, sesuaikan
-        setTotalData(data.total_data || {});
+        setTotalData(data.total_data || 0);
         setTotalPages(data.total_pages || 1);
         setTotalPembayaran(data.total_pembayaran || 0);
         setJadwalMendatang(data.jadwal_mendatang || null);
@@ -126,6 +126,10 @@ const useFetchTransaksi = (filters) => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    console.log("Total Data:", totalData);
+  }, [totalData]);
 
   useEffect(() => {
     setCurrentPage(1);
