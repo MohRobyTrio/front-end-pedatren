@@ -11,7 +11,7 @@ import {
   faClock,
   faExclamationTriangle,
   faChartLine,
-  faRotateRight, // Added refresh icon
+  faRotateRight, // refresh icon
 } from "@fortawesome/free-solid-svg-icons"
 import { Link, Navigate } from "react-router-dom"
 import { hasAccess } from "../utils/hasAccess"
@@ -47,7 +47,7 @@ const Dashboard = () => {
   }
 
   const stats = [
-    // Students Category - Blue theme
+    // Students
     {
       label: "Peserta Didik",
       value: loading ? <LoadingSpinner /> : data?.peserta_didik || 267,
@@ -85,7 +85,7 @@ const Dashboard = () => {
       category: "students",
     },
 
-    // Staff Category - Emerald theme
+    // Staff
     {
       label: "Pegawai",
       value: loading ? <LoadingSpinner /> : data?.pegawai || 92,
@@ -141,7 +141,7 @@ const Dashboard = () => {
       category: "staff",
     },
 
-    // Guardians Category - Amber theme
+    // Guardians
     {
       label: "Wali Asuh",
       value: loading ? <LoadingSpinner /> : data?.wali_asuh || 11,
@@ -170,7 +170,7 @@ const Dashboard = () => {
       category: "guardians",
     },
 
-    // Alerts Category - Red theme
+    // Alerts
     {
       label: "Dalam Masa Izin",
       value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin || 5,
@@ -192,10 +192,10 @@ const Dashboard = () => {
   ]
 
   const groupedStats = {
-    students: stats.filter((stat) => stat.category === "students"),
-    staff: stats.filter((stat) => stat.category === "staff"),
-    guardians: stats.filter((stat) => stat.category === "guardians"),
-    alerts: stats.filter((stat) => stat.category === "alerts"),
+    students: stats.filter((s) => s.category === "students"),
+    staff: stats.filter((s) => s.category === "staff"),
+    guardians: stats.filter((s) => s.category === "guardians"),
+    alerts: stats.filter((s) => s.category === "alerts"),
   }
 
   const categoryConfig = {
@@ -234,7 +234,7 @@ const Dashboard = () => {
   }
 
   const getColorClasses = (color) => {
-    const colorMap = {
+    const map = {
       blue: {
         bg: "bg-blue-500",
         hover: "hover:bg-blue-600",
@@ -271,7 +271,7 @@ const Dashboard = () => {
         accent: "bg-red-500",
       },
     }
-    return colorMap[color] || colorMap.blue
+    return map[color] || map.blue
   }
 
   if (!hasAccess("dashboard")) {
@@ -280,43 +280,41 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 pl-6 pt-6 pb-6 bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
-          <div className="space-y-3 sm:space-y-4">
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="relative">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
-                  <FontAwesomeIcon icon={faChartLine} className="text-lg sm:text-2xl text-white" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
-                </div>
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+        {/* Header + Refresh */}
+        <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">
+          {/* Header kiri */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="relative">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
+                <FontAwesomeIcon icon={faChartLine} className="text-base sm:text-lg text-white" />
               </div>
-              <div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-                <p className="text-base sm:text-lg lg:text-xl text-slate-600 mt-1 sm:mt-2">
-                  Sistem Manajemen Pesantren
-                </p>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
               </div>
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-slate-600 mt-1">Sistem Manajemen Pesantren</p>
             </div>
           </div>
 
-          <div className="flex justify-end sm:justify-start">
-            <button
-              onClick={refreshData}
-              disabled={loading}
-              className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-              title={loading ? "Memuat data..." : "Refresh data"}
-            >
-              <FontAwesomeIcon
-                icon={faRotateRight}
-                className={`text-base sm:text-lg transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
-              />
-            </button>
-          </div>
+          {/* Tombol refresh kanan */}
+          <button
+            onClick={refreshData}
+            disabled={loading}
+            className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+            title={loading ? "Memuat data..." : "Refresh data"}
+          >
+            <FontAwesomeIcon
+              icon={faRotateRight}
+              className={`text-sm sm:text-base transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
+            />
+          </button>
         </div>
       </div>
 
+      {/* Kategori cards */}
       <div className="space-y-6 sm:space-y-8">
         {Object.entries(groupedStats).map(([category, categoryStats]) => {
           const config = categoryConfig[category]
@@ -330,9 +328,7 @@ const Dashboard = () => {
                     >
                       <FontAwesomeIcon icon={config.icon} className={`text-xs sm:text-sm ${config.textColor}`} />
                     </div>
-                    <div>
-                      <h2 className="text-base sm:text-lg font-bold text-slate-900">{config.title}</h2>
-                    </div>
+                    <h2 className="text-base sm:text-lg font-bold text-slate-900">{config.title}</h2>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-slate-500">{categoryStats.length} kategori</div>
