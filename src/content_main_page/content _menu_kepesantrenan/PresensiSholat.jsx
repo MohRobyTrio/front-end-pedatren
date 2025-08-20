@@ -351,8 +351,8 @@ const AttendanceList = memo(({ setSearchTerm, filters, setFilters, loadingPresen
                                 onClick={handleRefresh}
                                 disabled={loadingPresensi}
                                 className={`w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingPresensi
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : "hover:bg-green-700"
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-green-700"
                                     }`}
                             >
                                 <FaSync className={`w-4 h-4 ${loadingPresensi ? "animate-spin" : ""}`} />
@@ -928,25 +928,51 @@ const Scan = ({ refetch }) => {
     const inputRef = useRef(null)
     const [nis, setNis] = useState("")
 
-    useEffect(() => {
-        if (location.pathname !== "/sholat/presensi-sholat") return;
-        // Tangkap semua input dari reader
-        const handleKeyPress = (e) => {
-            // Biasanya reader mengirim angka + Enter
-            if (e.key === "Enter") {
-                e.preventDefault()
-                console.log("Submit NIS:", nis);
-                submitForm(nis)
-            } else if (/^[0-9]$/.test(e.key)) {
-                // Tambahkan angka ke state
-                setNis((prev) => prev + e.key)
-            }
-        }
+    // useEffect(() => {
+    //     console.log("Pathname Presensi:", location.pathname);
 
-        window.addEventListener("keydown", handleKeyPress)
-        return () => window.removeEventListener("keydown", handleKeyPress)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nis])
+    //     if (location.pathname != "/sholat/presensi-sholat") return;
+    //     // Tangkap semua input dari reader
+    //     const handleKeyPress = (e) => {
+    //         // Biasanya reader mengirim angka + Enter
+    //         if (e.key === "Enter") {
+    //             e.preventDefault()
+    //             console.log("Pathname Presensi:", location.pathname);
+    //             console.log("Submit NIS:", nis);
+    //             submitForm(nis)
+    //         } else if (/^[0-9]$/.test(e.key)) {
+    //             // Tambahkan angka ke state
+    //             setNis((prev) => prev + e.key)
+    //         }
+    //     }
+
+    //     window.addEventListener("keydown", handleKeyPress)
+    //     return () => window.removeEventListener("keydown", handleKeyPress)
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [nis])
+
+    useEffect(() => {
+        // hanya jalan di halaman presensi
+        if (location.pathname !== "/sholat/presensi-sholat") return;
+
+        const handleKeyPress = (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                console.log("Pathname Presensi:", location.pathname);
+                console.log("Submit NIS:", nis);
+
+                submitForm(nis);
+            } else if (/^[0-9]$/.test(e.key)) {
+                setNis((prev) => prev + e.key);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [nis, location.pathname]); // tambahkan location.pathname supaya cleanup aman
+
 
     const submitForm = (nisValue) => {
         console.log("Submit NIS:", nisValue)

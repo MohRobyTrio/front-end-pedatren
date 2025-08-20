@@ -12,6 +12,7 @@ import {
     FaSync,
     FaStore,
     FaSearch,
+    FaHistory,
 } from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate, useLocation } from "react-router-dom"
@@ -24,6 +25,7 @@ import {
     FiCreditCard,
     FiEdit3,
     FiHardDrive,
+    FiRefreshCw,
     FiUser,
     FiWifi,
     FiX,
@@ -34,8 +36,9 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import useDropdownKategori from "../../hooks/hook_dropdown/DropdownKategori"
 import Swal from "sweetalert2"
 import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet"
+import { set } from "react-hook-form"
 
-const Transaksi = () => {
+const Tarik = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
     const [filters, setFilters] = useState({
         outlet_id: "",
@@ -52,7 +55,7 @@ const Transaksi = () => {
     // const [currentTime, setCurrentTime] = useState(new Date())
 
     useEffect(() => {
-        const savedView = sessionStorage.getItem("currentViewTransaksi")
+        const savedView = sessionStorage.getItem("currentViewTransaksiTarik")
         if (savedView) {
             setCurrentView(savedView)
         }
@@ -61,7 +64,7 @@ const Transaksi = () => {
     // Simpan state ke sessionStorage setiap kali currentView berubah
     const handleSetView = (view) => {
         setCurrentView(view)
-        sessionStorage.setItem("currentViewTransaksi", view)
+        sessionStorage.setItem("currentViewTransaksiTarik", view)
     }
 
     const handlePageChange = (page) => {
@@ -107,30 +110,22 @@ const Transaksi = () => {
         console.log("🔍 Browser Info:", info)
     }
 
-    const outletSession = sessionStorage.getItem("outlet");
-    const outletLocal = localStorage.getItem("outlet");
-
-    // Fungsi bantu untuk cek validitas
-    const isValidOutlet = (value) =>
-        value && value !== "null" && value !== "undefined";
-
-    if (!hasAccess("transaksi") || (!isValidOutlet(outletSession) && !isValidOutlet(outletLocal))) {
-        return <Navigate to="/forbidden" replace />;
+    if (!hasAccess("presensi_sholat")) {
+        return <Navigate to="/not-found" replace />
     }
 
     return (
-        <div className="min-h-screen pl-6 pt-6">
+        <div className="">
             {/* Header Section */}
-            <div className="bg-white shadow-sm rounded-lg">
+            {/* <div className="bg-white shadow-sm rounded-lg">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-4 space-y-4 lg:space-y-0">
-                        {/* Transaction Info */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
                             <div className="flex items-center space-x-3">
                                 <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                                 <div>
                                     <p className="text-xs text-gray-500">Sistem Aktif</p>
-                                    <p className="text-sm font-medium text-gray-900">Transaksi Pembayaran</p>
+                                    <p className="text-sm font-medium text-gray-900">Tarik Saldo</p>
                                 </div>
                             </div>
 
@@ -138,12 +133,11 @@ const Transaksi = () => {
                                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                                 <div>
                                     <p className="text-xs text-gray-500">Status</p>
-                                    <p className="text-sm font-medium text-green-700">Siap Menerima Pembayaran</p>
+                                    <p className="text-sm font-medium text-green-700">Siap Menerima Transaksi</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
                         <div className="flex space-x-2 items-center justify-center">
                             <button
                                 onClick={() => handleSetView("scan")}
@@ -151,23 +145,23 @@ const Transaksi = () => {
                                     }`}
                             >
                                 <FiCreditCard className="inline mr-2" />
-                                Scan Pembayaran
+                                Scan
                             </button>
                             <button
                                 onClick={() => handleSetView("list")}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "list" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                             >
-                                <FaShoppingCart className="inline mr-2" />
-                                Riwayat Transaksi
+                                <FaHistory className="inline mr-2" />
+                                Riwayat
                             </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Main Content */}
-            <div className="mx-auto py-6">
+            <div className="mx-auto">
                 {currentView === "scan" ? (
                     <Scan refetch={fetchData} />
                 ) : (
@@ -318,7 +312,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                         <div className="flex flex-col space-y-4">
                             {/* Filter Toggle Button */}
                             {/* <div className="flex items-center justify-between"> */}
-                            {/* <h3 className="text-lg font-semibold text-gray-900">Filter Data Transaksi</h3>
+                            {/* <h3 className="text-lg font-semibold text-gray-900">Filter Data Tarik</h3>
                                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                                     <button
                                         onClick={() => setShowFilters(!showFilters)}
@@ -413,7 +407,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                     {/* Transaction Table */}
                     <div className="bg-white rounded-xl shadow-lg">
                         <div className="px-6 py-4 border-b border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-900">Riwayat Transaksi</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Riwayat Tarik</h3>
                         </div>
 
                         {loadingTransaksi ? (
@@ -431,7 +425,7 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                                                     No
                                                 </th>
                                                 <th className="pr-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Pembeli
+
                                                 </th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     Outlet
@@ -537,6 +531,7 @@ const Scan = ({ refetch }) => {
 
     const [currentStep, setCurrentStep] = useState(1) // 1: Input data, 2: Scan, 3: PIN, 4: Complete
     const [pin, setPin] = useState("")
+    const [nominal, setNominal] = useState("")
 
     const location = useLocation()
 
@@ -703,23 +698,29 @@ const Scan = ({ refetch }) => {
 
             if (!response.ok || data.success == false || data.data.status == false) {
                 setStatusResponse(data.status || "")
-                throw new Error(data.message || "Pembeli tidak ditemukan")
+                throw new Error(data.data.message || " tidak ditemukan")
             }
 
             setCustomerData(data.data)
             console.log(data)
 
-            setStatus(`Data pembeli ditemukan: ${data.data.nama_pembeli}`)
+            setStatus(`Data  ditemukan: ${data.data.nama_}`)
         } catch (error) {
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: error.message,
+            });
+            setIdCard("")
             setError("Error: " + error.message)
-            setStatus("Gagal mencari data pembeli")
+            setStatus("Gagal mencari data ")
         } finally {
             setLoading(false)
         }
     }
 
     const _recordTransaction = async () => {
-        if (!customerData || !hargaSatuan || !jumlah || !kategori) {
+        if (!customerData || !pin || !nominal) {
             setError("Mohon lengkapi semua data transaksi")
             return
         }
@@ -752,13 +753,13 @@ const Scan = ({ refetch }) => {
                 },
             })
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const endpoint = `${API_BASE_URL}transaksi`
+            const endpoint = `${API_BASE_URL}saldo/tarik`
 
             const body = {
-                kategori_id: kategori,
-                total_bayar: totalHarga,
+                jumlah: nominal,
                 pin: pin,
-                ...(inputMode !== "manual" && { uid_kartu: customerData.uid_kartu }),
+                santri_id: customerData.santri_id || customerData.id,
+                metode: inputMode === "manual" ? "manual" : "scan",
             }
 
             const response = await fetch(endpoint, {
@@ -774,7 +775,10 @@ const Scan = ({ refetch }) => {
 
             const data = await response.json()
 
-            if (!response.ok || !data.success) {
+            if (!response.ok || !data.status) {
+                console.log("gagal");
+                
+                setIdCard("")
                 if (data.error) {
                     const fieldMap = {
                         kategori_id: "Kategori",
@@ -829,8 +833,9 @@ const Scan = ({ refetch }) => {
                 title: "Berhasil",
                 text: data.message,
             });
+            setNominal("")
             setIdCard("")
-            setSuccess("Transaksi berhasil disimpan!")
+            setSuccess("Tarik berhasil disimpan!")
             resetScan()
             refetch(true)
 
@@ -840,9 +845,10 @@ const Scan = ({ refetch }) => {
             // }, 2000)
         } catch (error) {
             setError("Error: " + error.message)
+            setIdCard("")
             await Swal.fire({
                 icon: "error",
-                title: "Transaksi Gagal",
+                title: "Tarik Gagal",
                 text: error.message,
             });
         } finally {
@@ -861,6 +867,7 @@ const Scan = ({ refetch }) => {
         setStatus("Tempelkan kartu pembayaran...")
         setCurrentStep(1)
         setPin("")
+        setIdCard("")
     }
 
     const handleKembali = () => {
@@ -957,7 +964,7 @@ const Scan = ({ refetch }) => {
     //         // Biasanya reader mengirim angka + Enter
     //         if (e.key === "Enter") {
     //             e.preventDefault()
-    //             console.log("Pathname Transaksi:",location.pathname);
+    //             console.log("Pathname Tarik:",location.pathname);
 
     //             console.log("Submit ID Card:", idCard);
 
@@ -983,18 +990,15 @@ const Scan = ({ refetch }) => {
     // }, [currentStep, idCard, location.pathname])
 
     useEffect(() => {
-        // jalankan hanya di halaman /transaksi/belanja
-        if (location.pathname !== "/transaksi/belanja") return;
-
-        // kalau bukan step 2, juga berhenti
-        if (currentStep !== 2) return;
+        // jalankan hanya di halaman /transaksi/saldo/tarik
+        if (location.pathname !== "/transaksi/saldo/tarik") return;
 
         const handleKeyPress = (e) => {
-            if (currentStep !== 2 || location.pathname !== "/transaksi/belanja") return;
+            if (location.pathname !== "/transaksi/saldo/tarik") return;
 
             if (e.key === "Enter") {
                 e.preventDefault();
-                console.log("Pathname Transaksi:", location.pathname);
+                console.log("Pathname Tarik:", location.pathname);
                 console.log("Submit ID Card:", idCard);
 
                 searchCustomer(idCard);
@@ -1014,10 +1018,10 @@ const Scan = ({ refetch }) => {
 
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [currentStep, idCard, location.pathname]);
+    }, [idCard, location.pathname]);
 
 
-    const handlePinSubmit = () => {
+    const handleSubmit = () => {
         if (!pin || pin.length < 4) {
             setError("PIN harus minimal 4 digit")
             return
@@ -1040,8 +1044,8 @@ const Scan = ({ refetch }) => {
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
                         <FiCreditCard className="w-8 h-8 text-blue-600" />
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Sistem Pembayaran</h2>
-                    <p className="text-gray-600">Scan kartu pembeli untuk memproses transaksi</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Tarik Saldo</h2>
+                    <p className="text-gray-600">Scan kartu untuk memproses transaksi</p>
                 </div>
 
                 {/* Input Mode Selection */}
@@ -1080,7 +1084,7 @@ const Scan = ({ refetch }) => {
 
                 {/* Stepper Indicator */}
                 {/* <div className="flex items-center justify-between mb-8">
-                    {["Detail", "Pembeli", "PIN"].map((label, index) => {
+                    {["Detail", "", "PIN"].map((label, index) => {
                         const stepNumber = index + 1
                         const isActive = currentStep === stepNumber
                         const isCompleted = currentStep > stepNumber
@@ -1109,10 +1113,10 @@ const Scan = ({ refetch }) => {
 
                 {/* Payment Form */}
                 {/* Step 1: Input harga, jumlah, kategori */}
-                {currentStep === 1 && (
+                {/* {currentStep === 1 && (
                     <>
                         <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Detail Transaksi</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Detail Tarik</h3>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 <div>
@@ -1217,18 +1221,18 @@ const Scan = ({ refetch }) => {
                             </button>
                         </div>
                     </>
-                )}
+                )} */}
 
-                {/* Step 2: Data Pembeli */}
-                {currentStep === 2 && (
+                {/* Step 2: Data  */}
+                {currentStep === 1 && (
                     <div>
-                        {/* tombol pilih/scan pembeli (punya kamu tadi) */}
+                        {/* tombol pilih/scan  (punya kamu tadi) */}
                         {!customerData && inputMode === "manual" && (
                             <button
                                 onClick={() => setShowSelectSantri(true)}
                                 className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium cursor-pointer"
                             >
-                                Pilih Pembeli
+                                Pilih
                             </button>
                         )}
 
@@ -1332,14 +1336,14 @@ const Scan = ({ refetch }) => {
                             <div className="p-4 sm:p-6 mb-4 sm:mb-6">
                                 <div className="relative">
                                     {/* Tombol reset di pojok kanan atas */}
-                                    <button
+                                    {/* <button
                                         onClick={() => {
                                             handleChangeData()
                                         }}
                                         className="absolute top-0 right-0 p-2 text-gray-500 hover:text-blue-500 cursor-pointer"
                                     >
                                         <FaExchangeAlt size={20} />
-                                    </button>
+                                    </button> */}
 
                                     <div className="text-center mb-4 sm:mb-6">
                                         <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full overflow-hidden bg-gray-200 ring-4 ring-green-100">
@@ -1361,23 +1365,23 @@ const Scan = ({ refetch }) => {
                                         </div>
                                         <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             <FiCheck className="mr-1" />
-                                            Data Pembeli Ditemukan
+                                            Data Ditemukan
                                         </div>
                                     </div>
 
                                     <div className="space-y-3 sm:space-y-4">
                                         <div>
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama Pembeli</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama</label>
                                             <input
                                                 type="text"
-                                                value={customerData.nama_pembeli || customerData.nama_santri || customerData.label || ""}
+                                                value={customerData.nama_ || customerData.nama_santri || customerData.label || ""}
                                                 readOnly
                                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">NIS/ID</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">NIS</label>
                                             <input
                                                 type="text"
                                                 value={customerData.nis || customerData.id || ""}
@@ -1397,51 +1401,82 @@ const Scan = ({ refetch }) => {
                                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
                                             />
                                         </div>
+
+                                        {/* <div>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nominal</label>
+                                            <input
+                                                type="number"
+                                                value={nominal}
+                                                onChange={(e) => setNominal(e.target.value)}
+                                                placeholder="Masukkan Nominal"
+                                                maxLength="6"
+                                                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
+                                            />
+                                        </div> */}
+                                        <div>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nominal</label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-3">Rp</span>
+                                                <input
+                                                    type="text"
+                                                    value={nominal === "" ? "" : Number(nominal).toLocaleString("id-ID")}
+                                                    onChange={(e) => {
+                                                        let val = e.target.value.replace(/\D/g, ""); // hapus semua selain digit
+
+                                                        if (val === "") {
+                                                            setNominal("");
+                                                            return;
+                                                        }
+
+                                                        let num = Number(val);
+
+                                                        // minimal 1
+                                                        if (isNaN(num) || num < 1) {
+                                                            num = 1;
+                                                        }
+
+                                                        setNominal(num);
+                                                    }}
+                                                    placeholder="0"
+                                                    className="w-full pl-9 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
+                                                />
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
 
-                                {/* <div className="flex space-x-3 mt-6">
+                                <div className="flex space-x-3 mt-6">
                                     <button
-                                        onClick={handleNextStep}
-                                        disabled={loading || !hargaSatuan || !jumlah || !kategori || (currentStep === 2 && !customerData)}
+                                        onClick={handleSubmit}
+                                        disabled={loading || !pin || pin.length < 4 || !nominal || !customerData}
                                         className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 px-4 rounded-lg font-medium text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                                     >
-                                        Ganti
                                         {loading ? (
                                             <>
                                                 <FiRefreshCw className="animate-spin mr-2" />
-                                                Memproses...
-                                            </>
-                                        ) : currentStep === 1 ? (
-                                            <>
-                                                <FiArrowRight className="mr-2" />
-                                                {inputMode === "manual" ? "Lanjut ke PIN" : "Lanjut ke Scan"}
-                                            </>
-                                        ) : currentStep === 2 ? (
-                                            <>
-                                                <FiArrowRight className="mr-2" />
-                                                Lanjut ke PIN
+                                                Menyimpan...
                                             </>
                                         ) : (
                                             <>
-                                                <FiShoppingBag className="mr-2" />
-                                                Proses Pembayaran (Rp {totalHarga.toLocaleString("id-ID")})
+                                                <FiCheck className="mr-2" />
+                                                OK - Simpan
                                             </>
                                         )}
-                                    </button> */}
+                                    </button>
 
-                                {/* <button
+                                    <button
                                         onClick={resetScan}
                                         className="px-4 sm:px-6 py-3 sm:py-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                                     >
                                         <FiX className="text-lg" />
+                                    </button>
                                 </div>
-                                    </button> */}
                             </div>
                         )}
 
-                        <div className="flex justify-between mt-6">
+                        {/* <div className="flex justify-end mt-6">
                             <button
                                 onClick={() => handleKembali()}
                                 className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg font-medium"
@@ -1455,38 +1490,7 @@ const Scan = ({ refetch }) => {
                             >
                                 Konfirmasi
                             </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 3: PIN Input */}
-                {currentStep === 3 && (
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Masukkan PIN</h3>
-                        <input
-                            type="password"
-                            value={pin}
-                            onChange={(e) => setPin(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg text-center text-lg tracking-widest"
-                            placeholder="Masukkan PIN"
-                            maxLength="6"
-                        />
-
-                        <div className="flex justify-between">
-                            <button
-                                onClick={() => setCurrentStep(2)}
-                                className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded-lg font-medium"
-                            >
-                                Kembali
-                            </button>
-                            <button
-                                onClick={handlePinSubmit}
-                                disabled={!pin || pin.length < 4}
-                                className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg font-medium disabled:opacity-50"
-                            >
-                                Konfirmasi
-                            </button>
-                        </div>
+                        </div> */}
                     </div>
                 )}
 
@@ -1504,4 +1508,4 @@ const Scan = ({ refetch }) => {
     )
 }
 
-export default Transaksi
+export default Tarik

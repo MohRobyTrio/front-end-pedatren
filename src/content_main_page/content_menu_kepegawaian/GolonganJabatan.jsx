@@ -14,7 +14,7 @@ const GolonganJabatan = () => {
     const { golonganJabatan, loading, error, fetchGolonganJabatan, handleDelete } = useFetchGolonganJabatan();
 
     if (!hasAccess("golongan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

@@ -14,7 +14,7 @@ const KategoriGolongan = () => {
     const { kategoriGolongan, loadingKategori, error, fetchKategoriGolongan, handleDelete } = useFetchKategoriGolongan();
 
     if (!hasAccess("golongan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

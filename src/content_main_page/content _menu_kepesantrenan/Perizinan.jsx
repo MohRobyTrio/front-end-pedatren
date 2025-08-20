@@ -189,7 +189,7 @@ const DataPerizinan = () => {
     const [showFormModal, setShowFormModal] = useState(false)
 
     if (!hasAccess("perizinan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

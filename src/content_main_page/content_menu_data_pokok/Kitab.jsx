@@ -19,7 +19,7 @@ const Kitab = () => {
     const { kitab, loadingKitab, error, fetchKitab, handleToggleStatus } = useFetchKitab();
 
     if (!hasAccess("kitab")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

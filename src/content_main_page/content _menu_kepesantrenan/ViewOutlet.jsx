@@ -16,7 +16,7 @@ const ViewOutlet = () => {
     const { dataOutlet, loadingDataOutlet, error, fetchDataOutlet, handleDelete } = useFetchDataOutlet();
 
     if (!hasAccess("outlet")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

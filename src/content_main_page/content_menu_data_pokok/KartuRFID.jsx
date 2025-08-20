@@ -16,7 +16,7 @@ const KartuRFID = () => {
     const { karturfid, loadingKartuRFID, error, fetchKartuRFID, handleDelete } = useFetchKartuRFID();
 
     if (!hasAccess("karturfid")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

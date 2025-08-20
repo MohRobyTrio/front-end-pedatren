@@ -24,7 +24,7 @@ const Jurusan = () => {
     };
 
     if (!hasAccess("kelembagaan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

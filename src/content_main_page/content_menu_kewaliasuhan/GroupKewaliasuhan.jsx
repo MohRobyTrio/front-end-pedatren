@@ -216,7 +216,7 @@ const GroupKewaliasuhan = () => {
     ];
 
     if (!hasAccess("group_kewaliasuhan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

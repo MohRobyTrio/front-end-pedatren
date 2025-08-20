@@ -124,7 +124,7 @@ const DataPelanggaran = () => {
     const fieldsExports = [];
 
     if (!hasAccess("pelanggaran")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

@@ -77,6 +77,9 @@ import UserOutlet from "../content_main_page/content _menu_kepesantrenan/DetailU
 import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import ContainerOrangTua from "../content_main_page/content_menu_data_pokok/ContainerOrangTua";
+import Topup from "../content_main_page/content _menu_kepesantrenan/TopupSaldo";
+import Tarik from "../content_main_page/content _menu_kepesantrenan/TarikSaldo";
+import CekSaldo from "../content_main_page/content _menu_kepesantrenan/CekSaldo";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -132,11 +135,24 @@ export const menuKepesantrenanItems = [
     { id: "pengunjung", icon: "fa-hands-helping", text: "Kunjungan", link: "/pengunjung", content: <Pengunjung />, access: "kunjungan" },
     { id: "hafalan", icon: "fa-book", text: "Hafalan", link: "/hafalan", content: <Kitab />, access: "hafalan" },
     { id: "csholat", icon: "fa-mosque", text: "Sholat", link: "/sholat", content: <Sholat />, access: "csholat" },
-    { id: "transaksi", icon: "fa-shopping-cart", text: "Transaksi", link: "/transaksi/belanja", content: <Transaksi />, access: "transaksi" },
     // { id: "jadwalsholat", icon: "fa-clock", text: "Jadwal Sholat", link: "/jadwal-sholat", content: <JadwalSholat />, access: "jadwal_sholat" },
     // { id: "presensisholat", icon: "fa-calendar-check", text: "Presensi Sholat", link: "/presensi-sholat", content: <PresensiSholat />, access: "presensi_sholat" },
     { id: "khadam", icon: "fa-user-shield", text: "Khadam", link: "/khadam", content: <Khadam />, access: "khadam" },
 ];
+
+export const menuTransaksiItems = [
+    { id: "outlet", icon: "fa-store", text: "Outlet", link: "/transaksi/outlet", content: <ViewOutlet />, access: "outlet" },
+    { id: "detailuseroutlet", icon: "fa-user-cog", text: "User Outlet", link: "/transaksi/user-outlet", content: <UserOutlet />, access: "user_outlet" },
+    { id: "kategori", icon: "fa-tags", text: "Kategori", link: "/transaksi/kategori", content: <Kategori />, access: "kategori" },
+    { id: "belanja", icon: "fa-shopping-cart", text: "Belanja", link: "/transaksi/belanja", content: <Transaksi />, access: "belanja" },
+    { id: "saldo", icon: "fa-money-bill-wave", text: "Saldo", link: "/transaksi/saldo", content: <Topup />, access: "topup" },
+]
+
+export const menuSaldo = [
+    { id: "cek-saldo", icon: "fa-money-bill-wave", text: "Cek Saldo", link: "/transaksi/saldo", content: <CekSaldo />, access: "cek-saldo" },
+    { id: "topup", icon: "fa-money-bill-wave", text: "Top Up", link: "/transaksi/saldo/topup", content: <Topup />, access: "topup" },
+    { id: "tarik", icon: "fa-hand-holding-usd", text: "Tarik", link: "/transaksi/saldo/tarik", content: <Tarik />, access: "tarik" },
+]
 
 export const menuBelanja = [
     { id: "outlet", icon: "fa-shopping-cart", text: "Outlet", link: "/transaksi/outlet", content: <ViewOutlet />, access: "outlet" },

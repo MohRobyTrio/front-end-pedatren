@@ -20,6 +20,7 @@ export const rolesWithAccess = {
   hafalan: ['admin', 'superadmin', 'ustadz'],
   csholat: ['admin', 'superadmin', 'ustadz'],
   belanja: ['admin', 'superadmin'],
+  transaksi: ['admin', 'superadmin'],
   ///SubMenu///
   dashboard: ['admin', 'superadmin'],
   santri: ['admin', 'superadmin'],
@@ -40,10 +41,11 @@ export const rolesWithAccess = {
   sholat: ['admin', 'superadmin'],
   jadwal_sholat: ['admin', 'superadmin'],
   presensi_sholat: ['admin', 'superadmin', 'ustadz'],
-  transaksi: ['admin', 'superadmin'],
   kategori: ['admin', 'superadmin'],
   outlet: ['admin', 'superadmin'],
   user_outlet: ['admin', 'superadmin'],
+  topup: ['admin', 'superadmin'],
+  tarik: ['admin', 'superadmin'],
   ///Fitur///
   
   ///Manage///

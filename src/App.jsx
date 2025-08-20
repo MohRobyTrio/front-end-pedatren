@@ -3,7 +3,6 @@ import {
     BrowserRouter as Router, Routes, Route, Navigate, Outlet, useNavigate,
     // useLocation, 
     useParams,
-    useLocation
 } from 'react-router-dom';
 import MainPage from './page/MainPage';
 // import RegisterPage from './page/RegisterPage';
@@ -18,7 +17,9 @@ import {
     menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems,
     menuManageItems,
     menuOrangTua,
+    menuSaldo,
     menuSholat,
+    menuTransaksiItems,
     subKelembagaanItems,
     subMenuPegawai,
     subPelajaranItems,
@@ -38,6 +39,8 @@ import ContainerPegawai from './content_main_page/content_menu_kepegawaian/Conta
 import Transaksi from './content_main_page/content _menu_kepesantrenan/Transaksi';
 import ContainerOrangTua from './content_main_page/content_menu_data_pokok/ContainerOrangTua';
 import RouteTracker from './components/RouteTracker';
+import Forbidden from './content_main_page/Forbidden';
+import ContainerSaldo from './content_main_page/content _menu_kepesantrenan/ContainerSaldo';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -200,6 +203,12 @@ function App() {
                                     <Route key={tab.id} path={tab.link} element={tab.content} />
                                 ))}
                             </Route>
+                            <Route path="transaksi/saldo" element={<ContainerSaldo />}>
+                                {/* <Route index element={<RedirectToBiodata />} /> */}
+                                {menuSaldo.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
 
                             {/* Semua menu */}
                             {[
@@ -221,7 +230,8 @@ function App() {
                                 ...menuSholat,
                                 ...menuHafalan,
                                 ...menuBelanja,
-                                ...menuOrangTua
+                                ...menuOrangTua,
+                                ...menuTransaksiItems
                             ].map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />
                             ))}
@@ -232,6 +242,7 @@ function App() {
                     </Route>
 
                     {/* Catch-all: Not Found */}
+                    <Route path="/forbidden" element={<Forbidden />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </RouteTracker>

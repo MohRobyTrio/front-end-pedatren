@@ -216,7 +216,7 @@ const PesertaDidik = () => {
     const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
 
     if (!hasAccess("santri")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

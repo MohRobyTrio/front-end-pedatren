@@ -7,13 +7,13 @@ import Swal from "sweetalert2"
 import useLogout from "../../hooks/Logout"
 import { Navigate, useNavigate } from "react-router-dom"
 import { API_BASE_URL } from "../../hooks/config"
-import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri"
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
 import { hasAccess } from "../../utils/hasAccess"
+import useFetchSantriNonAnakAsuh from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonAnakAsuh"
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -91,11 +91,11 @@ const HubungkanWaliAsuh = () => {
   const shouldFetch = selectedWilayahFilter.wilayah !== ""
 
   const {
-    santri,
-    loadingSantri,
+    santriNonAnakAsuh,
+    loadingSantriNonAnakAsuh,
     error,
     setLimit,
-    totalDataSantri,
+    totalDataSantriNonAnakAsuh,
     fetchData,
     searchTerm,
     setSearchTerm,
@@ -104,19 +104,19 @@ const HubungkanWaliAsuh = () => {
     totalPages,
     currentPage,
     setCurrentPage,
-    allSantriIds,
-  } = useFetchSantri(filters)
+    allSantriNonAnakAsuhIds,
+  } = useFetchSantriNonAnakAsuh(filters)
 
   // useEffect(() => {
   //     if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
   // }, [setLimit, totalDataSantri]);
 
   useEffect(() => {
-    if (isAllSelected && allSantriIds.length > 0) {
-      setSelectedSantriIds(allSantriIds)
+    if (isAllSelected && allSantriNonAnakAsuhIds.length > 0) {
+      setSelectedSantriIds(allSantriNonAnakAsuhIds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSantriIds])
+  }, [allSantriNonAnakAsuhIds])
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -131,7 +131,7 @@ const HubungkanWaliAsuh = () => {
       await Swal.fire({
         icon: "warning",
         title: "Peringatan",
-        text: "Pilih minimal satu santri untuk dijadikan anak asuh.",
+        text: "Pilih minimal satu santriNonAnakAsuh untuk dijadikan anak asuh.",
       })
       return
     }
@@ -234,7 +234,7 @@ const HubungkanWaliAsuh = () => {
   }
 
   useEffect(() => {
-    const availableIds = santri.map((item) => item.id)
+    const availableIds = santriNonAnakAsuh.map((item) => item.id)
 
     setSelectedSantriIds((prevSelected) => prevSelected.filter((id) => availableIds.includes(id)))
 
@@ -242,7 +242,7 @@ const HubungkanWaliAsuh = () => {
       setIsAllSelected(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [santri])
+  }, [santriNonAnakAsuh])
 
   if (!hasAccess("kewaliasuhan")) {
     return <Navigate to="/not-found" replace />
@@ -315,7 +315,7 @@ const HubungkanWaliAsuh = () => {
                       </svg>
                     </div>
                     <p className="text-gray-500 font-medium">Silakan pilih wilayah terlebih dahulu</p>
-                    <p className="text-gray-400 text-sm mt-1">Pilih wilayah untuk menampilkan daftar santri</p>
+                    <p className="text-gray-400 text-sm mt-1">Pilih wilayah untuk menampilkan daftar santriNonAnakAsuh</p>
                   </div>
                 ) : error ? (
                   <div className="text-center py-12">
@@ -342,7 +342,7 @@ const HubungkanWaliAsuh = () => {
                     <SearchBar
                       searchTerm={searchTerm}
                       setSearchTerm={setSearchTerm}
-                      totalData={totalDataSantri}
+                      totalData={totalDataSantriNonAnakAsuh}
                       limit={limit}
                       toggleLimit={(e) => setLimit(Number(e.target.value))}
                       showViewButtons={false}
@@ -362,7 +362,7 @@ const HubungkanWaliAsuh = () => {
                                     setIsAllSelected(checked)
                                     if (checked) {
                                       await fetchAllData()
-                                      setSelectedSantriIds(allSantriIds)
+                                      setSelectedSantriIds(allSantriNonAnakAsuhIds)
                                     } else {
                                       setSelectedSantriIds([])
                                     }
@@ -377,20 +377,20 @@ const HubungkanWaliAsuh = () => {
                             </tr>
                           </thead>
                           <tbody className="space-y-1">
-                            {loadingSantri ? (
+                            {loadingSantriNonAnakAsuh ? (
                               <tr>
                                 <td colSpan="5" className="text-center py-12">
                                   <OrbitProgress variant="disc" color="#2563eb" size="small" text="" textColor="" />
                                 </td>
                               </tr>
-                            ) : santri.length === 0 ? (
+                            ) : santriNonAnakAsuh.length === 0 ? (
                               <tr>
                                 <td colSpan="5" className="text-center py-12 text-gray-500">
-                                  Tidak ada data santri
+                                  Tidak ada data santriNonAnakAsuh
                                 </td>
                               </tr>
                             ) : (
-                              santri.map((item, index) => (
+                              santriNonAnakAsuh.map((item, index) => (
                                 <tr key={item.id} className="bg-white hover:bg-blue-50 transition-colors duration-150">
                                   <td className="px-4 py-3 text-center rounded-l-lg">
                                     <input
@@ -401,7 +401,7 @@ const HubungkanWaliAsuh = () => {
                                         if (checked) {
                                           setSelectedSantriIds((prev) => {
                                             const newSelected = [...prev, item.id]
-                                            if (newSelected.length === santri.length) {
+                                            if (newSelected.length === santriNonAnakAsuh.length) {
                                               setIsAllSelected(true)
                                             }
                                             return newSelected

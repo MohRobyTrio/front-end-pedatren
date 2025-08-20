@@ -17,7 +17,7 @@ const JadwalSholat = () => {
     const { jadwalSholat, loadingJadwalSholat, error, fetchJadwalSholat, handleDelete } = useFetchJadwalSholat();
 
     if (!hasAccess("jadwal_sholat")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

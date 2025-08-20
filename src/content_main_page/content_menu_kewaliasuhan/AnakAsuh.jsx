@@ -194,7 +194,7 @@ const AnakAsuh = () => {
     };
 
     if (!hasAccess("anak_asuh")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

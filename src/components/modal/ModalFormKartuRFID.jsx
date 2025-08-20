@@ -461,20 +461,47 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
         setIsChangingRfid(false)
     }
 
+    // useEffect(() => {
+    //     if (currentStep !== 2) return;
+
+    //     const handleKeyPress = (e) => {
+    //         if (e.key === "Enter") {
+    //             e.preventDefault();
+    //             // submitForm(idCard) jika mau submit saat Enter
+    //         } else if (/^[0-9]$/.test(e.key)) {
+    //             setIdCard((prev) => {
+    //                 let newId = prev + e.key;
+
+    //                 // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
+    //                 if (newId.length > 10) {
+    //                     newId = e.key; // reset dan mulai dari digit ini
+    //                 }
+
+    //                 return newId;
+    //             });
+    //         }
+    //     };
+
+    //     window.addEventListener("keydown", handleKeyPress);
+    //     return () => window.removeEventListener("keydown", handleKeyPress);
+    // }, [currentStep]);
+
     useEffect(() => {
-        if (currentStep !== 2) return;
+        // hanya jalan jika step = 2 dan path sesuai
+        if (currentStep !== 2 || location.pathname !== "/karturfid") return;
 
         const handleKeyPress = (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
                 // submitForm(idCard) jika mau submit saat Enter
+                // submitForm(idCard);
             } else if (/^[0-9]$/.test(e.key)) {
                 setIdCard((prev) => {
                     let newId = prev + e.key;
 
-                    // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
+                    // reset jika lebih dari 10 digit
                     if (newId.length > 10) {
-                        newId = e.key; // reset dan mulai dari digit ini
+                        newId = e.key;
                     }
 
                     return newId;
@@ -484,7 +511,8 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
 
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [currentStep]);
+    }, [currentStep, location.pathname]); // tambahkan location.pathname ke dependency
+
 
     // useEffect(() => {
     //     if (currentStep !== 2) return;

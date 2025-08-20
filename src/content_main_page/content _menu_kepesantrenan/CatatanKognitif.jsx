@@ -199,7 +199,7 @@ const CatatanKognitif = () => {
     const [showFormModal, setShowFormModal] = useState(false);
 
     if (!hasAccess("catatan_kognitif")) {
-            return <Navigate to="/not-found" replace />;
+            return <Navigate to="/forbidden" replace />;
         }
 
     return (

@@ -22,7 +22,7 @@ const UserOutlet = () => {
         handleDelete } = useFetchDataUserOutlet();
 
     if (!hasAccess("user_outlet")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

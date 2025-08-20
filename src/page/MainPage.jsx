@@ -18,6 +18,7 @@ const MainPage = () => {
         akademik: sessionStorage.getItem("akademik") === "true",
         pesertadidik: sessionStorage.getItem("pesertadidik") === "true",
         manage: sessionStorage.getItem("manage") === "true",
+        transaksi: sessionStorage.getItem("transaksi") === "true",
     }));
 
     useEffect(() => {

@@ -13,6 +13,7 @@ import {
     // menuMahromItems,
     menuManageItems,
     menuSholat,
+    menuTransaksiItems,
     subKelembagaanItems,
     subPelajaranItems,
     // subPesertaDidik
@@ -82,6 +83,15 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
     const DropdownMenu = ({ items }) => (
         <ul className="mt-1 ml-2">
             {items.map((item) => {
+                const isValidOutlet = (value) => value && value !== "null" && value !== "undefined";
+
+                const outletSession = sessionStorage.getItem("outlet");
+                const outletLocal = localStorage.getItem("outlet");
+                if (
+                    item.id === "belanja" && !isValidOutlet(outletSession) && !isValidOutlet(outletLocal)
+                ) {
+                    return null; // Jangan tampilkan menu belanja
+                }
                 // const isPeserta = item.id == "pesertadidik";
                 const hasSubmenu =
                     item.id == "pesertadidik" ||
@@ -90,8 +100,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                     item.id == "kewilayahan" ||
                     item.id == "alumni" ||
                     item.id == "csholat" ||
-                    item.id == "hafalan" ||
-                    item.id == "transaksi";
+                    item.id == "hafalan";
                 // const isOpen = isPeserta ? true : dropdowns[item.id];
                 // const isOpen = dropdowns[item.id];
 
@@ -134,7 +143,7 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
 
     const SubMenuDropdown = ({ subData, parentId }) => {
         if (!Array.isArray(subData)) return null;
-        
+
         return (
             <ul className="ml-7 mt-1">
                 {subData.map((subItem) => {
@@ -280,6 +289,17 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                             {dropdowns.kewilayahan && <DropdownMenu items={menuKewilayahanItems} />}
                         </div>
                     </Access> */}
+
+                    <Access action="transaksi">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Transaksi"
+                                isOpen={dropdowns.transaksi}
+                                onClick={() => toggleDropdown("transaksi")}
+                            />
+                            {dropdowns.transaksi && <DropdownMenu items={menuTransaksiItems} />}
+                        </div>
+                    </Access>
 
                     <Access action="akademik">
                         <div className="mt-3 px-2">

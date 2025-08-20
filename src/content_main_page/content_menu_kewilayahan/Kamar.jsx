@@ -38,7 +38,7 @@ const Kamar = () => {
     };
 
     if (!hasAccess("kewilayahan")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

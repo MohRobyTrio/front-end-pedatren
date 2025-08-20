@@ -17,7 +17,7 @@ const Sholat = () => {
     const { sholat, loadingSholat, error, fetchSholat, handleDelete } = useFetchSholat();
 
     if (!hasAccess("sholat")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

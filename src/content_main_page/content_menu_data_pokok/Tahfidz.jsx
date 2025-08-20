@@ -691,7 +691,7 @@ export const TahfidzRekap = () => {
     }
 
     if (!hasAccess("tahfidz")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

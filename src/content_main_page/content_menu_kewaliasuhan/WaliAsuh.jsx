@@ -217,7 +217,7 @@ const WaliAsuh = () => {
     };
 
     if (!hasAccess("wali_asuh")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

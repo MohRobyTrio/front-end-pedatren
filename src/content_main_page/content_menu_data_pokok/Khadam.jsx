@@ -191,7 +191,7 @@ const Khadam = () => {
     };
 
     if (!hasAccess("khadam")) {
-        return <Navigate to="/not-found" replace />;
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (
