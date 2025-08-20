@@ -111,16 +111,16 @@ const Pegawai = () => {
             { label: "Karyawan", value: "karyawan" },
             { label: "Pengajar", value: "pengajar" },
             { label: "Wali Kelas", value: "wali kelas" },
-            // { label: "Pengajar-Pengurus", value: "pengajar pengurus" },
-            // { label: "Pengajar-Karyawan", value: "pengajar karyawan" },
-            // { label: "Pengurus-Karyawan", value: "pengurus karyawan" },
-            // { label: "Pengajar-Pengurus-Karyawan", value: "pengajar pengurus karyawan" },
+            { label: "Pengajar-Pengurus", value: "pengajar pengurus" },
+            { label: "Pengajar-Karyawan", value: "pengajar karyawan" },
+            { label: "Pengurus-Karyawan", value: "pengurus karyawan" },
+            { label: "Pengajar-Pengurus-Karyawan", value: "pengajar pengurus karyawan" },
         ],
-        status: [
-            { label: "Semua Status", value: "" },
-            { label: "Aktif", value: "aktif" },
-            { label: "Tidak Aktif", value: "tidak_aktif" },
-        ],
+        // status: [
+        //     { label: "Semua Status", value: "" },
+        //     { label: "Aktif", value: "aktif" },
+        //     { label: "Tidak Aktif", value: "tidak_aktif" },
+        // ],
     }
 
     const filter5 = {
