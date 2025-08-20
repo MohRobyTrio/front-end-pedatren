@@ -82,16 +82,7 @@ const Transaksi = () => {
     useEffect(() => {
         const initializeApp = async () => {
             console.log("🚀 Initializing Prayer Attendance App...")
-
-            // Detect browser info
             detectBrowserInfo()
-
-            // Start time updates
-            // const timer = setInterval(() => setCurrentTime(new Date()), 1000)
-
-            // return () => {
-            //     clearInterval(timer)
-            // }
         }
 
         initializeApp()
@@ -520,12 +511,13 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
 const Scan = ({ refetch }) => {
     const [isScanning, setIsScanning] = useState(false)
     const [customerData, setCustomerData] = useState(null)
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false)
+    // eslint-disable-next-line no-unused-vars
     const [error, setError] = useState("")
+    // eslint-disable-next-line no-unused-vars
     const [success, setSuccess] = useState("")
     const [nfcSupported, setNfcSupported] = useState(false)
-    const [status, setStatus] = useState("Tempelkan kartu pembayaran...")
-    const [statusResponse, setStatusResponse] = useState("")
     const [inputMode, setInputMode] = useState("reader")
     const [showSelectSantri, setShowSelectSantri] = useState(false)
     const [idCard, setIdCard] = useState("") // For NFC/Reader ID card
@@ -557,7 +549,6 @@ const Scan = ({ refetch }) => {
     useEffect(() => {
         if (inputMode === "nfc") {
             if (!nfcSupported) {
-                setStatusResponse("Error")
                 setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
             } else {
                 startNFCScanning()
@@ -596,18 +587,6 @@ const Scan = ({ refetch }) => {
         setSuccess("")
         setIdCard("")
         setIsScanning(false)
-
-        switch (mode) {
-            case "manual":
-                setStatus("Pilih santri...")
-                break
-            case "nfc":
-                setStatus("Tempelkan kartu NFC...")
-                break
-            case "reader":
-                setStatus("Letakkan kartu pada reader...")
-                break
-        }
     }
 
     const playNotificationSound = (success) => {
@@ -636,7 +615,6 @@ const Scan = ({ refetch }) => {
         try {
             setIsScanning(true)
             setError("")
-            setStatus("Tempelkan kartu pembayaran...")
 
             const ndef = new window.NDEFReader()
             await ndef.scan()
@@ -661,7 +639,6 @@ const Scan = ({ refetch }) => {
                     console.error("Gagal konversi UID ke desimal:", e)
                     uidDecimal = serialNumber // fallback
                 }
-                setStatus(`Kartu terdeteksi: ${uidDecimal}`)
                 setIsScanning(false)
                 searchCustomer(uidDecimal)
                 playNotificationSound(true)
@@ -702,17 +679,14 @@ const Scan = ({ refetch }) => {
             const data = await response.json()
 
             if (!response.ok || data.success == false || data.data.status == false) {
-                setStatusResponse(data.status || "")
                 throw new Error(data.message || "Pembeli tidak ditemukan")
             }
 
             setCustomerData(data.data)
             console.log(data)
 
-            setStatus(`Data pembeli ditemukan: ${data.data.nama_pembeli}`)
         } catch (error) {
             setError("Error: " + error.message)
-            setStatus("Gagal mencari data pembeli")
         } finally {
             setLoading(false)
         }
@@ -858,7 +832,6 @@ const Scan = ({ refetch }) => {
         setTotalHarga(0)
         setError("")
         setSuccess("")
-        setStatus("Tempelkan kartu pembayaran...")
         setCurrentStep(1)
         setPin("")
     }
@@ -866,21 +839,18 @@ const Scan = ({ refetch }) => {
     const handleKembali = () => {
         switch (inputMode) {
             case "manual":
-                setStatus("Pilih santri...")
                 setCurrentStep(1)
                 break
             case "nfc":
                 setCurrentStep(2)
-                setStatus("Tempelkan kartu NFC...")
                 startNFCScanning()
                 break
             case "reader":
-                setStatus("Letakkan kartu pada reader...")
                 setIdCard("")
                 setCurrentStep(1)
                 break
             default:
-                setStatus("Pilih mode input...")
+                setCurrentStep(1)
         }
     }
 
@@ -889,42 +859,18 @@ const Scan = ({ refetch }) => {
         setIdCard("")
         switch (inputMode) {
             case "manual":
-                setStatus("Pilih santri...")
                 setCurrentStep(2)
                 break
             case "nfc":
                 setCurrentStep(2)
-                setStatus("Tempelkan kartu NFC...")
                 startNFCScanning()
                 break
             case "reader":
-                setStatus("Letakkan kartu pada reader...")
                 setCurrentStep(2)
                 break
             default:
-                setStatus("Pilih mode input...")
+                setCurrentStep(2)
         }
-        // setCustomerData("")
-        // if (currentStep === 1) {
-        //     // Validate transaction data
-        //     if (!hargaSatuan || !jumlah || !kategori) {
-        //         setError("Mohon lengkapi semua data transaksi")
-        //         return
-        //     }
-
-        //     if (inputMode === "manual") {
-        //         // For manual mode, go directly to PIN step
-        //         setCurrentStep(3)
-        //         setShowPinInput(true)
-        //     } else {
-        //         // For NFC/reader mode, go to scan step
-        //         setCurrentStep(2)
-        //     }
-        // } else if (currentStep === 2 && customerData) {
-        //     // After successful scan, go to PIN step
-        //     setCurrentStep(3)
-        //     setShowPinInput(true)
-        // }
     }
     const handleChangeData = () => {
         console.log(idCard);
@@ -935,7 +881,6 @@ const Scan = ({ refetch }) => {
                 break
             case "nfc":
                 setCustomerData("")
-                setStatus("Tempelkan kartu NFC...")
                 startNFCScanning()
                 break
             case "reader":
@@ -943,45 +888,13 @@ const Scan = ({ refetch }) => {
                 setIdCard("")
                 break
             default:
-                setStatus("Pilih mode input...")
+                setCustomerData("")
+                setIdCard("")
         }
     }
 
     const inputRef = useRef(null)
-
-    // useEffect(() => {
-    //     if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //     // Tangkap semua input dari reader
-    //     const handleKeyPress = (e) => {
-    //         if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //         // Biasanya reader mengirim angka + Enter
-    //         if (e.key === "Enter") {
-    //             e.preventDefault()
-    //             console.log("Pathname Transaksi:",location.pathname);
-
-    //             console.log("Submit ID Card:", idCard);
-
-    //             searchCustomer(idCard)
-    //         } else if (/^[0-9]$/.test(e.key)) {
-    //             // Tambahkan angka ke state
-    //             setIdCard((prev) => {
-    //                 let newId = prev + e.key;
-
-    //                 // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
-    //                 if (newId.length > 10) {
-    //                     newId = e.key; // reset dan mulai dari digit ini
-    //                 }
-
-    //                 return newId;
-    //             });
-    //         }
-    //     }
-
-    //     if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //     window.addEventListener("keydown", handleKeyPress)
-    //     return () => window.removeEventListener("keydown", handleKeyPress)
-    // }, [currentStep, idCard, location.pathname])
-
+    
     useEffect(() => {
         // jalankan hanya di halaman /transaksi/belanja
         if (location.pathname !== "/transaksi/belanja") return;
@@ -1077,38 +990,6 @@ const Scan = ({ refetch }) => {
                         Manual
                     </button>
                 </div>
-
-                {/* Stepper Indicator */}
-                {/* <div className="flex items-center justify-between mb-8">
-                    {["Detail", "Pembeli", "PIN"].map((label, index) => {
-                        const stepNumber = index + 1
-                        const isActive = currentStep === stepNumber
-                        const isCompleted = currentStep > stepNumber
-
-                        return (
-                            <div key={index} className="flex-1 flex flex-col items-center">
-                                <div
-                                    className={`w-10 h-10 flex items-center justify-center rounded-full border-2 font-bold mb-2
-            ${isCompleted ? "bg-green-500 border-green-500 text-white" : ""}
-            ${isActive ? "border-blue-500 text-blue-600" : "border-gray-300 text-gray-400"}
-          `}
-                                >
-                                    {isCompleted ? "✓" : stepNumber}
-                                </div>
-                                <span
-                                    className={`text-sm font-medium ${isActive ? "text-blue-600" : isCompleted ? "text-green-600" : "text-gray-500"
-                                        }`}
-                                >
-                                    {label}
-                                </span>
-                            </div>
-                        )
-                    })}
-                </div> */}
-
-
-                {/* Payment Form */}
-                {/* Step 1: Input harga, jumlah, kategori */}
                 {currentStep === 1 && (
                     <>
                         <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6">

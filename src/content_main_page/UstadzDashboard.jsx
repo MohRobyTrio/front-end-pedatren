@@ -25,6 +25,7 @@ const Scan = () => {
         if (nfcSupported && inputMode === "nfc") {
             startNFCScanning()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nfcSupported, inputMode])
 
     const checkNFCSupport = () => {
@@ -40,7 +41,7 @@ const Scan = () => {
         if (!nfcSupported) return
 
         try {
-            const ndef = new NDEFReader()
+            const ndef = new window.NDEFReader()
             await ndef.scan()
             setIsScanning(true)
             setStatus("Silakan tempelkan kartu NFC...")
@@ -146,6 +147,7 @@ const Scan = () => {
             const data = await response.json()
             setStudentData(data.data)
             setStatus(`Data santri ditemukan: ${data.data.nama_santri}`)
+        // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError("Santri dengan NIS tersebut tidak ditemukan")
             setStatus("Gagal mencari data santri")

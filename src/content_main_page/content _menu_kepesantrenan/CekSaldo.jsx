@@ -1,24 +1,9 @@
 "use client"
-import { OrbitProgress } from "react-loading-indicators"
 import { useEffect, useRef, useState } from "react"
-import {
-    FaShoppingCart,
-    FaCheckCircle,
-    FaUsers,
-    FaCalendar,
-    FaTimesCircle,
-    FaArrowRight,
-    FaExchangeAlt,
-    FaSync,
-    FaStore,
-    FaSearch,
-    FaHistory,
-} from "react-icons/fa"
 import { hasAccess } from "../../utils/hasAccess"
 import { Navigate, useLocation } from "react-router-dom"
 import { getCookie } from "../../utils/cookieUtils"
 import { API_BASE_URL } from "../../hooks/config"
-import blankProfile from "../../assets/blank_profile.png"
 import { ModalSelectSantri } from "../../components/ModalSelectSantri"
 import {
     FiCheck,
@@ -32,71 +17,15 @@ import {
     FiWifi,
     FiX,
 } from "react-icons/fi"
-import useFetchTransaksi from "../../hooks/hook_menu_kepesantrenan/belanja/Transaksi"
-import Pagination from "../../components/Pagination"
-import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
-import useDropdownKategori from "../../hooks/hook_dropdown/DropdownKategori"
 import Swal from "sweetalert2"
-import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet"
-import { set } from "react-hook-form"
 
 const CekSaldo = () => {
-    // const [activeTab, setActiveTab] = useState("daftar")
-    const [filters, setFilters] = useState({
-        outlet_id: "",
-        date_from: "",
-        date_to: "",
-        kategori_id: "",
-        q: "",
-    })
-
-    const { dataTransaksi, loadingTransaksi, totalData, fetchData, totalPembayaran, currentPage, setCurrentPage, totalPages, searchTerm, setSearchTerm } = useFetchTransaksi(filters)
-
-    // Main states - Auto-start in scan mode
-    const [currentView, setCurrentView] = useState("scan")
-    // const [currentTime, setCurrentTime] = useState(new Date())
-
-    useEffect(() => {
-        const savedView = sessionStorage.getItem("currentViewTransaksiCekSaldo")
-        if (savedView) {
-            setCurrentView(savedView)
-        }
-    }, [])
-
-    // Simpan state ke sessionStorage setiap kali currentView berubah
-    const handleSetView = (view) => {
-        setCurrentView(view)
-        sessionStorage.setItem("currentViewTransaksiCekSaldo", view)
-    }
-
-    const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page)
-        }
-    }
-
-    const totals = {
-        total_data: totalData,
-        total_pembayaran: totalPembayaran,
-    }
-
-    useEffect(() => {
-        console.log("filters", filters)
-    }, [filters])
-
     useEffect(() => {
         const initializeApp = async () => {
             console.log("🚀 Initializing Prayer Attendance App...")
 
-            // Detect browser info
             detectBrowserInfo()
 
-            // Start time updates
-            // const timer = setInterval(() => setCurrentTime(new Date()), 1000)
-
-            // return () => {
-            //     clearInterval(timer)
-            // }
         }
 
         initializeApp()
@@ -118,435 +47,34 @@ const CekSaldo = () => {
 
     return (
         <div className="">
-            {/* Header Section */}
-            {/* <div className="bg-white shadow-sm rounded-lg">
-                <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-4 space-y-4 lg:space-y-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <div>
-                                    <p className="text-xs text-gray-500">Sistem Aktif</p>
-                                    <p className="text-sm font-medium text-gray-900">CekSaldo Saldo</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center space-x-3">
-                                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                                <div>
-                                    <p className="text-xs text-gray-500">Status</p>
-                                    <p className="text-sm font-medium text-green-700">Siap Menerima Transaksi</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex space-x-2 items-center justify-center">
-                            <button
-                                onClick={() => handleSetView("scan")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "scan" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    }`}
-                            >
-                                <FiCreditCard className="inline mr-2" />
-                                Scan
-                            </button>
-                            <button
-                                onClick={() => handleSetView("list")}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentView === "list" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    }`}
-                            >
-                                <FaHistory className="inline mr-2" />
-                                Riwayat
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
-
             {/* Main Content */}
             <div className="mx-auto">
-                {currentView === "scan" ? (
-                    <Scan refetch={fetchData} />
-                ) : (
-                    <TransactionList
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                        filters={filters}
-                        setFilters={setFilters}
-                        loadingTransaksi={loadingTransaksi}
-                        dataTransaksi={dataTransaksi}
-                        totals={totals}
-                        fetchData={fetchData}
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        handlePageChange={handlePageChange}
-                    />
-                )}
+                <Scan />
             </div>
         </div>
     )
 }
 
-const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadingTransaksi, dataTransaksi = [], totals, fetchData, currentPage, totalPages, handlePageChange }) => {
-    console.log("totals", totals)
-    const { dataOutlet } = useFetchDataOutlet();
-    const { menuKategori } = useDropdownKategori();
-
-    // Mock data for categories - replace with actual API calls
-    // const kategoriOptions = [
-    //     { value: "1", label: "Makanan & Minuman" },
-    //     { value: "2", label: "Alat Tulis" },
-    //     { value: "3", label: "Pakaian" },
-    //     { value: "4", label: "Lainnya" },
-    // ]
-
-    const handleAdvancedFilterChange = (key, value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [key]: value,
-        }))
-    }
-
-    const handleAdvancedSearchChange = (key, value) => {
-        setSearchTerm(value)
-    }
-
-    // const resetFilters = () => {
-    //     setFilters({
-    //         tanggal: "",
-    //         kategori_id: "",
-    //         metode: "",
-    //         status: "all",
-    //         showAll: false,
-    //     })
-    //     setSearchTerm("")
-    // }
-
-    const handleRefresh = () => {
-        fetchData(true)
-    }
-
-    const isFilterValid = filters?.outlet_id && filters?.date_from && filters?.date_to
-
-    // if (!isFilterValid) {
-    //     return (
-    //         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-    //             <p className="text-yellow-700 font-medium">
-    //                 Silakan pilih <b>Outlet</b>, <b>Tanggal Dari</b>, dan <b>Tanggal Sampai</b> terlebih dahulu.
-    //             </p>
-    //         </div>
-    //     )
-    // }
-
-    return (
-        <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Outlet Filter */}
-                    <div className="space-y-2">
-                        <label className="flex items-center text-sm font-medium text-gray-700">
-                            <FaStore className="w-4 h-4 mr-2 text-purple-500" />
-                            Outlet
-                        </label>
-                        <select
-                            value={filters.outlet_id}
-                            onChange={(e) => handleAdvancedFilterChange("outlet_id", e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        >
-                            <option value="">Semua Outlet</option>
-                            {dataOutlet
-                                ?.filter((option) => option.status == 1)
-                                .map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.nama_outlet}
-                                    </option>
-                                ))}
-                        </select>
-                    </div>
-
-                    {/* Date From */}
-                    <div className="space-y-2">
-                        <label className="flex items-center text-sm font-medium text-gray-700">
-                            <FaCalendar className="w-4 h-4 mr-2 text-blue-500" />
-                            Dari Tanggal
-                        </label>
-                        <input
-                            type="date"
-                            value={filters.date_from}
-                            onChange={(e) => handleAdvancedFilterChange("date_from", e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                    </div>
-
-                    {/* Date To */}
-                    <div className="space-y-2">
-                        <label className="flex items-center text-sm font-medium text-gray-700">
-                            <FaCalendar className="w-4 h-4 mr-2 text-blue-500" />
-                            Sampai Tanggal
-                        </label>
-                        <input
-                            type="date"
-                            value={filters.date_to}
-                            onChange={(e) => handleAdvancedFilterChange("date_to", e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                    </div>
-                </div>
-                <div className="mt-4 flex justify-end">
-                    <button
-                        onClick={() =>
-                            setFilters({
-                                outlet_id: "",
-                                date_from: "",
-                                date_to: "",
-                            })
-                        }
-                        className="flex items-center space-x-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium"
-                    >
-                        <FaTimesCircle className="w-4 h-4" />
-                        <span>Reset</span>
-                    </button>
-                </div>
-            </div>
-
-            {isFilterValid ? (
-                <>
-                    <div className="bg-white rounded-xl shadow-lg p-6">
-                        <div className="flex flex-col space-y-4">
-                            {/* Filter Toggle Button */}
-                            {/* <div className="flex items-center justify-between"> */}
-                            {/* <h3 className="text-lg font-semibold text-gray-900">Filter Data CekSaldo</h3>
-                                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                                    <button
-                                        onClick={() => setShowFilters(!showFilters)}
-                                        className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${showFilters ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                            }`}
-                                    >
-                                        <FaFilter className="w-4 h-4" />
-                                        <span>{showFilters ? "Sembunyikan Filter" : "Tampilkan Filter"}</span>
-                                    </button>
-                                    <button
-                                        onClick={handleRefresh}
-                                        disabled={loadingTransaksi}
-                                        className={`w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : "hover:bg-green-700"
-                                            }`}
-                                    >
-                                        <FaSync className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`} />
-                                        <span>{loadingTransaksi ? "Merefresh..." : "Refresh"}</span>
-                                    </button>
-                                </div> */}
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                                <div className="relative flex-1 max-w-md pr-4">
-                                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                    <input
-                                        type="text"
-                                        placeholder="Cari nama santri atau NIS..."
-                                        value={searchTerm}
-                                        onChange={(e) => handleAdvancedSearchChange("q", e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    />
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <select
-                                        value={filters.kategori_id}
-                                        onChange={(e) => handleAdvancedFilterChange("kategori_id", e.target.value)}
-                                        className="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                                    >
-                                        <option value="">Semua Kategori</option>
-                                        {menuKategori.map((option) => (
-                                            <option key={option.kategori_id} value={option.kategori_id}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        onClick={handleRefresh}
-                                        disabled={loadingTransaksi}
-                                        className={`w-full sm:w-auto px-4 py-3 rounded-lg flex items-center justify-center space-x-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : "hover:bg-green-700"
-                                            }`}
-                                    >
-                                        <FaSync className={`w-4 h-4 ${loadingTransaksi ? "animate-spin" : ""}`} />
-                                        <span>{loadingTransaksi ? "Merefresh..." : "Refresh"}</span>
-                                    </button>
-                                </div>
-                                {/* </div> */}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Transaction Statistics */}
-                    {totals && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-white p-6 rounded-xl shadow-lg">
-                                <div className="flex items-center">
-                                    <div className="p-3 rounded-full bg-green-100">
-                                        <FaCheckCircle className="h-6 w-6 text-green-600" />
-                                    </div>
-                                    <div className="ml-4">
-                                        <p className="text-sm font-medium text-gray-500">Total Data</p>
-                                        <p className="text-2xl font-bold text-gray-900">{(totals?.total_data ?? 0) || 0}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-white p-6 rounded-xl shadow-lg">
-                                <div className="flex items-center">
-                                    <div className="p-3 rounded-full bg-purple-100">
-                                        <FaUsers className="h-6 w-6 text-purple-600" />
-                                    </div>
-                                    <div className="ml-4">
-                                        <p className="text-sm font-medium text-gray-500">Total Pembayaran</p>
-                                        <p className="text-2xl font-bold text-gray-900">Rp {(totals?.total_pembayaran ?? 0).toLocaleString("id-ID")}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Transaction Table */}
-                    <div className="bg-white rounded-xl shadow-lg">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-900">Riwayat CekSaldo</h3>
-                        </div>
-
-                        {loadingTransaksi ? (
-                            <div className="flex justify-center items-center py-12">
-                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                            </div>
-                        ) : (
-                            <>
-                                <DoubleScrollbarTable>
-                                    {/* <div className="overflow-x-auto"> */}
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
-                                            <tr>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
-                                                    No
-                                                </th>
-                                                <th className="pr-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Outlet
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Kategori
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Total Bayar
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Waktu
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {dataTransaksi.length > 0 ? (
-                                                dataTransaksi.map((item, i) => (
-                                                    <tr key={item?.id || i} className="hover:bg-gray-50">
-                                                        <td className="px-5 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">{(currentPage - 1) * 25 + i + 1 || "-"}</div>
-                                                        </td>
-                                                        <td className="pr-6 py-4 whitespace-nowrap">
-                                                            <div className="flex items-center">
-                                                                <div>
-                                                                    <div className="text-sm font-medium text-gray-900">{item?.santri?.biodata?.nama || "-"}</div>
-                                                                    <div className="text-sm text-gray-500">
-                                                                        NIS: {item?.santri?.nis || "-"} | UID: {item?.santri?.kartu?.uid_kartu || "-"}
-                                                                    </div>
-
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-900">{item?.outlet?.nama_outlet || "-"}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm text-gray-500">{item?.kategori?.nama_kategori || "-"}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div className="text-sm font-medium text-green-600">
-                                                                Rp {item?.total_bayar?.toLocaleString() || "-"}
-                                                            </div>
-                                                        </td>
-
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            {new Date(item?.tanggal).toLocaleString("id-ID") || "-"}
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                                                        Tidak ada data transaksi
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                    {/* </div> */}
-                                </DoubleScrollbarTable>
-                                {totalPages > 1 && (
-                                    <div className="pb-6 pr-6">
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            handlePageChange={handlePageChange}
-                                        />
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
-                </>
-            ) : (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                    <p className="text-yellow-700 font-medium">
-                        Silakan pilih <b>Outlet</b>, <b>Tanggal Dari</b>, dan <b>Tanggal Sampai</b> terlebih dahulu.
-                    </p>
-                </div>
-            )}
-        </div>
-    )
-}
-
-const Scan = ({ refetch }) => {
+const Scan = () => {
     const [isScanning, setIsScanning] = useState(false)
     const [customerData, setCustomerData] = useState(null)
     const [loading, setLoading] = useState(false)
+    // eslint-disable-next-line no-unused-vars
     const [error, setError] = useState("")
+    // eslint-disable-next-line no-unused-vars
     const [success, setSuccess] = useState("")
     const [nfcSupported, setNfcSupported] = useState(false)
-    const [status, setStatus] = useState("Tempelkan kartu pembayaran...")
-    const [statusResponse, setStatusResponse] = useState("")
     const [inputMode, setInputMode] = useState("reader")
     const [showSelectSantri, setShowSelectSantri] = useState(false)
     const [idCard, setIdCard] = useState("") // For NFC/Reader ID card
 
-    const [hargaSatuan, setHargaSatuan] = useState("")
-    const [jumlah, setJumlah] = useState("1")
-    const [kategori, setKategori] = useState("")
-    const [totalHarga, setTotalHarga] = useState(0)
-
     const [currentStep, setCurrentStep] = useState(1) // 1: Input data, 2: Scan, 3: PIN, 4: Complete
     const [pin, setPin] = useState("")
-    const [nominal, setNominal] = useState("")
 
     const location = useLocation()
 
     const [dataSaldo, setDataSaldo] = useState("")
 
-    const { menuKategori } = useDropdownKategori()
-
-    // Calculate total when price or quantity changes
-    useEffect(() => {
-        const harga = Number.parseFloat(hargaSatuan) || 0
-        const qty = Number.parseInt(jumlah) || 0
-        setTotalHarga(harga * qty)
-    }, [hargaSatuan, jumlah])
 
     useEffect(() => {
         checkNFCSupport()
@@ -556,7 +84,6 @@ const Scan = ({ refetch }) => {
     useEffect(() => {
         if (inputMode === "nfc") {
             if (!nfcSupported) {
-                setStatusResponse("Error")
                 setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
             } else {
                 startNFCScanning()
@@ -595,18 +122,6 @@ const Scan = ({ refetch }) => {
         setSuccess("")
         setIdCard("")
         setIsScanning(false)
-
-        switch (mode) {
-            case "manual":
-                setStatus("Pilih santri...")
-                break
-            case "nfc":
-                setStatus("Tempelkan kartu NFC...")
-                break
-            case "reader":
-                setStatus("Letakkan kartu pada reader...")
-                break
-        }
     }
 
     const playNotificationSound = (success) => {
@@ -635,7 +150,6 @@ const Scan = ({ refetch }) => {
         try {
             setIsScanning(true)
             setError("")
-            setStatus("Tempelkan kartu pembayaran...")
 
             const ndef = new window.NDEFReader()
             await ndef.scan()
@@ -646,7 +160,6 @@ const Scan = ({ refetch }) => {
 
                 let uidDecimal = null
                 try {
-                    // Remove all ':' characters
                     const bytes = serialNumber.split(":") // ["2F","8B","29","2B"]
                     const reversed = bytes.reverse().join("") // "2B298B2F"
                     uidDecimal = BigInt("0x" + reversed).toString(10)
@@ -660,7 +173,6 @@ const Scan = ({ refetch }) => {
                     console.error("Gagal konversi UID ke desimal:", e)
                     uidDecimal = serialNumber // fallback
                 }
-                setStatus(`Kartu terdeteksi: ${uidDecimal}`)
                 setIsScanning(false)
                 searchCustomer(uidDecimal)
                 playNotificationSound(true)
@@ -701,14 +213,12 @@ const Scan = ({ refetch }) => {
             const data = await response.json()
 
             if (!response.ok || data.success == false || data.data.status == false) {
-                setStatusResponse(data.status || "")
                 throw new Error(data.data.message || " tidak ditemukan")
             }
 
             setCustomerData(data.data)
             console.log(data)
 
-            setStatus(`Data  ditemukan: ${data.data.nama_}`)
         } catch (error) {
             await Swal.fire({
                 icon: "error",
@@ -717,7 +227,6 @@ const Scan = ({ refetch }) => {
             });
             setIdCard("")
             setError("Error: " + error.message)
-            setStatus("Gagal mencari data ")
         } finally {
             setLoading(false)
         }
@@ -728,17 +237,6 @@ const Scan = ({ refetch }) => {
             setError("Mohon lengkapi semua data transaksi")
             return
         }
-
-        // const confirmResult = await Swal.fire({
-        //     title: "Yakin data sudah benar?",
-        //     text: "Pastikan semua data sudah benar!",
-        //     icon: "question",
-        //     showCancelButton: true,
-        //     confirmButtonText: "Ya, simpan",
-        //     cancelButtonText: "Batal",
-        // })
-
-        // if (!confirmResult.isConfirmed) return
 
         setLoading(true)
         setError("")
@@ -790,7 +288,6 @@ const Scan = ({ refetch }) => {
                         total_bayar: "Total Bayar",
                         nama: "Nama",
                         email: "Email",
-                        // tambahin sesuai field di form
                     };
 
                     const ruleMap = {
@@ -806,16 +303,15 @@ const Scan = ({ refetch }) => {
 
                     const errorMessages = Object.entries(data.error)
                         .map(([field, messages]) => {
-                            const label = fieldMap[field] || field; // fallback kalau belum di-map
+                            const label = fieldMap[field] || field;
                             return messages
                                 .map(msg => {
-                                    // coba cari rule yg cocok dari pesan asli Laravel
                                     for (const rule in ruleMap) {
                                         if (msg.toLowerCase().includes(rule)) {
                                             return ruleMap[rule](label);
                                         }
                                     }
-                                    return `${label}: ${msg}`; // fallback
+                                    return `${label}: ${msg}`;
                                 })
                                 .join(", ");
                         })
@@ -833,22 +329,10 @@ const Scan = ({ refetch }) => {
                 throw new Error(data.message || "Terjadi kesalahan pada server.");
             }
 
-            // await Swal.fire({
-            //     icon: "success",
-            //     title: "Berhasil",
-            //     text: data.message,
-            // });
             setDataSaldo(data.data || {})
-            setNominal("")
             setIdCard("")
             setSuccess("CekSaldo berhasil disimpan!")
             resetScan()
-            refetch(true)
-
-            // Reset form after successful transaction
-            // setTimeout(() => {
-            //     if (refetch) refetch()
-            // }, 2000)
         } catch (error) {
             setError("Error: " + error.message)
             setIdCard("")
@@ -864,152 +348,27 @@ const Scan = ({ refetch }) => {
 
     const resetScan = () => {
         setCustomerData(null)
-        setHargaSatuan("")
-        setJumlah("1")
-        setKategori("")
-        setTotalHarga(0)
         setError("")
         setSuccess("")
-        setStatus("Tempelkan kartu pembayaran...")
         setCurrentStep(1)
         setPin("")
         setIdCard("")
-        // setDataSaldo(null)
-    }
-
-    const handleKembali = () => {
-        switch (inputMode) {
-            case "manual":
-                setStatus("Pilih santri...")
-                setCurrentStep(1)
-                break
-            case "nfc":
-                setCurrentStep(2)
-                setStatus("Tempelkan kartu NFC...")
-                startNFCScanning()
-                break
-            case "reader":
-                setStatus("Letakkan kartu pada reader...")
-                setIdCard("")
-                setCurrentStep(1)
-                break
-            default:
-                setStatus("Pilih mode input...")
-        }
     }
 
     const onScanUlang = () => {
         setDataSaldo("")
         setCustomerData("")
         setIdCard("")
-        // resetScan()
-    }
-
-    const handleNextStep = () => {
-        // console.log(idCard);
-        setIdCard("")
-        switch (inputMode) {
-            case "manual":
-                setStatus("Pilih santri...")
-                setCurrentStep(2)
-                break
-            case "nfc":
-                setCurrentStep(2)
-                setStatus("Tempelkan kartu NFC...")
-                startNFCScanning()
-                break
-            case "reader":
-                setStatus("Letakkan kartu pada reader...")
-                setCurrentStep(2)
-                break
-            default:
-                setStatus("Pilih mode input...")
-        }
-        // setCustomerData("")
-        // if (currentStep === 1) {
-        //     // Validate transaction data
-        //     if (!hargaSatuan || !jumlah || !kategori) {
-        //         setError("Mohon lengkapi semua data transaksi")
-        //         return
-        //     }
-
-        //     if (inputMode === "manual") {
-        //         // For manual mode, go directly to PIN step
-        //         setCurrentStep(3)
-        //         setShowPinInput(true)
-        //     } else {
-        //         // For NFC/reader mode, go to scan step
-        //         setCurrentStep(2)
-        //     }
-        // } else if (currentStep === 2 && customerData) {
-        //     // After successful scan, go to PIN step
-        //     setCurrentStep(3)
-        //     setShowPinInput(true)
-        // }
-    }
-    const handleChangeData = () => {
-        console.log(idCard);
-
-        switch (inputMode) {
-            case "manual":
-                setShowSelectSantri(true)
-                break
-            case "nfc":
-                setCustomerData("")
-                setStatus("Tempelkan kartu NFC...")
-                startNFCScanning()
-                break
-            case "reader":
-                setCustomerData("")
-                setIdCard("")
-                break
-            default:
-                setStatus("Pilih mode input...")
-        }
     }
 
     const inputRef = useRef(null)
 
-    // useEffect(() => {
-    //     if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //     // Tangkap semua input dari reader
-    //     const handleKeyPress = (e) => {
-    //         if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //         // Biasanya reader mengirim angka + Enter
-    //         if (e.key === "Enter") {
-    //             e.preventDefault()
-    //             console.log("Pathname CekSaldo:",location.pathname);
-
-    //             console.log("Submit ID Card:", idCard);
-
-    //             searchCustomer(idCard)
-    //         } else if (/^[0-9]$/.test(e.key)) {
-    //             // Tambahkan angka ke state
-    //             setIdCard((prev) => {
-    //                 let newId = prev + e.key;
-
-    //                 // Jika sudah 10 digit, reset dan masukkan digit baru sebagai awal
-    //                 if (newId.length > 10) {
-    //                     newId = e.key; // reset dan mulai dari digit ini
-    //                 }
-
-    //                 return newId;
-    //             });
-    //         }
-    //     }
-
-    //     if (currentStep !== 2 && location.pathname !== "/transaksi/belanja") return;
-    //     window.addEventListener("keydown", handleKeyPress)
-    //     return () => window.removeEventListener("keydown", handleKeyPress)
-    // }, [currentStep, idCard, location.pathname])
-
     useEffect(() => {
-        // jalankan hanya di halaman /transaksi/saldo/tarik
         if (location.pathname !== "/transaksi/saldo") return;
 
         const handleKeyPress = (e) => {
             if (location.pathname !== "/transaksi/saldo") return;
-            
+
             if (dataSaldo != "") return;
             console.log("run");
 

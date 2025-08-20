@@ -511,6 +511,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
 
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep, location.pathname]); // tambahkan location.pathname ke dependency
 
 

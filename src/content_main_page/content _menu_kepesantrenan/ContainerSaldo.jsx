@@ -1,9 +1,7 @@
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { menuSaldo } from "../../data/menuData";
-import { FiCreditCard } from "react-icons/fi";
-import { FaHistory } from "react-icons/fa";
 
-const ContainerSaldo = ({ currentView, handleSetView }) => {
+const ContainerSaldo = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
