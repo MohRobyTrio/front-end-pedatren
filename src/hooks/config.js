@@ -49,6 +49,7 @@ export const rolesWithAccess = {
   tarik: ['admin', 'superadmin'],
 
   bank: ['admin', 'superadmin'],
+  virtual_account: ['admin', 'superadmin'],
   ///Fitur///
   
   ///Manage///

@@ -35,12 +35,11 @@ const schema = yup.object({
         bulan: yup.string().required('Bulan lahir wajib diisi'),
         tanggal: yup.string().required('Tanggal lahir wajib diisi')
     }),
-    anak_keberapa: yup.number().optional(),
-    dari_saudara: yup.number().optional(),
+    // dari_saudara: yup.number().optional(),
     tinggal_bersama: yup.string().optional(),
     jenjang_pendidikan: yup.string().optional(),
     nama_pendidikan: yup.string().optional(),
-    telepon1: yup.string().required('Nomor Telepon 1 wajib diisi'),
+    telepon1: yup.string().optional(),
     telepon2: yup.string().optional(),
     email: yup.string().email('Format email tidak valid'),
     pekerjaan: yup.string().optional(),
@@ -235,8 +234,8 @@ const TabBiodata = () => {
 
                 // Field lainnya
                 tempat_lahir: biodata.tempat_lahir || '',
-                anak_keberapa: biodata.anak_keberapa || '',
-                dari_saudara: biodata.dari_saudara || '',
+                anak_keberapa: biodata.anak_keberapa || '0',
+                dari_saudara: biodata.dari_saudara || '0',
                 telepon1: biodata.no_telepon || '',
                 telepon2: biodata.no_telepon_2 || '',
                 email: biodata.email || '',
@@ -596,7 +595,7 @@ const TabBiodata = () => {
 
             if (biodata_id && biodata_id.trim() != "") {
                 console.log("fetch");
-                
+
                 loadPesertaData(biodata_id);
             }
 
@@ -604,8 +603,8 @@ const TabBiodata = () => {
             sessionStorage.removeItem(`data_formulir_profile_${biodata_id}`);
 
             // Trigger refresh pada parent component dengan mengirim event custom
-            window.dispatchEvent(new CustomEvent('biodataUpdated', { 
-                detail: { biodata_id } 
+            window.dispatchEvent(new CustomEvent('biodataUpdated', {
+                detail: { biodata_id }
             }));
 
             if (!isUpdateMode) {
@@ -934,8 +933,11 @@ const TabBiodata = () => {
                         <div className="flex space-x-4 items-center">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                                 <input
-                                    type="number"
-                                    min="1"
+                                    type="text"
+                                    inputMode="numeric"
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(/[^1-9]/g, "");
+                                    }}
                                     className="w-20 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                     {...register('anak_keberapa')}
                                 />
@@ -943,8 +945,11 @@ const TabBiodata = () => {
                             <span>Dari</span>
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                                 <input
-                                    type="number"
-                                    min="1"
+                                    type="text"
+                                    inputMode="numeric"
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(/[^1-9]/g, "");
+                                    }}
                                     className="w-20 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                     {...register('dari_saudara')}
                                 />

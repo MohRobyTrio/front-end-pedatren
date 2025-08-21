@@ -26,6 +26,7 @@ import useFetchSholat from "../../hooks/hook_menu_kepesantrenan/Sholat"
 import useFetchJadwalSholat from "../../hooks/hook_menu_kepesantrenan/JadwalSholat"
 import ToggleStatus from "../../components/ToggleStatus"
 import { FiCheck, FiCreditCard, FiEdit3, FiHardDrive, FiUser, FiWifi, FiX, FiRefreshCw } from "react-icons/fi"
+import { toast } from "sonner"
 
 const PresensiSholat = () => {
     const [filters, setFilters] = useState({
@@ -651,8 +652,12 @@ const Scan = ({ refetch }) => {
     useEffect(() => {
         if (inputMode === "nfc") {
             if (!nfcSupported) {
-                setStatusResponse("Error")
-                setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
+                toast.error("Error", {
+                    description: "Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+"
+                })
+
+                // setStatusResponse("Error")
+                // setError("Web NFC tidak didukung di browser ini. Gunakan Chrome Android 89+")
             } else {
                 startNFCScanning()
             }
@@ -737,6 +742,9 @@ const Scan = ({ refetch }) => {
                     // Pad leading zero to make it 10 digits
                     uidDecimal = uidDecimal.padStart(10, "0")
                     playNotificationSound(true)
+                    toast.success("Success", {
+                        description: "Kartu berhasil discan"
+                    })
                     console.log("UID Kartu (Decimal):", uidDecimal)
                 } catch (e) {
                     playNotificationSound(false)
@@ -749,12 +757,18 @@ const Scan = ({ refetch }) => {
             })
 
             ndef.addEventListener("readingerror", () => {
-                setError("Error membaca NFC tag")
+                toast.error("Error", {
+                    description: "Error membaca NFC tag"
+                })
+                // setError("Error membaca NFC tag")
                 setIsScanning(false)
             })
         } catch (error) {
             console.error("Gagal memulai NFC:", error)
-            setError("Gagal memulai NFC: " + error.message)
+            toast.error("Error", {
+                description: "Gagal memulai NFC: " + error.message
+            })
+            // setError("Gagal memulai NFC: " + error.message)
             setIsScanning(false)
         }
     }
@@ -790,7 +804,13 @@ const Scan = ({ refetch }) => {
             console.log(data)
 
             setStatus(`Data santri ditemukan: ${data.data.nama_santri}`)
+            toast.success("Success", {
+                description: `Data santri ditemukan: ${data.data.nama_santri}`
+            })
         } catch (error) {
+            toast.error("Error", {
+                description: "Gagal mencari data santri"
+            })
             setError("Error: " + error.message)
             setStatus("Gagal mencari data santri")
         } finally {
@@ -829,8 +849,11 @@ const Scan = ({ refetch }) => {
                 throw new Error(result.message || "Gagal menyimpan presensi")
             }
 
-            setSuccess(`Presensi sukses: ${result.message || "Berhasil"}`)
-            setStatus("Presensi berhasil disimpan!")
+            toast.success("Success", {
+                description: `Presensi sukses: ${result.message || "Berhasil"}`
+            })
+            // setSuccess(`Presensi sukses: ${result.message || "Berhasil"}`)
+            // setStatus("Presensi berhasil disimpan!")
 
             // Reset after 3 seconds
             setTimeout(() => {
@@ -842,8 +865,11 @@ const Scan = ({ refetch }) => {
                 }
             }, 3000)
         } catch (error) {
-            setError("Error: " + error.message)
-            setStatus("Gagal menyimpan presensi")
+            toast.error("Error", {
+                description: "Gagal menyimpan presensi: " + error.message
+            })
+            // setError("Error: " + error.message)
+            // setStatus("Gagal menyimpan presensi")
         } finally {
             refetch(true)
             setLoading(false)
@@ -908,6 +934,9 @@ const Scan = ({ refetch }) => {
         const handleKeyPress = (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
+                toast.success("Success", {
+                    description: "Kartu berhasil discan"
+                })
                 console.log("Pathname Presensi:", location.pathname);
                 console.log("Submit NIS:", nis);
 
@@ -932,7 +961,7 @@ const Scan = ({ refetch }) => {
 
     useEffect(() => {
         resetScan()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inputMode])
 
     return (

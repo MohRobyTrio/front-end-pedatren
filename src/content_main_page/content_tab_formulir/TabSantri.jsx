@@ -25,6 +25,8 @@ const TabSantri = () => {
         status,
         loadingSantri,
         loadingDetailSantri,
+        nis,
+        setNis,
         setAngkatanId,
         setEndDate,
         setStartDate,
@@ -119,9 +121,11 @@ const TabSantri = () => {
                                         <input
                                             type="text"
                                             id="nis"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-200 text-gray-500"
-                                            value={selectedSantriDetail.nis}
-                                            disabled
+                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedSantriDetail?.status != "aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            onChange={(e) => setNis(e.target.value)}
+                                            maxLength={20}
+                                            value={nis}
+                                            disabled={!canEdit || selectedSantriDetail?.status != "aktif"}
                                         />
                                     </div>
 

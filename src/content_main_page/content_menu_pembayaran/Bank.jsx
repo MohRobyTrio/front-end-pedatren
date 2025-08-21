@@ -36,9 +36,9 @@ const Bank = () => {
         }
     }
 
-    // if (!hasAccess("bank")) {
-    //     return <Navigate to="/forbidden" replace />;
-    // }
+    if (!hasAccess("bank")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
