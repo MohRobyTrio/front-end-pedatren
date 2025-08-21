@@ -871,7 +871,6 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
         setValue,
         resetData,
         watch,
-        errors,
         activeTab,
         unlockedTabs,
         setActiveTab,
@@ -884,10 +883,6 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
         isLainnya,
         setLainnyaValue,
         lainnyaValue,
-        dropdownValue,
-        setDropdownValue,
-        inputLainnya,
-        setInputLainnya
     } = formState;
 
     const contentRef = useRef(null);
