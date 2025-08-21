@@ -6,21 +6,21 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
-    const kewarganegaraan = watch("modalUser.kewarganegaraan");
-    const negara = watch("modalUser.negara_id");
-    const provinsi = watch("modalUser.provinsi_id");
-    const kabupaten = watch("modalUser.kabupaten_id");
-    const kecamatan = watch("modalUser.kecamatan_id");
+    const kewarganegaraan = watch("modalUser.biodata.kewarganegaraan");
+    const negara = watch("modalUser.biodata.negara_id");
+    const provinsi = watch("modalUser.biodata.provinsi_id");
+    const kabupaten = watch("modalUser.biodata.kabupaten_id");
+    const kecamatan = watch("modalUser.biodata.kecamatan_id");
 
     const handleKewarganegaraanChange = (e) => {
         const value = e.target.value;
-        setValue('modalUser.kewarganegaraan', value);
+        setValue('modalUser.biodata.kewarganegaraan', value);
 
         if (value === 'wna') {
-            setValue('modalUser.no_kk', '');
-            setValue('modalUser.nik', '');
+            setValue('modalUser.biodata.no_kk', '');
+            setValue('modalUser.biodata.nik', '');
         } else if (value === 'wni') {
-            setValue('modalUser.no_passport', '');
+            setValue('modalUser.biodata.no_passport', '');
         }
     };
 
@@ -109,7 +109,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                     }`}
                             >
                                 <Controller
-                                    name={`modalUser.${label}_id`}
+                                    name={`modalUser.biodata.${label}_id`}
                                     control={control}
                                     rules={{ required: true }}
                                     defaultValue={selectedFilters[label] || ""}
@@ -150,11 +150,11 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                         Kewarganegaraan *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" {...register("modalUser.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} required />
+                        <input type="radio" name="kewarganegaraan" value="wni" className="w-4 h-4" {...register("modalUser.biodata.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wni'} onChange={handleKewarganegaraanChange} required />
                         <span>WNI</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" {...register("modalUser.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} required />
+                        <input type="radio" name="kewarganegaraan" value="wna" className="w-4 h-4" {...register("modalUser.biodata.kewarganegaraan", { required: true })} checked={kewarganegaraan === 'wna'} onChange={handleKewarganegaraanChange} required />
                         <span>WNA</span>
                     </label>
                 </div>
@@ -177,7 +177,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 disabled={kewarganegaraan !== 'wna'}
                                 placeholder="Masukkan No Passport"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalUser.passport', { required: kewarganegaraan === "wna" ? true : false })}
+                                {...register('modalUser.biodata.passport', { required: kewarganegaraan === "wna" ? true : false })}
                                 required={kewarganegaraan === 'wna'}
                             />
                             {/* {errors.nama && <span>Nama wajib diisi</span>} */}
@@ -205,7 +205,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan No KK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalUser.no_kk', { required: kewarganegaraan === "wni" ? true : false })}
+                                {...register('modalUser.biodata.no_kk', { required: kewarganegaraan === "wni" ? true : false })}
                                 required={kewarganegaraan === 'wni'}
                             />
                         </div>
@@ -232,7 +232,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 disabled={kewarganegaraan !== 'wni'}
                                 placeholder="Masukkan NIK"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalUser.nik', { required: kewarganegaraan === "wni" ? true : false })}
+                                {...register('modalUser.biodata.nik', { required: kewarganegaraan === "wni" ? true : false })}
                                 required={kewarganegaraan === 'wni'}
                             />
                         </div>
@@ -253,7 +253,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 type="text"
                                 placeholder="Masukkan Nama Lengkap"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register('modalUser.nama', { required: true })}
+                                {...register('modalUser.biodata.nama', { required: true })}
                                 required
                             />
                         </div>
@@ -266,11 +266,11 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                         Jenis Kelamin *
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="p" className="w-4 h-4" {...register('modalUser.jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="p" className="w-4 h-4" {...register('modalUser.biodata.jenis_kelamin', { required: true })} required />
                         <span>Perempuan</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                        <input type="radio" name="jenisKelamin" value="l" className="w-4 h-4" {...register('modalUser.jenis_kelamin', { required: true })} required />
+                        <input type="radio" name="jenisKelamin" value="l" className="w-4 h-4" {...register('modalUser.biodata.jenis_kelamin', { required: true })} required />
                         <span>Laki-Laki</span>
                     </label>
                 </div>
@@ -287,7 +287,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 name="tempatLahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
-                                {...register('modalUser.tempat_lahir', { required: true })} 
+                                {...register('modalUser.biodata.tempat_lahir', { required: true })} 
                                 required
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -307,7 +307,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 id="tanggal_lahir"
                                 name="tanggal_lahir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.tanggal_lahir", { required: true })}
+                                {...register("modalUser.biodata.tanggal_lahir", { required: true })}
                                 required
                             />
                         </div>
@@ -327,7 +327,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.anak_keberapa")}
+                                {...register("modalUser.biodata.anak_keberapa")}
                             />
                         </div>
                         <span>Dari</span>
@@ -338,7 +338,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 type="number"
                                 min="1"
                                 className="w-13 py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.dari_saudara")}
+                                {...register("modalUser.biodata.dari_saudara")}
                             />
                         </div>
                     </div>
@@ -377,7 +377,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                         {/* Hidden input terdaftar ke register */}
                         <input
                             type="hidden"
-                            {...register("modalUser.tinggal_bersama")}
+                            {...register("modalUser.biodata.tinggal_bersama")}
                         />
                     </div>
                 </div>
@@ -392,7 +392,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                             <select
                                 id="jenjang_pendidikan_terakhir"
                                 name="jenjang_pendidikan_terakhir"
-                                {...register("modalUser.jenjang_pendidikan_terakhir")}
+                                {...register("modalUser.biodata.jenjang_pendidikan_terakhir")}
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm"
                             >
                                 <option value="">
@@ -425,7 +425,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 type="text"
                                 placeholder="Masukkan Nama Pendidikan Terakhir"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.nama_pendidikan_terakhir")}
+                                {...register("modalUser.biodata.nama_pendidikan_terakhir")}
                             />
                         </div>
                     </div>
@@ -449,7 +449,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 }}
                                 placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.no_telepon", { required: true })}
+                                {...register("modalUser.biodata.no_telepon", { required: true })}
                                 required
                             />
                         </div>
@@ -474,7 +474,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 }}
                                 placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.no_telepon_2")}
+                                {...register("modalUser.biodata.no_telepon_2")}
                             />
                         </div>
                     </div>
@@ -494,7 +494,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 maxLength={100}
                                 placeholder="Masukkan E-Mail"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.email", { required: true })}
+                                {...register("modalUser.biodata.email", { required: true })}
                                 required
                             />
                         </div>
@@ -521,7 +521,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 maxLength={255}
                                 placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.jalan", { required: true })}
+                                {...register("modalUser.biodata.jalan", { required: true })}
                                 required
                             />
                         </div>
@@ -547,7 +547,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 inputMode="numeric"
                                 placeholder="Masukkan Kode Pos"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.kode_pos", { required: true })}
+                                {...register("modalUser.biodata.kode_pos", { required: true })}
                                 required
                             />
                         </div>
@@ -567,7 +567,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
                                 maxLength={255}
                                 // placeholder="Masukkan Nama Jalan"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalUser.smartcard")}
+                                {...register("modalUser.biodata.smartcard")}
                             />
                         </div>
                     </div>

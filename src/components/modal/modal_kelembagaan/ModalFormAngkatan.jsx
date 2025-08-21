@@ -160,6 +160,7 @@ export const ModalAddOrEditAngkatan = ({ isOpen, onClose, data, refetchData }) =
             });
 
             sessionStorage.removeItem("allAngkatan");
+            sessionStorage.removeItem("menuAngkatan");
             refetchData?.();
             onClose?.();
         } catch (error) {
