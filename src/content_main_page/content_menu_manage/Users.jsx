@@ -37,7 +37,7 @@ const Users = () => {
                 </div>
             </div>
 
-            {/* <ModalAddUser isOpen={openModal} onClose={() => setOpenModal(false)} data={usersData} refetchData={fetchUsers} /> */}
+            <ModalAddUser isOpen={openModal} onClose={() => setOpenModal(false)} data={usersData} refetchData={fetchUsers} />
 
             <MultiStepModalUsers isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 

@@ -19,6 +19,7 @@ const FormUser = ({ register }) => {
                             <input
                                 id="name"
                                 type="text"
+                                autoComplete="off"
                                 placeholder="Masukkan Nama"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 maxLength={255}
@@ -39,6 +40,7 @@ const FormUser = ({ register }) => {
                                 id="email"
                                 type="email"
                                 placeholder="Masukkan Email"
+                                autoComplete="off"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 maxLength={255}
                                 {...register("modalUser.email", { required: true })}
@@ -55,9 +57,9 @@ const FormUser = ({ register }) => {
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className="relative flex items-center rounded-md shadow-md pl-1 border border-gray-500 bg-white">
                             <input
-                                id="password"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Masukkan Password"
+                                autoComplete="new-password"
                                 className="w-full py-1.5 pr-10 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalUser.password", { required: true })}
                             />
@@ -110,9 +112,14 @@ const FormUser = ({ register }) => {
                                 {...register("modalUser.role", { required: true })}
                             >
                                 <option value="">Pilih Role</option>
+                                <option value="superadmin">Super Admin</option>
                                 <option value="admin">Admin</option>
-                                <option value="operator">Operator</option>
-                                <option value="user">User</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="staff">Staff</option>
+                                <option value="santri">Santri</option>
+                                <option value="kamtib">Kamtib</option>
+                                <option value="biktren">Biktren</option>
+                                <option value="pengasuh">Pengasuh</option>
                             </select>
                         </div>
                     </div>

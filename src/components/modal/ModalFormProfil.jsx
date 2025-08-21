@@ -899,7 +899,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
     }, [activeTab]);
 
     useEffect(() => {
-        setValue("modalPeserta.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
+        setValue("modalUser.biodata.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTinggal, lainnyaValue, setValue]);
 
@@ -935,7 +935,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
         {
             id: 1,
             label: "Keterangan",
-            content: <FormUser register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} selectedTinggal={selectedTinggal} setSelectedTinggal={setSelectedTinggal} isLainnya={isLainnya} setLainnyaValue={setLainnyaValue} />
+            content: <FormUser register={register} />
         },
     ]
 
@@ -975,7 +975,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
                             {/* Header */}
                             <div className="pb-4">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Peserta Didik</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Pengguna</Dialog.Title>
                             </div>
                             <form
                                 onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
