@@ -278,26 +278,26 @@ export const subPesertaDidik = [
     { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung /> }
 ];
 
-export const jenisBerkasList = [
-    { id: 1, label: 'Kartu Keluarga (KK)', required: true },
-    { id: 2, label: 'KTP/KIA', required: false },
-    { id: 3, label: 'Akte Kelahiran', required: false },
-    { id: 4, label: 'Pas Foto', required: false },
-    { id: 5, label: 'Ijazah Terakhir', required: false },
-    { id: 6, label: 'Fotokopi Rapor Terakhir', required: false },
-    { id: 7, label: 'Surat Keterangan Sehat', required: false },
-    { id: 8, label: 'BPJS / Kartu Asuransi Kesehatan', required: false },
-    { id: 9, label: 'Surat Pernyataan Kesanggupan', required: false },
-    { id: 10, label: 'Surat Izin Orang Tua', required: false },
-    { id: 11, label: 'Surat Pernyataan Tidak Merokok', required: false },
-    { id: 12, label: 'Surat Keterangan Pindah Sekolah', required: false },
-    { id: 13, label: 'Surat Keterangan Lulus (SKL)', required: false },
-    { id: 14, label: 'Surat Rekomendasi dari Ulama/Guru', required: false },
-    { id: 15, label: 'Surat Pernyataan Bebas Narkoba', required: false },
-    { id: 16, label: 'Surat Domisili (jika dari luar kota)', required: false },
-    { id: 17, label: 'Surat Keterangan Anak Yatim/Piatu', required: false },
-    { id: 18, label: 'Fotokopi Kartu Santri', required: false },
-];
+// export const jenisBerkasList = [
+//     { id: 1, label: 'Kartu Keluarga (KK)', required: true },
+//     { id: 2, label: 'KTP/KIA', required: false },
+//     { id: 3, label: 'Akte Kelahiran', required: false },
+//     { id: 4, label: 'Pas Foto', required: false },
+//     { id: 5, label: 'Ijazah Terakhir', required: false },
+//     { id: 6, label: 'Fotokopi Rapor Terakhir', required: false },
+//     { id: 7, label: 'Surat Keterangan Sehat', required: false },
+//     { id: 8, label: 'BPJS / Kartu Asuransi Kesehatan', required: false },
+//     { id: 9, label: 'Surat Pernyataan Kesanggupan', required: false },
+//     { id: 10, label: 'Surat Izin Orang Tua', required: false },
+//     { id: 11, label: 'Surat Pernyataan Tidak Merokok', required: false },
+//     { id: 12, label: 'Surat Keterangan Pindah Sekolah', required: false },
+//     { id: 13, label: 'Surat Keterangan Lulus (SKL)', required: false },
+//     { id: 14, label: 'Surat Rekomendasi dari Ulama/Guru', required: false },
+//     { id: 15, label: 'Surat Pernyataan Bebas Narkoba', required: false },
+//     { id: 16, label: 'Surat Domisili (jika dari luar kota)', required: false },
+//     { id: 17, label: 'Surat Keterangan Anak Yatim/Piatu', required: false },
+//     { id: 18, label: 'Fotokopi Kartu Santri', required: false },
+// ];
 
 export const jenisJabatan = [
     { label: "Pilih Jenis jabatan", value: "" },

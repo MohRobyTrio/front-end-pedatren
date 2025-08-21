@@ -3,11 +3,12 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../config";
-import { jenisBerkasList } from "../../data/menuData";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
+import useDropdownBerkas from "../hook_dropdown/DropdownBerkas";
 
 const useMultiStepFormPegawai = (onClose, refetchData) => {
+  const { jenisBerkasList } = useDropdownBerkas();
   const [activeTab, setActiveTab] = useState(0);
   const [unlockedTabs, setUnlockedTabs] = useState([0, 1, 2, 3, 4, 5]);
   const { clearAuthData } = useLogout();

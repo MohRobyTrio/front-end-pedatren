@@ -15,7 +15,6 @@ import ModalDetail from "../../components/modal/ModalDetail"
 import { FaEdit, FaFileExport, FaFileImport, FaPlus, FaArrowLeft } from "react-icons/fa"
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { useMultiStepFormPesertaDidik } from "../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
-import { jenisBerkasList } from "../../data/menuData"
 import Access from "../../components/Access"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { ModalExport } from "../../components/modal/ModalExport"
@@ -23,6 +22,7 @@ import { Link, Navigate } from "react-router-dom"
 import ModalImport from "../../components/modal/ModalImport"
 import { hasAccess } from "../../utils/hasAccess"
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan"
+import useDropdownBerkas from "../../hooks/hook_dropdown/DropdownBerkas"
 
 const PesertaDidik = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -31,6 +31,7 @@ const PesertaDidik = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showStatistik, setShowStatistik] = useState(false)
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
+    const { jenisBerkasList } = useDropdownBerkas();
 
     const openModal = (item) => {
         setSelectedItem(item)

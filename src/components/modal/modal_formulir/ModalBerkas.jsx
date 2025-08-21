@@ -2,11 +2,12 @@ import { useState, useEffect, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faUpload } from '@fortawesome/free-solid-svg-icons';
-import { jenisBerkasList } from '../../../data/menuData';
+import useDropdownBerkas from '../../../hooks/hook_dropdown/DropdownBerkas';
 
 export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [jenisBerkasId, setJenisBerkasId] = useState('');
+    const {jenisBerkasList} = useDropdownBerkas();
 
     useEffect(() => {
         if (isOpen) {

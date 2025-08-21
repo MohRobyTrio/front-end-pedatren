@@ -3,14 +3,15 @@ import { Fragment, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from 'react-icons/fa';
-import { jenisBerkasList } from '../../data/menuData';
 import FormBiodataAnakPegawai from '../../content_modal/input/anak_pegawai/FormBiodata';
 import FormKeluargaAnakPegawai from '../../content_modal/input/anak_pegawai/FormKeluarga';
 import FormDomisiliPendidikanAnakPegawai from '../../content_modal/input/anak_pegawai/FormDomisiliPendidikan';
 import FormBerkasAnakPegawai from '../../content_modal/input/anak_pegawai/FormBerkas';
 import Swal from 'sweetalert2';
+import useDropdownBerkas from '../../hooks/hook_dropdown/DropdownBerkas';
 
 export default function MultiStepModalAnakPegawai({ isOpen, onClose, formState }) {
+    const { jenisBerkasList } = useDropdownBerkas();
     const {
         register,
         handleSubmit,

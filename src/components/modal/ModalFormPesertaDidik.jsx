@@ -6,11 +6,12 @@ import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from 'react-icons/fa';
 import FormBiodata from '../../content_modal/input/peserta_didik/FormBiodata';
 import FormKeluarga from '../../content_modal/input/peserta_didik/FormKeluarga';
 import FormDomisiliPendidikan from '../../content_modal/input/peserta_didik/FormDomisiliPendidikan';
-import { jenisBerkasList } from '../../data/menuData';
 import FormBerkasPeserta from '../../content_modal/input/peserta_didik/FormBerkas';
 import Swal from 'sweetalert2';
+import useDropdownBerkas from '../../hooks/hook_dropdown/DropdownBerkas';
 
 export default function MultiStepModal({ isOpen, onClose, formState }) {
+    const { jenisBerkasList } = useDropdownBerkas();
     const {
         register,
         handleSubmit,

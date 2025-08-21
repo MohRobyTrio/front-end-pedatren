@@ -9,10 +9,11 @@ import FormPengajar from "../../content_modal/input/pegawai/FormPengajar";
 import FormPengurus from "../../content_modal/input/pegawai/FormPengurus";
 import FormWaliKelas from "../../content_modal/input/pegawai/FormWaliKelas";
 import FormBerkasPegawai from "../../content_modal/input/pegawai/FormBerkas";
-import { jenisBerkasList } from "../../data/menuData";
 import Swal from "sweetalert2";
+import useDropdownBerkas from "../../hooks/hook_dropdown/DropdownBerkas";
 
 const MultiStepFormPegawai = ({ isOpen, onClose, formState }) => {
+    const { jenisBerkasList } = useDropdownBerkas();
     const { activeTab, control, errors, handleSubmit, nextStep, prevStep, register, setActiveTab, setValue, resetData, unlockedTabs, watch, onValidSubmit, onInvalidSubmit, selectedTinggal,
         setSelectedTinggal,
         isLainnya,

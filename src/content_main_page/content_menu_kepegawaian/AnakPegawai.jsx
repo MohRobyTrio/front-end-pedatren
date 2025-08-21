@@ -14,17 +14,18 @@ import Access from '../../components/Access';
 import { FaEdit, FaFileExport, FaPlus } from 'react-icons/fa';
 import MultiStepModalAnakPegawai from '../../components/modal/ModalFormAnakPegawai';
 import { useMultiStepFormAnakPegawai } from '../../hooks/hooks_modal/useMultiStepFormAnakPegawai';
-import { jenisBerkasList } from '../../data/menuData';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
 import { useNavigate } from 'react-router-dom';
 import DropdownAngkatan from '../../hooks/hook_dropdown/DropdownAngkatan';
+import useDropdownBerkas from '../../hooks/hook_dropdown/DropdownBerkas';
 
 const AnakPegawai = () => {
     const navigate = useNavigate();
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
+    const { jenisBerkasList } = useDropdownBerkas();
     
     const openModal = (item) => {
         setSelectedItem(item);

@@ -18,14 +18,15 @@ import Access from "../../../components/Access";
 import ModalImport from "../../../components/modal/ModalImport";
 import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik";
-import { jenisBerkasList } from "../../../data/menuData";
 import { Link } from "react-router-dom";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
+import useDropdownBerkas from "../../../hooks/hook_dropdown/DropdownBerkas";
 
 const Santri = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { jenisBerkasList } = useDropdownBerkas();
 
     const openModal = (item) => {
         setSelectedItem(item);
