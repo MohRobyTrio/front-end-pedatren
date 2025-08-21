@@ -382,7 +382,7 @@ const PesertaDidik = () => {
                                             pesertaDidik.map((item, index) => (
                                                 <tr
                                                     key={item.id_pengajar || index}
-                                                    className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                    className="hover:bg-gray-50 whitespace-nowrap cursor-pointer text-left"
                                                     onClick={() => openModal(item)}
                                                 >
                                                     <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>

@@ -147,7 +147,7 @@ export const ModalFormGrupWaliAsuh = ({
             console.log("response:", error.response || "No response data");
             console.log("API URL:", mode === 'tambah' ? `${API_BASE_URL}crud/grupwaliasuh` : `${API_BASE_URL}crud/grupwaliasuh/${grupData.id}`);
             ///debug untuk activate
-            console.log("Activate action:", isActivateAction);
+            // console.log("Activate action:", isActivateAction);
         }
     };
 
@@ -213,7 +213,7 @@ export const ModalFormGrupWaliAsuh = ({
                                                         required
                                                     >
                                                         <option value="">Pilih Wilayah</option>
-                                                        {wilayahList.map(wilayah => (
+                                                        {wilayahList.slice(1).map(wilayah => (
                                                             <option key={wilayah.id} value={wilayah.id}>
                                                                 {wilayah.nama_wilayah}
                                                             </option>

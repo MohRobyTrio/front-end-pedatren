@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 // import blankProfile from "../assets/blank_profile.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import axios from "axios";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
@@ -31,6 +31,7 @@ import DetailRekapTahfidz from "../../content_modal/detail/DetailRekapTahfidz";
 import DetailSetoranTahfidz from "../../content_modal/detail/DetailSetoranTahfidz";
 import DetailNadhoman from "../../content_modal/detail/DetailNadhoman";
 import DetailRekapNadhoman from "../../content_modal/detail/DetailRekapNadhoman";
+import { FaEdit } from "react-icons/fa";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
@@ -43,7 +44,28 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const menuToKondisi = {
+        // tabsKondisi1
+        8: "kondisi1",
+        9: "kondisi1",
+        10: "kondisi1",
+        11: "kondisi1",
+        21: "kondisi1",
+
+        // tabsKondisi3
+        6: "kondisi2",
+        7: "kondisi2",
+    };
+
+    const getKondisiByMenu = (menu) => menuToKondisi[menu] || "kondisi2";
+
+
     // console.log(menu);
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -108,7 +130,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
 
                 console.log(endpoint);
                 console.log(json.data);
-                
+
 
 
                 setData(json.data);
@@ -131,7 +153,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
         if (item?.biodata_id || item?.id_khadam || item?.id || item?.santri_id || item?.Biodata_uuid || item) {
             fetchData();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [item, item.biodata_id, item.id, item.id_khadam, item.santri_id, item.Biodata_uuid, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
@@ -199,7 +221,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                 label: "Warga Pesantren",
                 content: <WarPes />
             },
-            data?.Catatan_Progress 
+            data?.Catatan_Progress
             && (
                 (
                     Array.isArray(data.Catatan_Progress.Afektif)
@@ -231,17 +253,17 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
             data?.["Pemohon Izin"] && Object.keys(data?.["Pemohon Izin"]).length > 0 && {
                 id: "pemohon_izin",
                 label: "Pemohon Izin",
-                content: <DetailPemohonIzin pemohonIzin={data?.["Pemohon Izin"]}/>
+                content: <DetailPemohonIzin pemohonIzin={data?.["Pemohon Izin"]} />
             },
             data?.pelanggaran && Object.keys(data?.pelanggaran).length > 0 && {
                 id: "pelanggaran",
                 label: "Pelanggaran",
-                content: <DetailPelanggaran pelanggaran={data.pelanggaran}/>
+                content: <DetailPelanggaran pelanggaran={data.pelanggaran} />
             },
             data?.Pengantar && Object.keys(data?.Pengantar).length > 0 && {
                 id: "pengantar",
                 label: "Pengantar",
-                content: <DetailPengantar pengantar={data.Pengantar}/>
+                content: <DetailPengantar pengantar={data.Pengantar} />
             },
             ((menu === 17 || menu === 18) || (data?.Berkas?.length > 0)) && {
                 id: "berkas",
@@ -369,21 +391,27 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                             </div>
 
                             {/* Footer */}
-                            <div className="mt-4 pt-4 text-right space-x-2">
+                            <div className="mt-4 pt-4 flex justify-end space-x-2">
                                 {/* set id route */}
-                                {/* {menu !== 23 && menu !== 17 && menu != 18  && (
-                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
-                                        <button onClick={onClose} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
-                                            Buka di Formulir
-                                        </button>
-                                    </Link>
-                                )} */}
-                                <button
+                                {menu !== 23 && menu !== 17 && menu != 18 && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const kondisi = getKondisiByMenu(menu);
+                                            handleEditClick(item.biodata_id || item.id || item, kondisi);
+                                            onClose();
+                                        }}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex items-center gap-2"
+                                    >
+                                        <FaEdit /> Edit
+                                    </button>
+                                )}
+                                {/* <button
                                     onClick={onClose}
                                     className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
                                 >
                                     Tutup
-                                </button>
+                                </button> */}
                             </div>
                         </Dialog.Panel>
                     </Transition.Child>

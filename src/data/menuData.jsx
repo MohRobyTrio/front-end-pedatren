@@ -82,6 +82,7 @@ import Tarik from "../content_main_page/content_menu_kepesantrenan/TarikSaldo";
 import CekSaldo from "../content_main_page/content_menu_kepesantrenan/CekSaldo";
 import Bank from "../content_main_page/content_menu_pembayaran/Bank";
 import VirtualAccount from "../content_main_page/content_menu_pembayaran/VirtualAccount";
+import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -153,6 +154,7 @@ export const menuTransaksiItems = [
 export const menuPembayaranItems = [
     { id: "bank", icon: "fa-university", text: "Bank", link: "/pembayaran/bank", content: <Bank />, access: "bank" },
     { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount /> },
+    { id: "tagihan", icon: "fa-file-invoice", text: "Tagihan", link: "/pembayaran/tagihan", content: <Tagihan />}
 ]
 
 export const menuSaldo = [

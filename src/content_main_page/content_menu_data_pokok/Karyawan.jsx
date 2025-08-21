@@ -19,13 +19,20 @@ import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import ModalImport from '../../components/modal/ModalImport';
 import Access from '../../components/Access';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Karyawan = () => {
     // const [exportLoading, setExportLoading] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleEditClick = (biodataId, kondisi) => {
+        navigate(`/formulir/${biodataId}/biodata`, {
+            state: { kondisiTabFormulir: kondisi }
+        });
+    };
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -349,16 +356,17 @@ const Karyawan = () => {
                                                 {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                    {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation()
+                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >
                                                             <FaEdit />
                                                         </button>
-                                                    </Link>
+                                                    {/* </Link> */}
                                                 </td>
                                             </tr>
                                         ))
