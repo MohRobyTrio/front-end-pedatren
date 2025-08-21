@@ -11,6 +11,7 @@ export const useSantri = (biodata_id) => {
     const [santriList, setSantriList] = useState([]);
     const [selectedSantriId, setSelectedSantriId] = useState(null);
     const [selectedSantriDetail, setSelectedSantriDetail] = useState(null);
+    const [nis, setNis] = useState("");
     const [angkatanId, setAngkatanId] = useState("");
     const [endDate, setEndDate] = useState("");
     const [originalEndDate, setOriginalEndDate] = useState("");
@@ -102,7 +103,8 @@ export const useSantri = (biodata_id) => {
             }
             const result = await response.json();
             console.log(result);
-            
+
+            setNis(result.data.nis || ""); 
             setSelectedSantriId(id);
             setSelectedSantriDetail(result.data);
             setAngkatanId(result.data.angkatan_id || "");
@@ -158,6 +160,7 @@ setOriginalEndDate(formattedDatetimeLocal);
         }
 
         const payload = {
+            nis: nis,
             angkatan_id: angkatanId,
             tanggal_masuk: startDate,
             tanggal_keluar: endDate || null,
@@ -245,6 +248,8 @@ setOriginalEndDate(formattedDatetimeLocal);
         selectedSantriId,
         selectedSantriDetail,
         angkatanId,
+        nis,
+        setNis,
         endDate,
         startDate,
         status,

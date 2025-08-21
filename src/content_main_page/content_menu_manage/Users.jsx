@@ -5,7 +5,8 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
 import useFetchUsers from "../../hooks/hooks_menu_manage/Users";
-import { ModalAddUser } from "../../components/modal/ModalFormProfil";
+import { ModalAddUser, MultiStepModalUsers } from "../../components/modal/ModalFormProfil";
+import { useMultiStepFormUsers } from "../../hooks/hooks_modal/useMultiStepFormUsers";
 
 const Users = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -20,6 +21,10 @@ const Users = () => {
         }
     };
 
+    const [showFormModal, setShowFormModal] = useState(false);
+
+    const formState = useMultiStepFormUsers(() => setShowFormModal(false), fetchUsers);
+
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
             <div className="flex justify-between items-center mb-6">
@@ -27,12 +32,14 @@ const Users = () => {
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setUsersData(null);
-                        setOpenModal(true);
+                        setShowFormModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddUser isOpen={openModal} onClose={() => setOpenModal(false)} data={usersData} refetchData={fetchUsers} />
+            {/* <ModalAddUser isOpen={openModal} onClose={() => setOpenModal(false)} data={usersData} refetchData={fetchUsers} /> */}
+
+            <MultiStepModalUsers isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 
             {/* <ModalDetailUsers
                 isOpen={isModalOpen}
@@ -98,15 +105,15 @@ const Users = () => {
                                                     {item.roles.map((role) => role.name).join(', ')}
                                                 </td>
                                                 <td className="px-3 py-2 border-b w-30">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td>
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status == 1 ? "Aktif" : "Nonaktif"}
+                                                    </span>
+                                                </td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2">
                                                     <div className="flex justify-center items-center space-x-2">
                                                         <button
