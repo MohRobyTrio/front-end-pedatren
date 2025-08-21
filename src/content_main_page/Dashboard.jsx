@@ -50,7 +50,7 @@ const Dashboard = () => {
     // Students
     {
       label: "Peserta Didik",
-      value: loading ? <LoadingSpinner /> : data?.peserta_didik || 267,
+      value: loading ? <LoadingSpinner /> : data?.peserta_didik || 0,
       color: "blue",
       icon: faUsers,
       link: "/peserta-didik",
@@ -59,7 +59,7 @@ const Dashboard = () => {
     },
     {
       label: "Santri",
-      value: loading ? <LoadingSpinner /> : data?.santri || 170,
+      value: loading ? <LoadingSpinner /> : data?.santri || 0,
       color: "blue",
       icon: faUsers,
       link: "/peserta-didik/santri",
@@ -68,7 +68,7 @@ const Dashboard = () => {
     },
     {
       label: "Pelajar",
-      value: loading ? <LoadingSpinner /> : data?.pelajar || 177,
+      value: loading ? <LoadingSpinner /> : data?.pelajar || 0,
       color: "blue",
       icon: faUserGraduate,
       link: "/peserta-didik/pelajar",
@@ -77,7 +77,7 @@ const Dashboard = () => {
     },
     {
       label: "Alumni",
-      value: loading ? <LoadingSpinner /> : data?.alumni || 68,
+      value: loading ? <LoadingSpinner /> : data?.alumni || 0,
       color: "blue",
       icon: faUserGraduate,
       link: "/alumni",
@@ -88,7 +88,7 @@ const Dashboard = () => {
     // Staff
     {
       label: "Pegawai",
-      value: loading ? <LoadingSpinner /> : data?.pegawai || 92,
+      value: loading ? <LoadingSpinner /> : data?.pegawai || 0,
       color: "emerald",
       icon: faUserTie,
       link: "/pegawai",
@@ -97,7 +97,7 @@ const Dashboard = () => {
     },
     {
       label: "Pengajar",
-      value: loading ? <LoadingSpinner /> : data?.pengajar || 50,
+      value: loading ? <LoadingSpinner /> : data?.pengajar || 0,
       color: "emerald",
       icon: faUserTie,
       link: "/pegawai/pengajar",
@@ -106,7 +106,7 @@ const Dashboard = () => {
     },
     {
       label: "Pengurus",
-      value: loading ? <LoadingSpinner /> : data?.pengurus || 50,
+      value: loading ? <LoadingSpinner /> : data?.pengurus || 0,
       color: "emerald",
       icon: faUserShield,
       link: "/pegawai/pengurus",
@@ -115,7 +115,7 @@ const Dashboard = () => {
     },
     {
       label: "Wali Kelas",
-      value: loading ? <LoadingSpinner /> : data?.wali_kelas || 50,
+      value: loading ? <LoadingSpinner /> : data?.wali_kelas || 0,
       color: "emerald",
       icon: faUserShield,
       link: "/pegawai/wali-kelas",
@@ -124,7 +124,7 @@ const Dashboard = () => {
     },
     {
       label: "Karyawan",
-      value: loading ? <LoadingSpinner /> : data?.karyawan || 50,
+      value: loading ? <LoadingSpinner /> : data?.karyawan || 0,
       color: "emerald",
       icon: faUserTie,
       link: "/pegawai/karyawan",
@@ -133,7 +133,7 @@ const Dashboard = () => {
     },
     {
       label: "Khadam",
-      value: loading ? <LoadingSpinner /> : data?.khadam || 22,
+      value: loading ? <LoadingSpinner /> : data?.khadam || 0,
       color: "emerald",
       icon: faUserTie,
       link: "/khadam",
@@ -144,7 +144,7 @@ const Dashboard = () => {
     // Guardians
     {
       label: "Wali Asuh",
-      value: loading ? <LoadingSpinner /> : data?.wali_asuh || 11,
+      value: loading ? <LoadingSpinner /> : data?.wali_asuh || 0,
       color: "amber",
       icon: faUserShield,
       link: "/wali-asuh",
@@ -153,7 +153,7 @@ const Dashboard = () => {
     },
     {
       label: "Orang Tua",
-      value: loading ? <LoadingSpinner /> : data?.orang_tua || 534,
+      value: loading ? <LoadingSpinner /> : data?.orang_tua || 0,
       color: "amber",
       icon: faUsers,
       link: "/orang-tua",
@@ -162,7 +162,7 @@ const Dashboard = () => {
     },
     {
       label: "Wali",
-      value: loading ? <LoadingSpinner /> : data?.wali || 267,
+      value: loading ? <LoadingSpinner /> : data?.wali || 0,
       color: "amber",
       icon: faUserShield,
       link: "/orang-tua/wali",
@@ -173,7 +173,7 @@ const Dashboard = () => {
     // Alerts
     {
       label: "Dalam Masa Izin",
-      value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin || 5,
+      value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin || 0,
       color: "orange",
       icon: faClock,
       link: "/perizinan?status=sudah%20berada%20diluar%20pondok",
