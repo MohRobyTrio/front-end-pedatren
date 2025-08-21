@@ -16,13 +16,13 @@ import { FaEdit, FaFileExport, FaFileImport, FaPlus, FaArrowLeft } from "react-i
 import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
 import { useMultiStepFormPesertaDidik } from "../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
 import { jenisBerkasList } from "../../data/menuData"
-import { generateDropdownTahun } from "../../utils/generateDropdownTahun"
 import Access from "../../components/Access"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { ModalExport } from "../../components/modal/ModalExport"
 import { Link, Navigate } from "react-router-dom"
 import ModalImport from "../../components/modal/ModalImport"
 import { hasAccess } from "../../utils/hasAccess"
+import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan"
 
 const PesertaDidik = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -30,6 +30,7 @@ const PesertaDidik = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [showStatistik, setShowStatistik] = useState(false)
+    const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
 
     const openModal = (item) => {
         setSelectedItem(item)
@@ -60,6 +61,11 @@ const PesertaDidik = () => {
         angkatanPelajar: "",
         angkatanSantri: "",
     })
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara()
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah()
@@ -156,14 +162,8 @@ const PesertaDidik = () => {
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" },
             // { label: "Santri Sekaligus Pelajar", value: "" },
         ],
-        angkatanPelajar: generateDropdownTahun({
-            placeholder: "Semua Angkatan Pelajar",
-            labelTemplate: "Masuk Tahun {year}",
-        }),
-        angkatanSantri: generateDropdownTahun({
-            placeholder: "Semua Angkatan Santri",
-            labelTemplate: "Masuk Tahun {year}",
-        }),
+        angkatanPelajar: updateFirstOptionLabel(menuAngkatanPelajar, "Semua Angkatan Pelajar"),
+        angkatanSantri: updateFirstOptionLabel(menuAngkatanSantri, "Semua Angkatan Santri"),
     }
 
     const filter5 = {

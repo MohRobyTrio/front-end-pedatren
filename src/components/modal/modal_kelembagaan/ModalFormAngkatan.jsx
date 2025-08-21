@@ -89,13 +89,13 @@ export const ModalAddOrEditAngkatan = ({ isOpen, onClose, data, refetchData }) =
             const payload = isEdit
                 ? {
                     tahun_ajaran_id: formData.tahun_ajaran_id,
-                    angkatan: `Angkatan ${formData.angkatan}`,
+                    angkatan: formData.angkatan,
                     kategori: formData.kategori,
                     status: formData.status,
                 }
                 : {
                     tahun_ajaran_id: formData.tahun_ajaran_id,
-                    angkatan: `Angkatan ${formData.angkatan}`,
+                    angkatan: formData.angkatan,
                     kategori: formData.kategori,
                     status: formData.status,
                 };

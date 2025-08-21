@@ -42,6 +42,7 @@ import ContainerOrangTua from './content_main_page/content_menu_data_pokok/Conta
 import RouteTracker from './components/RouteTracker';
 import Forbidden from './content_main_page/Forbidden';
 import ContainerSaldo from './content_main_page/content_menu_kepesantrenan/ContainerSaldo';
+import { Toaster } from 'sonner';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -248,6 +249,7 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </RouteTracker>
+            <Toaster position="top-right" richColors />
         </Router>
     );
 }

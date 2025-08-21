@@ -11,7 +11,6 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 // import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik";
 import useFetchSantri from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 import ModalDetail from "../../../components/modal/ModalDetail";
-import { generateDropdownTahun } from "../../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../../components/modal/ModalExport";
 import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
@@ -21,6 +20,7 @@ import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik";
 import { jenisBerkasList } from "../../../data/menuData";
 import { Link } from "react-router-dom";
+import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 
 const Santri = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -58,9 +58,15 @@ const Santri = () => {
         // kewaliasuhan: ""
     })
 
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
     const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
     const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga();
+    const { menuAngkatanSantri } = DropdownAngkatan();
 
     const negaraTerpilih = filterNegara.negara.find(n => n.value == selectedNegara.negara)?.label || "";
     const provinsiTerpilih = filterNegara.provinsi.find(p => p.value == selectedNegara.provinsi)?.label || "";
@@ -131,10 +137,7 @@ const Santri = () => {
             { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" }
         ],
 
-        angkatanSantri: generateDropdownTahun({
-            placeholder: "Semua Angkatan Santri",
-            labelTemplate: "Masuk Tahun {year}"
-        }),
+        angkatanSantri: updateFirstOptionLabel(menuAngkatanSantri, "Semua Angkatan Santri"),
     }
     const filter5 = {
         wargaPesantren: [
