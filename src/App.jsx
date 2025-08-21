@@ -17,6 +17,7 @@ import {
     menuKewaliasuhanItems, menuKewilayahanItems, menuMahromItems,
     menuManageItems,
     menuOrangTua,
+    menuPembayaranItems,
     menuSaldo,
     menuSholat,
     menuTransaksiItems,
@@ -36,11 +37,11 @@ import Profile from './content_main_page/Profile';
 import { getRolesString } from './utils/getRolesString';
 import ContainerPesertaDidik from './content_main_page/content_menu_data_pokok/ContainerPesertaDidik';
 import ContainerPegawai from './content_main_page/content_menu_kepegawaian/ContainerPegawai';
-import Transaksi from './content_main_page/content _menu_kepesantrenan/Transaksi';
+import Transaksi from './content_main_page/content_menu_kepesantrenan/Transaksi';
 import ContainerOrangTua from './content_main_page/content_menu_data_pokok/ContainerOrangTua';
 import RouteTracker from './components/RouteTracker';
 import Forbidden from './content_main_page/Forbidden';
-import ContainerSaldo from './content_main_page/content _menu_kepesantrenan/ContainerSaldo';
+import ContainerSaldo from './content_main_page/content_menu_kepesantrenan/ContainerSaldo';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -231,7 +232,8 @@ function App() {
                                 ...menuHafalan,
                                 ...menuBelanja,
                                 ...menuOrangTua,
-                                ...menuTransaksiItems
+                                ...menuTransaksiItems,
+                                ...menuPembayaranItems
                             ].map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />
                             ))}

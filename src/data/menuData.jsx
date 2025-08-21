@@ -1,7 +1,7 @@
-import CatatanAfektif from "../content_main_page/content _menu_kepesantrenan/CatatanAfektif";
-import CatatanKognitif from "../content_main_page/content _menu_kepesantrenan/CatatanKognitif";
-import Pelanggaran from "../content_main_page/content _menu_kepesantrenan/Pelanggaran";
-import Perizinan from "../content_main_page/content _menu_kepesantrenan/Perizinan";
+import CatatanAfektif from "../content_main_page/content_menu_kepesantrenan/CatatanAfektif";
+import CatatanKognitif from "../content_main_page/content_menu_kepesantrenan/CatatanKognitif";
+import Pelanggaran from "../content_main_page/content_menu_kepesantrenan/Pelanggaran";
+import Perizinan from "../content_main_page/content_menu_kepesantrenan/Perizinan";
 // import PresensiPesantren from "../content_main_page/content _menu_kepesantrenan/PresensiPesantren";
 // import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
 import Alumni from "../content_main_page/content_menu_data_pokok/Alumni";
@@ -57,11 +57,11 @@ import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
 import Users from "../content_main_page/content_menu_manage/Users";
 import { NadhomanAllData } from "../content_main_page/content_menu_data_pokok/Nadhoman";
 import { TahfidzRekap } from "../content_main_page/content_menu_data_pokok/Tahfidz";
-import PresensiSholat from "../content_main_page/content _menu_kepesantrenan/PresensiSholat";
+import PresensiSholat from "../content_main_page/content_menu_kepesantrenan/PresensiSholat";
 import Kitab from "../content_main_page/content_menu_data_pokok/Kitab";
 import KartuRFID from "../content_main_page/content_menu_data_pokok/KartuRFID";
-import Sholat from "../content_main_page/content _menu_kepesantrenan/Sholat";
-import JadwalSholat from "../content_main_page/content _menu_kepesantrenan/JadwalSholat";
+import Sholat from "../content_main_page/content_menu_kepesantrenan/Sholat";
+import JadwalSholat from "../content_main_page/content_menu_kepesantrenan/JadwalSholat";
 // import ScanQRCode from "../content_main_page/ScanQRCode";
 import LogActivity from "../content_main_page/content_menu_manage/LogActivity";
 import ContainerPesertaDidik from "../content_main_page/content_menu_data_pokok/ContainerPesertaDidik";
@@ -70,16 +70,18 @@ import Pengurus from "../content_main_page/content_menu_data_pokok/Pengurus";
 import Karyawan from "../content_main_page/content_menu_data_pokok/Karyawan";
 import WaliKelas from "../content_main_page/content_menu_data_pokok/WaliKelas";
 import ContainerPegawai from "../content_main_page/content_menu_kepegawaian/ContainerPegawai";
-import Transaksi from "../content_main_page/content _menu_kepesantrenan/Transaksi";
-import ViewOutlet from "../content_main_page/content _menu_kepesantrenan/ViewOutlet";
-import Kategori from "../content_main_page/content _menu_kepesantrenan/Kategori";
-import UserOutlet from "../content_main_page/content _menu_kepesantrenan/DetailUserOutlet";
+import Transaksi from "../content_main_page/content_menu_kepesantrenan/Transaksi";
+import ViewOutlet from "../content_main_page/content_menu_kepesantrenan/ViewOutlet";
+import Kategori from "../content_main_page/content_menu_kepesantrenan/Kategori";
+import UserOutlet from "../content_main_page/content_menu_kepesantrenan/DetailUserOutlet";
 import OrangTua from "../content_main_page/content_menu_data_pokok/OrangTua";
 import Wali from "../content_main_page/content_menu_data_pokok/Wali";
 import ContainerOrangTua from "../content_main_page/content_menu_data_pokok/ContainerOrangTua";
-import Topup from "../content_main_page/content _menu_kepesantrenan/TopupSaldo";
-import Tarik from "../content_main_page/content _menu_kepesantrenan/TarikSaldo";
-import CekSaldo from "../content_main_page/content _menu_kepesantrenan/CekSaldo";
+import Topup from "../content_main_page/content_menu_kepesantrenan/TopupSaldo";
+import Tarik from "../content_main_page/content_menu_kepesantrenan/TarikSaldo";
+import CekSaldo from "../content_main_page/content_menu_kepesantrenan/CekSaldo";
+import Bank from "../content_main_page/content_menu_pembayaran/Bank";
+import VirtualAccount from "../content_main_page/content_menu_pembayaran/VirtualAccount";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -148,8 +150,13 @@ export const menuTransaksiItems = [
     { id: "saldo", icon: "fa-money-bill-wave", text: "Saldo", link: "/transaksi/saldo", content: <Topup />, access: "topup" },
 ]
 
+export const menuPembayaranItems = [
+    { id: "bank", icon: "fa-university", text: "Bank", link: "/pembayaran/bank", content: <Bank />, access: "bank" },
+    { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount /> },
+]
+
 export const menuSaldo = [
-    { id: "cek-saldo", icon: "fa-money-bill-wave", text: "Cek Saldo", link: "/transaksi/saldo", content: <CekSaldo />, access: "cek-saldo" },
+    { id: "ceksaldo", icon: "fa-money-bill-wave", text: "Cek Saldo", link: "/transaksi/saldo", content: <CekSaldo />, access: "ceksaldo" },
     { id: "topup", icon: "fa-money-bill-wave", text: "Top Up", link: "/transaksi/saldo/topup", content: <Topup />, access: "topup" },
     { id: "tarik", icon: "fa-hand-holding-usd", text: "Tarik", link: "/transaksi/saldo/tarik", content: <Tarik />, access: "tarik" },
 ]

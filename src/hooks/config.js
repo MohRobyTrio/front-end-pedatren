@@ -21,6 +21,7 @@ export const rolesWithAccess = {
   csholat: ['admin', 'superadmin', 'ustadz'],
   belanja: ['admin', 'superadmin'],
   transaksi: ['admin', 'superadmin'],
+  pembayaran: ['admin', 'superadmin'],
   ///SubMenu///
   dashboard: ['admin', 'superadmin'],
   santri: ['admin', 'superadmin'],
@@ -46,6 +47,8 @@ export const rolesWithAccess = {
   user_outlet: ['admin', 'superadmin'],
   topup: ['admin', 'superadmin'],
   tarik: ['admin', 'superadmin'],
+
+  bank: ['admin', 'superadmin'],
   ///Fitur///
   
   ///Manage///

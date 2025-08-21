@@ -12,6 +12,7 @@ import {
     menuKewilayahanItems,
     // menuMahromItems,
     menuManageItems,
+    menuPembayaranItems,
     menuSholat,
     menuTransaksiItems,
     subKelembagaanItems,
@@ -289,6 +290,17 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                                 onClick={() => toggleDropdown("transaksi")}
                             />
                             {dropdowns.transaksi && <DropdownMenu items={menuTransaksiItems} />}
+                        </div>
+                    </Access>
+
+                    <Access action="pembayaran">
+                        <div className="mt-3 px-2">
+                            <MenuHeader
+                                name="Pembayaran"
+                                isOpen={dropdowns.pembayaran}
+                                onClick={() => toggleDropdown("pembayaran")}
+                            />
+                            {dropdowns.pembayaran && <DropdownMenu items={menuPembayaranItems} />}
                         </div>
                     </Access>
 

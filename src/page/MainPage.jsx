@@ -19,6 +19,7 @@ const MainPage = () => {
         pesertadidik: sessionStorage.getItem("pesertadidik") === "true",
         manage: sessionStorage.getItem("manage") === "true",
         transaksi: sessionStorage.getItem("transaksi") === "true",
+        pembayaran: sessionStorage.getItem("pembayaran") === "true",
     }));
 
     useEffect(() => {
