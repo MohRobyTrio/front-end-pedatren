@@ -54,6 +54,78 @@ export const WaliAsuhInfoCard = ({ waliAsuh, setShowSelectWaliAsuh }) => {
     );
 };
 
+export const WaliAsuhInfoCardCompact = ({ waliAsuh, setShowSelectWaliAsuh }) => {
+  if (!waliAsuh) return null
+
+  return (
+    <div className="relative w-full p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 shadow-md border border-blue-200 ">
+      {/* Keterangan */}
+      <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow z-10">
+        Wali Asuh
+      </div>
+
+      {/* Button Ganti */}
+      <button
+        type="button"
+        onClick={() => setShowSelectWaliAsuh(true)}
+        className="absolute top-2 right-2 w-8 h-8 rounded-full hover:bg-blue-700 text-white bg-blue-500 flex items-center justify-center text-sm transition-colors duration-200 z-10"
+        aria-label="Ganti Wali Asuh"
+      >
+        <i className="fas fa-exchange-alt"></i>
+      </button>
+
+      <div className="flex items-start gap-4 pt-4">
+        {/* Foto - Left Side */}
+        <div className="flex-shrink-0">
+          <img
+            src={waliAsuh.foto_profil || "/placeholder.svg"}
+            alt={waliAsuh.value}
+            className="w-20 h-24 sm:w-24 sm:h-28 md:w-28 md:h-32 object-cover rounded-md shadow-sm"
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = blankProfile
+            }}
+          />
+        </div>
+
+        {/* Info - Right Side */}
+        <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-1 gap-y-1 text-xs sm:text-sm">
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Nama</span>
+              <span className="text-gray-600 break-words">: {waliAsuh.value}</span>
+            </div>
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">NIS</span>
+              <span className="text-gray-600">: {waliAsuh.nis}</span>
+            </div>
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Angkatan</span>
+              <span className="text-gray-600">: {waliAsuh.angkatan}</span>
+            </div>
+            {/* <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Kota</span>
+              <span className="text-gray-600 break-words">: {waliAsuh.kota_asal}</span>
+            </div> */}
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Wilayah</span>
+              <span className="text-gray-600">: {waliAsuh.wilayah}</span>
+            </div>
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Blok</span>
+              <span className="text-gray-600">: {waliAsuh.blok}</span>
+            </div>
+            <div className="flex flex-wrap items-start gap-x-1">
+              <span className="font-semibold text-gray-700 whitespace-nowrap">Kamar</span>
+              <span className="text-gray-600">: {waliAsuh.kamar}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export const SantriInfoCard = ({ santri, setShowSelectSantri }) => {
     if (!santri) return null;
 
