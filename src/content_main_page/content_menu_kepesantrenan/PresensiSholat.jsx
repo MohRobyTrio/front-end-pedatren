@@ -460,7 +460,7 @@ const AttendanceList = memo(({ setSearchTerm, filters, setFilters, loadingPresen
                                 <div className="space-y-2">
                                     <label className="flex items-center text-sm font-medium text-gray-700">
                                         <FaCheckCircle className="w-4 h-4 mr-2 text-orange-500" />
-                                        Status Detail
+                                        Status
                                     </label>
                                     <select
                                         value={filters.status}
@@ -468,11 +468,8 @@ const AttendanceList = memo(({ setSearchTerm, filters, setFilters, loadingPresen
                                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                                     >
                                         <option value="all">Semua Status</option>
-                                        <option value="Hadir">Hadir</option>
-                                        <option value="Terlambat">Terlambat</option>
-                                        <option value="Alpha">Alpha</option>
-                                        <option value="Izin">Izin</option>
-                                        <option value="Sakit">Sakit</option>
+                                        <option value="hadir">Hadir</option>
+                                        <option value="tidak_hadir">Tidak Hadir</option>
                                     </select>
                                 </div>
 

@@ -322,7 +322,7 @@ export const Tahfidz = ({ student }) => {
                                                         <th className="px-3 py-2 border-b">Tanggal</th>
                                                         <th className="px-3 py-2 border-b">Nama Santri</th>
                                                         <th className="px-3 py-2 border-b">Jenis Setoran</th>
-                                                        <th className="px-3 py-2 border-b">Surat</th>
+                                                        <th className="px-3 py-2 border-b">Keterangan</th>
                                                         <th className="px-3 py-2 border-b">Nilai</th>
                                                         <th className="px-3 py-2 border-b">Catatan</th>
                                                         <th className="px-3 py-2 border-b">Status</th>
@@ -355,7 +355,7 @@ export const Tahfidz = ({ student }) => {
                                                                 <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
                                                                 <td className="px-3 py-2 border-b">{item.santri_nama || "-"}</td>
                                                                 <td className="px-3 py-2 border-b capitalize">{item.jenis_setoran || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.surat || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item.keterangan_setoran || "-"}</td>
                                                                 <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td>
                                                                 <td className="px-3 py-2 border-b">{item.catatan || "-"}</td>
                                                                 <td className="px-3 py-2 border-b capitalize">{item.status || "-"}</td>

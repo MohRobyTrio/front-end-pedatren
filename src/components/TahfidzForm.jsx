@@ -32,14 +32,12 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
         surat: "",
         ayat_mulai: "",
         ayat_selesai: "",
+        juz_mulai: "",
+        juz_selesai: "",
         nilai: "",
         catatan: "",
         status: "proses",
     })
-
-
-
-
 
     // Ref untuk mendeteksi klik di luar dropdown mata pelajaran
     const surahWrapperRef = useRef(null);
@@ -189,6 +187,17 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
         if (!confirmResult.isConfirmed) return;
 
+        let payload = { ...formData };
+
+        if (formData.jenis_setoran === "surat") {
+            delete payload.juz_mulai;
+            delete payload.juz_selesai;
+        } else if (formData.jenis_setoran === "murojaah") {
+            delete payload.surat;
+            delete payload.ayat_mulai;
+            delete payload.ayat_selesai;
+        }
+
         try {
             setIsSubmitting(true);
             Swal.fire({
@@ -202,7 +211,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                     popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
                 }
             });
-            console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
+            console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}tahfidz`, {
                 method: "POST",
@@ -210,7 +219,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(payload),
             });
 
             // console.log({ id, endpoint, metod, formData });
@@ -290,247 +299,336 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 p-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Tanggal */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaCalendarAlt className="inline mr-2 text-gray-600" />
-                        Tanggal
-                    </label>
-                    <input
-                        type="date"
-                        name="tanggal"
-                        value={formData.tanggal}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaTasks className="inline mr-2 text-gray-600" />
-                        Jenis Setoran
-                    </label>
-                    <select
-                        name="jenis_setoran"
-                        value={formData.jenis_setoran}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
-                    >
-                        <option value="">Pilih jenis setoran</option>
-                        <option value="baru">Baru</option>
-                        <option value="murojaah">Murojaah</option>
-                    </select>
-                </div>
-
-
-                {/* Jumlah Hafalan Baru */}
-                {/* <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaQuran className="inline mr-2 text-gray-600" />
-                        Surat
-                    </label>
-                    <select
-                        name="surat"
-                        value={formData.surat}
-                        onChange={(e) => {
-                            const suratBaru = e.target.value;
-                            setFormData(prev => ({
-                                ...prev,
-                                surat: suratBaru,
-                                ayat_mulai: suratBaru === "" ? "" : prev.ayat_mulai,
-                                ayat_selesai: suratBaru === "" ? "" : prev.ayat_selesai,
-                            }));
-                        }}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
-                    >
-                        <option value="">Pilih Surat</option>
-                        {menuSurah.map((item) => (
-                            <option key={item.value} value={item.nama}>
-                                {item.label}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
-
-                <div className="relative" ref={surahWrapperRef}>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaQuran className="inline mr-2 text-gray-600" />
-                        Surat
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Cari Surat ..."
-                        value={surahSearch}
-                        onChange={(e) => {
-                            setSurahSearch(e.target.value)
-                            setShowDropdownSurah(true)
-                            if (e.target.value === "") {
-                                setSelectedSurah(null); // reset selectedSurah
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    surat: "",          // reset surat di formData juga
-                                }));
-                            }
-                        }}
-                        onFocus={() => setShowDropdownSurah(true)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required
-                    />
-
-                    {showDropdownSurah && surahSearch && filteredSurah.length > 0 && (
-                        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
-                            {filteredSurah.map((item) => (
-                                <li
-                                    key={item.id}
-                                    onClick={() => handleSelectSurah(item)}
-                                    className="p-2 cursor-pointer hover:bg-gray-50"
-                                >
-                                    {item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    {selectedSurah && (
-                        <p className="text-sm text-gray-600 mt-2">
-                            Surah: <strong>{selectedSurah}</strong>
-                        </p>
-                    )}
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaListOl className="inline mr-2 text-gray-600" />
-                        Ayat
-                    </label>
-                    <div className="flex items-center gap-2">
-                        <select
-                            name="ayat_mulai"
-                            value={formData.ayat_mulai}
-                            onChange={handleInputChangeayat}
+        <>
+            <form onSubmit={handleSubmit} className="space-y-6 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Tanggal */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FaCalendarAlt className="inline mr-2 text-gray-600" />
+                            Tanggal
+                        </label>
+                        <input
+                            type="date"
+                            name="tanggal"
+                            value={formData.tanggal}
+                            onChange={handleInputChange}
                             required
-                            disabled={!formData.surat || menuAyat.length < 1}
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1) ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"}`}
-                        >
-                            <option value="">Pilih ayat mulai</option>
-                            {menuAyat.map((item) => (
-                                <option key={item.value} value={item.value}>
-                                    {item.label}
-                                </option>
-                            ))}
-                        </select>
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                        />
+                    </div>
 
-                        <span className="text-gray-500">s.d.</span>
-
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <FaTasks className="inline mr-2 text-gray-600" />
+                            Jenis Setoran
+                        </label>
                         <select
-                            name="ayat_selesai"
-                            value={formData.ayat_selesai}
-                            onChange={handleInputChangeayat}
+                            name="jenis_setoran"
+                            value={formData.jenis_setoran}
+                            onChange={handleInputChange}
                             required
-                            disabled={!formData.surat || menuAyat.length < 1}
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1) ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"}`}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                         >
-                            <option value="">Pilih ayat selesai</option>
-                            {menuAyat.map((item) => (
-                                <option key={item.value} value={item.value}>
-                                    {item.label}
-                                </option>
-                            ))}
+                            <option value="">Pilih jenis setoran</option>
+                            <option value="baru">Baru</option>
+                            <option value="murojaah">Murojaah</option>
                         </select>
                     </div>
-                </div>
+
+                    {formData.jenis_setoran === "baru" && (
+                        <>
+                            <div className="relative" ref={surahWrapperRef}>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaQuran className="inline mr-2 text-gray-600" />
+                                    Surat
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Cari Surat ..."
+                                    value={surahSearch}
+                                    onChange={(e) => {
+                                        setSurahSearch(e.target.value)
+                                        setShowDropdownSurah(true)
+                                        if (e.target.value === "") {
+                                            setSelectedSurah(null); // reset selectedSurah
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                surat: "",          // reset surat di formData juga
+                                            }));
+                                        }
+                                    }}
+                                    onFocus={() => setShowDropdownSurah(true)}
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+
+                                {showDropdownSurah && surahSearch && filteredSurah.length > 0 && (
+                                    <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                                        {filteredSurah.map((item) => (
+                                            <li
+                                                key={item.id}
+                                                onClick={() => handleSelectSurah(item)}
+                                                className="p-2 cursor-pointer hover:bg-gray-50"
+                                            >
+                                                {item.kode_mapel ? `(${item.kode_mapel}) ${item.label} - ${item.lembaga}` : item.label}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {selectedSurah && (
+                                    <p className="text-sm text-gray-600 mt-2">
+                                        Surah: <strong>{selectedSurah}</strong>
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaListOl className="inline mr-2 text-gray-600" />
+                                    Ayat
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        name="ayat_mulai"
+                                        value={formData.ayat_mulai}
+                                        onChange={handleInputChangeayat}
+                                        required
+                                        disabled={!formData.surat || menuAyat.length < 1}
+                                        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1) ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"}`}
+                                    >
+                                        <option value="">Pilih ayat mulai</option>
+                                        {menuAyat.map((item) => (
+                                            <option key={item.value} value={item.value}>
+                                                {item.label}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <span className="text-gray-500">s.d.</span>
+
+                                    <select
+                                        name="ayat_selesai"
+                                        value={formData.ayat_selesai}
+                                        onChange={handleInputChangeayat}
+                                        required
+                                        disabled={!formData.surat || menuAyat.length < 1}
+                                        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1) ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"}`}
+                                    >
+                                        <option value="">Pilih ayat selesai</option>
+                                        {menuAyat.map((item) => (
+                                            <option key={item.value} value={item.value}>
+                                                {item.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
 
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaStar className="inline mr-2 text-gray-600" />
-                        Nilai
-                    </label>
-                    <select
-                        name="nilai"
-                        value={formData.nilai}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
-                    >
-                        <option value="">Pilih nilai</option>
-                        <option value="lancar">Lancar</option>
-                        <option value="cukup">Cukup</option>
-                        <option value="kurang">Kurang</option>
-                    </select>
-                </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaStar className="inline mr-2 text-gray-600" />
+                                    Nilai
+                                </label>
+                                <select
+                                    name="nilai"
+                                    value={formData.nilai}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                                >
+                                    <option value="">Pilih nilai</option>
+                                    <option value="lancar">Lancar</option>
+                                    <option value="cukup">Cukup</option>
+                                    <option value="kurang">Kurang</option>
+                                </select>
+                            </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaFlag className="inline mr-2 text-gray-600" />
-                        Status
-                    </label>
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
-                    >
-                        <option value="proses">On Progress</option>
-                        <option value="tuntas">Tuntas</option>
-                    </select>
-                    {formData.status === "tuntas" && (
-                        <p className="mt-2 text-sm text-red-600 italic">
-                            * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
-                        </p>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaFlag className="inline mr-2 text-gray-600" />
+                                    Status
+                                </label>
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                                >
+                                    <option value="proses">Proses</option>
+                                    <option value="tuntas">Tuntas</option>
+                                </select>
+                                {formData.status === "tuntas" && (
+                                    <p className="mt-2 text-sm text-red-600 italic">
+                                        * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
+                                    </p>
+                                )}
+
+                            </div>
+                        </>
                     )}
 
+                    {formData.jenis_setoran === "murojaah" && (
+                        <>
+                            < div >
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaListOl className="inline mr-2 text-gray-600" />
+                                    Juz
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    {/* Juz Mulai */}
+                                    <select
+                                        name="juz_mulai"
+                                        value={formData.juz_mulai}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                                    >
+                                        <option value="">Pilih Juz mulai</option>
+                                        {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
+                                            <option key={num} value={num}>
+                                                Juz {num}
+                                            </option>
+                                        ))}
+                                    </select>
+
+                                    <span className="text-gray-500">s.d.</span>
+
+                                    {/* Juz Selesai */}
+                                    <select
+                                        name="juz_selesai"
+                                        value={formData.juz_selesai}
+                                        onChange={handleInputChange}
+                                        required
+                                        disabled={!formData.juz_mulai}
+                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${!formData.juz_mulai ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"
+                                            }`}
+                                    >
+                                        <option value="">Pilih Juz selesai</option>
+                                        {Array.from({ length: 30 }, (_, i) => i + 1)
+                                            .filter((num) => !formData.juz_mulai || num >= formData.juz_mulai) // hanya tampil >= juz_mulai
+                                            .map((num) => (
+                                                <option key={num} value={num}>
+                                                    Juz {num}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaStar className="inline mr-2 text-gray-600" />
+                                    Nilai
+                                </label>
+                                <select
+                                    name="nilai"
+                                    value={formData.nilai}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                                >
+                                    <option value="">Pilih nilai</option>
+                                    <option value="lancar">Lancar</option>
+                                    <option value="cukup">Cukup</option>
+                                    <option value="kurang">Kurang</option>
+                                </select>
+                            </div>
+                            <div className="col-span-full">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <FaFlag className="inline mr-2 text-gray-600" />
+                                    Status
+                                </label>
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                                >
+                                    <option value="proses">Proses</option>
+                                    <option value="tuntas">Tuntas</option>
+                                </select>
+                                {formData.status === "tuntas" && (
+                                    <p className="mt-2 text-sm text-red-600 italic">
+                                        * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
+                                    </p>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
-            </div>
 
-            <div className="grid grid-cols-1 gap-6">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <FaStickyNote className="inline mr-2 text-gray-600" />
-                        Catatan
-                    </label>
-                    <textarea
-                        name="catatan"
-                        value={formData.catatan}
-                        onChange={handleInputChange}
-                        placeholder="Masukkan Catatan"
-                        required
-                        rows="4"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent resize-none"
-                    />
+                {formData.jenis_setoran && (
+                    <div className="grid grid-cols-1 gap-6">
+                        {/* <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <FaFlag className="inline mr-2 text-gray-600" />
+                                Status
+                            </label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
+                            >
+                                <option value="proses">On Progress</option>
+                                <option value="tuntas">Tuntas</option>
+                            </select>
+                            {formData.status === "tuntas" && (
+                                <p className="mt-2 text-sm text-red-600 italic">
+                                    * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
+                                </p>
+                            )}
+
+                        </div> */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <FaStickyNote className="inline mr-2 text-gray-600" />
+                                Catatan
+                            </label>
+                            <textarea
+                                name="catatan"
+                                value={formData.catatan}
+                                onChange={handleInputChange}
+                                placeholder="Masukkan Catatan"
+                                required
+                                rows="4"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+                            />
+                        </div>
+                    </div>
+                )}
+
+
+                {/* Action Buttons */}
+                <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8">
+                    <button
+                        type="button"
+                        onClick={handleReset}
+                        disabled={isSubmitting}
+                        className="flex items-center gap-2 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 justify-center"
+                    >
+                        <FaUndo />
+                        Reset
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={`flex items-center gap-2 px-6 py-2 rounded-md text-white font-medium justify-center ${isSubmitting
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2"
+                            }`}
+                    >
+                        <FaSave />
+                        {isSubmitting ? "Menyimpan..." : "Simpan"}
+                    </button>
+
+
                 </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8">
-                <button
-                    type="button"
-                    onClick={handleReset}
-                    disabled={isSubmitting}
-                    className="flex items-center gap-2 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 justify-center"
-                >
-                    <FaUndo />
-                    Reset
-                </button>
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`flex items-center gap-2 px-6 py-2 rounded-md text-white font-medium justify-center ${isSubmitting
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2"
-                        }`}
-                >
-                    <FaSave />
-                    {isSubmitting ? "Menyimpan..." : "Simpan"}
-                </button>
-
-
-            </div>
-        </form>
+            </form >
+        </>
     )
 }
 

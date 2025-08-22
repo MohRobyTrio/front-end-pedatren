@@ -118,6 +118,8 @@ const ModalAddOrEditGolongan = ({ isOpen, onClose, data, refetchData, feature })
                 text: "Data berhasil dikirim.",
             });
 
+            sessionStorage.removeItem("menuGolonganJabatan");
+            sessionStorage.removeItem("menuGolongan");
             refetchData?.();
             onClose?.();
         } catch (error) {

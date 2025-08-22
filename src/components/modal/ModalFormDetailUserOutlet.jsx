@@ -58,8 +58,8 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
 
             if (response.ok) {
                 const result = await response.json()
-                setOutlets(result.data.data || [])
-                console.log(result.data.data);
+                setOutlets(result.data || [])
+                console.log(result.data);
 
             }
         } catch (error) {

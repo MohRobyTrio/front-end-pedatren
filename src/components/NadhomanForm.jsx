@@ -363,7 +363,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
                     </select>
                 </div>
 
-                <div>
+                <div className="col-span-full">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <FaFlag className="inline mr-2 text-gray-600" />
                         Status
