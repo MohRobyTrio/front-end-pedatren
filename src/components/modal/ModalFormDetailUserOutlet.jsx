@@ -38,7 +38,7 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
             if (response.ok) {
                 const result = await response.json()
                 setUsers(result.data || [])
-                console.log(result.data);
+                console.log("user",result.data);
 
             }
         } catch (error) {
@@ -58,8 +58,8 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
 
             if (response.ok) {
                 const result = await response.json()
-                setOutlets(result.data.data || [])
-                console.log(result.data.data);
+                setOutlets(result.data || [])
+                console.log("outlet",result.data);
 
             }
         } catch (error) {
@@ -79,7 +79,7 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
                 if (feature === 2 && data) {
                     setFormData({
                         user_id: data.user_id || "",
-                        status: data.status === 1,
+                        status: data.status === 1 ? true : false,
                         outlet_id: data.outlet_id || "",
                     });
                 } else {

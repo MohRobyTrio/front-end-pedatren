@@ -14,6 +14,8 @@ import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
 import { hasAccess } from "../../utils/hasAccess"
 import useFetchSantriNonAnakAsuh from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonAnakAsuh"
+import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh";
+import { WaliAsuhInfoCard, WaliAsuhInfoCardCompact } from "../../components/CardInfo";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -22,9 +24,8 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
         <div key={`${label}-${index}`} className="space-y-2">
           {vertical && <label className="block text-sm font-medium text-gray-700 capitalize">{label} Tujuan</label>}
           <select
-            className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-              options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "bg-white hover:border-gray-300"
-            }`}
+            className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "bg-white hover:border-gray-300"
+              }`}
             onChange={(e) => onChange({ [label]: e.target.value })}
             value={selectedFilters[label] || ""}
             disabled={options.length <= 1}
@@ -48,6 +49,8 @@ const HubungkanWaliAsuh = () => {
   const [selectedSantriIds, setSelectedSantriIds] = useState([])
   const [selectedWaliAsuh, setSelectedWaliAsuh] = useState(null)
   const [isAllSelected, setIsAllSelected] = useState(false)
+  const [showSelectWaliAsuhModal, setShowSelectWaliAsuhModal] = useState(false);
+  const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null);
   const [filters, setFilters] = useState({
     wilayah: "",
     blok: "",
@@ -469,30 +472,24 @@ const HubungkanWaliAsuh = () => {
                 <div className="p-6">
                   <div className="space-y-4 mb-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Wali Asuh *</label>
-                      <select
-                        className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                          menuWaliAsuh2.length <= 1
-                            ? "bg-gray-50 text-gray-400 cursor-not-allowed"
-                            : "bg-white hover:border-gray-300"
-                        }`}
-                        onChange={(e) => setSelectedWaliAsuh(e.target.value)}
-                        value={selectedWaliAsuh || ""}
-                        disabled={menuWaliAsuh2.length <= 1}
-                        required
-                      >
-                        {menuWaliAsuh2.map((waliAsuh, idx) => (
-                          <option key={idx} value={waliAsuh.id}>
-                            {waliAsuh.label}
-                          </option>
-                        ))}
-                      </select>
+                      {/* <label className="block text-sm font-medium text-gray-700">Wali Asuh *</label> */}
+                      {waliAsuhTerpilih ? (
+                        <WaliAsuhInfoCardCompact waliAsuh={waliAsuhTerpilih} setShowSelectWaliAsuh={() => setShowSelectWaliAsuhModal(true)} />
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setShowSelectWaliAsuhModal(true)}
+                          className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
+                        >
+                          Pilih Wali Asuh
+                        </button>
+                      )}
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-blue-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-green-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -518,6 +515,14 @@ const HubungkanWaliAsuh = () => {
           </div>
         </div>
       </div>
+      <ModalSelectWaliAsuh
+        isOpen={showSelectWaliAsuhModal}
+        onClose={() => setShowSelectWaliAsuhModal(false)}
+        onWaliAsuhSelected={(wali) => {
+          setWaliAsuhTerpilih(wali);
+          setSelectedWaliAsuh(wali.id);
+        }}
+      />
     </div>
   )
 }
