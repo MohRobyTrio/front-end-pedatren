@@ -1152,7 +1152,7 @@ const TabBiodata = () => {
                         </div>
                     </div> */}
 
-                    {kondisiFormState == "kondisi1" && (
+                    {(kondisiFormState == "kondisi1" || kondisiFormState == "kondisi3") && (
                         <>
                             <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                                 <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
