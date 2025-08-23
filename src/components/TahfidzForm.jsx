@@ -17,7 +17,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     const { menuSurah } = DropdownSurah();
     const { allTahunAjaran } = useFetchTahunAjaran();
     const matchedTahunAjaran = allTahunAjaran.find(
-        (item) => item.tahun_ajaran === student.tahun_ajaran
+        (item) => item.status == true
     );
     const [surahSearch, setSurahSearch] = useState("");
     const [showDropdownSurah, setShowDropdownSurah] = useState(false);
@@ -111,10 +111,6 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
         // }
     }, [formData.surah, formData, menuSurah]);
 
-
-
-
-
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
@@ -196,6 +192,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
             delete payload.surat;
             delete payload.ayat_mulai;
             delete payload.ayat_selesai;
+            delete payload.status;
         }
 
         try {
@@ -301,7 +298,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-6 p-1">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Tanggal */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -534,7 +531,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                     <option value="kurang">Kurang</option>
                                 </select>
                             </div>
-                            <div className="col-span-full">
+                            {/* <div className="col-span-full">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaFlag className="inline mr-2 text-gray-600" />
                                     Status
@@ -554,7 +551,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                         * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
                                     </p>
                                 )}
-                            </div>
+                            </div> */}
                         </>
                     )}
                 </div>

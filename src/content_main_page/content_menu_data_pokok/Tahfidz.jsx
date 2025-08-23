@@ -48,6 +48,7 @@ export const Tahfidz = ({ student }) => {
         }
     }, [allTahunAjaran, selectedYear])
 
+    // eslint-disable-next-line no-unused-vars
     const openModal = (item) => {
         setSelectedItem(item)
         setIsModalOpen(true)
@@ -347,7 +348,6 @@ export const Tahfidz = ({ student }) => {
                                                             <tr
                                                                 key={item.id || index}
                                                                 className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
-                                                                onClick={() => openModal(item)}
                                                             >
                                                                 <td className="px-3 py-2 border-b">
                                                                     {(currentPage - 1) * limit + index + 1 || "-"}
@@ -556,6 +556,7 @@ export const TahfidzRekap = () => {
         sessionStorage.removeItem("tahfidz_selected_student");
     };
 
+    // eslint-disable-next-line no-unused-vars
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
@@ -815,7 +816,6 @@ export const TahfidzRekap = () => {
                                                 <tr
                                                     key={item.id || index}
                                                     className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
-                                                    onClick={() => openModal(item)}
                                                 >
                                                     <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                     <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>

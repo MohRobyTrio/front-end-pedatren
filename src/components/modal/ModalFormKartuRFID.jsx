@@ -515,6 +515,14 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
     }, [currentStep, location.pathname]); // tambahkan location.pathname ke dependency
 
     useEffect(() => {
+        setFormData({
+            ...formData,
+            santri_id: santri?.id || "",
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [santri])
+
+    useEffect(() => {
         if (currentStep == 2 && inputMode == "scnfcan") {
             setIsScanning(true);
             startNFCScanning();
@@ -614,7 +622,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
                                                                     className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                                     placeholder="Masukkan PIN"
                                                                     maxLength={6}
-                                                                    required={feature == 1}
+                                                                    required
                                                                 />
                                                             </div>
 

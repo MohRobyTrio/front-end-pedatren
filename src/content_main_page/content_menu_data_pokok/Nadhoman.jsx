@@ -44,6 +44,7 @@ export const Nadhoman = ({ nadhoman }) => {
         }
     }, [allTahunAjaran, selectedYear]);
 
+    // eslint-disable-next-line no-unused-vars
     const openModal = (item) => {
         setSelectedItem(item)
         setIsModalOpen(true)
@@ -280,7 +281,6 @@ export const Nadhoman = ({ nadhoman }) => {
                                                             <tr
                                                                 key={item.id || index}
                                                                 className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
-                                                                onClick={() => openModal(item)}
                                                             >
                                                                 <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                                 <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
@@ -433,6 +433,7 @@ export const NadhomanAllData = () => {
         sessionStorage.setItem("nadhoman_view_state", "nadhoman");
     };
 
+    // eslint-disable-next-line no-unused-vars
     const openModal = (item) => {
         setSelectedItem(item)
         setIsModalOpen(true)
@@ -711,10 +712,9 @@ export const NadhomanAllData = () => {
                                                         <tr
                                                             key={index}
                                                             className="hover:bg-gray-50 whitespace-nowrap cursor-pointer"
-                                                            onClick={() => openModal(item)}
                                                         >
                                                             <td className="px-3 py-2 border-b text-center">{(currentPage - 1) * limit + index + 1}</td>
-                                                            <td className="px-3 py-2 border-b font-medium">{item.nama_santri || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
                                                             <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
                                                             <td className="px-3 py-2 border-b">{item.nama_kitab || "-"}</td>
                                                             <td className="px-3 py-2 border-b">{item.total_bait || "-"}</td>

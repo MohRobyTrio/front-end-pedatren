@@ -34,6 +34,7 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import useDropdownKategori from "../../hooks/hook_dropdown/DropdownKategori"
 import Swal from "sweetalert2"
 import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet"
+import { getRolesString } from "../../utils/getRolesString"
 
 const Transaksi = () => {
     // const [activeTab, setActiveTab] = useState("daftar")
@@ -105,7 +106,10 @@ const Transaksi = () => {
     const isValidOutlet = (value) =>
         value && value !== "null" && value !== "undefined";
 
-    if (!hasAccess("transaksi") || (!isValidOutlet(outletSession) && !isValidOutlet(outletLocal))) {
+    if (getRolesString() !== "Superadmin" &&
+  (!hasAccess("belanja") ||
+    (!isValidOutlet(outletSession) && !isValidOutlet(outletLocal)))
+) {
         return <Navigate to="/forbidden" replace />;
     }
 
