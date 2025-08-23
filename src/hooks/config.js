@@ -19,7 +19,7 @@ export const rolesWithAccess = {
   golongan: ['admin', 'superadmin'],
   hafalan: ['admin', 'superadmin', 'ustadz'],
   csholat: ['admin', 'superadmin', 'ustadz'],
-  transaksi: ['admin', 'superadmin'],
+  transaksi: ['admin', 'superadmin', 'petugas'],
   pembayaran: ['admin', 'superadmin'],
   ///SubMenu///
   belanja: ['admin', 'superadmin', 'petugas'],

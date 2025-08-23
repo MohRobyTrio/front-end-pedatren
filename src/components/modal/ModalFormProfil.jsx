@@ -7,9 +7,10 @@ import useLogout from "../../hooks/Logout";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
-import { FaArrowLeft, FaArrowRight, FaSave, FaUndo } from "react-icons/fa";
+import { FaSave, FaUndo } from "react-icons/fa";
 import FormBiodataUser from "../../content_modal/input/user/FormBiodata";
 import FormUser from "../../content_modal/input/user/FormUser";
+import { toast } from "sonner";
 
 export const ModalUpdateProfil = ({ isOpen, onClose }) => {
     const { clearAuthData } = useLogout();
@@ -863,7 +864,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
     );
 };
 
-export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
+export const MultiStepModalUsers = ({ isOpen, onClose, formState, data }) => {
     const {
         register,
         handleSubmit,
@@ -871,11 +872,6 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
         setValue,
         resetData,
         watch,
-        activeTab,
-        unlockedTabs,
-        setActiveTab,
-        nextStep,
-        prevStep,
         onValidSubmit,
         onInvalidSubmit,
         selectedTinggal,
@@ -891,7 +887,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
         if (contentRef.current) {
             contentRef.current.scrollTop = 0;
         }
-    }, [activeTab]);
+    }, []);
 
     useEffect(() => {
         setValue("modalUser.biodata.tinggal_bersama", isLainnya ? lainnyaValue : selectedTinggal);
@@ -912,27 +908,9 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
         if (result.isConfirmed) {
             resetData();
-            Swal.fire({
-                icon: 'success',
-                title: 'Data berhasil direset',
-                showConfirmButton: false,
-                timer: 1500
-            });
+            toast.success("Data berhasil direset");
         }
     };
-
-    const tabs = [
-        {
-            id: 0,
-            label: "Biodata",
-            content: <FormBiodataUser register={register} watch={watch} setValue={setValue} control={control} activeTab={activeTab} selectedTinggal={selectedTinggal} setSelectedTinggal={setSelectedTinggal} isLainnya={isLainnya} setLainnyaValue={setLainnyaValue} />
-        },
-        {
-            id: 1,
-            label: "Keterangan",
-            content: <FormUser register={register} />
-        },
-    ]
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -970,82 +948,96 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
                             {/* Header */}
                             <div className="pb-4">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Tambah Data Pengguna</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">
+                                    Tambah Data Pengguna
+                                </Dialog.Title>
                             </div>
+
                             <form
                                 onSubmit={handleSubmit(onValidSubmit, onInvalidSubmit)}
                                 className="flex-1 overflow-y-auto p-2"
-                                ref={contentRef} // Ref di sini
+                                ref={contentRef}
                             >
-                                {/* {renderStep()} */}
-                                <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-500">
-                                    {tabs.map((tab) => (
-                                        <li key={tab.id}>
-                                            <button
-                                                type='button'
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (unlockedTabs.includes(tab.id)) setActiveTab(tab.id);
-                                                }}
-                                                className={`inline-block p-3 rounded-t-lg border-b-2 ${activeTab === tab.id
-                                                    ? 'text-blue-600 border-blue-600 bg-gray-200'
-                                                    : unlockedTabs.includes(tab.id)
-                                                        ? 'border-transparent hover:text-gray-600 hover:bg-gray-50'
-                                                        : 'border-transparent text-gray-300 cursor-not-allowed'
-                                                    }`}
-                                                disabled={!unlockedTabs.includes(tab.id)}
-                                            >
-                                                {tab.label}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className="space-y-4">
+                                    {/* User Data Section with modern styling */}
+                                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="p-2 bg-blue-50 rounded-lg">
+                                                <svg
+                                                    className="w-5 h-5 text-blue-500"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-lg font-medium text-gray-900">
+                                                Data User
+                                            </h3>
+                                        </div>
+                                            <FormUser register={register} />
+                                    </div>
 
-                                <div className="pt-4">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-
+                                    {/* Biodata Section with matching styling */}
+                                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="p-2 bg-blue-50 rounded-lg">
+                                                <svg
+                                                    className="w-5 h-5 text-blue-500"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-lg font-medium text-gray-900">
+                                                Biodata
+                                            </h3>
+                                        </div>
+                                        <FormBiodataUser
+                                            register={register}
+                                            watch={watch}
+                                            setValue={setValue}
+                                            control={control}
+                                            selectedTinggal={selectedTinggal}
+                                            setSelectedTinggal={setSelectedTinggal}
+                                            isLainnya={isLainnya}
+                                            setLainnyaValue={setLainnyaValue}
+                                        />
+                                    </div>
+                                </div>
                             </form>
 
-                            <div className="mt-4 pt-4 flex justify-between">
-                                {activeTab > 0 && (
-                                    <button
-                                        onClick={prevStep}
-                                        className="inline-flex items-center gap-2 rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400"
-                                    >
-                                        <FaArrowLeft />
-                                        Sebelumnya
-                                    </button>
-                                )}
-                                <div className="ml-auto space-x-2">
-                                    {activeTab < tabs.length && (
-                                        <button
-                                            type="button"
-                                            onClick={handleResetClick}
-                                            className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
-                                        >
-                                            <FaUndo />
-                                            Reset
-                                        </button>
-                                    )}
-                                    {activeTab < tabs.length - 1 ? (
-                                        <button
-                                            type='button'
-                                            onClick={nextStep}
-                                            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                                        >
-                                            Selanjutnya
-                                            <FaArrowRight />
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
-                                            className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                                        >
-                                            <FaSave />
-                                            Simpan
-                                        </button>
-                                    )}
-                                </div>
+                            {/* Footer Actions */}
+                            <div className="mt-4 pt-4 flex justify-end space-x-2 border-t border-gray-200">
+                                <button
+                                    type="button"
+                                    onClick={handleResetClick}
+                                    className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+                                >
+                                    <FaUndo />
+                                    Reset
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                                    className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                                >
+                                    <FaSave />
+                                    Simpan
+                                </button>
                             </div>
                         </Dialog.Panel>
                     </Transition.Child>
