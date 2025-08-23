@@ -88,13 +88,14 @@ const useFetchUsers = () => {
                 const result = await response.json()
                 setBiodata(result || [])
                 console.log("user", result);
-
+                return result
             } else {
                 const errorResult = await response.json();
                 toast.error("Error", {
                     description: `${errorResult.message || "Terjadi kesalahan"}`
                 })
                 console.error("Error fetching user details:", errorResult);
+                return null
             }
         } catch (error) {
             console.error("Error fetching users:", error)

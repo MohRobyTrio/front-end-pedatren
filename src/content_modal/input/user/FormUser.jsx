@@ -115,11 +115,12 @@ const FormUser = ({ register }) => {
                                 <option value="superadmin">Super Admin</option>
                                 <option value="admin">Admin</option>
                                 <option value="supervisor">Supervisor</option>
-                                <option value="staff">Staff</option>
+                                <option value="petugas">Petugas</option>
                                 <option value="santri">Santri</option>
                                 <option value="kamtib">Kamtib</option>
                                 <option value="biktren">Biktren</option>
                                 <option value="pengasuh">Pengasuh</option>
+                                <option value="orang_tua">Orang Tua</option>
                             </select>
                         </div>
                     </div>

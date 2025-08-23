@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
-const FormBiodataUser = ({ register, watch, setValue, control, activeTab, selectedTinggal, setSelectedTinggal, setLainnyaValue, isLainnya }) => {
+const FormBiodataUser = ({ isOpen, register, watch, setValue, control, selectedTinggal, setSelectedTinggal, setLainnyaValue, isLainnya }) => {
 
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
@@ -26,11 +26,8 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
 
     useEffect(() => {
         // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
-        if (activeTab !== 0) return;
-        console.log("handle");
-
+        console.log("negara handle ",negara);
         if (negara) {
-            console.log("negara handle ",negara);
             handleFilterChangeNegara({ negara: negara });
         }
         if (provinsi) {
@@ -46,7 +43,7 @@ const FormBiodataUser = ({ register, watch, setValue, control, activeTab, select
             handleFilterChangeNegara({ kecamatan: kecamatan });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab]);
+    }, [isOpen]);
 
     const updateFirstOptionLabel = (list, label) =>
         list.length > 0

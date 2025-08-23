@@ -38,31 +38,41 @@ export function useMultiStepFormUsers(onClose, refetchData, data) {
         
         if (data) {
             console.log("Data diterima di useMultiStepFormUsers:", data);
-            
-            // Set user data
-            Object.keys(data).forEach(key => {
-                if (key === 'biodata') {
-                    // Handle biodata separately since it's nested
-                    Object.keys(data.biodata).forEach(biodataKey => {
-                        setValue(`modalUser.biodata.${biodataKey}`, data.biodata[biodataKey]);
-                        
-                        // Special handling for tinggal_bersama field
-                        if (biodataKey === 'tinggal_bersama') {
-                            const tinggalValue = data.biodata[biodataKey];
-                            setSelectedTinggal(tinggalValue);
-                            if (!['Ayah', 'Ibu', 'Ayah dan Ibu', 'Wali'].includes(tinggalValue)) {
-                                setSelectedTinggal('Lainnya');
-                                setLainnyaValue(tinggalValue);
-                            }
-                        }
-                    });
-                } else {
-                    // Set other user fields
-                    setValue(`modalUser.${key}`, data[key]);
-                }
-            });
+
+            reset({ modalUser: {} });
+            setValue("modalUser.name", data.name)
+            setValue("modalUser.email", data.email)
+            setValue("modalUser.status", data.status)
+            setValue("modalUser.role", data.roles[0].name)
+            setValue("modalUser.status", data.status == 1 ? "1" : "0")
+
+            setValue("modalUser.biodata.kewarganegaraan", data.biodata.no_passport ? "wna" : "wni")
+            setValue("modalUser.biodata.no_passport", data.biodata.no_passport)
+            setValue("modalUser.biodata.nik", data.biodata.nik)
+            setValue("modalUser.biodata.no_kk", data.biodata.no_kk)
+            setValue("modalUser.biodata.nama", data.biodata.nama)
+            setValue("modalUser.biodata.jenis_kelamin", data.biodata.jenis_kelamin)
+            setValue("modalUser.biodata.tempat_lahir", data.biodata.tempat_lahir)
+            setValue("modalUser.biodata.tanggal_lahir", data.biodata.tanggal_lahir)
+            setValue("modalUser.biodata.dari_saudara", data.biodata.dari_saudara)
+            setValue("modalUser.biodata.anak_keberapa", data.biodata.anak_keberapa)
+            setValue("modalUser.biodata.tinggal_bersama", data.biodata.tinggal_bersama)
+            setValue("modalUser.biodata.jenjang_pendidikan_terakhir", data.biodata.jenjang_pendidikan_terakhir)
+            setValue("modalUser.biodata.nama_pendidikan_terakhir", data.biodata.nama_pendidikan_terakhir)
+            setValue("modalUser.biodata.no_telepon", data.biodata.no_telepon)
+            setValue("modalUser.biodata.no_telepon_2", data.biodata.no_telepon_2)
+            setValue("modalUser.biodata.email", data.biodata.email)
+            setValue("modalUser.biodata.negara_id", data.biodata.negara_id)
+            setValue("modalUser.biodata.provinsi_id", data.biodata.provinsi_id)
+            setValue("modalUser.biodata.kabupaten_id", data.biodata.kabupaten_id)
+            setValue("modalUser.biodata.kecamatan_id", data.biodata.kecamatan_id)
+            setValue("modalUser.biodata.kode_pos", data.biodata.kode_pos)
+            setValue("modalUser.biodata.jalan", data.biodata.jalan)
+        } else {
+            reset({ modalUser: {} })
         }
-    }, [data, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, reset]);
 
     const nextStep = async () => {
         const form = document.querySelector("form");
