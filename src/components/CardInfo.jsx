@@ -150,7 +150,7 @@ export const SantriInfoCard = ({ santri, setShowSelectSantri }) => {
                 {/* Foto */}
                 <div className="flex justify-center sm:justify-start">
                     <img
-                        src={santri.foto_profil}
+                        src={santri.foto_profil || blankProfile}
                         alt={santri.value}
                         className="w-32 h-40 object-cover rounded"
                         onError={(e) => {

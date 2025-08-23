@@ -864,7 +864,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
     );
 };
 
-export const MultiStepModalUsers = ({ isOpen, onClose, formState, data }) => {
+export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
     const {
         register,
         handleSubmit,
@@ -981,7 +981,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState, data }) => {
                                                 Data User
                                             </h3>
                                         </div>
-                                            <FormUser register={register} />
+                                        <FormUser register={register} />
                                     </div>
 
                                     {/* Biodata Section with matching styling */}
@@ -1007,6 +1007,7 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState, data }) => {
                                             </h3>
                                         </div>
                                         <FormBiodataUser
+                                            isOpen={isOpen}
                                             register={register}
                                             watch={watch}
                                             setValue={setValue}

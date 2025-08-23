@@ -9,6 +9,7 @@ import useLogout from "../../hooks/Logout";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
 import { useNavigate } from "react-router-dom";
 import { ModalSelectSantri } from "../ModalSelectSantri";
+import { SantriInfoCard } from "../CardInfo";
 
 export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id, nama }) => {
     const { menuSantri } = useDropdownSantri();
@@ -16,6 +17,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
     const navigate = useNavigate();
     const [santriId, setSantriId] = useState(null);
     const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santriSelectionCancelled, setSantriSelectionCancelled] = useState(false)
 
     const [formData, setFormData] = useState({
         status_pelanggaran: "",
@@ -23,7 +25,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
         jenis_pelanggaran: "",
         diproses_mahkamah: null,
         keterangan: "",
-    });    
+    });
 
     useEffect(() => {
         if (isOpen && feature == 1) {
@@ -38,14 +40,40 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
         }
     }, [feature, isOpen]);
 
-    useEffect(() => {      
+    useEffect(() => {
         if (feature === 2 && nama && menuSantri.length > 0) {
-            const matchedSantri = menuSantri.find((s) => s.label === nama);            
+            const matchedSantri = menuSantri.find((s) => s.label === nama);
             if (matchedSantri) {
                 setSantriId(matchedSantri);
             }
         }
     }, [feature, nama, menuSantri]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            console.log("[v0] Modal closed, resetting all states")
+            setSantriId(null)
+            setSantriSelectionCancelled(false)
+            setShowSelectSantri(false)
+        }
+    }, [isOpen])
+
+    useEffect(() => {
+        if (feature !== 1) return
+        if (isOpen && (santriId === null || santriId === "")) {
+            setShowSelectSantri(true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, feature])
+
+    useEffect(() => {
+        if (feature !== 1) return
+        // Only close modal if santri selection was explicitly cancelled and modal is not showing santri selector
+        if (!showSelectSantri && (santriId === null || santriId === "") && santriSelectionCancelled) {
+            onClose?.()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showSelectSantri, santriId, feature, santriSelectionCancelled])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -99,7 +127,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
             });
             fetchData();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [feature, id, isOpen]);
 
     const handleSubmit = async (e) => {
@@ -133,7 +161,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                 }
             });
             console.log(santriId);
-            
+
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
             const response = await fetch(`${API_BASE_URL}crud/${idSend}/pelanggaran`, {
@@ -241,7 +269,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-2 sm:mt-0 text-left w-full">
                                             {/* Pilih Santri Button */}
-                                            {feature === 1 && (
+                                            {/* {feature === 1 && (
                                                 <div className={`mb-4 flex ${santriId ? 'justify-end' : 'justify-center'}`}>
                                                     <div className="flex-1 flex justify-between items-center max-w-2xl mx-auto">
                                                         {!santriId && (
@@ -260,7 +288,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                                         </div>
                                                     </div>
                                                 </div>
-                                            )}
+                                            )} */}
                                             {/* Kartu Info Santri */}
                                             {santriId && <SantriInfoCard santri={santriId} />}
 
@@ -280,7 +308,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                                             <option value="Sedang diproses">Sedang Diproses</option>
                                                             <option value="Sudah diproses">Sudah Diproses</option>
                                                         </select>
-                                                    </div>        
+                                                    </div>
 
                                                     <div>
                                                         <label htmlFor="jenis_putusan" className="block text-gray-700">Jenis Putusan *</label>
@@ -295,7 +323,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                                             <option value="Disanksi">Disanksi</option>
                                                             <option value="Dibebaskan">Dibebaskan</option>
                                                         </select>
-                                                    </div>    
+                                                    </div>
 
                                                     <div>
                                                         <label htmlFor="jenis_pelanggaran" className="block text-gray-700">Jenis Pelanggaran *</label>
@@ -352,7 +380,7 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
                                                             placeholder="Masukkan catatan atau tindak lanjut"
                                                             required
                                                         />
-                                                    </div>                                     
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
@@ -382,66 +410,71 @@ export const ModalAddPelanggaran = ({ isOpen, onClose, refetchData, feature, id,
             </Dialog>
             <ModalSelectSantri
                 isOpen={showSelectSantri}
-                onClose={() => setShowSelectSantri(false)}
+                onClose={() => {
+                    setShowSelectSantri(false)
+                    if (!santriId) {
+                        setSantriSelectionCancelled(true)
+                    }
+                }}
                 onSantriSelected={(santri) => setSantriId(santri)}
             />
         </Transition>
     );
 };
 
-const SantriInfoCard = ({ santri }) => {
-    if (!santri) return null;
+// const SantriInfoCard = ({ santri }) => {
+//     if (!santri) return null;
 
-    return (
-        <div className="p-4 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200 relative">
-            {/* Keterangan */}
-            <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
-                Data Santri
-            </div>
+//     return (
+//         <div className="p-4 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200 relative">
+//             {/* Keterangan */}
+//             <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+//                 Data Santri
+//             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
-                {/* Foto */}
-                <div className="flex justify-center sm:justify-start">
-                    {santri.foto_profil ? (
-                        <img
-                            src={santri.foto_profil}
-                            alt={santri.value}
-                            className="w-24 h-24 sm:w-32 sm:h-40 object-cover rounded"
-                            onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = "/placeholder.svg";
-                            }}
-                        />
-                    ) : (
-                        <div className="w-24 h-24 sm:w-32 sm:h-40 bg-gray-200 rounded-md flex items-center justify-center">
-                            <i className="fas fa-user text-gray-400 text-4xl"></i>
-                        </div>
-                    )}
-                </div>
+//             <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
+//                 {/* Foto */}
+//                 <div className="flex justify-center sm:justify-start">
+//                     {santri.foto_profil ? (
+//                         <img
+//                             src={santri.foto_profil}
+//                             alt={santri.value}
+//                             className="w-24 h-24 sm:w-32 sm:h-40 object-cover rounded"
+//                             onError={(e) => {
+//                                 e.target.onerror = null;
+//                                 e.target.src = "/placeholder.svg";
+//                             }}
+//                         />
+//                     ) : (
+//                         <div className="w-24 h-24 sm:w-32 sm:h-40 bg-gray-200 rounded-md flex items-center justify-center">
+//                             <i className="fas fa-user text-gray-400 text-4xl"></i>
+//                         </div>
+//                     )}
+//                 </div>
 
-                {/* Info */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
-                    {/* Kolom Pertama */}
-                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
-                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
-                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
-                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
-                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
-                    </div>
+//                 {/* Info */}
+//                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
+//                     {/* Kolom Pertama */}
+//                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+//                         <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
+//                         <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
+//                         <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
+//                         <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
+//                         <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+//                     </div>
 
-                    {/* Kolom Kedua */}
-                    <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
-                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
-                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
-                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+//                     {/* Kolom Kedua */}
+//                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+//                         <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
+//                         <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
+//                         <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
+//                         <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
 
 
 export const ModalAddBerkasPelanggaran = ({ isOpen, onClose, id, close }) => {

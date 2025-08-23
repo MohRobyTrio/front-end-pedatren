@@ -18,6 +18,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santriSelectionCancelled, setSantriSelectionCancelled] = useState(false)
     const [santri, setSantri] = useState("");
 
     const [formData, setFormData] = useState({
@@ -36,6 +37,9 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     useEffect(() => {
         setSantri("");
         if (isOpen && feature == 1) {
+            setSantri(null)
+            setSantriSelectionCancelled(false)
+            setShowSelectSantri(false)
             setFormData({
                 nik: "",
                 nama: "",
@@ -58,81 +62,107 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
         }
     }, [isOpen, feature, formData.santri_id, menuSantri]);
 
+    useEffect(() => {
+        if (!isOpen) {
+            console.log("[v0] Modal closed, resetting all states")
+            setSantri(null)
+            setSantriSelectionCancelled(false)
+            setShowSelectSantri(false)
+        }
+    }, [isOpen])
 
     useEffect(() => {
-            const fetchData = async () => {
-                try {
-                    const token = sessionStorage.getItem("token") || getCookie("token");
-                    const response = await fetch(`${API_BASE_URL}crud/${id}/pengunjung/show`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        }
-                    });
-
-                    if (response.status == 401 && !window.sessionExpiredShown) {
-                        window.sessionExpiredShown = true;
-                        await Swal.fire({
-                            title: "Sesi Berakhir",
-                            text: "Sesi anda telah berakhir, silakan login kembali.",
-                            icon: "warning",
-                            confirmButtonText: "OK",
-                        });
-                        clearAuthData();
-                        navigate("/login");
-                        return;
-                    }
-    
-                    if (!response.ok) throw new Error("Gagal mengambil data");
-    
-                    const result = await response.json();
-                    console.log("pengunujung show :",result);
-                    
-    
-                    if (result.data) {
-                        setFormData({
-                            nik: result.data.nik ?? "",
-                            nama: result.data.nama ?? "",
-                            tempat_lahir: result.data.tempat_lahir ?? "",
-                            tanggal_lahir: result.data.tanggal_lahir ?? "",
-                            jenis_kelamin: result.data.jenis_kelamin ?? "",
-                            santri_id: result.data.santri_id ?? "",
-                            hubungan_id: result.data.hubungan_id ?? "",
-                            jumlah_rombongan: result.data.jumlah_rombongan ?? "",
-                            tanggal_kunjungan: result.data.tanggal_kunjungan ?? "",
-                            status: result.data.status ?? "",
-                        });
-                    }
-                } catch (error) {
-                    console.error("Gagal mengambil data perizinan:", error);
-                    Swal.fire("Error", "Gagal mengambil data pengunjung", "error");
-                }
-            };
-    
-            if (isOpen && feature === 2) {
-                setSantri("");
-                setFormData({
-                    nik: "",
-                    nama: "",
-                    tempat_lahir: "",
-                    tanggal_lahir: "",
-                    jenis_kelamin: "",
-                    santri_id: "",
-                    hubungan_id: "",
-                    jumlah_rombongan: "",
-                    tanggal_kunjungan: "",
-                    status: "",
-                });
-                fetchData();
-            }
+        if (feature !== 1) return
+        if (isOpen && (santri === null || santri === "")) {
+            setShowSelectSantri(true)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [feature, id, isOpen]);
+    }, [isOpen, feature])
+
+    useEffect(() => {
+        if (feature !== 1) return
+        // Only close modal if santri selection was explicitly cancelled and modal is not showing santri selector
+        if (!showSelectSantri && (santri === null || santri === "") && santriSelectionCancelled) {
+            onClose?.()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showSelectSantri, santri, feature, santriSelectionCancelled])
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const response = await fetch(`${API_BASE_URL}crud/${id}/pengunjung/show`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+
+                if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
+
+                if (!response.ok) throw new Error("Gagal mengambil data");
+
+                const result = await response.json();
+                console.log("pengunujung show :", result);
+
+
+                if (result.data) {
+                    setFormData({
+                        nik: result.data.nik ?? "",
+                        nama: result.data.nama ?? "",
+                        tempat_lahir: result.data.tempat_lahir ?? "",
+                        tanggal_lahir: result.data.tanggal_lahir ?? "",
+                        jenis_kelamin: result.data.jenis_kelamin ?? "",
+                        santri_id: result.data.santri_id ?? "",
+                        hubungan_id: result.data.hubungan_id ?? "",
+                        jumlah_rombongan: result.data.jumlah_rombongan ?? "",
+                        tanggal_kunjungan: result.data.tanggal_kunjungan ?? "",
+                        status: result.data.status ?? "",
+                    });
+                }
+            } catch (error) {
+                console.error("Gagal mengambil data perizinan:", error);
+                Swal.fire("Error", "Gagal mengambil data pengunjung", "error");
+            }
+        };
+
+        if (isOpen && feature === 2) {
+            setSantri("");
+            setFormData({
+                nik: "",
+                nama: "",
+                tempat_lahir: "",
+                tanggal_lahir: "",
+                jenis_kelamin: "",
+                santri_id: "",
+                hubungan_id: "",
+                jumlah_rombongan: "",
+                tanggal_kunjungan: "",
+                status: "",
+            });
+            fetchData();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [feature, id, isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // if(feature == 1) {
         //     console.log("hahah");
-            
+
         //     setFormData({ ...formData, santri_id: santri.id })
         // }
 
@@ -247,7 +277,7 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
     //     //     setFormData({ ...formData, santri_id: santri.id })
     //     // }
     //     console.log(feature);
-        
+
     //     console.log(santri);
     //     console.log(formData.santri_id);
     //     console.log(formData);
@@ -258,12 +288,12 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
             console.log("data santri berubah");
             setFormData((prev) => ({ ...prev, santri_id: santri.id }));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [santri, isOpen, feature]);
 
     console.log(feature == 2 || santri);
     console.log(feature);
-    
+
 
 
     return (
@@ -301,10 +331,10 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
-                                <Dialog.Title
-                                    as="h3"
-                                    className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
-                                    >
+                            <Dialog.Title
+                                as="h3"
+                                className="text-lg leading-6 font-medium text-gray-900 text-center mt-6"
+                            >
                                 {feature === 2
                                     ? "Edit Data"
                                     : santri && feature === 1
@@ -339,84 +369,84 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                             <SantriInfoCard santri={santri} setShowSelectSantri={setShowSelectSantri} feature={feature} />
                                             {/* FORM ISI */}
                                             {(santri || feature === 2) && (
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label htmlFor="nik" className="block text-gray-700">NIK *</label>
-                                                    <input
-                                                        type="number"
-                                                        name="nik"
-                                                        value={formData.nik}
-                                                        onChange={(e) => setFormData({ ...formData, nik: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        placeholder="Masukkan NIK"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="nama" className="block text-gray-700">Nama Pengunjung *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="nama"
-                                                        value={formData.nama}
-                                                        onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        placeholder="Masukkan Nama"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="tempat_lahir" className="block text-gray-700">Tempat Lahir *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="tempat_lahir"
-                                                        value={formData.tempat_lahir}
-                                                        onChange={(e) => setFormData({ ...formData, tempat_lahir: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        placeholder="Masukkan tempat lahir"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="tanggal_lahir" className="block text-gray-700">Tanggal Lahir *</label>
-                                                    <input
-                                                        type="date"
-                                                        name="tanggal_lahir"
-                                                        value={formData.tanggal_lahir}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_lahir: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-gray-700 mb-1">Jenis Kelamin *</label>
-                                                    <div className="flex items-center gap-4">
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="jenis_kelamin"
-                                                                value="l"
-                                                                checked={formData.jenis_kelamin === "l"}
-                                                                onChange={(e) => setFormData({ ...formData, jenis_kelamin: e.target.value })}
-                                                                className="form-radio text-indigo-600"
-                                                            />
-                                                            <span className="ml-2">Laki-laki</span>
-                                                        </label>
-
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="jenis_kelamin"
-                                                                value="p"
-                                                                checked={formData.jenis_kelamin === "p"}
-                                                                onChange={(e) => setFormData({ ...formData, jenis_kelamin: e.target.value })}
-                                                                className="form-radio text-indigo-600"
-                                                            />
-                                                            <span className="ml-2">Perempuan</span>
-                                                        </label>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <label htmlFor="nik" className="block text-gray-700">NIK *</label>
+                                                        <input
+                                                            type="number"
+                                                            name="nik"
+                                                            value={formData.nik}
+                                                            onChange={(e) => setFormData({ ...formData, nik: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            placeholder="Masukkan NIK"
+                                                            required
+                                                        />
                                                     </div>
-                                                </div>
+                                                    <div>
+                                                        <label htmlFor="nama" className="block text-gray-700">Nama Pengunjung *</label>
+                                                        <input
+                                                            type="text"
+                                                            name="nama"
+                                                            value={formData.nama}
+                                                            onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            placeholder="Masukkan Nama"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label htmlFor="tempat_lahir" className="block text-gray-700">Tempat Lahir *</label>
+                                                        <input
+                                                            type="text"
+                                                            name="tempat_lahir"
+                                                            value={formData.tempat_lahir}
+                                                            onChange={(e) => setFormData({ ...formData, tempat_lahir: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            placeholder="Masukkan tempat lahir"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label htmlFor="tanggal_lahir" className="block text-gray-700">Tanggal Lahir *</label>
+                                                        <input
+                                                            type="date"
+                                                            name="tanggal_lahir"
+                                                            value={formData.tanggal_lahir}
+                                                            onChange={(e) => setFormData({ ...formData, tanggal_lahir: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-gray-700 mb-1">Jenis Kelamin *</label>
+                                                        <div className="flex items-center gap-4">
+                                                            <label className="inline-flex items-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="jenis_kelamin"
+                                                                    value="l"
+                                                                    checked={formData.jenis_kelamin === "l"}
+                                                                    onChange={(e) => setFormData({ ...formData, jenis_kelamin: e.target.value })}
+                                                                    className="form-radio text-indigo-600"
+                                                                />
+                                                                <span className="ml-2">Laki-laki</span>
+                                                            </label>
 
-                                                {/* <div>
+                                                            <label className="inline-flex items-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="jenis_kelamin"
+                                                                    value="p"
+                                                                    checked={formData.jenis_kelamin === "p"}
+                                                                    onChange={(e) => setFormData({ ...formData, jenis_kelamin: e.target.value })}
+                                                                    className="form-radio text-indigo-600"
+                                                                />
+                                                                <span className="ml-2">Perempuan</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* <div>
                                                     <label htmlFor="santri_id" className="block text-gray-700">Santri *</label>
                                                     <select
                                                         className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${menuSantri.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
@@ -432,68 +462,68 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                                         ))}
                                                     </select>
                                                 </div> */}
-                                                <div>
-                                                    <label htmlFor="hubungan_id" className="block text-gray-700">Hubungan *</label>
-                                                    <select
-                                                        className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize ${menuHubungan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
-                                                        onChange={(e) => setFormData({ ...formData, hubungan_id: e.target.value })}
-                                                        value={formData.hubungan_id}
-                                                        disabled={menuHubungan.length <= 1}
-                                                        required
-                                                    >
-                                                        {menuHubungan.map((hubungan, idx) => (
-                                                            <option key={idx} value={hubungan.value} className="capitalize">
-                                                                {hubungan.label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                    <div>
+                                                        <label htmlFor="hubungan_id" className="block text-gray-700">Hubungan *</label>
+                                                        <select
+                                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 capitalize ${menuHubungan.length <= 1 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                            onChange={(e) => setFormData({ ...formData, hubungan_id: e.target.value })}
+                                                            value={formData.hubungan_id}
+                                                            disabled={menuHubungan.length <= 1}
+                                                            required
+                                                        >
+                                                            {menuHubungan.map((hubungan, idx) => (
+                                                                <option key={idx} value={hubungan.value} className="capitalize">
+                                                                    {hubungan.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label htmlFor="jumlah_rombongan" className="block text-gray-700">Jumlah Rombongan *</label>
+                                                        <input
+                                                            type="number"
+                                                            name="jumlah_rombongan"
+                                                            value={formData.jumlah_rombongan}
+                                                            onChange={(e) => setFormData({ ...formData, jumlah_rombongan: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            placeholder="Masukkan Jumlah Rombongan"
+                                                            required
+                                                        />
+                                                    </div>
+
+
+                                                    <div>
+                                                        <label htmlFor="tanggal_kunjungan" className="block text-gray-700">Tanggal Kunjungan *</label>
+                                                        <input
+                                                            type="datetime-local"
+                                                            name="tanggal_kunjungan"
+                                                            value={formData.tanggal_kunjungan}
+                                                            onChange={(e) => setFormData({ ...formData, tanggal_kunjungan: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            required
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label htmlFor="status" className="block text-gray-700">Status *</label>
+                                                        <select
+                                                            name="status"
+                                                            value={formData.status}
+                                                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                                                            required
+                                                        >
+                                                            <option value="">Pilih Status</option>
+                                                            <option value="menunggu">Menunggu</option>
+                                                            <option value="berlangsung">Berlangsung</option>
+                                                            <option value="selesai">Selesai</option>
+                                                            <option value="ditolak">Ditolak</option>
+                                                        </select>
+                                                    </div>
+
+
                                                 </div>
-
-                                                <div>
-                                                    <label htmlFor="jumlah_rombongan" className="block text-gray-700">Jumlah Rombongan *</label>
-                                                    <input
-                                                        type="number"
-                                                        name="jumlah_rombongan"
-                                                        value={formData.jumlah_rombongan}
-                                                        onChange={(e) => setFormData({ ...formData, jumlah_rombongan: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        placeholder="Masukkan Jumlah Rombongan"
-                                                        required
-                                                    />
-                                                </div>
-
-
-                                                <div>
-                                                    <label htmlFor="tanggal_kunjungan" className="block text-gray-700">Tanggal Kunjungan *</label>
-                                                    <input
-                                                        type="datetime-local"
-                                                        name="tanggal_kunjungan"
-                                                        value={formData.tanggal_kunjungan}
-                                                        onChange={(e) => setFormData({ ...formData, tanggal_kunjungan: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        required
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <label htmlFor="status" className="block text-gray-700">Status *</label>
-                                                    <select
-                                                        name="status"
-                                                        value={formData.status}
-                                                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Status</option>
-                                                        <option value="menunggu">Menunggu</option>
-                                                        <option value="berlangsung">Berlangsung</option>
-                                                        <option value="selesai">Selesai</option>
-                                                        <option value="ditolak">Ditolak</option>
-                                                    </select>
-                                                </div>
-
-
-                                            </div>
                                             )}
                                         </div>
                                     </div>
@@ -502,12 +532,12 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
                                 {/* Footer Button */}
                                 <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
                                     {(santri || feature == 2) && (
-                                    <button
-                                        type="submit"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
-                                    >
-                                        Simpan
-                                    </button>
+                                        <button
+                                            type="submit"
+                                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
+                                        >
+                                            Simpan
+                                        </button>
                                     )}
                                     <button
                                         type="button"
@@ -524,7 +554,12 @@ export const ModalAddPengunjung = ({ isOpen, onClose, refetchData, feature, id }
             </Dialog>
             <ModalSelectSantri
                 isOpen={showSelectSantri}
-                onClose={() => setShowSelectSantri(false)}
+                onClose={() => {
+                    setShowSelectSantri(false)
+                    if (!santri) {
+                        setSantriSelectionCancelled(true)
+                    }
+                }}
                 onSantriSelected={(santri) => setSantri(santri)}
             />
         </Transition>
@@ -535,11 +570,11 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
     if (!santri && feature !== 2) return null;
 
     return (
-    <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
-        {/* Keterangan */}
-        <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
-            Data Santri yang Dikunjungi
-        </div>
+        <div className="relative p-4 pr-12 rounded-md bg-gray-50 shadow-sm mb-6 border border-blue-200">
+            {/* Keterangan */}
+            <div className="absolute -top-3 left-3 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+                Data Santri yang Dikunjungi
+            </div>
 
             <button
                 type="button"
@@ -555,8 +590,8 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
                 {/* Foto */}
                 <div className="flex justify-center sm:justify-start">
                     <img
-                        src={santri.foto_profil}
-                        alt={santri.value}
+                        src={santri?.foto_profil || blankProfile}
+                        alt={santri?.value}
                         className="w-32 h-40 object-cover rounded"
                         onError={(e) => {
                             e.target.onerror = null;
@@ -568,17 +603,17 @@ const SantriInfoCard = ({ santri, setShowSelectSantri, feature }) => {
                 {/* Info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm flex-1">
                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Nama</span> <span>: {santri.value}</span>
-                        <span className="font-semibold">NIS</span> <span>: {santri.nis}</span>
-                        <span className="font-semibold">NIUP</span> <span>: {santri.niup}</span>
-                        <span className="font-semibold">Angkatan</span> <span>: {santri.angkatan}</span>
-                        <span className="font-semibold">Kota Asal</span> <span>: {santri.kota_asal}</span>
+                        <span className="font-semibold">Nama</span> <span>: {santri?.value}</span>
+                        <span className="font-semibold">NIS</span> <span>: {santri?.nis}</span>
+                        <span className="font-semibold">NIUP</span> <span>: {santri?.niup}</span>
+                        <span className="font-semibold">Angkatan</span> <span>: {santri?.angkatan}</span>
+                        <span className="font-semibold">Kota Asal</span> <span>: {santri?.kota_asal}</span>
                     </div>
                     <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                        <span className="font-semibold">Lembaga</span> <span>: {santri.lembaga}</span>
-                        <span className="font-semibold">Wilayah</span> <span>: {santri.wilayah}</span>
-                        <span className="font-semibold">Blok</span> <span>: {santri.blok}</span>
-                        <span className="font-semibold">Kamar</span> <span>: {santri.kamar}</span>
+                        <span className="font-semibold">Lembaga</span> <span>: {santri?.lembaga}</span>
+                        <span className="font-semibold">Wilayah</span> <span>: {santri?.wilayah}</span>
+                        <span className="font-semibold">Blok</span> <span>: {santri?.blok}</span>
+                        <span className="font-semibold">Kamar</span> <span>: {santri?.kamar}</span>
                     </div>
                 </div>
 

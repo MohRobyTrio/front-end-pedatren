@@ -1,6 +1,6 @@
 import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
@@ -10,10 +10,11 @@ import { useMultiStepFormUsers } from "../../hooks/hooks_modal/useMultiStepFormU
 
 const Users = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [showFormModal, setShowFormModal] = useState(false);
     // const [selectedId, setSelectedId] = useState(null);
     // const [isModalOpen, setIsModalOpen] = useState(false);
     const [usersData, setUsersData] = useState("");
-    const { users, loadingUsers, error, fetchUsers, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers, fetchDetailUsers, biodata } = useFetchUsers();
+    const { users, loadingUsers, error, fetchUsers, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers, fetchDetailUsers } = useFetchUsers();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -21,14 +22,17 @@ const Users = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(biodata);
-        
-        console.log("data users",usersData);
-        
-    }, [biodata, usersData]);
-
-    const [showFormModal, setShowFormModal] = useState(false);
+    const handleEditClick = async (id, e) => {
+        e.stopPropagation();
+        try {
+            const response = await fetchDetailUsers(id);
+            setUsersData(response)
+            // Move modal opening after data is fetched
+            setShowFormModal(true);
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+        }
+    };
 
     const formState = useMultiStepFormUsers(() => setShowFormModal(false), fetchUsers, usersData);
 
@@ -124,11 +128,12 @@ const Users = () => {
                                                 <td className="px-3 py-2 border-b text-center space-x-2">
                                                     <div className="flex justify-center items-center space-x-2">
                                                         <button
-                                                            onClick={async (e) => {
-                                                                e.stopPropagation();
-                                                                await fetchDetailUsers(item.id);
-                                                                setUsersData(biodata);
-                                                                setShowFormModal(true);
+                                                            onClick={(e) => {
+                                                                handleEditClick(item.id, e)
+                                                                // e.stopPropagation();
+                                                                // await fetchDetailUsers(item.id);
+                                                                // setUsersData(biodata);
+                                                                // setShowFormModal(true);
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >

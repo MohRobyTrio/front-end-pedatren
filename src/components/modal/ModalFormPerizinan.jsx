@@ -19,6 +19,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
 
     // const [santriId, setSantriId] = useState(null);
     const [showSelectSantri, setShowSelectSantri] = useState(false);
+    const [santriSelectionCancelled, setSantriSelectionCancelled] = useState(false)
 
     const [formData, setFormData] = useState({
         pengasuh_id: "",
@@ -59,7 +60,31 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
         }
     }, [isOpen, feature, nama, menuSantri]);
 
+    useEffect(() => {
+        if (!isOpen) {
+            console.log("[v0] Modal closed, resetting all states")
+            setSantriId(null)
+            setSantriSelectionCancelled(false)
+            setShowSelectSantri(false)
+        }
+    }, [isOpen])
 
+    useEffect(() => {
+        if (feature !== 1) return
+        if (isOpen && (santriId === null || santriId === "")) {
+            setShowSelectSantri(true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, feature])
+
+    useEffect(() => {
+        if (feature !== 1) return
+        // Only close modal if santri selection was explicitly cancelled and modal is not showing santri selector
+        if (!showSelectSantri && (santriId === null || santriId === "") && santriSelectionCancelled) {
+            onClose?.()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showSelectSantri, santriId, feature, santriSelectionCancelled])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -127,7 +152,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             });
             fetchData();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [feature, id, isOpen]);
 
 
@@ -359,7 +384,7 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
                                                                 id="tanggal_kembali"
                                                                 name="tanggal_kembali"
                                                                 value={formData.tanggal_kembali}
-                                                                onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}                                                                
+                                                                onChange={(e) => setFormData({ ...formData, tanggal_kembali: e.target.value })}
                                                                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                             />
                                                         </div>
@@ -444,7 +469,12 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             </Dialog>
             <ModalSelectSantri
                 isOpen={showSelectSantri}
-                onClose={() => setShowSelectSantri(false)}
+                onClose={() => {
+                    setShowSelectSantri(false)
+                    if (!santriId) {
+                        setSantriSelectionCancelled(true)
+                    }
+                }}
                 onSantriSelected={(santri) => setSantriId(santri)}
             />
         </Transition>
