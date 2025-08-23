@@ -1,6 +1,6 @@
 import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import Pagination from "../../components/Pagination";
 import SearchBar from "../../components/SearchBar";
@@ -21,9 +21,16 @@ const Users = () => {
         }
     };
 
+    useEffect(() => {
+        console.log(biodata);
+        
+        console.log("data users",usersData);
+        
+    }, [biodata, usersData]);
+
     const [showFormModal, setShowFormModal] = useState(false);
 
-    const formState = useMultiStepFormUsers(() => setShowFormModal(false), fetchUsers);
+    const formState = useMultiStepFormUsers(() => setShowFormModal(false), fetchUsers, usersData);
 
     return (
         <div className="flex-1 pl-6 pt-6 pb-6">
@@ -120,6 +127,7 @@ const Users = () => {
                                                             onClick={async (e) => {
                                                                 e.stopPropagation();
                                                                 await fetchDetailUsers(item.id);
+                                                                setUsersData(biodata);
                                                                 setShowFormModal(true);
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"

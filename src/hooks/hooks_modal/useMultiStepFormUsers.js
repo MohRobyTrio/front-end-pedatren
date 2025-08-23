@@ -6,7 +6,7 @@ import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-export function useMultiStepFormUsers(onClose, refetchData) {
+export function useMultiStepFormUsers(onClose, refetchData, data) {
     const [activeTab, setActiveTab] = useState(0);
     const [unlockedTabs, setUnlockedTabs] = useState([0]);
     const { clearAuthData } = useLogout();
@@ -32,6 +32,37 @@ export function useMultiStepFormUsers(onClose, refetchData) {
     useEffect(() => {
         console.log("Data inputan berubah:", watchedValues);
     }, [watchedValues]);
+
+    useEffect(() => {
+        console.log("Data diterima di useMultiStepFormUsers before data:", data);
+        
+        if (data) {
+            console.log("Data diterima di useMultiStepFormUsers:", data);
+            
+            // Set user data
+            Object.keys(data).forEach(key => {
+                if (key === 'biodata') {
+                    // Handle biodata separately since it's nested
+                    Object.keys(data.biodata).forEach(biodataKey => {
+                        setValue(`modalUser.biodata.${biodataKey}`, data.biodata[biodataKey]);
+                        
+                        // Special handling for tinggal_bersama field
+                        if (biodataKey === 'tinggal_bersama') {
+                            const tinggalValue = data.biodata[biodataKey];
+                            setSelectedTinggal(tinggalValue);
+                            if (!['Ayah', 'Ibu', 'Ayah dan Ibu', 'Wali'].includes(tinggalValue)) {
+                                setSelectedTinggal('Lainnya');
+                                setLainnyaValue(tinggalValue);
+                            }
+                        }
+                    });
+                } else {
+                    // Set other user fields
+                    setValue(`modalUser.${key}`, data[key]);
+                }
+            });
+        }
+    }, [data, setValue]);
 
     const nextStep = async () => {
         const form = document.querySelector("form");

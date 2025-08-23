@@ -86,8 +86,8 @@ const useFetchUsers = () => {
 
             if (response.ok) {
                 const result = await response.json()
-                setBiodata(result.data || [])
-                console.log("user", result.data);
+                setBiodata(result || [])
+                console.log("user", result);
 
             } else {
                 const errorResult = await response.json();

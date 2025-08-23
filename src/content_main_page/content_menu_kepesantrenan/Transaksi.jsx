@@ -107,9 +107,9 @@ const Transaksi = () => {
         value && value !== "null" && value !== "undefined";
 
     if (getRolesString() !== "Superadmin" &&
-  (!hasAccess("belanja") ||
-    (!isValidOutlet(outletSession) && !isValidOutlet(outletLocal)))
-) {
+        (!hasAccess("belanja") ||
+            (!isValidOutlet(outletSession) && !isValidOutlet(outletLocal)))
+    ) {
         return <Navigate to="/forbidden" replace />;
     }
 
@@ -350,8 +350,8 @@ const TransactionList = ({ searchTerm, setSearchTerm, filters, setFilters, loadi
                                             onClick={handleRefresh}
                                             disabled={loadingTransaksi}
                                             className={`w-full px-4 py-3 rounded-lg flex items-center justify-center gap-2 bg-green-600 text-white transition-all ${loadingTransaksi
-                                                    ? "opacity-50 cursor-not-allowed"
-                                                    : "hover:bg-green-700"
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : "hover:bg-green-700"
                                                 }`}
                                         >
                                             <FaSync
