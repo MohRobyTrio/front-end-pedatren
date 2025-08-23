@@ -503,7 +503,7 @@ export const ModalAddUser = ({ isOpen, onClose, data, refetchData }) => {
                     email: data.email || "",
                     password: "",
                     confirm_password: "",
-                    role: data.roles[0].name || "",
+                    role: data.roles.id || "",
                     status: data.status || ""
                 })
             } else {

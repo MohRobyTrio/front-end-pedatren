@@ -14,11 +14,21 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const { allTahunAjaran } = useFetchTahunAjaran();
+    const matchedTahunAjaran = allTahunAjaran.find(
+        (item) => item.status == true
+    );
     const { kitab, fetchKitab } = useFetchKitab();
 
     const kitabAktif = kitab?.filter(k => k.status == 1) || [];
 
     const location = useLocation();
+
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            tahun_ajaran_id: matchedTahunAjaran ? matchedTahunAjaran.id : "",
+        }));
+    }, [matchedTahunAjaran]);
 
     useEffect(() => {
         fetchKitab();
@@ -222,7 +232,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
         <form onSubmit={handleSubmit} className="space-y-6 p-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Tanggal */}
-                <div>
+                {/* <div>
                     <label htmlFor="tahun_ajaran_id" className="block text-sm font-medium text-gray-700 mb-2">
                         <FaBook className="inline mr-2 text-gray-400" />
                         Tahun Ajaran
@@ -242,7 +252,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
 
                 <div>
                     <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700 mb-2">
@@ -363,7 +373,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
                     </select>
                 </div>
 
-                <div className="col-span-full">
+                <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <FaFlag className="inline mr-2 text-gray-600" />
                         Status
