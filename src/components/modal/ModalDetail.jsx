@@ -53,8 +53,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
         21: "kondisi1",
 
         // tabsKondisi3
-        6: "kondisi2",
-        7: "kondisi2",
+        6: "kondisi3",
+        7: "kondisi3",
     };
 
     const getKondisiByMenu = (menu) => menuToKondisi[menu] || "kondisi2";
@@ -403,7 +403,8 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                                         }}
                                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex items-center gap-2"
                                     >
-                                        <FaEdit /> Edit
+                                        {/* <FaEdit /> Edit */}
+                                        Selengkapnya
                                     </button>
                                 )}
                                 {/* <button
