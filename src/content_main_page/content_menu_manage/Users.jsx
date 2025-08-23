@@ -13,7 +13,7 @@ const Users = () => {
     // const [selectedId, setSelectedId] = useState(null);
     // const [isModalOpen, setIsModalOpen] = useState(false);
     const [usersData, setUsersData] = useState("");
-    const { users, loadingUsers, error, fetchUsers, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers } = useFetchUsers();
+    const { users, loadingUsers, error, fetchUsers, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers, fetchDetailUsers, biodata } = useFetchUsers();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -117,10 +117,10 @@ const Users = () => {
                                                 <td className="px-3 py-2 border-b text-center space-x-2">
                                                     <div className="flex justify-center items-center space-x-2">
                                                         <button
-                                                            onClick={(e) => {
+                                                            onClick={async (e) => {
                                                                 e.stopPropagation();
-                                                                setUsersData(item);
-                                                                setOpenModal(true);
+                                                                await fetchDetailUsers(item.id);
+                                                                setShowFormModal(true);
                                                             }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >

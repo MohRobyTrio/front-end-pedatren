@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 import DropdownLembaga from "../hook_dropdown/DropdownLembaga";
+import { toast } from "sonner";
 
 const useFetchUsers = () => {
     const { clearAuthData } = useLogout();
@@ -17,6 +18,7 @@ const useFetchUsers = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalDataUsers, setTotalDataUsers] = useState(0);
+    const [biodata, setBiodata] = useState({});
     // const [allUsers, setAllUsers] = useState([]);
     const token = sessionStorage.getItem("token") || getCookie("token");
 
@@ -61,67 +63,45 @@ const useFetchUsers = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, navigate, token]);
 
-//     useEffect(() => {
-//     const storedUsers = sessionStorage.getItem("allUsers");
-//     if (storedUsers) {
-//         setAllUsers(JSON.parse(storedUsers));
-//     } else {
-//         const fetchAllUsers = async () => {
-//             setError(null);
+    const fetchDetailUsers = async (id) => {
+        try {
+            Swal.fire({
+                background: "transparent",    // tanpa bg putih box
+                showConfirmButton: false,     // tanpa tombol
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                customClass: {
+                    popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                }
+            });
+            const token = sessionStorage.getItem("token") || getCookie("token")
+            const response = await fetch(`${API_BASE_URL}users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
 
-//             try {
-//                 // Step 1: Ambil 1 data untuk dapatkan total
-//                 const firstResponse = await fetch(`${API_BASE_URL}crud/users?page=1&per_page=1`, {
-//                     headers: {
-//                         "Content-Type": "application/json",
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 });
+            if (response.ok) {
+                const result = await response.json()
+                setBiodata(result.data || [])
+                console.log("user", result.data);
 
-//                 if (firstResponse.status === 401) {
-//                     await Swal.fire({
-//                         title: "Sesi Berakhir",
-//                         text: "Sesi anda telah berakhir, silakan login kembali.",
-//                         icon: "warning",
-//                         confirmButtonText: "OK",
-//                     });
-//                     clearAuthData();
-//                     navigate("/login");
-//                     return;
-//                 }
-
-//                 if (!firstResponse.ok) throw new Error(`Error ${firstResponse.status}`);
-//                 const firstData = await firstResponse.json();
-
-//                 const total = firstData.total || 0;
-
-//                 // Step 2: Ambil semua data berdasarkan total
-//                 const fullResponse = await fetch(`${API_BASE_URL}crud/users?page=1&per_page=${total}`, {
-//                     headers: {
-//                         "Content-Type": "application/json",
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 });
-
-//                 if (!fullResponse.ok) throw new Error(`Error ${fullResponse.status}`);
-//                 const fullData = await fullResponse.json();
-
-//                 const kelasList = fullData.data || [];
-
-//                 setAllUsers(kelasList);
-//                 sessionStorage.setItem("allUsers", JSON.stringify(kelasList));
-//             } catch (err) {
-//                 console.error("Fetch ALL error:", err);
-//                 setError(err.message);
-//                 setAllUsers([]);
-//             }
-//         };
-
-//         fetchAllUsers(); // panggil hanya jika belum ada di session
-//     }
-// // eslint-disable-next-line react-hooks/exhaustive-deps
-// }, []); // ⚠️ Dependency array kosong = hanya dijalankan sekali saat mount
-
+            } else {
+                const errorResult = await response.json();
+                toast.error("Error", {
+                    description: `${errorResult.message || "Terjadi kesalahan"}`
+                })
+                console.error("Error fetching user details:", errorResult);
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error)
+        } finally {
+            Swal.close();
+        }
+    }
 
     useEffect(() => {
         fetchUsers();
@@ -292,7 +272,7 @@ const useFetchUsers = () => {
         error,
         fetchUsers,
         handleDelete,
-        handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers
+        handleToggleStatus, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers, fetchDetailUsers, biodata
     };
 };
 
