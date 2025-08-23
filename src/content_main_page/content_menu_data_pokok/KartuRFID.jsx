@@ -1,6 +1,6 @@
 import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 // import useFetchGolongan from "../../hooks/hooks_menu_kepegawaian/KartuRFID";
 // import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
@@ -8,12 +8,159 @@ import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchKartuRFID from "../../hooks/hooks_menu_data_pokok/KartuRFID";
 import { ModalAddKartuRFID } from "../../components/modal/ModalFormKartuRFID";
+import Filters from "../../components/Filters";
+import SearchBar from "../../components/SearchBar";
+import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
+import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
+import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
+import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+
 
 const KartuRFID = () => {
     const [openModal, setOpenModal] = useState(false);
     const [kartuData, setKartuData] = useState("");
     const [feature, setFeature] = useState("");
-    const { karturfid, loadingKartuRFID, error, fetchKartuRFID, handleDelete } = useFetchKartuRFID();
+    const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
+    const [filters, setFilters] = useState({
+        negara: "",
+        provinsi: "",
+        kabupaten: "",
+        kecamatan: "",
+        wilayah: "",
+        search: "",
+    });
+
+    const updateFirstOptionLabel = (list, label) =>
+        list.length > 0
+            ? [{ ...list[0], label }, ...list.slice(1)]
+            : list;
+
+    // Dropdown hooks
+    const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
+    const { filterWilayah, selectedWilayah, handleFilterChangeWilayah } = DropdownWilayah();
+    const { filterLembaga, selectedLembaga, handleFilterChangeLembaga } = DropdownLembaga()
+
+
+    const negaraTerpilih = filterNegara.negara.find((n) => n.value == selectedNegara.negara)?.label || ""
+    const provinsiTerpilih = filterNegara.provinsi.find((p) => p.value == selectedNegara.provinsi)?.label || ""
+    const kabupatenTerpilih = filterNegara.kabupaten.find((k) => k.value == selectedNegara.kabupaten)?.label || ""
+    const kecamatanTerpilih = filterNegara.kecamatan.find((kec) => kec.value == selectedNegara.kecamatan)?.label || ""
+
+    const wilayahTerpilih = filterWilayah.wilayah.find((n) => n.value == selectedWilayah.wilayah)?.nama || ""
+    const blokTerpilih = filterWilayah.blok.find((p) => p.value == selectedWilayah.blok)?.label || ""
+    const kamarTerpilih = filterWilayah.kamar.find((k) => k.value == selectedWilayah.kamar)?.label || ""
+
+    const lembagaTerpilih = filterLembaga.lembaga.find((n) => n.value == selectedLembaga.lembaga)?.label || ""
+    const jurusanTerpilih = filterLembaga.jurusan.find((n) => n.value == selectedLembaga.jurusan)?.label || ""
+    const kelasTerpilih = filterLembaga.kelas.find((n) => n.value == selectedLembaga.kelas)?.label || ""
+    const rombelTerpilih = filterLembaga.rombel.find((n) => n.value == selectedLembaga.rombel)?.label || ""
+
+    const updatedFilters = useMemo(
+        () => ({
+            ...filters,
+            negara: negaraTerpilih,
+            provinsi: provinsiTerpilih,
+            kabupaten: kabupatenTerpilih,
+            kecamatan: kecamatanTerpilih,
+            wilayah: wilayahTerpilih,
+            blok: blokTerpilih,
+            kamar: kamarTerpilih,
+            lembaga: lembagaTerpilih,
+            jurusan: jurusanTerpilih,
+            kelas: kelasTerpilih,
+            rombel: rombelTerpilih,
+        }),
+        [
+            blokTerpilih,
+            filters,
+            jurusanTerpilih,
+            kabupatenTerpilih,
+            kamarTerpilih,
+            kecamatanTerpilih,
+            kelasTerpilih,
+            lembagaTerpilih,
+            negaraTerpilih,
+            provinsiTerpilih,
+            rombelTerpilih,
+            wilayahTerpilih,
+        ],
+    )
+    const {
+        karturfid,
+        loadingKartuRFID,
+        error,
+        fetchKartuRFID,
+        handleDelete,
+        searchTerm,
+        setSearchTerm,
+        limit,
+        setLimit,
+        totalDataKartuRFID,
+        totalPages,
+        currentPage,
+        setCurrentPage,
+    } = useFetchKartuRFID(updatedFilters);
+    const [showFilters, setShowFilters] = useState(false)
+
+
+    // Untuk searchbar
+    // const handleSearchChange = (term) => {
+    //     setFilters((prev) => ({ ...prev, search: term }));
+    //     setSearchTerm(term);
+    // };
+
+    const handlePageChange = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    const filter4 = {
+        jenisKelamin: [
+            { label: "Pilih Jenis Kelamin", value: "" },
+            { label: "Laki-laki", value: "laki-laki" },
+            { label: "Perempuan", value: "perempuan" },
+        ],
+        status: [
+            { label: "Semua Status", value: "" },
+            { label: "Santri", value: "santri" },
+            { label: "Santri Non Pelajar", value: "santri non pelajar" },
+            { label: "Pelajar", value: "pelajar" },
+            { label: "Pelajar Non Santri", value: "pelajar non santri" },
+            { label: "Santri-Pelajar/Pelajar-Santri", value: "santri-pelajar" },
+            // { label: "Santri Sekaligus Pelajar", value: "" },
+        ],
+        angkatanPelajar: updateFirstOptionLabel(menuAngkatanPelajar, "Semua Angkatan Pelajar"),
+        angkatanSantri: updateFirstOptionLabel(menuAngkatanSantri, "Semua Angkatan Santri"),
+    }
+
+    const filter5 = {
+        wargaPesantren: [
+            { label: "Warga Pesantren", value: "" },
+            { label: "Memiliki NIUP", value: "memiliki niup" },
+            { label: "Tanpa NIUP", value: "tanpa niup" },
+        ],
+        urutBerdasarkan: [
+            { label: "Urut Berdasarkan", value: "" },
+            { label: "Nama", value: "nama" },
+            { label: "NIUP", value: "niup" },
+            { label: "Angkatan", value: "angkatan" },
+            { label: "Jenis Kelamin", value: "jenis kelamin" },
+            { label: "Tempat Lahir", value: "tempat lahir" },
+        ],
+        urutSecara: [
+            { label: "Urut Secara", value: "" },
+            { label: "A-Z / 0-9 (Ascending)", value: "asc" },
+            { label: "Z-A / 9-0 (Descending)", value: "desc" },
+        ],
+        phoneNumber: [
+            { label: "Phone Number", value: "" },
+            { label: "Memiliki Phone Number", value: "memiliki phone number" },
+            { label: "Tidak Ada Phone Number", value: "tidak ada phone number" },
+        ],
+    }
+
+    const filter6 = {}
 
     if (!hasAccess("karturfid")) {
         return <Navigate to="/forbidden" replace />;
@@ -32,15 +179,65 @@ const KartuRFID = () => {
                 </div>
             </div>
 
-            <ModalAddKartuRFID
-                isOpen={openModal}
-                onClose={() => setOpenModal(false)}
-                refetchData={fetchKartuRFID}
-                data={kartuData}
-                feature={feature}
-            />
-
             <div className="bg-white p-6 rounded-lg shadow-md">
+                {/* Filter Section */}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterNegara}
+                        onChange={handleFilterChangeNegara}
+                        selectedFilters={selectedNegara}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterWilayah}
+                        onChange={handleFilterChangeWilayah}
+                        selectedFilters={selectedWilayah}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filterLembaga}
+                        onChange={handleFilterChangeLembaga}
+                        selectedFilters={selectedLembaga}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filter4}
+                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                        selectedFilters={filters}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filter5}
+                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                        selectedFilters={filters}
+                    />
+                    <Filters
+                        showFilters={showFilters}
+                        filterOptions={filter6}
+                        onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+                        selectedFilters={filters}
+                    />
+                </div>
+
+                {/* SearchBar Section */}
+                <SearchBar
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    totalData={totalDataKartuRFID}
+                    limit={limit}
+                    toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    toggleFilters={() => setShowFilters(!showFilters)}
+                />
+
+                <ModalAddKartuRFID
+                    isOpen={openModal}
+                    onClose={() => setOpenModal(false)}
+                    refetchData={fetchKartuRFID}
+                    data={kartuData}
+                    feature={feature}
+                />
+
                 {error ? (
                     <div className="text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
