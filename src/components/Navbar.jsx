@@ -113,33 +113,35 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                             className="w-9 h-9 md:w-10 md:h-10 rounded-lg border border-gray-800 transition"
                             style={{ minWidth: 36, minHeight: 36 }}
                         />
-                        <span
-                            className={`
-                                text-white text-lg md:text-xl font-bold font-sans
-                                select-none relative
-                            `}
-                            style={{
-                                minWidth: "8ch",
-                                display: "inline-block",
-                                whiteSpace: "nowrap",
-                            }}
-                            onMouseEnter={onPusdatrenHover}
-                            onMouseLeave={onPusdatrenOut}
-                        >
-                            {typedPusdatren}
-                            {isTyping && (
-                                <span
-                                    className="ml-0.5 align-middle text-gray-400 animate-blink-cursor"
-                                    style={{
-                                        fontWeight: "400",
-                                        fontSize: "1em",
-                                        transition: "opacity 0.2s",
-                                    }}
-                                >
-                                    |
-                                </span>
-                            )}
-                        </span>
+                      <span
+  className={`
+    text-white text-lg md:text-xl font-bold font-sans
+    select-none relative tracking-wide
+  `}
+  style={{
+    minWidth: "8ch",
+    display: "inline-block",
+    whiteSpace: "nowrap",
+    letterSpacing: "0.6px", // bisa 0.5px - 1px
+  }}
+  onMouseEnter={onPusdatrenHover}
+  onMouseLeave={onPusdatrenOut}
+>
+  {typedPusdatren}
+  {isTyping && (
+    <span
+      className="ml-1 align-middle text-gray-400 animate-blink-cursor"
+      style={{
+        fontWeight: "400",
+        fontSize: "1em",
+        transition: "opacity 0.2s",
+      }}
+    >
+      |
+    </span>
+  )}
+</span>
+
                     </a>
                 </div>
 
