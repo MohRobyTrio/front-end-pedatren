@@ -14,6 +14,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
+import Pagination from "../../components/Pagination";
 
 
 const KartuRFID = () => {
@@ -317,6 +318,9 @@ const KartuRFID = () => {
                             </tbody>
                         </table>
                     </DoubleScrollbarTable>
+                )}
+                {totalPages > 1 && (
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
             </div>
         </div>

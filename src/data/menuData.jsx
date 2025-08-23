@@ -83,6 +83,7 @@ import CekSaldo from "../content_main_page/content_menu_kepesantrenan/CekSaldo";
 import Bank from "../content_main_page/content_menu_pembayaran/Bank";
 import VirtualAccount from "../content_main_page/content_menu_pembayaran/VirtualAccount";
 import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
+import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -237,6 +238,7 @@ export const menuAkademikItems =[
 export const menuManageItems =[
     { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users /> },
     { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity /> },
+    { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/> },
 ];
 
 export const subKelembagaanItems = [
