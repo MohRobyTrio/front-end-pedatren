@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FaCalendarAlt, FaBook, FaSave, FaUndo, FaTasks, FaListOl, FaStickyNote, FaFlag, FaStar } from "react-icons/fa"
+import { FaCalendarAlt, FaBook, FaSave, FaTasks, FaListOl, FaStickyNote, FaFlag, FaStar } from "react-icons/fa"
 import useFetchTahunAjaran from "../hooks/hooks_menu_akademik/TahunAjaran";
 import useFetchKitab from "../hooks/hooks_menu_data_pokok/Kitab";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -417,7 +417,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
 
             {/* Action Buttons */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8">
-                <button
+                {/* <button
                     type="button"
                     onClick={handleReset}
                     disabled={isSubmitting}
@@ -425,7 +425,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
                 >
                     <FaUndo />
                     Reset
-                </button>
+                </button> */}
                 <button
                     type="submit"
                     disabled={isSubmitting}

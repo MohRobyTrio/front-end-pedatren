@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { FaCalendarAlt, FaQuran, FaSave, FaUndo, FaTasks, FaListOl, FaStar, FaFlag, FaStickyNote } from "react-icons/fa"
+import { FaCalendarAlt, FaQuran, FaSave, FaTasks, FaListOl, FaStar, FaFlag, FaStickyNote } from "react-icons/fa"
 import DropdownSurah from "../hooks/hook_dropdown/DropdownSurah";
 import useSurahDetail from "../hooks/hook_dropdown/useSurahDetail";
 import Swal from "sweetalert2";

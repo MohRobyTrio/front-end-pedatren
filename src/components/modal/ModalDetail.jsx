@@ -407,7 +407,7 @@ const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
                                         Selengkapnya
                                     </button>
                                 )}
-                                {menu == 24 || menu == 25 && (
+                                {(menu == 24 || menu == 25) && (
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
