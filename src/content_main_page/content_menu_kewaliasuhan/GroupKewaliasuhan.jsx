@@ -318,7 +318,7 @@ const GroupKewaliasuhan = () => {
                                                         {item.status == 1 ? (
                                                             <button
                                                                 onClick={() => openStatusModal(item, false)}
-                                                                className="w-20 h-8 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                                className="w-20 h-8 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
                                                             >
                                                                 Non-Aktif
                                                             </button>

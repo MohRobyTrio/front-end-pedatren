@@ -7,7 +7,6 @@ import Swal from "sweetalert2"
 import useLogout from "../../hooks/Logout"
 import { Navigate, useNavigate } from "react-router-dom"
 import { API_BASE_URL } from "../../hooks/config"
-import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import Pagination from "../../components/Pagination"
@@ -15,7 +14,7 @@ import SearchBar from "../../components/SearchBar"
 import { hasAccess } from "../../utils/hasAccess"
 import useFetchSantriNonAnakAsuh from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonAnakAsuh"
 import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh";
-import { WaliAsuhInfoCard, WaliAsuhInfoCardCompact } from "../../components/CardInfo";
+import { WaliAsuhInfoCardCompact } from "../../components/CardInfo";
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -89,7 +88,7 @@ const HubungkanWaliAsuh = () => {
     }
   }, [wilayahTerpilih, blokTerpilih, kamarTerpilih])
 
-  const { menuWaliAsuh2 } = useDropdownWaliAsuh()
+  // const { menuWaliAsuh2 } = useDropdownWaliAsuh()
 
   const shouldFetch = selectedWilayahFilter.wilayah !== ""
 
