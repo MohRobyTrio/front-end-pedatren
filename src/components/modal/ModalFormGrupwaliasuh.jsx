@@ -7,7 +7,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
-
+import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 export const ModalFormGrupWaliAsuh = ({
     isOpen,
     onClose,
@@ -18,26 +18,38 @@ export const ModalFormGrupWaliAsuh = ({
 }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const [waliSearch, setWaliSearch] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [waliAsuhId, setWaliAsuhId] = useState("");
     const [formData, setFormData] = useState({
         id_wilayah: "",
         nama_grup: "",
-        jenis_kelamin: ""
+        jenis_kelamin: "",
+        wali_asuh_id: ""
     });
+
+    const { menuWaliAsuh3 } = useDropdownWaliAsuh();
 
     // Isi form dengan data grup jika mode edit
     useEffect(() => {
         if (mode === 'edit' && grupData) {
+            setWaliAsuhId(grupData.wali_asuh_id || "");
+            setWaliSearch(grupData.nama_wali_asuh || "");
             setFormData({
                 id_wilayah: grupData.id_wilayah || "",
                 nama_grup: grupData.nama_grup || "",
-                jenis_kelamin: grupData.jenis_kelamin || ""
+                jenis_kelamin: grupData.jenis_kelamin || "",
+                wali_asuh_id: grupData.wali_asuh_id || ""
             });
         } else {
             // Reset form untuk mode tambah
+            setWaliAsuhId("");
+            setWaliSearch("");
             setFormData({
                 id_wilayah: "",
                 nama_grup: "",
-                jenis_kelamin: ""
+                jenis_kelamin: "",
+                wali_asuh_id: ""
             });
         }
     }, [mode, grupData, isOpen]);
@@ -47,6 +59,30 @@ export const ModalFormGrupWaliAsuh = ({
         setFormData(prev => ({
             ...prev,
             [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        if (menuWaliAsuh3.length > 0) {
+            const waliTerpilih = menuWaliAsuh3.find(item => item.id == waliAsuhId);
+            if (waliTerpilih) {
+                setWaliSearch(waliTerpilih.nama);
+            }
+        }
+    }, [menuWaliAsuh3]);
+
+    const filteredWali = menuWaliAsuh3.filter(item =>
+        (item.nama || "").toLowerCase().includes(waliSearch.toLowerCase())
+    );
+
+
+    const handleSelectWali = (item) => {
+        setWaliSearch(item.nama);
+        setWaliAsuhId(item.id);
+        setShowDropdown(false);
+        setFormData(prev => ({
+            ...prev,
+            wali_asuh_id: item.id
         }));
     };
 
@@ -200,6 +236,35 @@ export const ModalFormGrupWaliAsuh = ({
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
+                                                <div className="relative">
+                                                    <label htmlFor="waliAsuhId" className="block text-sm font-medium text-gray-700">
+                                                        Wali Asuh *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Wali asuh"
+                                                        value={waliSearch}
+                                                        onChange={e => {
+                                                            setWaliSearch(e.target.value);
+                                                            setShowDropdown(true);
+                                                        }}
+                                                        onFocus={() => setShowDropdown(true)}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                    />
+                                                    {showDropdown && waliSearch && filteredWali.length > 0 && (
+                                                        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                                                            {filteredWali.map(item => (
+                                                                <li
+                                                                    key={item.id}
+                                                                    onClick={() => handleSelectWali(item)}
+                                                                    className="p-2 cursor-pointer hover:bg-gray-50"
+                                                                >
+                                                                    {item.nama}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
                                                 <div>
                                                     <label htmlFor="id_wilayah" className="block text-sm font-medium text-gray-700">
                                                         Wilayah *
@@ -254,6 +319,7 @@ export const ModalFormGrupWaliAsuh = ({
                                                         <option value="p">Perempuan</option>
                                                     </select>
                                                 </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
