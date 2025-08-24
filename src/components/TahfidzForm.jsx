@@ -601,7 +601,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mt-8">
-                    <button
+                    {/* <button
                         type="button"
                         onClick={handleReset}
                         disabled={isSubmitting}
@@ -609,7 +609,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                     >
                         <FaUndo />
                         Reset
-                    </button>
+                    </button> */}
                     <button
                         type="submit"
                         disabled={isSubmitting}

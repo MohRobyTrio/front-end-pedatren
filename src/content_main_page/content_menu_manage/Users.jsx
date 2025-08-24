@@ -11,8 +11,6 @@ import { useMultiStepFormUsers } from "../../hooks/hooks_modal/useMultiStepFormU
 const Users = () => {
     const [openModal, setOpenModal] = useState(false);
     const [showFormModal, setShowFormModal] = useState(false);
-    // const [selectedId, setSelectedId] = useState(null);
-    // const [isModalOpen, setIsModalOpen] = useState(false);
     const [usersData, setUsersData] = useState("");
     const { users, loadingUsers, error, fetchUsers, handleDelete, limit, setLimit, totalPages, currentPage, setCurrentPage, totalDataUsers, fetchDetailUsers } = useFetchUsers();
 
@@ -27,7 +25,6 @@ const Users = () => {
         try {
             const response = await fetchDetailUsers(id);
             setUsersData(response)
-            // Move modal opening after data is fetched
             setShowFormModal(true);
         } catch (error) {
             console.error("Error fetching user details:", error);
@@ -52,12 +49,6 @@ const Users = () => {
 
             <MultiStepModalUsers isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
 
-            {/* <ModalDetailUsers
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                id={selectedId}
-            /> */}
-
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
                     <div className="text-center py-10">
@@ -78,7 +69,6 @@ const Users = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
-                            showLimit={false}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

@@ -10,7 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import { FaChartLine, FaEdit, FaPlus, FaBook, FaQuran, FaArrowLeft, FaCheckCircle, FaCalendarAlt } from "react-icons/fa"
+import { FaChartLine, FaPlus, FaBook, FaQuran, FaArrowLeft, FaCheckCircle, FaCalendarAlt } from "react-icons/fa"
 import { useMultiStepFormTahfidz } from "../../hooks/hooks_modal/useMultiStepFormTahfidz"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import TahfidzForm from "../../components/TahfidzForm"
@@ -556,7 +556,6 @@ export const TahfidzRekap = () => {
         sessionStorage.removeItem("tahfidz_selected_student");
     };
 
-    // eslint-disable-next-line no-unused-vars
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
@@ -816,6 +815,9 @@ export const TahfidzRekap = () => {
                                                 <tr
                                                     key={item.id || index}
                                                     className="hover:bg-gray-50 whitespace-nowrap text-center cursor-pointer text-left"
+                                                    onClick={() => {
+                                                        openModal(item)
+                                                    }}
                                                 >
                                                     <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                                     <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
@@ -840,8 +842,8 @@ export const TahfidzRekap = () => {
                                                             }}
                                                             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 flex items-center gap-1 mx-auto"
                                                         >
-                                                            <FaEdit className="w-3 h-3" />
-                                                            Pilih
+                                                            <FaPlus className="w-3 h-3" />
+                                                            Setoran
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -858,7 +860,7 @@ export const TahfidzRekap = () => {
 
                     </div>
 
-                    {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} />}
+                    {isModalOpen && <ModalDetail title="Data Tahfidz" menu={24} item={selectedItem} onClose={closeModal} handleSelect={handleSelectStudent} />}
                 </>
             )}
         </div>

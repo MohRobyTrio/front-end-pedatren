@@ -521,6 +521,7 @@ const Scan = ({ refetch }) => {
     const [hargaSatuan, setHargaSatuan] = useState("")
     const [jumlah, setJumlah] = useState("1")
     const [kategori, setKategori] = useState("")
+    const [outlet, setOutlets] = useState("")
     const [totalHarga, setTotalHarga] = useState(0)
 
     const [currentStep, setCurrentStep] = useState(1) // 1: Input data, 2: Scan, 3: PIN, 4: Complete
@@ -529,6 +530,7 @@ const Scan = ({ refetch }) => {
     const location = useLocation()
 
     const { menuKategori } = useDropdownKategori()
+    const { dataOutlet } = useFetchDataOutlet()
 
     // Calculate total when price or quantity changes
     useEffect(() => {
@@ -729,6 +731,7 @@ const Scan = ({ refetch }) => {
                 total_bayar: totalHarga,
                 pin: pin,
                 ...(inputMode !== "manual" && { uid_kartu: customerData.uid_kartu }),
+                ...(getRolesString() == "Superadmin" && { outlet_id: outlet })
             }
 
             const response = await fetch(endpoint, {
@@ -995,6 +998,39 @@ const Scan = ({ refetch }) => {
                         <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">Detail Transaksi</h3>
 
+                            {getRolesString() == "Superadmin" && (
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Outlet</label>
+                                    <select
+                                        value={outlet}
+                                        onChange={(e) => setOutlets(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                        <option value="">Pilih Outlet</option>
+                                        {dataOutlet.map((option) => (
+                                            <option key={option.id} value={option.id}>
+                                                {option.nama_outlet}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                                <select
+                                    value={kategori}
+                                    onChange={(e) => setKategori(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">Pilih Kategori</option>
+                                    {menuKategori.map((option) => (
+                                        <option key={option.kategori_id} value={option.kategori_id}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Harga Satuan</label>
@@ -1059,22 +1095,6 @@ const Scan = ({ refetch }) => {
                                 </div>
 
 
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                                <select
-                                    value={kategori}
-                                    onChange={(e) => setKategori(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                >
-                                    <option value="">Pilih Kategori</option>
-                                    {menuKategori.map((option) => (
-                                        <option key={option.kategori_id} value={option.kategori_id}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
 
                             <div className="bg-white rounded-lg p-4 border-2 border-green-200 mt-4">

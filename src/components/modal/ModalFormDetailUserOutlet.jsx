@@ -25,22 +25,39 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
     // const [loadingUsers, setLoadingUsers] = useState(false)
 
     const fetchUsers = async () => {
-        // setLoadingUsers(true)
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}users`, {
+
+            // 1. Fetch pertama untuk mendapatkan total data
+            const firstResponse = await fetch(`${API_BASE_URL}users?limit=1&page=1`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             })
 
-            if (response.ok) {
-                const result = await response.json()
-                setUsers(result.data || [])
-                console.log("user",result.data);
-
+            if (!firstResponse.ok) {
+                throw new Error("Gagal mengambil total data")
             }
+
+            const firstResult = await firstResponse.json()
+            const totalUsers = firstResult.total // total dari response paginate Laravel
+
+            // 2. Fetch kedua untuk ambil semua data sekaligus
+            const secondResponse = await fetch(`${API_BASE_URL}users?limit=${totalUsers}&page=1`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+
+            if (!secondResponse.ok) {
+                throw new Error("Gagal mengambil semua data user")
+            }
+
+            const secondResult = await secondResponse.json()
+            setUsers(secondResult.data || [])
+            console.log("user", secondResult.data)
         } catch (error) {
             console.error("Error fetching users:", error)
         }
@@ -59,7 +76,7 @@ export const ModalAddOrEditUserOutltet = ({ isOpen, onClose, data, refetchData, 
             if (response.ok) {
                 const result = await response.json()
                 setOutlets(result.data || [])
-                console.log("outlet",result.data);
+                console.log("outlet", result.data);
 
             }
         } catch (error) {

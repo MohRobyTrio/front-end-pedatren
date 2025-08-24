@@ -14,7 +14,7 @@ const useFetchUsers = () => {
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
     const [error, setError] = useState(null);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(25);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalDataUsers, setTotalDataUsers] = useState(0);
@@ -27,7 +27,7 @@ const useFetchUsers = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${API_BASE_URL}users?page=${currentPage}&per_page=${limit}`, {
+            const response = await fetch(`${API_BASE_URL}users?page=${currentPage}&limit=${limit}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,

@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 // import blankProfile from "../assets/blank_profile.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import { OrbitProgress } from "react-loading-indicators";
 import { API_BASE_URL } from "../../hooks/config";
@@ -31,12 +31,12 @@ import DetailRekapTahfidz from "../../content_modal/detail/DetailRekapTahfidz";
 import DetailSetoranTahfidz from "../../content_modal/detail/DetailSetoranTahfidz";
 import DetailNadhoman from "../../content_modal/detail/DetailNadhoman";
 import DetailRekapNadhoman from "../../content_modal/detail/DetailRekapNadhoman";
-import { FaEdit } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
 
-const ModalDetail = ({ title, menu, item, onClose }) => {
+const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
     // const [activeTab, setActiveTab] = useState("biodata");
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
@@ -393,7 +393,7 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                             {/* Footer */}
                             <div className="mt-4 pt-4 flex justify-end space-x-2">
                                 {/* set id route */}
-                                {menu !== 23 && menu !== 17 && menu != 18 && (
+                                {menu !== 23 && menu !== 17 && menu != 18 && menu != 24 && menu != 25 && (
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -405,6 +405,19 @@ const ModalDetail = ({ title, menu, item, onClose }) => {
                                     >
                                         {/* <FaEdit /> Edit */}
                                         Selengkapnya
+                                    </button>
+                                )}
+                                {menu == 24 || menu == 25 && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleSelect(item)
+                                            onClose();
+                                        }}
+                                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer flex items-center gap-2"
+                                    >
+                                        <FaPlus />
+                                        Setoran
                                     </button>
                                 )}
                                 {/* <button

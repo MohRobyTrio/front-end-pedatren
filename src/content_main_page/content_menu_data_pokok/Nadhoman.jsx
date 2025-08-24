@@ -712,6 +712,9 @@ export const NadhomanAllData = () => {
                                                         <tr
                                                             key={index}
                                                             className="hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                                                            onClick={() => {
+                                                                openModal(item)
+                                                            }}
                                                         >
                                                             <td className="px-3 py-2 border-b text-center">{(currentPage - 1) * limit + index + 1}</td>
                                                             <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
@@ -809,7 +812,7 @@ export const NadhomanAllData = () => {
                         ]}
                     />
 
-                    {isModalOpen && <ModalDetail title="Data Nadhoman" menu={25} item={selectedItem} onClose={closeModal} />}
+                    {isModalOpen && <ModalDetail title="Data Nadhoman" menu={25} item={selectedItem} onClose={closeModal} handleSelect={handleSelectStudent} />}
 
                     {/* {showFormModal && (
                 <MultiStepModal isOpen={showFormModal} onClose={() => setShowFormModal(false)} formState={formState} />
