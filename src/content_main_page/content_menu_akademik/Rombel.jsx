@@ -23,7 +23,7 @@ const Rombel = () => {
         }
     };
 
-    if (!hasAccess("kelembagaan")) {
+    if (!hasAccess("rombel")) {
         return <Navigate to="/forbidden" replace />;
     }
 

@@ -6,7 +6,8 @@ import Pagination from "../../components/Pagination"
 import useFetchLogActivity from "../../hooks/hooks_menu_manage/LogActivity"
 import { FaUser, FaClock, FaLink, FaTimes } from "react-icons/fa"
 import { Dialog, Transition } from "@headlessui/react"
-import { useLocation } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
+import { hasAccess } from "../../utils/hasAccess"
 
 const LogActivity = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -100,6 +101,10 @@ const LogActivity = () => {
     const closeDetailModal = () => {
         setSelectedLog(null)
         setShowDetailModal(false)
+    }
+
+    if (!hasAccess("log")) {
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

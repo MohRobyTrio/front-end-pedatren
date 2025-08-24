@@ -7,7 +7,7 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import { getCookie } from "../../utils/cookieUtils"
 import Swal from "sweetalert2"
 import useLogout from "../../hooks/Logout"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import { API_BASE_URL } from "../../hooks/config"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -15,6 +15,7 @@ import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/
 import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
 import useFetchLulusSantri from "../../hooks/hooks_menu_kewilayahan/AlumniSantri"
+import { hasAccess } from "../../utils/hasAccess"
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -356,6 +357,10 @@ const AlumniSantri = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLulus])
+
+  if (!hasAccess("proses_alumni_santri")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-4 lg:p-6">

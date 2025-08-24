@@ -15,7 +15,8 @@ import { FaEdit, FaFileExport } from "react-icons/fa";
 import { generateDropdownTahun } from "../../utils/generateDropdownTahun";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalExport } from "../../components/modal/ModalExport";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const Alumni = () => {
     const navigate = useNavigate();
@@ -165,6 +166,10 @@ const Alumni = () => {
             state: { kondisiTabFormulir: kondisi }
         });
     };
+
+    if (!hasAccess("data_alumni")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

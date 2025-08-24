@@ -6,7 +6,7 @@ import Perizinan from "../content_main_page/content_menu_kepesantrenan/Perizinan
 // import ReservasiMakan from "../content_main_page/content _menu_kepesantrenan/ReservasiMakan";
 import Alumni from "../content_main_page/content_menu_data_pokok/Alumni";
 import Khadam from "../content_main_page/content_menu_data_pokok/Khadam";
-import PesertaDidik from "../content_main_page/content_menu_data_pokok/PesertaDidik";
+import PesertaDidik from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/PesertaDidik";
 import BersaudaraKandung from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/BersaudaraKandung";
 import Pelajar from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Pelajar";
 import Santri from "../content_main_page/content_menu_data_pokok/sub_menu_peserta_didik/Santri";
@@ -92,8 +92,8 @@ export const menuItems = [
 ];
 
 export const menuDataPokokItems = [
-    { id: "cpesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <ContainerPesertaDidik />, access: "santri" },
-    { id: "corangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <ContainerOrangTua /> },
+    { id: "cpesertadidik", icon: "fa-users", text: "Peserta Didik", link: "/peserta-didik", content: <ContainerPesertaDidik />, access: "c_peserta_didik" },
+    { id: "corangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <ContainerOrangTua />, access: "c_orang_tua" },
     // { id: "tahfidz", icon: "fa-book-quran", text: "Tahfidz", link: "/tahfidz", content: <TahfidzRekap />, access: "tahfidz" },
     // { id: "nadhoman", icon: "fa-scroll", text: "Nadhoman", link: "/nadhoman", content: <NadhomanAllData />, access: "nadhoman" },
     { id: "karturfid", icon: "fa-id-card", text: "Kartu RFID", link: "/karturfid", content: <KartuRFID />, access: "karturfid" },
@@ -104,8 +104,8 @@ export const menuDataPokokItems = [
 ];
 
 export const menuOrangTua = [
-    { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua /> },
-    { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/orang-tua/wali", content: <Wali /> },
+    { id: "orangtua", icon: "fa-user", text: "Orang Tua", link: "/orang-tua", content: <OrangTua />, access: "orang_tua" },
+    { id: "wali", icon: "fa-user-tie", text: "Wali", link: "/orang-tua/wali", content: <Wali />, access: "wali" },
 ]
 
 export const menuHafalan = [
@@ -115,11 +115,11 @@ export const menuHafalan = [
 ]
 
 export const subMenuPegawai = [
-    { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <Pegawai /> },
-    { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pegawai/pengajar", content: <Pengajar /> },
-    { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pegawai/pengurus", content: <Pengurus /> },
-    { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/pegawai/karyawan", content: <Karyawan /> },
-    { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/pegawai/wali-kelas", content: <WaliKelas /> },
+    { id: "pegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <Pegawai />, access: "pegawai" },
+    { id: "pengajar", icon: "fa-chalkboard-teacher", text: "Pengajar", link: "/pegawai/pengajar", content: <Pengajar />, access: "pengajar" },
+    { id: "pengurus", icon: "fa-user-cog", text: "Pengurus", link: "/pegawai/pengurus", content: <Pengurus />, access: "pengurus" },
+    { id: "karyawan", icon: "fa-briefcase", text: "Karyawan", link: "/pegawai/karyawan", content: <Karyawan />, access: "karyawan" },
+    { id: "walikelas", icon: "fa-chalkboard", text: "Wali Kelas", link: "/pegawai/wali-kelas", content: <WaliKelas />, access: "wali_kelas" },
 ]
 
 export const menuKewaliasuhanItems = [
@@ -149,17 +149,17 @@ export const menuTransaksiItems = [
     { id: "detailuseroutlet", icon: "fa-user-cog", text: "User Outlet", link: "/transaksi/user-outlet", content: <UserOutlet />, access: "user_outlet" },
     { id: "kategori", icon: "fa-tags", text: "Kategori", link: "/transaksi/kategori", content: <Kategori />, access: "kategori" },
     { id: "belanja", icon: "fa-shopping-cart", text: "Belanja", link: "/transaksi/belanja", content: <Transaksi />, access: "belanja" },
-    { id: "saldo", icon: "fa-money-bill-wave", text: "Saldo", link: "/transaksi/saldo", content: <Topup />, access: "topup" },
+    { id: "saldo", icon: "fa-money-bill-wave", text: "Saldo", link: "/transaksi/saldo", content: <Topup />, access: "saldo" },
 ]
 
 export const menuPembayaranItems = [
     { id: "bank", icon: "fa-university", text: "Bank", link: "/pembayaran/bank", content: <Bank />, access: "bank" },
-    { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount /> },
-    { id: "tagihan", icon: "fa-file-invoice", text: "Tagihan", link: "/pembayaran/tagihan", content: <Tagihan />}
+    { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount />, access: "virtual_account" },
+    { id: "tagihan", icon: "fa-file-invoice", text: "Tagihan", link: "/pembayaran/tagihan", content: <Tagihan />, access: "tagihan" }
 ]
 
 export const menuSaldo = [
-    { id: "ceksaldo", icon: "fa-money-bill-wave", text: "Cek Saldo", link: "/transaksi/saldo", content: <CekSaldo />, access: "ceksaldo" },
+    { id: "ceksaldo", icon: "fa-money-bill-wave", text: "Cek Saldo", link: "/transaksi/saldo", content: <CekSaldo />, access: "cek_saldo" },
     { id: "topup", icon: "fa-money-bill-wave", text: "Top Up", link: "/transaksi/saldo/topup", content: <Topup />, access: "topup" },
     { id: "tarik", icon: "fa-hand-holding-usd", text: "Tarik", link: "/transaksi/saldo/tarik", content: <Tarik />, access: "tarik" },
 ]
@@ -178,17 +178,17 @@ export const menuSholat = [
 ]
 
 export const menuKepegawaianItems = [
-    { id: "cpegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <ContainerPegawai /> },
-    { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai /> },
+    { id: "cpegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <ContainerPegawai />, access: "c_pegawai" },
+    { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai />, access: "anak_pegawai" },
     // { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pegawai", content: <PresensiPegawai /> },
-    { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan />, access: "golongan" },
+    { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan />, access: "kategori_golongan" },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan />, access: "golongan" },
-    { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan />, access: "golongan" },
+    { id: "golonganjabatan", icon: "fa-briefcase", text: "Golongan Jabatan", link: "/golongan-jabatan", content: <GolonganJabatan />, access: "golongan_jabatan" },
 ];
 
 export const menuAlumni = [
-    { id: "dataalumni", icon: "fa-user-graduate", text: "Data Alumni", link: "/alumni/data-alumni", content: <Alumni /> },
-    { id: "prosesalumni", icon: "fa-user-graduate", text: "Proses Alumni Santri", link: "/alumni/proses-alumni", content: <AlumniSantri /> },
+    { id: "dataalumni", icon: "fa-user-graduate", text: "Data Alumni", link: "/alumni/data-alumni", content: <Alumni />, access: "data_alumni" },
+    { id: "prosesalumni", icon: "fa-user-graduate", text: "Proses Alumni Santri", link: "/alumni/proses-alumni", content: <AlumniSantri />, access: "proses_alumni_santri" },
 ]
 
 export const menuMahromItems = [
@@ -213,39 +213,32 @@ export const menuRWSItems = [
 // ];
 
 export const menuKewilayahanItems = [
-    { id: "wilayah", icon: "fa-map", text: "Wilayah", link: "/kewilayahan/wilayah", content: <Wilayah /> },
-    { id: "blok", icon: "fa-th-large", text: "Blok", link: "/kewilayahan/blok", content: <Blok /> },
-    { id: "kamar", icon: "fa-bed", text: "Kamar", link: "/kewilayahan/kamar", content: <Kamar /> },
+    { id: "wilayah", icon: "fa-map", text: "Wilayah", link: "/kewilayahan/wilayah", content: <Wilayah />, access: "wilayah" },
+    { id: "blok", icon: "fa-th-large", text: "Blok", link: "/kewilayahan/blok", content: <Blok />, access: "blok" },
+    { id: "kamar", icon: "fa-bed", text: "Kamar", link: "/kewilayahan/kamar", content: <Kamar />, access: "kamar" },
 ];
 
 export const menuAkademikItems =[
-    { id: "tahunajaran", icon: "fa-calendar-check", text: "Tahun Ajaran", link: "/tahun-ajaran", content: <TahunAjaran /> },
-    { id: "semester", icon: "fa-layer-group", text: "Semester", link: "/semester", content: <Semester /> },
-    { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan /> },
-    { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
-    { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas /> },
-    // { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar /> },
-    // { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh /> },
-    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan Pelajar", link: "/kelulusan-pelajar", content: <KelulusanPelajar /> },
-    // { id: "alumnisantri", icon: "fa-user-graduate", text: "Alumni Santri", link: "/alumni-santri", content: <AlumniSantri /> },
-    // { id: "presensisantri", icon: "fa-calendar-check", text: "Presensi Santri", link: "/presensi-santri", content: <PresensiSantri /> }
-    // { id: "jampelajaran", icon: "fa-clock", text: "Jam Pelajaran", link: "/jam-pelajaran", content: <JamPelajaran /> },
-    // { id: "jadwalpelajaran", icon: "fa-calendar-alt", text: "Jadwal Pelajaran", link: "/jadwal-pelajaran", content: <JadwalPelajaran /> },
-    // { id: "pelajaran", icon: "fa-book-open", text: "Pelajaran", link: "/pelajaran", content: <MataPelajaran /> },
-    { id: "alumni", icon: "fa-user-graduate", text: "Alumni", link: "/alumni", content: <Alumni /> },
+    { id: "tahunajaran", icon: "fa-calendar-check", text: "Tahun Ajaran", link: "/tahun-ajaran", content: <TahunAjaran />, access: "tahun_ajaran" },
+    { id: "semester", icon: "fa-layer-group", text: "Semester", link: "/semester", content: <Semester />, access: "semester" },
+    { id: "angkatan", icon: "fa-user-graduate", text: "Angkatan", link: "/angkatan", content: <Angkatan />, access: "angkatan" },
+    { id: "pindahkamar", icon: "fa-right-left", text: "Pindah Kamar", link: "/pindah-kamar", content: <PindahKamar />, access: "pindah_kamar" },
+    { id: "pindahkelas", icon: "fa-repeat", text: "Pindah/Naik Kelas", link: "/pindah-kelas", content: <PindahKelas />, access: "pindah_naik_kelas" },
+    { id: "kelulusan", icon: "fa-graduation-cap", text: "Kelulusan Pelajar", link: "/kelulusan-pelajar", content: <KelulusanPelajar />, access: "kelulusan_pelajar" },
+    { id: "alumni", icon: "fa-user-graduate", text: "Alumni", link: "/alumni", content: <Alumni />, access: "alumni" },
 ];
 
 export const menuManageItems =[
-    { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users /> },
-    { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity /> },
-    { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/> },
+    { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users />, access: "pengguna" },
+    { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity />, access: "log" },
+    { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/>, access: "jenis_berkas" },
 ];
 
 export const subKelembagaanItems = [
-    { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/kelembagaan/lembaga", content: <Lembaga /> },
-    { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/kelembagaan/jurusan", content: <Jurusan /> },
-    { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelembagaan/kelas", content: <Kelas /> },
-    { id: "rombel", icon: "fa-users", text: "Rombel", link: "/kelembagaan/rombel", content: <Rombel /> },
+    { id: "lembaga", icon: "fa-building-columns", text: "Lembaga", link: "/kelembagaan/lembaga", content: <Lembaga />, access: "lembaga" },
+    { id: "jurusan", icon: "fa-graduation-cap", text: "Jurusan", link: "/kelembagaan/jurusan", content: <Jurusan />, access: "jurusan" },
+    { id: "kelas", icon: "fa-chalkboard", text: "Kelas", link: "/kelembagaan/kelas", content: <Kelas />, access: "kelas" },
+    { id: "rombel", icon: "fa-users", text: "Rombel", link: "/kelembagaan/rombel", content: <Rombel />, access: "rombel" },
 ];
 
 export const subPelajaranItems = [
@@ -273,11 +266,11 @@ export const tabsFormulir = [
 ];
 
 export const subPesertaDidik = [
-    { id: "pesertadidik", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik /> },
-    { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri /> },
-    { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar /> },
-    { id: "santri-non-domisili", text: "Non-Domisili", link: "/peserta-didik/non-domisili", content: <SantriNonDomisili /> },
-    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung /> }
+    { id: "pesertadidik", text: "Peserta Didik", link: "/peserta-didik", content: <PesertaDidik />, access: "peserta_didik" },
+    { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri />, access: "santri" },
+    { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar />, access: "pelajar" },
+    { id: "santri-non-domisili", text: "Non-Domisili", link: "/peserta-didik/non-domisili", content: <SantriNonDomisili />, access: "santri_non_domisili" },
+    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung />, access: "bersaudara_kandung" }
 ];
 
 // export const jenisBerkasList = [

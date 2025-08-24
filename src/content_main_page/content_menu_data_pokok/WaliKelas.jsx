@@ -18,7 +18,8 @@ import ModalImport from "../../components/modal/ModalImport";
 import { FaEdit, FaFileImport, FaPlus } from "react-icons/fa";
 import Access from "../../components/Access";
 import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPegawai";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const WaliKelas = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -130,6 +131,10 @@ const WaliKelas = () => {
 
     const handleImportSuccess = () => {
         fetchData(true)
+    }
+
+    if (!hasAccess("wali_kelas")) {
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

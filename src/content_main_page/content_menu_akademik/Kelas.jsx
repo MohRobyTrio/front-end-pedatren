@@ -23,7 +23,7 @@ const Kelas = () => {
         }
     };
 
-    if (!hasAccess("kelembagaan")) {
+    if (!hasAccess("kelas")) {
         return <Navigate to="/forbidden" replace />;
     }
 

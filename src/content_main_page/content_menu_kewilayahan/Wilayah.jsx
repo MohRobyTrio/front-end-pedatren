@@ -37,7 +37,7 @@ const Wilayah = () => {
         }
     };
 
-    if (!hasAccess("kewilayahan")) {
+    if (!hasAccess("wilayah")) {
         return <Navigate to="/forbidden" replace />;
     }
     

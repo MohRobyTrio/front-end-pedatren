@@ -1,9 +1,14 @@
-import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet, Navigate } from "react-router-dom";
 import { subMenuPegawai } from "../../data/menuData";
+import { hasAccess } from "../../utils/hasAccess";
 
 const ContainerPegawai = () => {
     const location = useLocation();
     const navigate = useNavigate();
+
+    if (!hasAccess("c_pegawai")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">
@@ -12,6 +17,7 @@ const ContainerPegawai = () => {
                     <nav className="border-b border-gray-200">
                         <ul className="flex flex-wrap -mb-px">
                             {subMenuPegawai.map((tab) => {
+                                if (tab.access && !hasAccess(tab.access)) return null;
                                 const isActive = location.pathname === tab.link;
                                 return (
                                     <li key={tab.id} className="mr-2">

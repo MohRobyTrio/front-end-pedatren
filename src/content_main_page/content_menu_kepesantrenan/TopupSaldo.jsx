@@ -38,8 +38,8 @@ const Topup = () => {
         console.log("🔍 Browser Info:", info)
     }
 
-    if (!hasAccess("presensi_sholat")) {
-        return <Navigate to="/not-found" replace />
+    if (!hasAccess("topup")) {
+        return <Navigate to="/forbidden" replace />
     }
 
     return (

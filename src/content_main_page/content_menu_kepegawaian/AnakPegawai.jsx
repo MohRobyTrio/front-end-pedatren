@@ -16,9 +16,10 @@ import MultiStepModalAnakPegawai from '../../components/modal/ModalFormAnakPegaw
 import { useMultiStepFormAnakPegawai } from '../../hooks/hooks_modal/useMultiStepFormAnakPegawai';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import DropdownAngkatan from '../../hooks/hook_dropdown/DropdownAngkatan';
 import useDropdownBerkas from '../../hooks/hook_dropdown/DropdownBerkas';
+import { hasAccess } from '../../utils/hasAccess';
 
 const AnakPegawai = () => {
     const navigate = useNavigate();
@@ -224,6 +225,10 @@ const AnakPegawai = () => {
             state: { kondisiTabFormulir: kondisi }
         });
     };
+
+    if (!hasAccess("anak_pegawai")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

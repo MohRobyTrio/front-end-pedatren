@@ -23,7 +23,7 @@ const Jurusan = () => {
         }
     };
 
-    if (!hasAccess("kelembagaan")) {
+    if (!hasAccess("jurusan")) {
         return <Navigate to="/forbidden" replace />;
     }
 

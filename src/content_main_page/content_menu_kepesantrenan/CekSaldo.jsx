@@ -41,8 +41,8 @@ const CekSaldo = () => {
         console.log("🔍 Browser Info:", info)
     }
 
-    if (!hasAccess("presensi_sholat")) {
-        return <Navigate to="/not-found" replace />
+    if (!hasAccess("cek_saldo")) {
+        return <Navigate to="/forbidden" replace />
     }
 
     return (

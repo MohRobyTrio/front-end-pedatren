@@ -7,6 +7,8 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 // import { ModalAddOrEditTaloadingTahunAjaran, ModalDetailTaloadingTahunAjaran } from "../../components/modal/modal_kelembagaan/ModalFormKelas";
 import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran";
 import { ModalAddOrEditTahunAjaran, ModalDetailTahunAjaran } from "../../components/modal/modal_kelembagaan/ModalFormTahunAjaran";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const TahunAjaran = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -20,6 +22,10 @@ const TahunAjaran = () => {
     //         setCurrentPage(page);
     //     }
     // };
+
+    if (!hasAccess("tahun_ajaran")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

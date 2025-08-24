@@ -13,7 +13,7 @@ const GolonganJabatan = () => {
     const [feature, setFeature] = useState("");
     const { golonganJabatan, loading, error, fetchGolonganJabatan, handleDelete } = useFetchGolonganJabatan();
 
-    if (!hasAccess("golongan")) {
+    if (!hasAccess("golongan_jabatan")) {
         return <Navigate to="/forbidden" replace />;
     }
 

@@ -1,9 +1,14 @@
-import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet, Navigate } from "react-router-dom";
 import { menuSaldo } from "../../data/menuData";
+import { hasAccess } from "../../utils/hasAccess";
 
 const ContainerSaldo = () => {
     const location = useLocation();
     const navigate = useNavigate();
+
+    if (!hasAccess("saldo")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">
@@ -32,6 +37,7 @@ const ContainerSaldo = () => {
                         {/* Tabs Menu */}
                         <div className="flex space-x-2 items-center justify-center">
                             {menuSaldo.map((tab) => {
+                                if (tab.access && !hasAccess(tab.access)) return null;
                                 const isActive = location.pathname === tab.link;
                                 return (
                                     <button

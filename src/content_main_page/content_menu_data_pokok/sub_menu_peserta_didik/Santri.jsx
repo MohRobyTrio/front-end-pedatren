@@ -18,9 +18,10 @@ import Access from "../../../components/Access";
 import ModalImport from "../../../components/modal/ModalImport";
 import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik";
 import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 import useDropdownBerkas from "../../../hooks/hook_dropdown/DropdownBerkas";
+import { hasAccess } from "../../../utils/hasAccess";
 
 const Santri = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -219,6 +220,10 @@ const Santri = () => {
     const [openModalImport, setOpenModalImport] = useState(false)
 
     const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
+
+    if (!hasAccess("santri")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1">

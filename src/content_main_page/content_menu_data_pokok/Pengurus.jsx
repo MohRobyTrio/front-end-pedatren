@@ -19,7 +19,8 @@ import useMultiStepFormPegawai from "../../hooks/hooks_modal/useMultiStepFormPeg
 import MultiStepFormPegawai from "../../components/modal/ModalFormPegawai";
 import ModalImport from "../../components/modal/ModalImport";
 import Access from "../../components/Access";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { hasAccess } from "../../utils/hasAccess";
 
 const Pengurus = () => {
     // const [exportLoading, setExportLoading] = useState(false);
@@ -189,6 +190,10 @@ const Pengurus = () => {
 
     const handleImportSuccess = () => {
         fetchData(true)
+    }
+
+    if (!hasAccess("pengurus")) {
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (
