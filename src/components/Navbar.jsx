@@ -75,6 +75,41 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
         navigate("/profile")
     }
 
+    const students = [
+        {
+            id: 1,
+            name: "Muhammad Faiz Ahmad",
+            nis: "2024001",
+            class: "X IPA 1",
+            photoUrl: "/placeholder.svg?height=100&width=100",
+            dormStatus: "Mondok",
+        },
+        {
+            id: 2,
+            name: "Siti Aisyah Ahmad",
+            nis: "2024002",
+            class: "VIII A",
+            photoUrl: "/placeholder.svg?height=100&width=100",
+            dormStatus: "Pulang",
+        },
+        {
+            id: 3,
+            name: "Abdullah Ahmad",
+            nis: "2024003",
+            class: "XII IPS 2",
+            photoUrl: "/placeholder.svg?height=100&width=100",
+            dormStatus: "Mondok",
+        },
+    ]
+
+    const [selectedStudent, setSelectedStudent] = useState(students[0] || null)
+    const [studentSelectorOpen, setStudentSelectorOpen] = useState(false)
+    const studentSelectorRef = useRef(null)
+
+    const selectStudent = (student) => {
+        setSelectedStudent(student)
+    }
+
     return (
         <nav
             className="
@@ -83,8 +118,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
       shadow-lg border-b border-gray-800
     "
         >
-            <div className="px-3 py-1.5 md:px-8 flex items-center justify-between h-[56px]">
-                {/* Sidebar toggle dan logo + nama */}
+            <div className={`px-3 py-1.5 ${getRolesString() == "Orang_tua" ? "lg:" : "md:"}px-8 flex items-center justify-between h-[56px]`}>
                 <div className="flex items-center gap-2">
                     <button
                         ref={toggleButtonRef}
@@ -93,7 +127,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                             e.stopPropagation()
                             toggleSidebar()
                         }}
-                        className="sm:hidden text-gray-200 hover:bg-gray-800 p-2 rounded-lg transition"
+                        className={`${getRolesString() == "Orang_tua" ? "lg:hidden" : "sm:hidden"} text-gray-200 hover:bg-gray-800 p-2 rounded-lg transition`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
@@ -113,103 +147,154 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                             className="w-9 h-9 md:w-10 md:h-10 rounded-lg border border-gray-800 transition"
                             style={{ minWidth: 36, minHeight: 36 }}
                         />
-                      <span
-  className={`
+                        <span
+                            className={`
     text-white text-lg md:text-xl font-bold font-sans
     select-none relative tracking-wide
   `}
-  style={{
-    minWidth: "8ch",
-    display: "inline-block",
-    whiteSpace: "nowrap",
-    letterSpacing: "0.6px", // bisa 0.5px - 1px
-  }}
-  onMouseEnter={onPusdatrenHover}
-  onMouseLeave={onPusdatrenOut}
->
-  {typedPusdatren}
-  {isTyping && (
-    <span
-      className="ml-1 align-middle text-gray-400 animate-blink-cursor"
-      style={{
-        fontWeight: "400",
-        fontSize: "1em",
-        transition: "opacity 0.2s",
-      }}
-    >
-      |
-    </span>
-  )}
-</span>
+                            style={{
+                                minWidth: "8ch",
+                                display: "inline-block",
+                                whiteSpace: "nowrap",
+                                letterSpacing: "0.6px", // bisa 0.5px - 1px
+                            }}
+                            onMouseEnter={onPusdatrenHover}
+                            onMouseLeave={onPusdatrenOut}
+                        >
+                            {typedPusdatren}
+                            {isTyping && (
+                                <span
+                                    className="ml-1 align-middle text-gray-400 animate-blink-cursor"
+                                    style={{
+                                        fontWeight: "400",
+                                        fontSize: "1em",
+                                        transition: "opacity 0.2s",
+                                    }}
+                                >
+                                    |
+                                </span>
+                            )}
+                        </span>
 
                     </a>
                 </div>
 
-                {/* Avatar & Dropdown */}
-                <div ref={profilRef} className="relative">
-                    <button
-                        type="button"
-                        className="flex items-center bg-gray-800/80 border border-gray-700
+                <div className="flex items-center gap-3">
+                    {(getRolesString() == "Orang_tua" && students.length > 1) && (
+                        <div className="relative" ref={studentSelectorRef}>
+                            <button
+                                onClick={() => setStudentSelectorOpen(!studentSelectorOpen)}
+                                className="hidden lg:flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                            >
+                                <i className="fas fa-users text-sm"></i>
+                                <span className="text-sm font-medium">{students.length} Anak</span>
+                                <i className="fas fa-chevron-down text-xs"></i>
+                            </button>
+
+                            {studentSelectorOpen && (
+                                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                                    <div className="px-3 py-2 border-b border-gray-200">
+                                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                            Pilih Anak
+                                        </p>
+                                    </div>
+                                    {students.map((student) => (
+                                        <button
+                                            key={student.id}
+                                            onClick={() => {
+                                                selectStudent(student)
+                                                setStudentSelectorOpen(false)
+                                            }}
+                                            className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-gray-50 transition-colors ${selectedStudent?.id === student.id ? "bg-blue-50" : ""
+                                                }`}
+                                        >
+                                            <img
+                                                src={student.photoUrl || "/placeholder.svg"}
+                                                alt={student.name}
+                                                className="w-8 h-8 rounded-full object-cover"
+                                            />
+                                            <div className="flex-1">
+                                                <p className="text-sm font-medium text-gray-900">{student.name}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {student.class} • {student.dormStatus}
+                                                </p>
+                                            </div>
+                                            {selectedStudent?.id === student.id && (
+                                                <i className="fas fa-check text-blue-600 text-sm"></i>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Avatar & Dropdown */}
+                    <div ref={profilRef} className="relative">
+                        <button
+                            type="button"
+                            className="flex items-center bg-gray-800/80 border border-gray-700
               rounded-full shadow focus:ring-2 focus:ring-blue-900
               hover:scale-105 active:scale-95 transition"
-                        onClick={toggleDropdownProfil}
-                        style={{ padding: 2 }}
-                        aria-label="Open user menu"
-                    >
-                        <img
-                            height="32"
-                            width="32"
-                            className="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover"
-                            src={logoUser || "/placeholder.svg"}
-                            alt="user"
-                        />
-                    </button>
-                    <ModalUpdateProfil isOpen={openModalUpdateNameEmail} onClose={() => setOpenModalUpdateNameEmail(false)} />
-                    <ModalUpdatePassword isOpen={openModalUpdatePass} onClose={() => setOpenModalUpdatePass(false)} />
-                    <Access action="tambahakun">
-                        <ModalAddUser isOpen={openModalAddUser} onClose={() => setOpenModalAddUser(false)} />
-                    </Access>
-                    {isOpen && (
-                        <div
-                            className="
+                            onClick={toggleDropdownProfil}
+                            style={{ padding: 2 }}
+                            aria-label="Open user menu"
+                        >
+                            <img
+                                height="32"
+                                width="32"
+                                className="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover"
+                                src={logoUser || "/placeholder.svg"}
+                                alt="user"
+                            />
+                        </button>
+                        <ModalUpdateProfil isOpen={openModalUpdateNameEmail} onClose={() => setOpenModalUpdateNameEmail(false)} />
+                        <ModalUpdatePassword isOpen={openModalUpdatePass} onClose={() => setOpenModalUpdatePass(false)} />
+                        <Access action="tambahakun">
+                            <ModalAddUser isOpen={openModalAddUser} onClose={() => setOpenModalAddUser(false)} />
+                        </Access>
+                        {isOpen && (
+                            <div
+                                className="
               absolute right-0 mt-2 w-56
               bg-gray-900/95 backdrop-blur-lg
               rounded-xl shadow-2xl border border-gray-800
               z-50 overflow-hidden
             "
-                        >
-                            <div className="px-4 py-3 border-b border-gray-800 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-900">
-                                <p className="text-sm font-bold text-white">{userName}</p>
-                                <p className="text-xs text-gray-400">({getRolesString()})</p>
-                            </div>
-                            <ul className="py-1 px-1">
-                                <li>
-                                    <button
-                                        onClick={handleProfileClick}
-                                        className="flex items-center gap-3 w-full px-4 py-2
+                            >
+                                <div className="px-4 py-3 border-b border-gray-800 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-900">
+                                    <p className="text-sm font-bold text-white">{userName}</p>
+                                    <p className="text-xs text-gray-400">({getRolesString()})</p>
+                                </div>
+                                <ul className="py-1 px-1">
+                                    <li>
+                                        <button
+                                            onClick={handleProfileClick}
+                                            className="flex items-center gap-3 w-full px-4 py-2
                       text-gray-200 hover:bg-gray-800 hover:text-blue-400
                       font-medium rounded-lg transition text-sm"
-                                    >
-                                        <FontAwesomeIcon icon={faUser} />
-                                        Profile
-                                    </button>
-                                </li>
-                                <li>
-                                    <button
-                                        onClick={handleLogout}
-                                        disabled={isLoggingOut}
-                                        className="flex items-center gap-3 w-full px-4 py-2
+                                        >
+                                            <FontAwesomeIcon icon={faUser} />
+                                            Profile
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={handleLogout}
+                                            disabled={isLoggingOut}
+                                            className="flex items-center gap-3 w-full px-4 py-2
                       text-red-400 hover:bg-red-900 hover:text-white
                       font-medium rounded-lg transition text-sm
                       disabled:opacity-60"
-                                    >
-                                        <FontAwesomeIcon icon={faRightFromBracket} />
-                                        {isLoggingOut ? "Logging out..." : "Log out"}
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
+                                        >
+                                            <FontAwesomeIcon icon={faRightFromBracket} />
+                                            {isLoggingOut ? "Logging out..." : "Log out"}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </nav>

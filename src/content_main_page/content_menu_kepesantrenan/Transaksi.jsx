@@ -114,7 +114,7 @@ const Transaksi = () => {
     }
 
     return (
-        <div className="min-h-screen pl-6 pt-6">
+        <div className="min-h-screen p-6">
             {/* Header Section */}
             <div className="bg-white shadow-sm rounded-lg">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">

@@ -10,7 +10,7 @@ import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import ModalDetail from "../../components/modal/ModalDetail"
-import { FaChartLine, FaEdit, FaPlus, FaBook, FaScroll, FaArrowLeft } from "react-icons/fa"
+import { FaChartLine, FaPlus, FaBook, FaScroll, FaArrowLeft } from "react-icons/fa"
 import MultiStepModal from "../../components/modal/ModalFormNadhoman"
 import { useMultiStepFormNadhoman } from "../../hooks/hooks_modal/useMultiStepFormNadhoman"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
@@ -594,7 +594,7 @@ export const NadhomanAllData = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
             {currentView === "nadhoman" ? (
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <div className="flex items-center gap-4 justify-between mb-4">
@@ -744,8 +744,8 @@ export const NadhomanAllData = () => {
                                                                     }}
                                                                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 flex items-center gap-1 mx-auto"
                                                                 >
-                                                                    <FaEdit className="w-3 h-3" />
-                                                                    Pilih
+                                                                    <FaPlus className="w-3 h-3" />
+                                                                    Setoran
                                                                 </button>
                                                             </td>
                                                             {/* <td className="px-3 py-2 border-b text-center">

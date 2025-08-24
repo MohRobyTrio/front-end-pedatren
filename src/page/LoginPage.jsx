@@ -51,6 +51,9 @@ const LoginPage = () => {
             } else if (lowerRoles.includes("petugas")) {
                 sessionStorage.setItem("transaksi", "true");
                 return navigate("/transaksi/belanja", { replace: true });
+            } else if (lowerRoles.includes("orang_tua")) {
+                // sessionStorage.setItem("transaksi", "true");
+                return navigate("/ortu", { replace: true });
             } else {
                 return navigate("/dashboard", { replace: true });
             }

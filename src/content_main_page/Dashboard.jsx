@@ -279,7 +279,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex-1 pl-6 pt-6 pb-6 bg-gray-50 min-h-screen">
+    <div className="flex-1 p-6 bg-gray-50 min-h-screen">
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
         {/* Header + Refresh */}
         <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">

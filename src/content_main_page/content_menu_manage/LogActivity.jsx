@@ -103,7 +103,7 @@ const LogActivity = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Log Activity</h1>
             </div>

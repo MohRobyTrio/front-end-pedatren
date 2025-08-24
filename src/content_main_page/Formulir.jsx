@@ -225,7 +225,7 @@ const Formulir = () => {
     const currentTabs = getCurrentTabs();
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1 p-6">
             {!biodata_id ? (
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <div className="text-center text-gray-600 py-12">

@@ -195,7 +195,7 @@ const Khadam = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1 p-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Khadam</h1>
                 {/* <button onClick={() => downloadFile(`${API_BASE_URL}export/khadam`)} className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Export</button> */}

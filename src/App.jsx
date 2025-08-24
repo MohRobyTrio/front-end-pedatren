@@ -43,6 +43,7 @@ import RouteTracker from './components/RouteTracker';
 import Forbidden from './content_main_page/Forbidden';
 import ContainerSaldo from './content_main_page/content_menu_kepesantrenan/ContainerSaldo';
 import { Toaster } from 'sonner';
+import DashboardOrtu from './content_main_page/content_ortu/Dashboard';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -240,6 +241,7 @@ function App() {
                             ))}
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/transaksi" element={<Transaksi />} />
+                            <Route path="/ortu" element={<DashboardOrtu />} />
                             {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
                         </Route>
                     </Route>

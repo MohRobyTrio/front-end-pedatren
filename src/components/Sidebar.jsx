@@ -188,7 +188,8 @@ const Sidebar = ({ dropdowns, toggleDropdown, isSidebarOpen }) => {
                 transition-transform duration-300 ease-in-out
                 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
                 bg-white/90 backdrop-blur-md border-r border-gray-200 shadow-xl
-                sm:translate-x-0
+                ${getRolesString() == "Orang_tua" ? "lg:translate-x-0" :
+                "sm:translate-x-0" }
             `}
             aria-label="Sidebar"
         >

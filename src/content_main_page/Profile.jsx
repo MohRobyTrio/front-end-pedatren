@@ -248,7 +248,7 @@ const Profile = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+        <div className="flex-1 p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
             {/* Header */}
             <div className="mb-8">
                 <div className="flex items-center justify-between">

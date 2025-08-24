@@ -6,7 +6,7 @@ const ContainerOrangTua = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1 p-6">
             <div className="bg-white p-6 rounded-lg shadow-md mb-10">
                 <div className="bg-white mb-4">
                     <nav className="border-b border-gray-200">

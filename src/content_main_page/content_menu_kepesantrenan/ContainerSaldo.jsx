@@ -6,7 +6,7 @@ const ContainerSaldo = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6">
+        <div className="flex-1 p-6">
             <div className="bg-white shadow-sm rounded-lg">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header: Status + Action Buttons */}

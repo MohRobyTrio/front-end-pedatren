@@ -10,7 +10,7 @@ const PresensiPesantren = () => {
   ];
 
   return (
-    <div className="flex-1 pl-6 pt-6 pb-6">
+    <div className="flex-1 p-6">
       <h1 className="text-2xl font-bold mb-4">Presensi Kegiatan</h1>
       <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="bg-blue-100 p-4 rounded-md mb-4">

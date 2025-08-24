@@ -697,7 +697,7 @@ export const TahfidzRekap = () => {
     }
 
     return (
-        <div className="flex-1 pl-6 pt-6 pb-6 overflow-y-auto">
+        <div className="flex-1 p-6 overflow-y-auto">
             {currentView === "tahfidz" ? (
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <div className="flex items-center gap-4 justify-between mb-4">

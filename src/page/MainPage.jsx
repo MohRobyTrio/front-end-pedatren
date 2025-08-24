@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import { KeepAlive, useKeepAliveRef } from 'keepalive-for-react';
 import { useLocation, useOutlet } from 'react-router-dom';
 import { KeepAliveContext } from '../utils/KeepAliveContext';
+import { getRolesString } from '../utils/getRolesString';
 
 const MainPage = () => {
     const [dropdowns, setDropdowns] = useState(() => ({
@@ -112,8 +113,8 @@ const MainPage = () => {
 
                     </div>
 
-                    <div ref={contentRef} className="pr-6 sm:ml-56 overflow-x-hidden w-full max-w-full">
-                        <div className="pt-8 mt-8">
+                    <div ref={contentRef} className={`${getRolesString() == "Orang_tua" ? "lg:ml-56" : "sm:ml-56" } overflow-x-hidden w-full max-w-full`}>
+                        <div className="pt-8 mt-6">
                             {/* <Outlet /> */}
                             <KeepAlive
                                 transition
