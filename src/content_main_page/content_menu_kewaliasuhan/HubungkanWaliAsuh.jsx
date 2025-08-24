@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { OrbitProgress } from "react-loading-indicators"
 import { getCookie } from "../../utils/cookieUtils"
@@ -13,8 +11,8 @@ import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
 import { hasAccess } from "../../utils/hasAccess"
 import useFetchSantriNonAnakAsuh from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonAnakAsuh"
-import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh";
-import { WaliAsuhInfoCardCompact } from "../../components/CardInfo";
+import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh"
+import { WaliAsuhInfoCardCompact } from "../../components/CardInfo"
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -48,12 +46,24 @@ const HubungkanWaliAsuh = () => {
   const [selectedSantriIds, setSelectedSantriIds] = useState([])
   const [selectedWaliAsuh, setSelectedWaliAsuh] = useState(null)
   const [isAllSelected, setIsAllSelected] = useState(false)
-  const [showSelectWaliAsuhModal, setShowSelectWaliAsuhModal] = useState(false);
-  const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null);
+  const [showSelectWaliAsuhModal, setShowSelectWaliAsuhModal] = useState(false)
+  const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null)
+  const [waliAsuhTerpilihMethod1, setWaliAsuhTerpilihMethod1] = useState(null);
+  const [waliAsuhTerpilihMethod2, setWaliAsuhTerpilihMethod2] = useState(null);
   const [filters, setFilters] = useState({
     wilayah: "",
     blok: "",
     kamar: "",
+  })
+  const [selectedMethod, setSelectedMethod] = useState(1) // 1: hubungkan existing, 2: tambah grup baru
+  const [formDataMethod2, setFormDataMethod2] = useState({
+    id_wilayah: "",
+    nama_grup: "",
+    jenis_kelamin: "",
+    wali_asuh: {
+      id_santri: "",
+    },
+    anak_asuh: [],
   })
 
   useEffect(() => {
@@ -88,8 +98,6 @@ const HubungkanWaliAsuh = () => {
     }
   }, [wilayahTerpilih, blokTerpilih, kamarTerpilih])
 
-  // const { menuWaliAsuh2 } = useDropdownWaliAsuh()
-
   const shouldFetch = selectedWilayahFilter.wilayah !== ""
 
   const {
@@ -109,16 +117,32 @@ const HubungkanWaliAsuh = () => {
     allSantriNonAnakAsuhIds,
   } = useFetchSantriNonAnakAsuh(filters)
 
-  // useEffect(() => {
-  //     if (totalDataSantri && totalDataSantri != 0) setLimit(totalDataSantri);
-  // }, [setLimit, totalDataSantri]);
-
   useEffect(() => {
     if (isAllSelected && allSantriNonAnakAsuhIds.length > 0) {
       setSelectedSantriIds(allSantriNonAnakAsuhIds)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSantriNonAnakAsuhIds])
+
+  useEffect(() => {
+    const availableIds = santriNonAnakAsuh.map((item) => item.id)
+
+    setSelectedSantriIds((prevSelected) => prevSelected.filter((id) => availableIds.includes(id)))
+
+    if (!availableIds.some((id) => selectedSantriIds.includes(id))) {
+      setIsAllSelected(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [santriNonAnakAsuh])
+
+  useEffect(() => {
+    if (selectedMethod === 2) {
+      setFormDataMethod2({
+        ...formDataMethod2,
+        anak_asuh: selectedSantriIds.map((id) => ({ id_santri: id })),
+      })
+    }
+  }, [selectedSantriIds, selectedMethod])
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -133,9 +157,34 @@ const HubungkanWaliAsuh = () => {
       await Swal.fire({
         icon: "warning",
         title: "Peringatan",
-        text: "Pilih minimal satu santriNonAnakAsuh untuk dijadikan anak asuh.",
+        text: "Pilih minimal satu santri untuk dijadikan anak asuh.",
       })
       return
+    }
+
+    if (selectedMethod === 2) {
+      if (
+        !formDataMethod2.id_wilayah ||
+        !formDataMethod2.nama_grup ||
+        !formDataMethod2.jenis_kelamin ||
+        !selectedWaliAsuh
+      ) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Peringatan",
+          text: "Semua field harus diisi untuk metode tambah grup.",
+        })
+        return
+      }
+    } else {
+      if (!selectedWaliAsuh) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Peringatan",
+          text: "Pilih wali asuh terlebih dahulu.",
+        })
+        return
+      }
     }
 
     const confirmResult = await Swal.fire({
@@ -149,27 +198,45 @@ const HubungkanWaliAsuh = () => {
 
     if (!confirmResult.isConfirmed) return
 
-    const payload = {
-      id_wali_asuh: selectedWaliAsuh,
-      santri_id: selectedSantriIds,
+    let payload, endpoint
+
+    if (selectedMethod === 1) {
+      // Metode 1: Hubungkan ke wali asuh existing
+      payload = {
+        id_wali_asuh: selectedWaliAsuh,
+        santri_id: selectedSantriIds,
+      }
+      endpoint = `${API_BASE_URL}fitur/anakasuh`
+    } else {
+      // Metode 2: Buat grup baru
+      payload = {
+        id_wilayah: formDataMethod2.id_wilayah,
+        nama_grup: formDataMethod2.nama_grup,
+        jenis_kelamin: formDataMethod2.jenis_kelamin,
+        wali_asuh: {
+          id_santri: selectedWaliAsuh,
+        },
+        anak_asuh: selectedSantriIds.map((id) => ({ id_santri: id })),
+      }
+      endpoint = `${API_BASE_URL}crud/kewaliasuhan`
     }
 
     try {
       Swal.fire({
-        background: "transparent", // tanpa bg putih box
-        showConfirmButton: false, // tanpa tombol
+        background: "transparent",
+        showConfirmButton: false,
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading()
         },
         customClass: {
-          popup: "p-0 shadow-none border-0 bg-transparent", // hilangkan padding, shadow, border, bg
+          popup: "p-0 shadow-none border-0 bg-transparent",
         },
       })
       console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2))
 
       const token = sessionStorage.getItem("token") || getCookie("token")
-      const response = await fetch(`${API_BASE_URL}fitur/anakasuh`, {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,12 +267,17 @@ const HubungkanWaliAsuh = () => {
         await Swal.fire({
           icon: "error",
           title: "Gagal",
-          html: `<div style="text-align: left;">${result.message || "Terjadi kesalahan saat memproses anak asuh."}</div>`,
+          html: `<div style="text-align: left;">${result.error || "Terjadi kesalahan saat memproses data."}</div>`,
         })
         return
       }
 
-      if (result.success && result.data?.berhasil?.length === 0 && result.data?.gagal?.length > 0) {
+      if (
+        selectedMethod === 1 &&
+        result.success &&
+        result.data?.berhasil?.length === 0 &&
+        result.data?.gagal?.length > 0
+      ) {
         const gagalMessages = result.data.gagal.map((item) => `- ${item.message}`).join("<br>")
         await Swal.fire({
           icon: "error",
@@ -218,11 +290,32 @@ const HubungkanWaliAsuh = () => {
       await Swal.fire({
         icon: "success",
         title: "Berhasil",
-        text: result.message || "Berhasil ditambahkan sebagai anak asuh dan dikaitkan dengan wali asuh.",
+        text:
+          result.message ||
+          (selectedMethod === 1
+            ? "Berhasil ditambahkan sebagai anak asuh dan dikaitkan dengan wali asuh."
+            : "Berhasil membuat grup wali asuh baru."),
       })
 
-      // Reset form jika diperlukan
+      // Reset form
       setSelectedSantriIds([])
+      if (selectedMethod === 2) {
+        setFormDataMethod2({
+          id_wilayah: "",
+          nama_grup: "",
+          jenis_kelamin: "",
+          wali_asuh: {
+            id_santri: "",
+          },
+          anak_asuh: [],
+        })
+        setWaliAsuhTerpilih(null)
+        setSelectedWaliAsuh(null)
+      }
+      if (selectedMethod === 1) {
+        setWaliAsuhTerpilihMethod1(null);
+        setSelectedWaliAsuh(null);
+      }
       fetchData(true)
     } catch (error) {
       console.error("Terjadi kesalahan:", error)
@@ -234,17 +327,6 @@ const HubungkanWaliAsuh = () => {
       })
     }
   }
-
-  useEffect(() => {
-    const availableIds = santriNonAnakAsuh.map((item) => item.id)
-
-    setSelectedSantriIds((prevSelected) => prevSelected.filter((id) => availableIds.includes(id)))
-
-    if (!availableIds.some((id) => selectedSantriIds.includes(id))) {
-      setIsAllSelected(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [santriNonAnakAsuh])
 
   if (!hasAccess("kewaliasuhan")) {
     return <Navigate to="/not-found" replace />
@@ -317,7 +399,9 @@ const HubungkanWaliAsuh = () => {
                       </svg>
                     </div>
                     <p className="text-gray-500 font-medium">Silakan pilih wilayah terlebih dahulu</p>
-                    <p className="text-gray-400 text-sm mt-1">Pilih wilayah untuk menampilkan daftar santriNonAnakAsuh</p>
+                    <p className="text-gray-400 text-sm mt-1">
+                      Pilih wilayah untuk menampilkan daftar santriNonAnakAsuh
+                    </p>
                   </div>
                 ) : error ? (
                   <div className="text-center py-12">
@@ -466,60 +550,182 @@ const HubungkanWaliAsuh = () => {
                     <span>Pilih Wali Asuh</span>
                   </h2>
                   <p className="text-emerald-100 text-sm mt-1">Hubungkan santri dengan wali asuh</p>
+
+                  {/* Tabs */}
+                  <div className="flex bg-white/20 rounded-lg p-1 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedMethod(1)}
+                      className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${selectedMethod === 1
+                        ? "bg-white text-emerald-600 shadow-sm"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        }`}
+                    >
+                      Wali Asuh
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedMethod(2)}
+                      className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all ${selectedMethod === 2
+                        ? "bg-white text-emerald-600 shadow-sm"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        }`}
+                    >
+                      Tambah Wali Asuh
+                    </button>
+                  </div>
                 </div>
 
                 <div className="p-6">
-                  <div className="space-y-4 mb-6">
-                    <div className="space-y-2">
-                      {/* <label className="block text-sm font-medium text-gray-700">Wali Asuh *</label> */}
-                      {waliAsuhTerpilih ? (
-                        <WaliAsuhInfoCardCompact waliAsuh={waliAsuhTerpilih} setShowSelectWaliAsuh={() => setShowSelectWaliAsuhModal(true)} />
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => setShowSelectWaliAsuhModal(true)}
-                          className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
-                        >
-                          Pilih Wali Asuh
-                        </button>
-                      )}
+                  {selectedMethod === 1 ? (
+                    <div className="space-y-4 mb-6">
+                      <div className="space-y-2">
+                        {waliAsuhTerpilihMethod1 ? (
+                          <WaliAsuhInfoCardCompact
+                            waliAsuh={waliAsuhTerpilihMethod1}
+                            setShowSelectWaliAsuh={() => setShowSelectWaliAsuhModal(true)}
+                          />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setShowSelectWaliAsuhModal(true)}
+                            className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
+                          >
+                            Pilih Wali Asuh
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="space-y-4 mb-6">
+                      {/* Form untuk metode 2 */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Wilayah *</label>
+                        <select
+                          value={formDataMethod2.id_wilayah}
+                          onChange={(e) => setFormDataMethod2({ ...formDataMethod2, id_wilayah: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          required
+                        >
+                          <option value="">Pilih Wilayah</option>
+                          {filterWilayahFilter.wilayah.slice(1).map((wilayah) => (
+                            <option key={wilayah.value} value={wilayah.value}>
+                              {wilayah.nama}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-green-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    <span>Hubungkan</span>
-                  </button>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Nama Grup *</label>
+                        <input
+                          type="text"
+                          value={formDataMethod2.nama_grup}
+                          onChange={(e) => setFormDataMethod2({ ...formDataMethod2, nama_grup: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Masukkan nama grup"
+                          maxLength={255}
+                          required
+                        />
+                      </div>
 
-                  {selectedSantriIds.length > 0 && (
-                    <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-700 font-medium">
-                        {selectedSantriIds.length} santri dipilih untuk dihubungkan
-                      </p>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Kelamin *</label>
+                        <div className="flex space-x-4">
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              name="jenis_kelamin"
+                              value="l"
+                              checked={formDataMethod2.jenis_kelamin === "l"}
+                              onChange={(e) =>
+                                setFormDataMethod2({ ...formDataMethod2, jenis_kelamin: e.target.value })
+                              }
+                              className="form-radio text-blue-500 focus:ring-blue-500"
+                              required
+                            />
+                            <span className="ml-2 text-gray-700">Laki-laki</span>
+                          </label>
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              name="jenis_kelamin"
+                              value="p"
+                              checked={formDataMethod2.jenis_kelamin === "p"}
+                              onChange={(e) =>
+                                setFormDataMethod2({ ...formDataMethod2, jenis_kelamin: e.target.value })
+                              }
+                              className="form-radio text-blue-500 focus:ring-blue-500"
+                              required
+                            />
+                            <span className="ml-2 text-gray-700">Perempuan</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div>
+                        {waliAsuhTerpilihMethod2 ? (
+                          <WaliAsuhInfoCardCompact
+                            waliAsuh={waliAsuhTerpilihMethod2}
+                            setShowSelectWaliAsuh={() => setShowSelectWaliAsuhModal(true)}
+                          />
+                        ) : (
+                          <>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Wali Asuh *</label>
+                            <button
+                              type="button"
+                              onClick={() => setShowSelectWaliAsuhModal(true)}
+                              className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
+                            >
+                              Pilih Santri
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-6 py-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-green-200 focus:outline-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>{selectedMethod === 1 ? "Hubungkan" : "Buat Grup & Hubungkan"}</span>
+                </button>
+
+                {selectedSantriIds.length > 0 && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-700 font-medium">
+                      {selectedSantriIds.length} santri dipilih untuk dihubungkan
+                    </p>
+                  </div>
+                )}
               </form>
             </div>
           </div>
         </div>
       </div>
       <ModalSelectWaliAsuh
+        menu={selectedMethod === 1 ? "menu1" : "menu2"}
         isOpen={showSelectWaliAsuhModal}
         onClose={() => setShowSelectWaliAsuhModal(false)}
         onWaliAsuhSelected={(wali) => {
-          setWaliAsuhTerpilih(wali);
-          setSelectedWaliAsuh(wali.id);
+          if (selectedMethod === 1) {
+            setWaliAsuhTerpilihMethod1(wali);
+            setSelectedWaliAsuh(wali.id);
+          } else {
+            setWaliAsuhTerpilihMethod2(wali);
+            setSelectedWaliAsuh(wali.id);
+            setFormDataMethod2({
+              ...formDataMethod2,
+              wali_asuh: {
+                id_santri: wali.id,
+              },
+            });
+          }
         }}
       />
     </div>

@@ -6,6 +6,8 @@ const useDropdownWaliAsuh = () => {
   const [menuWaliAsuh, setMenuWaliAsuh] = useState([]);
   const [menuWaliAsuh2, setMenuWaliAsuh2] = useState([]);
   const [menuWaliAsuh3, setMenuWaliAsuh3] = useState([]);
+  const [menuWaliAsuh4, setMenuWaliAsuh4] = useState([]);
+
   const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
@@ -21,10 +23,10 @@ const useDropdownWaliAsuh = () => {
       }
     } else {
       fetch(`${API_BASE_URL}dropdown/wali-asuh`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
         .then((res) => res.json())
         .then((resData) => {
           if (resData.status && Array.isArray(resData.data)) {
@@ -50,7 +52,7 @@ const useDropdownWaliAsuh = () => {
           ]);
         });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch untuk /dropdown/waliasuh
@@ -65,10 +67,10 @@ const useDropdownWaliAsuh = () => {
       }
     } else {
       fetch(`${API_BASE_URL}dropdown/waliasuh`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
         .then((res) => res.json())
         .then((resData) => {
           if (Array.isArray(resData)) {
@@ -88,67 +90,112 @@ const useDropdownWaliAsuh = () => {
           setMenuWaliAsuh2([{ label: "Pilih Wali Asuh", value: "", id: "" }])
         );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-  const localData = sessionStorage.getItem("menuWaliAsuh3");
+    const localData = sessionStorage.getItem("menuWaliAsuh3");
 
-  if (localData) {
-    try {
-      const parsedData = JSON.parse(localData);
-      setMenuWaliAsuh3(parsedData);
-    } catch (error) {
-      console.error("Gagal parsing data dari sessionStorage:", error);
-      sessionStorage.removeItem("menuWaliAsuh3");
-    }
-  } else {
-    fetch(`${API_BASE_URL}data-pokok/waliasuh`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-      .then((res) => res.json())
-      .then((resMeta) => {
+    if (localData) {
+      try {
+        const parsedData = JSON.parse(localData);
+        setMenuWaliAsuh3(parsedData);
+      } catch (error) {
+        console.error("Gagal parsing data dari sessionStorage:", error);
+        sessionStorage.removeItem("menuWaliAsuh3");
+      }
+    } else {
+      fetch(`${API_BASE_URL}data-pokok/waliasuh`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then((res) => res.json())
+        .then((resMeta) => {
           console.log("Meta response:", resMeta);
           const total = resMeta.total_data;
           if (!total || isNaN(total))
             throw new Error("Gagal mendapatkan total_data");
 
           return fetch(`${API_BASE_URL}data-pokok/waliasuh?limit=${total}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         })
-      .then((res) => res.json())
-      .then((resData) => {
-        if (Array.isArray(resData.data)) {
-          const formatted = [
-            { label: "Pilih Wali Asuh", value: "", id: null },
-            ...resData.data.map((item) => ({
-              ...item,
-              value: item.nama || "-", // untuk keperluan dropdown
-              label: item.nama || "-", // untuk keperluan dropdown
-            })),
-          ];
+        .then((res) => res.json())
+        .then((resData) => {
+          if (Array.isArray(resData.data)) {
+            const formatted = [
+              { label: "Pilih Wali Asuh", value: "", id: null },
+              ...resData.data.map((item) => ({
+                ...item,
+                value: item.nama || "-", // untuk keperluan dropdown
+                label: item.nama || "-", // untuk keperluan dropdown
+              })),
+            ];
 
-          sessionStorage.setItem("menuWaliAsuh3", JSON.stringify(formatted));
-          setMenuWaliAsuh3(formatted);
-        } else {
-          throw new Error("Data tidak valid dari API");
+            sessionStorage.setItem("menuWaliAsuh3", JSON.stringify(formatted));
+            setMenuWaliAsuh3(formatted);
+          } else {
+            throw new Error("Data tidak valid dari API");
+          }
+        })
+        .catch((error) => {
+          console.error("Gagal mengambil data wali asuh:", error);
+          setMenuWaliAsuh3([{ label: "Pilih Wali Asuh", value: "", id: null }]);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const localData = sessionStorage.getItem("menuWaliAsuh4");
+
+    if (localData) {
+      try {
+        const parsedData = JSON.parse(localData);
+        setMenuWaliAsuh4(parsedData);
+      } catch (error) {
+        console.error("Gagal parsing data dari sessionStorage:", error);
+        sessionStorage.removeItem("menuWaliAsuh4");
+      }
+    } else {
+      fetch(`${API_BASE_URL}dropdown/hubungkanwaliasuh`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
       })
-      .catch((error) => {
-        console.error("Gagal mengambil data wali asuh:", error);
-        setMenuWaliAsuh3([{ label: "Pilih Wali Asuh", value: "", id: null }]);
-      });
-  }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+        .then((res) => res.json())
+        .then((resData) => {
+          // Jika data langsung berupa array
+          const dataArr = Array.isArray(resData.data) ? resData.data : resData;
+          if (Array.isArray(dataArr)) {
+            const formatted = [
+              { label: "Pilih Wali Asuh", value: "", id: null },
+              ...dataArr.map((item) => ({
+                ...item,
+                value: item.nama || "-", // untuk keperluan dropdown
+                label: item.nama || "-", // untuk keperluan dropdown
+              })),
+            ];
+
+            sessionStorage.setItem("menuWaliAsuh4", JSON.stringify(formatted));
+            setMenuWaliAsuh4(formatted);
+          } else {
+            throw new Error("Data tidak valid dari API");
+          }
+        })
+        .catch((error) => {
+          console.error("Gagal mengambil data wali asuh 4:", error);
+          setMenuWaliAsuh4([{ label: "Pilih Wali Asuh", value: "", id: null }]);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
-  return { menuWaliAsuh, menuWaliAsuh2, menuWaliAsuh3 };
+  return { menuWaliAsuh, menuWaliAsuh2, menuWaliAsuh3, menuWaliAsuh4 };
 };
 
 export default useDropdownWaliAsuh;
