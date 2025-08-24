@@ -529,7 +529,7 @@ const Scan = ({ refetch }) => {
 
     const location = useLocation()
 
-    const { menuKategori } = useDropdownKategori()
+    const { menuKategori } = useDropdownKategori(outlet)
     const { dataOutlet } = useFetchDataOutlet()
 
     // Calculate total when price or quantity changes
@@ -1021,7 +1021,8 @@ const Scan = ({ refetch }) => {
                                 <select
                                     value={kategori}
                                     onChange={(e) => setKategori(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${menuKategori.length == 0 ? 'bg-gray-200 text-gray-500' : ''}`}
+                                    disabled={menuKategori.length == 0}
                                 >
                                     <option value="">Pilih Kategori</option>
                                     {menuKategori.map((option) => (
