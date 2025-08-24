@@ -16,12 +16,15 @@ import Access from "../../components/Access";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ModalExport } from "../../components/modal/ModalExport";
 import { hasAccess } from "../../utils/hasAccess";
+import { ModalDetailGrupWaliAsuh } from "../../components/modal/ModalDetailGrupWaliAsuhan";
 
 
 const GroupKewaliasuhan = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [openModalExport, setOpenModalExport] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedDetailGrupId, setSelectedDetailGrupId] = useState(null);
     const [filters, setFilters] = useState({
         wilayah: "",
         jenisKelamin: "",
@@ -296,7 +299,12 @@ const GroupKewaliasuhan = () => {
                                     <tr><td colSpan="8" className="py-6">Tidak ada data</td></tr>
                                 ) : (
                                     groupKewaliasuhan.map((item, index) => (
-                                        <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-left">
+                                        <tr key={`${item.id}-${index}`} className="hover:bg-gray-50 text-left hover:cursor-pointer"
+                                            onClick={() => {
+                                                setSelectedDetailGrupId(item.id);
+                                                setIsDetailModalOpen(true);
+                                            }}
+                                        >
                                             <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.group || "-"}</td>
                                             <td className="px-3 py-2 border-b">{item.nis_wali_asuh || "-"}</td>
@@ -310,21 +318,30 @@ const GroupKewaliasuhan = () => {
                                                     <div className="flex items-center space-x-2">
 
                                                         <button
-                                                            onClick={() => handleEdit(item.id)}
+                                                            onClick={(event) => {
+                                                                event.stopPropagation();
+                                                                handleEdit(item.id);
+                                                            }}
                                                             className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                         >
                                                             <FaEdit />
                                                         </button>
                                                         {item.status == 1 ? (
                                                             <button
-                                                                onClick={() => openStatusModal(item, false)}
+                                                                onClick={(event) => {
+                                                                    event.stopPropagation();
+                                                                    openStatusModal(item, false);
+                                                                }}
                                                                 className="w-20 h-8 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
                                                             >
                                                                 Non-Aktif
                                                             </button>
                                                         ) : (
                                                             <button
-                                                                onClick={() => openStatusModal(item, true)}
+                                                                onClick={(event) => {
+                                                                    event.stopPropagation();
+                                                                    openStatusModal(item, true);
+                                                                }}
                                                                 className="w-20 h-8 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                             >
                                                                 Aktifkan
@@ -359,6 +376,11 @@ const GroupKewaliasuhan = () => {
                     grupData={statusModalData}
                     refetchData={fetchData}
                     isActivate={isActivateAction}
+                />
+                <ModalDetailGrupWaliAsuh
+                    isOpen={isDetailModalOpen}
+                    onClose={() => setIsDetailModalOpen(false)}
+                    grupId={selectedDetailGrupId}
                 />
 
                 {/* Pagination */}
