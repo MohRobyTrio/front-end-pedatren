@@ -90,8 +90,8 @@ const useFetchKartuRFID = (filters) => {
             const result = await response.json();
 
             setKartuRFID(Array.isArray(result.data) ? result.data : []);
-            setTotalDataKartuRFID(result.total_data || 0);
-            setTotalPages(result.total_pages || 1);
+            setTotalDataKartuRFID(result.total || 0);
+            setTotalPages(result.last_page || 1);
         } catch (err) {
             setError(err.message);
             setKartuRFID([]);

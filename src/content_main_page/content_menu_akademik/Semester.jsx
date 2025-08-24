@@ -7,6 +7,8 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 // import { ModalAddOrEditTaloadingTahunAjaran, ModalDetailTaloadingTahunAjaran } from "../../components/modal/modal_kelembagaan/ModalFormKelas";
 import useFetchSemester from "../../hooks/hooks_menu_akademik/Semester";
 import { ModalAddOrEditSemester, ModalDetailSemester } from "../../components/modal/modal_kelembagaan/ModalFormSemester";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Semester = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -14,6 +16,10 @@ const Semester = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [semesterData, setSemesterData] = useState("");
     const { semester, loadingSemester, error, fetchSemester, handleDelete } = useFetchSemester();
+
+    if (!hasAccess("semester")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

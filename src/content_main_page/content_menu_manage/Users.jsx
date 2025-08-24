@@ -7,6 +7,8 @@ import SearchBar from "../../components/SearchBar";
 import useFetchUsers from "../../hooks/hooks_menu_manage/Users";
 import { ModalAddUser, MultiStepModalUsers } from "../../components/modal/ModalFormProfil";
 import { useMultiStepFormUsers } from "../../hooks/hooks_modal/useMultiStepFormUsers";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Users = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -32,6 +34,10 @@ const Users = () => {
     };
 
     const formState = useMultiStepFormUsers(() => setShowFormModal(false), fetchUsers, usersData);
+
+    if (!hasAccess("pengguna")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

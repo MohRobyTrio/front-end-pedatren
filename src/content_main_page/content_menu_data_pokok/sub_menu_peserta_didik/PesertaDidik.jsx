@@ -1,28 +1,28 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import useFetchPeserta from "../../hooks/hooks_menu_data_pokok/PesertaDidik"
-import PesertaItem from "../../components/PesertaItem"
-import SearchBar from "../../components/SearchBar"
-import Filters from "../../components/Filters"
+import useFetchPeserta from "../../../hooks/hooks_menu_data_pokok/PesertaDidik"
+import PesertaItem from "../../../components/PesertaItem"
+import SearchBar from "../../../components/SearchBar"
+import Filters from "../../../components/Filters"
 import "@fortawesome/fontawesome-free/css/all.min.css"
 import { OrbitProgress } from "react-loading-indicators"
-import Pagination from "../../components/Pagination"
-import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara"
-import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
-import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
-import ModalDetail from "../../components/modal/ModalDetail"
+import Pagination from "../../../components/Pagination"
+import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara"
+import DropdownWilayah from "../../../hooks/hook_dropdown/DropdownWilayah"
+import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga"
+import ModalDetail from "../../../components/modal/ModalDetail"
 import { FaEdit, FaFileExport, FaFileImport, FaPlus, FaArrowLeft } from "react-icons/fa"
-import MultiStepModal from "../../components/modal/ModalFormPesertaDidik"
-import { useMultiStepFormPesertaDidik } from "../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
-import Access from "../../components/Access"
-import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
-import { ModalExport } from "../../components/modal/ModalExport"
+import MultiStepModal from "../../../components/modal/ModalFormPesertaDidik"
+import { useMultiStepFormPesertaDidik } from "../../../hooks/hooks_modal/useMultiStepFormPesertaDidik"
+import Access from "../../../components/Access"
+import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable"
+import { ModalExport } from "../../../components/modal/ModalExport"
 import { Link, Navigate } from "react-router-dom"
-import ModalImport from "../../components/modal/ModalImport"
-import { hasAccess } from "../../utils/hasAccess"
-import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan"
-import useDropdownBerkas from "../../hooks/hook_dropdown/DropdownBerkas"
+import ModalImport from "../../../components/modal/ModalImport"
+import { hasAccess } from "../../../utils/hasAccess"
+import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan"
+import useDropdownBerkas from "../../../hooks/hook_dropdown/DropdownBerkas"
 
 const PesertaDidik = () => {
     const [openModalExport, setOpenModalExport] = useState(false)
@@ -216,7 +216,7 @@ const PesertaDidik = () => {
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormPesertaDidik(() => setShowFormModal(false), jenisBerkasList, fetchData)
 
-    if (!hasAccess("santri")) {
+    if (!hasAccess("peserta_didik")) {
         return <Navigate to="/forbidden" replace />;
     }
 

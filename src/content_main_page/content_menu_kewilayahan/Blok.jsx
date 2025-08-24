@@ -37,7 +37,7 @@ const Blok = () => {
         }
     };
 
-    if (!hasAccess("kewilayahan")) {
+    if (!hasAccess("blok")) {
         return <Navigate to="/forbidden" replace />;
     }
 

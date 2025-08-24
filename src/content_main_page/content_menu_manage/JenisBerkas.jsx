@@ -4,6 +4,8 @@ import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { ModalAddOrEditJenisBerkas, ModalDetailJenisBerkas } from "../../components/modal/modal_kelembagaan/ModalFormJenisBerkas";
 import useFetchJenisBerkas from "../../hooks/hooks_menu_manage/jenisBerkas";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const JenisBerkas = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -11,6 +13,10 @@ const JenisBerkas = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [jenisBerkasData, setJenisBerkasData] = useState("");
     const { jenisBerkas, loadingJenisBerkas, error, fetchJenisBerkas, handleDelete } = useFetchJenisBerkas();
+
+    if (!hasAccess("jenis_berkas")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

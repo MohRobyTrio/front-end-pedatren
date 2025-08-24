@@ -24,7 +24,7 @@ const Lembaga = () => {
         }
     };
 
-    if (!hasAccess("kelembagaan")) {
+    if (!hasAccess("lembaga")) {
         return <Navigate to="/forbidden" replace />;
     }
 

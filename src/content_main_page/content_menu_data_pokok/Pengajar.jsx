@@ -19,7 +19,8 @@ import Access from '../../components/Access';
 import MultiStepFormPegawai from '../../components/modal/ModalFormPegawai';
 import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPegawai';
 import ModalImport from '../../components/modal/ModalImport';
-import {useNavigate } from 'react-router-dom';
+import {Navigate, useNavigate } from 'react-router-dom';
+import { hasAccess } from '../../utils/hasAccess';
 
 
 const Pengajar = () => {
@@ -254,6 +255,10 @@ const Pengajar = () => {
 
     const handleImportSuccess = () => {
         fetchData(true)
+    }
+
+    if (!hasAccess("pengajar")) {
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

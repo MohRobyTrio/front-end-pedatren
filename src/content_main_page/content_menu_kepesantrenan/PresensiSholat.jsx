@@ -93,7 +93,7 @@ const PresensiSholat = () => {
     }
 
     if (!hasAccess("presensi_sholat")) {
-        return <Navigate to="/not-found" replace />
+        return <Navigate to="/forbidden" replace />
     }
 
     return (

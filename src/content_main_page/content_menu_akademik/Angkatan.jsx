@@ -7,6 +7,8 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 // import { ModalAddOrEditTaloadingTahunAjaran, ModalDetailTaloadingTahunAjaran } from "../../components/modal/modal_kelembagaan/ModalFormKelas";
 import { ModalAddOrEditAngkatan, ModalDetailAngkatan } from "../../components/modal/modal_kelembagaan/ModalFormAngkatan";
 import useFetchAngkatan from "../../hooks/hooks_menu_akademik/Angkatan";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
 
 const Angkatan = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -14,6 +16,10 @@ const Angkatan = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [semesterData, setAngkatanData] = useState("");
     const { angkatan, loadingAngkatan, error, fetchAngkatan, handleDelete } = useFetchAngkatan();
+
+    if (!hasAccess("angkatan")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">

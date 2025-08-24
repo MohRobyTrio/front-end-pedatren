@@ -5,13 +5,14 @@ import { OrbitProgress } from "react-loading-indicators"
 import { getCookie } from "../../utils/cookieUtils"
 import Swal from "sweetalert2"
 import useLogout from "../../hooks/Logout"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import { API_BASE_URL } from "../../hooks/config"
 import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah"
 import useFetchSantri from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
+import { hasAccess } from "../../utils/hasAccess"
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -20,9 +21,8 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
         <div key={`${label}-${index}`} className="space-y-2">
           {vertical && <label className="block text-sm font-medium text-gray-700 capitalize">{label} Tujuan</label>}
           <select
-            className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-              options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "bg-white hover:border-gray-300"
-            }`}
+            className={`w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed" : "bg-white hover:border-gray-300"
+              }`}
             onChange={(e) => onChange({ [label]: e.target.value })}
             value={selectedFilters[label] || ""}
             disabled={options.length <= 1}
@@ -246,6 +246,10 @@ const PindahKamar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [santri])
+
+  if (!hasAccess("pindah_kamar")) {
+    return <Navigate to="/forbidden" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">

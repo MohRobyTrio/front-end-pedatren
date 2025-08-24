@@ -7,7 +7,7 @@ import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga"
 import { getCookie } from "../../utils/cookieUtils"
 import Swal from "sweetalert2"
 import useLogout from "../../hooks/Logout"
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import { API_BASE_URL } from "../../hooks/config"
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -15,6 +15,7 @@ import { faArrowDown, faArrowLeft, faArrowRight, faArrowUp } from "@fortawesome/
 import useFetchLulus from "../../hooks/hooks_menu_akademik/KelulusanPelajar"
 import Pagination from "../../components/Pagination"
 import SearchBar from "../../components/SearchBar"
+import { hasAccess } from "../../utils/hasAccess"
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -26,9 +27,8 @@ const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false })
               <label className="block text-gray-700 mb-2 text-sm font-medium capitalize">{label} Tujuan</label>
             )}
             <select
-              className={`w-full border-2 border-gray-200 rounded-xl px-4 py-3 sm:py-4 text-sm font-medium transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none hover:border-gray-300 bg-white shadow-sm ${
-                options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed border-gray-100" : "cursor-pointer"
-              }`}
+              className={`w-full border-2 border-gray-200 rounded-xl px-4 py-3 sm:py-4 text-sm font-medium transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none hover:border-gray-300 bg-white shadow-sm ${options.length <= 1 ? "bg-gray-50 text-gray-400 cursor-not-allowed border-gray-100" : "cursor-pointer"
+                }`}
               onChange={(e) => onChange({ [label]: e.target.value })}
               value={selectedFilters[label] || ""}
               disabled={options.length <= 1}
@@ -362,6 +362,10 @@ const KelulusanPelajar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLulus])
 
+  if (!hasAccess("kelulusan_pelajar")) {
+    return <Navigate to="/forbidden" replace />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-4 lg:p-6">
       <div className="mb-6 sm:mb-8">
@@ -556,11 +560,10 @@ const KelulusanPelajar = () => {
                               </td>
                               <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                                 <span
-                                  className={`inline-flex px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${
-                                    item.status == "aktif"
+                                  className={`inline-flex px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${item.status == "aktif"
                                       ? "bg-emerald-100 text-emerald-700"
                                       : "bg-red-100 text-red-700"
-                                  }`}
+                                    }`}
                                 >
                                   {item.status == "aktif" ? "Aktif" : "Nonaktif"}
                                 </span>
@@ -805,11 +808,10 @@ const KelulusanPelajar = () => {
                               </td>
                               <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                                 <span
-                                  className={`inline-flex px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${
-                                    item.status === "lulus"
+                                  className={`inline-flex px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold rounded-full ${item.status === "lulus"
                                       ? "bg-emerald-100 text-emerald-700"
                                       : "bg-gray-100 text-gray-600"
-                                  }`}
+                                    }`}
                                 >
                                   {item.status == "lulus" ? "Lulus" : "-"}
                                 </span>

@@ -13,7 +13,7 @@ const KategoriGolongan = () => {
     const [feature, setFeature] = useState("");
     const { kategoriGolongan, loadingKategori, error, fetchKategoriGolongan, handleDelete } = useFetchKategoriGolongan();
 
-    if (!hasAccess("golongan")) {
+    if (!hasAccess("kategori_golongan")) {
         return <Navigate to="/forbidden" replace />;
     }
 

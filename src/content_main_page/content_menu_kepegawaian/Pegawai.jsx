@@ -19,8 +19,9 @@ import useMultiStepFormPegawai from '../../hooks/hooks_modal/useMultiStepFormPeg
 import Access from '../../components/Access';
 import DoubleScrollbarTable from '../../components/DoubleScrollbarTable';
 import { ModalExport } from '../../components/modal/ModalExport';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import ModalImport from '../../components/modal/ModalImport';
+import { hasAccess } from '../../utils/hasAccess';
 
 const Pegawai = () => {
     const navigate = useNavigate();
@@ -218,6 +219,10 @@ const Pegawai = () => {
 
     const handleImportSuccess = () => {
         fetchData(true) 
+    }
+
+    if (!hasAccess("pegawai")) {
+        return <Navigate to="/forbidden" replace />;
     }
 
     return (

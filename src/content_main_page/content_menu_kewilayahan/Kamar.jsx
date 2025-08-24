@@ -37,7 +37,7 @@ const Kamar = () => {
         }
     };
 
-    if (!hasAccess("kewilayahan")) {
+    if (!hasAccess("kamar")) {
         return <Navigate to="/forbidden" replace />;
     }
 
