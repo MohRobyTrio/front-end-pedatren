@@ -167,7 +167,8 @@ const GroupKewaliasuhan = () => {
                 id: grupDetail.id,
                 id_wilayah: grupDetail.id_wilayah,
                 nama_grup: grupDetail.nama_grup,
-                jenis_kelamin: grupDetail.jenis_kelamin
+                jenis_kelamin: grupDetail.jenis_kelamin,
+                wali_asuh_id: grupDetail.wali_asuh.id
             });
             setIsModalOpen(true);
         }
