@@ -97,7 +97,7 @@ const PresensiSholat = () => {
     }
 
     return (
-        <div className="pl-6 pt-6 mb-8 pb-6">
+        <div className="p-6 mb-8">
             <div className="mx-auto">
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 sm:p-4 mb-6">
                     <div className="space-y-4">

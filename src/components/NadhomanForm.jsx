@@ -46,7 +46,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
         bait_selesai: "",
         nilai: "",
         catatan: "",
-        status: "",
+        status: "proses",
     })
 
     useEffect(() => {
@@ -215,16 +215,15 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
 
     const handleReset = () => {
         setFormData({
-            santri_id: "",
+            ...formData,
             kitab_id: "",
-            tahun_ajaran_id: "",
             tanggal: new Date().toISOString().split("T")[0],
             jenis_setoran: "",
             bait_mulai: "",
             bait_selesai: "",
             nilai: "",
             catatan: "",
-            status: "",
+            status: "proses",
         })
     }
 
@@ -385,7 +384,7 @@ const NadhomanForm = ({ student, onSuccess, refetchDetail }) => {
                         required
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                     >
-                        <option value="proses">On Progress</option>
+                        <option value="proses">Proses</option>
                         <option value="tuntas">Tuntas</option>
                     </select>
                     {formData.status == "tuntas" && (

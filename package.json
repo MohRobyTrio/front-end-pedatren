@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@tailwindcss/vite": "^4.0.8",
     "axios": "^1.7.9",
+    "dom-to-image": "^2.6.0",
     "flowbite": "^3.1.2",
     "keepalive-for-react": "^4.0.2",
     "keepalive-for-react-router": "^2.0.2",

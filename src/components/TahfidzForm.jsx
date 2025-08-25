@@ -185,7 +185,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
         let payload = { ...formData };
 
-        if (formData.jenis_setoran === "surat") {
+        if (formData.jenis_setoran === "baru") {
             delete payload.juz_mulai;
             delete payload.juz_selesai;
         } else if (formData.jenis_setoran === "murojaah") {
@@ -282,16 +282,15 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
     const handleReset = () => {
         setFormData({
+            ...formData,
             tanggal: new Date().toISOString().split("T")[0],
-            tahun_ajaran_id: "",
-            santri_id: "",
             jenis_setoran: "",
             surat: "",
             ayat_mulai: "",
             ayat_selesai: "",
             nilai: "",
             catatan: "",
-            status: "",
+            status: "proses",
         })
     }
 
