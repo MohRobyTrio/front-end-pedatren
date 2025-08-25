@@ -11,12 +11,19 @@ import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png"
+import { ModalStatusAnakAsuh } from "./ModalFormGrupwaliasuh"; // sesuaikan path jika perlu
+import { FaTrash } from "react-icons/fa"
+
 
 export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState(null)
   const { clearAuthData } = useLogout()
   const navigate = useNavigate()
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [selectedWaliAsuhId, setSelectedWaliAsuhId] = useState(null);
+  const [selectedAnakAsuhId, setSelectedAnakAsuhId] = useState(null);
+  const [selectedAnakAsuhData, setSelectedAnakAsuhData] = useState(null);
 
   const fetchDetailGrup = async () => {
     if (!grupId) return
@@ -79,6 +86,14 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
       setData(null)
     }
   }, [isOpen])
+  // console.log("data", data);
+  const openStatusModal = (anak, waliId) => {
+    setSelectedWaliAsuhId(waliId);
+    setSelectedAnakAsuhId(anak.anak_asuh_id);
+    setSelectedAnakAsuhData(anak);
+    setIsStatusModalOpen(true);
+  };
+
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -176,7 +191,7 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                                   <th className="px-3 py-2 border-b">#</th>
                                   <th className="px-3 py-2 border-b">No. Induk</th>
                                   <th className="px-3 py-2 border-b">Nama Anak Asuh</th>
-                                  <th className="px-3 py-2 border-b text-center">Status</th>
+                                  <th className="px-3 py-2 border-b text-center">Aksi</th>
                                 </tr>
                               </thead>
                               <tbody className="text-gray-800">
@@ -193,9 +208,17 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                                       <td className="px-3 py-2 border-b font-mono text-xs">{anak.no_induk}</td>
                                       <td className="px-3 py-2 border-b font-medium">{anak.nama}</td>
                                       <td className="px-3 py-2 border-b text-center">
-                                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                                        {/* <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
                                           Aktif
-                                        </span>
+                                        </span> */}
+                                        <button
+                                          type="button"
+                                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium cursor-pointer"
+                                          onClick={() => openStatusModal(anak, data.group.wali_asuh_id)}
+                                        >
+                                          {/* Nonaktifkan */}
+                                          <FaTrash/>
+                                        </button>
                                       </td>
                                     </tr>
                                   ))
@@ -218,6 +241,14 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                   </div>
                 </div>
               </div>
+              <ModalStatusAnakAsuh
+                isOpen={isStatusModalOpen}
+                onClose={() => setIsStatusModalOpen(false)}
+                waliAsuhId={selectedWaliAsuhId}
+                anakAsuhId={selectedAnakAsuhId}
+                anakAsuhData={selectedAnakAsuhData}
+                refetchData={() => fetchDetailGrup()}
+              />
 
               {/* Footer */}
               <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">

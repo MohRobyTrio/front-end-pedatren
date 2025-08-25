@@ -7,7 +7,7 @@ import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
-
+import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
 export const ModalFormGrupWaliAsuh = ({
     isOpen,
     onClose,
@@ -18,26 +18,40 @@ export const ModalFormGrupWaliAsuh = ({
 }) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
+    const [waliSearch, setWaliSearch] = useState("");
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [waliAsuhId, setWaliAsuhId] = useState("");
     const [formData, setFormData] = useState({
         id_wilayah: "",
         nama_grup: "",
-        jenis_kelamin: ""
+        jenis_kelamin: "",
+        wali_asuh_id: ""
     });
 
+    const { menuWaliAsuh3 } = useDropdownWaliAsuh();
+
     // Isi form dengan data grup jika mode edit
+    console.log("Grup Data for Modal:", grupData);
+    
     useEffect(() => {
         if (mode === 'edit' && grupData) {
+            setWaliAsuhId(grupData.wali_asuh || "");
+            setWaliSearch(grupData.nama_wali_asuh || "");
             setFormData({
                 id_wilayah: grupData.id_wilayah || "",
                 nama_grup: grupData.nama_grup || "",
-                jenis_kelamin: grupData.jenis_kelamin || ""
+                jenis_kelamin: grupData.jenis_kelamin || "",
+                wali_asuh_id: grupData.wali_asuh_id || ""
             });
         } else {
             // Reset form untuk mode tambah
+            setWaliAsuhId("");
+            setWaliSearch("");
             setFormData({
                 id_wilayah: "",
                 nama_grup: "",
-                jenis_kelamin: ""
+                jenis_kelamin: "",
+                wali_asuh_id: ""
             });
         }
     }, [mode, grupData, isOpen]);
@@ -47,6 +61,30 @@ export const ModalFormGrupWaliAsuh = ({
         setFormData(prev => ({
             ...prev,
             [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        if (menuWaliAsuh3.length > 0) {
+            const waliTerpilih = menuWaliAsuh3.find(item => item.id == waliAsuhId);
+            if (waliTerpilih) {
+                setWaliSearch(waliTerpilih.nama);
+            }
+        }
+    }, [menuWaliAsuh3]);
+
+    const filteredWali = menuWaliAsuh3.filter(item =>
+        (item.nama || "").toLowerCase().includes(waliSearch.toLowerCase())
+    );
+
+
+    const handleSelectWali = (item) => {
+        setWaliSearch(item.nama);
+        setWaliAsuhId(item.id);
+        setShowDropdown(false);
+        setFormData(prev => ({
+            ...prev,
+            wali_asuh_id: item.id
         }));
     };
 
@@ -114,8 +152,26 @@ export const ModalFormGrupWaliAsuh = ({
             Swal.close();
 
             if (!response.ok) {
-                throw new Error(result.message || "Terjadi kesalahan pada server.");
+                let errorHtml = "";
+
+                if (result.errors) {
+                    // Loop semua field error
+                    for (const [field, messages] of Object.entries(result.errors)) {
+                        errorHtml += `<strong>${field}</strong>: ${messages.join(", ")}<br>`;
+                    }
+                } else {
+                    errorHtml = result.message || "Terjadi kesalahan pada server.";
+                }
+
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    html: `<div style="text-align: left;">${errorHtml}</div>`,
+                });
+
+                return; // stop di sini, jangan lanjut
             }
+
 
             if (!("data" in result)) {
                 await Swal.fire({
@@ -132,7 +188,7 @@ export const ModalFormGrupWaliAsuh = ({
                 text: `Data grup wali asuh berhasil ${mode === 'tambah' ? 'ditambahkan' : 'diperbarui'}.`,
             });
 
-            refetchData?.();
+            refetchData?.(true);
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
@@ -200,6 +256,35 @@ export const ModalFormGrupWaliAsuh = ({
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
+                                                <div className="relative">
+                                                    <label htmlFor="waliAsuhId" className="block text-sm font-medium text-gray-700">
+                                                        Wali Asuh *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Wali asuh"
+                                                        value={waliSearch}
+                                                        onChange={e => {
+                                                            setWaliSearch(e.target.value);
+                                                            setShowDropdown(true);
+                                                        }}
+                                                        onFocus={() => setShowDropdown(true)}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                    />
+                                                    {showDropdown && waliSearch && filteredWali.length > 0 && (
+                                                        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                                                            {filteredWali.map(item => (
+                                                                <li
+                                                                    key={item.id}
+                                                                    onClick={() => handleSelectWali(item)}
+                                                                    className="p-2 cursor-pointer hover:bg-gray-50"
+                                                                >
+                                                                    {item.nama}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
                                                 <div>
                                                     <label htmlFor="id_wilayah" className="block text-sm font-medium text-gray-700">
                                                         Wilayah *
@@ -254,6 +339,7 @@ export const ModalFormGrupWaliAsuh = ({
                                                         <option value="p">Perempuan</option>
                                                     </select>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -425,6 +511,150 @@ export const ModalConfirmationStatusGrup = ({
                                                     <span>Memproses...</span>
                                                 ) : isActivate ? (
                                                     'Aktifkan'
+                                                ) : (
+                                                    'Non-Aktifkan'
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};
+
+export const ModalStatusAnakAsuh = ({
+    isOpen,
+    onClose,
+    waliAsuhId,
+    anakAsuhId,
+    anakAsuhData,
+    refetchData
+}) => {
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handleConfirm = async () => {
+        setIsProcessing(true);
+        try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${waliAsuhId}/anak-asuh/${anakAsuhId}/nonaktif`;
+
+            const response = await fetch(endpoint, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.status === 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
+            let result;
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error("Respon bukan JSON:\n" + text);
+            }
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: `Anak ${anakAsuhData?.nama_anak || ''} berhasil dinonaktifkan dari grup wali asuh.`,
+            });
+
+            refetchData?.(true);
+            onClose?.();
+        } catch (error) {
+            console.error("Gagal menonaktifkan anak asuh:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: error.message,
+            });
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-300 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
+                            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mt-2 sm:mt-0 text-left w-full">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg leading-6 font-medium text-gray-900 text-center mb-4"
+                                        >
+                                            Konfirmasi
+                                        </Dialog.Title>
+                                        <p className="text-center mb-6">
+                                            Apakah Anda yakin ingin menonaktifkan {anakAsuhData?.nama || '-'} dari grup wali asuh?
+                                        </p>
+                                        <div className="flex justify-center space-x-4">
+                                            <button
+                                                type="button"
+                                                onClick={onClose}
+                                                disabled={isProcessing}
+                                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 disabled:opacity-50"
+                                            >
+                                                Batal
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleConfirm}
+                                                disabled={isProcessing}
+                                                className="px-4 py-2 text-white rounded bg-red-600 hover:bg-red-700 disabled:opacity-50"
+                                            >
+                                                {isProcessing ? (
+                                                    <span>Memproses...</span>
                                                 ) : (
                                                     'Non-Aktifkan'
                                                 )}

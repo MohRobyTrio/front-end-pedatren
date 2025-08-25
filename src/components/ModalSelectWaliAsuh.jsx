@@ -2,14 +2,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import useDropdownWaliAsuh from "../hooks/hook_dropdown/DropdownWaliAsuh";
 
-export const ModalSelectWaliAsuh = ({ isOpen, onClose, onWaliAsuhSelected }) => {
+export const ModalSelectWaliAsuh = ({ isOpen, onClose, onWaliAsuhSelected, menu = "menu1" }) => {
     const [search, setSearch] = useState("");
 
     const {
-         menuWaliAsuh3
+         menuWaliAsuh3, menuWaliAsuh4
         } = useDropdownWaliAsuh();
 
-    const menuWaliAsuhFilter = menuWaliAsuh3.filter((s) =>
+
+        // Pilih sumber data sesuai parameter menu
+    const dataSource =
+        menu === "menu2" ? menuWaliAsuh4 : menuWaliAsuh3;
+
+    const menuWaliAsuhFilter = dataSource.filter((s) =>
         s.value.toLowerCase().includes(search.toLowerCase()) ||
         s.nis?.toString().includes(search)
     );
@@ -77,9 +82,9 @@ export const ModalSelectWaliAsuh = ({ isOpen, onClose, onWaliAsuhSelected }) => 
                                                     >
                                                         <td className="p-2">{s.nis}</td>
                                                         <td className="p-2">{s.nama}</td>
-                                                        <td className="p-2">{s.wilayah}</td>
-                                                        <td className="p-2">{s.blok}</td>
-                                                        <td className="p-2">{s.kamar}</td>
+                                                        <td className="p-2">{s.wilayah || s.nama_wilayah || "-"}</td>
+                                                        <td className="p-2">{s.blok || s.nama_blok || "-"}</td>
+                                                        <td className="p-2">{s.kamar || s.nama_kamar || "-"}</td>
                                                     </tr>
                                                 ))}
                                         </tbody>
