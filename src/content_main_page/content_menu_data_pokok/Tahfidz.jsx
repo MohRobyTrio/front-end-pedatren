@@ -26,8 +26,9 @@ export const Tahfidz = ({ student }) => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [activeTab, setActiveTab] = useState("tambah")
+    // eslint-disable-next-line no-unused-vars
     const [selectedStudent, setSelectedStudent] = useState(student)
-    const [showStudentModal, setShowStudentModal] = useState(false)
+    // const [showStudentModal, setShowStudentModal] = useState(false)
 
     useEffect(() => {
         console.log("student ", selectedStudent);
@@ -84,17 +85,17 @@ export const Tahfidz = ({ student }) => {
 
     useEffect(() => {
         if (detailTahfidz?.data) {
-            console.log("Daftar Tahfidz:", detailTahfidz.data.tahfidz);
-            console.log("Rekap Tahfidz:", detailTahfidz.data.rekap_tahfidz);
+            console.log("Daftar Tahfidz:", detailTahfidz.data.tahfidz || "-");
+            console.log("Rekap Tahfidz:", detailTahfidz.data.rekap_tahfidz || "-");
 
             // contoh ambil satu nilai
-            console.log("Nama Santri:", detailTahfidz.data.rekap_tahfidz.santri_nama);
-            console.log("Tahun Ajaran:", detailTahfidz.data.rekap_tahfidz.tahun_ajaran);
-            console.log("Persentase Khatam:", detailTahfidz.data.rekap_tahfidz.persentase_khatam);
+            console.log("Nama Santri:", detailTahfidz?.data?.rekap_tahfidz?.santri_nama || "-");
+            console.log("Tahun Ajaran:", detailTahfidz?.data?.rekap_tahfidz?.tahun_ajaran || "-");
+            console.log("Persentase Khatam:", detailTahfidz?.data?.rekap_tahfidz?.persentase_khatam || "-");
 
             // contoh loop tahfidz
             detailTahfidz.data.tahfidz.forEach((item) => {
-                console.log(item.tanggal, item.jenis_setoran, item.surat);
+                console.log(item.tanggal || "-", item.jenis_setoran || "-", item.surat || "-");
             });
         }
     }, [detailTahfidz]);
@@ -109,67 +110,8 @@ export const Tahfidz = ({ student }) => {
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormTahfidz(() => setShowFormModal(false), fetchData)
 
-    // Mock data untuk demo
-    const mockStudents = [
-        { nis: "097556282828838", nama: "Ari Surahman", unit: "PONDOKPA", kelas: "2 ULA" },
-        { nis: "1717", nama: "Erwanto E. Yusuf", unit: "PONDOKPA", kelas: "2 ULA" },
-        { nis: "34534543", nama: "Udin", unit: "PONDOKPA", kelas: "2 ULA" },
-        { nis: "123456", nama: "Syamsuri", unit: "PONDOKPA", kelas: "KELAS 1" },
-    ]
-
-    const handleSelectStudent = (student) => {
-        setSelectedStudent(student)
-        setShowStudentModal(false)
-    }
-
     return (
         <div className="flex-1 overflow-y-auto">
-            {showStudentModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold">Pilih Data Santri</h3>
-                            <button onClick={() => setShowStudentModal(false)} className="text-gray-500 hover:text-gray-700">
-                                ×
-                            </button>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full text-sm">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="px-3 py-2 text-left">No</th>
-                                        <th className="px-3 py-2 text-left">NIS</th>
-                                        <th className="px-3 py-2 text-left">Nama</th>
-                                        <th className="px-3 py-2 text-left">Unit Sekolah</th>
-                                        <th className="px-3 py-2 text-left">Kelas</th>
-                                        <th className="px-3 py-2 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {mockStudents.map((student, index) => (
-                                        <tr key={student.nis} className="hover:bg-gray-50">
-                                            <td className="px-3 py-2">{index + 1}</td>
-                                            <td className="px-3 py-2">{student.nis}</td>
-                                            <td className="px-3 py-2">{student.nama}</td>
-                                            <td className="px-3 py-2">{student.unit}</td>
-                                            <td className="px-3 py-2">{student.kelas}</td>
-                                            <td className="px-3 py-2 text-center">
-                                                <button
-                                                    onClick={() => handleSelectStudent(student)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
-                                                >
-                                                    Pilih
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             <div className="overflow-x-auto">
                 {!selectedStudent ? (
                     <div className="text-center py-8">
@@ -194,7 +136,7 @@ export const Tahfidz = ({ student }) => {
 
                         {/* Pilih Santri */}
                         <button
-                            onClick={() => setShowStudentModal(true)}
+                            // onClick={() => setShowStudentModal(true)}
                             className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
                         >
                             Pilih Santri
@@ -207,7 +149,7 @@ export const Tahfidz = ({ student }) => {
                                 <div className="relative">
                                     <img
                                         src="src\assets\blank_profile.png"
-                                        alt={`Foto ${selectedStudent.nama}`}
+                                        alt={`Foto ${selectedStudent?.nama || "-"}`}
                                         className="w-24 h-30 md:w-38 md:h-46 rounded-xl object-cover border-3 border-white shadow-lg"
                                         onError={(e) => {
                                             e.target.onerror = null;
@@ -219,34 +161,34 @@ export const Tahfidz = ({ student }) => {
 
                             <div className="flex-1">
                                 <div className="bg-white rounded-lg p-4 shadow-sm border border-green-100">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                                         <div className="space-y-3">
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">NIS</span>
-                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis}</span>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                                    Nama Santri
-                                                </span>
-                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama_santri}</span>
-                                            </div>
+                                                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Nama Santri</span>
+                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama_santri || "-"}</span>
+                                            </div>                                            
                                         </div>
                                         <div className="space-y-3">
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                                    NIS
+                                                </span>
+                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.nis || "-"}</span>
+                                            </div>
+                                            {/* <div className="flex flex-col">
+                                                <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                     Tahun Ajaran
                                                 </span>
-                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.tahun_ajaran}</span>
+                                                <span className="text-lg font-semibold text-gray-800">{selectedStudent.tahun_ajaran || "-"}</span>
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                     Rata Rata Nilai
                                                 </span>
                                                 <span className="text-lg font-semibold text-gray-800">
-                                                    {selectedStudent.rata_rata_nilai}
+                                                    {selectedStudent.rata_rata_nilai || "-"}
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
