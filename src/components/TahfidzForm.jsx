@@ -242,8 +242,8 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                 return;
             }
 
-            if (!response.ok) {
-                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            if (!response.ok || result.success) {
+                throw new Error(result.error || "Terjadi kesalahan pada server.");
             }
 
             // if ("status" in result && !result.status) {
@@ -273,7 +273,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: `Terjadi kesalahan saat mengirim data. ${error}`,
+                text: `${error.message}`,
             });
         } finally {
             setIsSubmitting(false);
