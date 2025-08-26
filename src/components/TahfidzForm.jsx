@@ -132,23 +132,12 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
     const handleInputChangeayat = (e) => {
         const { name, value } = e.target;
-
-        setFormData((prev) => {
-            let updated = { ...prev, [name]: value };
-
-            // Validasi: ayat mulai tidak boleh > ayat selesai
-            if (name === "ayat_mulai" && Number(value) > Number(prev.ayat_selesai)) {
-                updated.ayat_selesai = value;
-            }
-
-            // Validasi: ayat selesai tidak boleh < ayat mulai
-            if (name === "ayat_selesai" && Number(value) < Number(prev.ayat_mulai)) {
-                updated.ayat_mulai = value;
-            }
-
-            return updated;
-        });
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
+
 
     // Generate daftar ayat sesuai jumlah ayat di surat yang dipilih
     const menuAyat =
@@ -408,15 +397,21 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                         onChange={handleInputChangeayat}
                                         required
                                         disabled={!formData.surat || menuAyat.length < 1}
-                                        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1) ? "bg-gray-100 border-gray-300 cursor-not-allowed" : "border-gray-300"}`}
+                                        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${(!formData.surat || menuAyat.length < 1)
+                                            ? "bg-gray-100 border-gray-300 cursor-not-allowed"
+                                            : "border-gray-300"
+                                            }`}
                                     >
                                         <option value="">Pilih ayat selesai</option>
-                                        {menuAyat.map((item) => (
-                                            <option key={item.value} value={item.value}>
-                                                {item.label}
-                                            </option>
-                                        ))}
+                                        {menuAyat
+                                            .filter((item) => !formData.ayat_mulai || item.value >= Number(formData.ayat_mulai))
+                                            .map((item) => (
+                                                <option key={item.value} value={item.value}>
+                                                    {item.label}
+                                                </option>
+                                            ))}
                                     </select>
+
                                 </div>
                             </div>
 
