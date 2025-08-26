@@ -8,7 +8,6 @@ const DetailRekapNadhoman = ({ rekapNadhoman = [] }) => {
                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                     <tr>
                         <th className="px-3 py-2 border-b w-16">#</th>
-                        <th className="px-3 py-2 border-b">Tahun Ajaran</th>
                         <th className="px-3 py-2 border-b">NIS</th>
                         <th className="px-3 py-2 border-b">Nama Santri</th>
                         <th className="px-3 py-2 border-b">Nama Kitab</th>
@@ -20,20 +19,19 @@ const DetailRekapNadhoman = ({ rekapNadhoman = [] }) => {
                     {rekapNadhoman.map((student, index) => (
                             <tr key={student.nis} className="hover:bg-gray-50">
                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                <td className="px-3 py-2 border-b">{student.tahun_ajaran}</td>
-                                <td className="px-3 py-2 border-b">{student.nis}</td>
-                                <td className="px-3 py-2 border-b">{student.santri_nama}</td>
-                                <td className="px-3 py-2 border-b">{student.nama_kitab}</td>
-                                <td className="px-3 py-2 border-b">{student.total_bait}</td>
+                                <td className="px-3 py-2 border-b">{student.nis || "-"}</td>
+                                <td className="px-3 py-2 border-b">{student.santri_nama || "-"}</td>
+                                <td className="px-3 py-2 border-b">{student.nama_kitab || "-"}</td>
+                                <td className="px-3 py-2 border-b">{student.total_bait || "-"}</td>
                                 <td className="px-3 py-2 border-b">
                                     <div className="flex items-center">
                                         <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                                             <div
                                                 className="bg-green-600 h-2 rounded-full"
-                                                style={{ width: `${student.persentase_selesai}%` }}
+                                                style={{ width: `${student.persentase_selesai || 0}%` }}
                                             ></div>
                                         </div>
-                                        <span className="text-gray-600">{student.persentase_selesai}%</span>
+                                        <span className="text-gray-600">{student.persentase_selesai || 0}%</span>
                                     </div>
                                 </td>
                             </tr>

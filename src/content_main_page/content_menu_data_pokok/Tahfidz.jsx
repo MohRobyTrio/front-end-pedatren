@@ -353,15 +353,15 @@ export const Tahfidz = ({ student }) => {
                                                                 <td className="px-3 py-2 border-b">
                                                                     {(currentPage - 1) * limit + index + 1 || "-"}
                                                                 </td>
-                                                                <td className="px-3 py-2 border-b">{item.tahun_ajaran || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.tanggal || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.santri_nama || "-"}</td>
-                                                                <td className="px-3 py-2 border-b capitalize">{item.jenis_setoran || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.keterangan_setoran || "-"}</td>
-                                                                <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.catatan || "-"}</td>
-                                                                <td className="px-3 py-2 border-b capitalize">{item.status || "-"}</td>
-                                                                <td className="px-3 py-2 border-b">{item.pencatat || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.tahun_ajaran || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.tanggal || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.santri_nama || "-"}</td>
+                                                                <td className="px-3 py-2 border-b capitalize">{item?.jenis_setoran || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.keterangan_setoran || "-"}</td>
+                                                                <td className="px-3 py-2 border-b capitalize">{item?.nilai || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.catatan || "-"}</td>
+                                                                <td className="px-3 py-2 border-b capitalize">{item?.status || "-"}</td>
+                                                                <td className="px-3 py-2 border-b">{item?.pencatat || "-"}</td>
                                                             </tr>
                                                         ))
                                                     )}
@@ -822,18 +822,18 @@ export const TahfidzRekap = () => {
                                                     }}
                                                 >
                                                     <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item.total_surat || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item?.nama_santri || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item?.nis || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item?.total_surat || "-"}</td>
                                                     <td className="px-3 py-2 border-b">
                                                         <div className="flex items-center">
                                                             <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                                                                 <div
                                                                     className="bg-green-600 h-2 rounded-full"
-                                                                    style={{ width: `${item.persentase_khatam}%` }}
+                                                                    style={{ width: `${item?.persentase_khatam || 0}%` }}
                                                                 ></div>
                                                             </div>
-                                                            <span className="text-gray-600">{item.persentase_khatam}%</span>
+                                                            <span className="text-gray-600">{item?.persentase_khatam || 0}%</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-3 py-2 border-b text-center">

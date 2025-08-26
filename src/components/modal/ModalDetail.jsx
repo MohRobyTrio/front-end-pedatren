@@ -270,10 +270,10 @@ const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
                 label: "Berkas",
                 content: <DetailBerkas berkas={data?.Berkas || []} menu={menu} id={item.id} close={onClose} />
             },
-            data?.tahfidz && Object.keys(data?.tahfidz).length > 0 && {
+            data?.tahfidz && {
                 id: "tahfidz",
                 label: "Tahfidz",
-                content: <DetailSetoranTahfidz setoranTahfidz={data?.tahfidz} />
+                content: <DetailSetoranTahfidz setoranTahfidz={data?.tahfidz || {}} />
             },
             data?.rekap_tahfidz && Object.keys(data?.rekap_tahfidz).length > 0 && {
                 id: "rekap_tahfidz",
