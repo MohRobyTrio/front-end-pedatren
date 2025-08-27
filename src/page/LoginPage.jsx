@@ -45,7 +45,7 @@ const LoginPage = () => {
             } else if (lowerRoles.includes("biktren")) {
                 sessionStorage.setItem("kepesantrenan", "true");
                 return navigate("/perizinan", { replace: true });
-            } else if (lowerRoles.includes("waliasuh")) {
+            } else if (lowerRoles.includes("wali_asuh")) {
                 sessionStorage.setItem("kewaliasuhan", "true");
                 return navigate("/catatan-afektif", { replace: true });
             } else if (lowerRoles.includes("petugas")) {

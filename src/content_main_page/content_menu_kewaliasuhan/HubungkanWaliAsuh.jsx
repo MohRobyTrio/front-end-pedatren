@@ -328,8 +328,8 @@ const HubungkanWaliAsuh = () => {
     }
   }
 
-  if (!hasAccess("kewaliasuhan")) {
-    return <Navigate to="/not-found" replace />
+  if (!hasAccess("hubungkan_wali_asuh")) {
+    return <Navigate to="/forbidden" replace />
   }
 
   return (

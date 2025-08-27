@@ -34,7 +34,7 @@ const Formulir = () => {
         { id: "santri", label: "Santri", link: "santri" },
         { id: "domisili", label: "Domisili Santri", link: "domisili-santri" },
         { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh" },
-        { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh" },
+        // { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh" },
         { id: "pendidikan", label: "Pendidikan", link: "pendidikan" },
         { id: "khadam", label: "Khadam", link: "khadam" },
         { id: "berkas", label: "Berkas", link: "berkas" },
