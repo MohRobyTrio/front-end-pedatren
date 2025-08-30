@@ -5,11 +5,11 @@ import Swal from "sweetalert2";
 import useLogout from "../Logout";
 import { useNavigate } from "react-router-dom";
 
-const useFetchPotongan = (filters) => {
+const useFetchPotonganKhusus = (filters) => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
-    const [potongan, setPotongan] = useState([]);
-    const [loadingPotongan, setLoadingPotongan] = useState(true);
+    const [potonganKhusus, setPotonganKhusus] = useState([]);
+    const [loadingPotonganKhusus, setLoadingPotonganKhusus] = useState(true);
     const [error, setError] = useState(null);
     const [totalData, setTotalData] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -26,11 +26,11 @@ const useFetchPotongan = (filters) => {
         return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchPotongan = useCallback(async () => {
-        setLoadingPotongan(true);
+    const fetchPotonganKhusus = useCallback(async () => {
+        setLoadingPotonganKhusus(true);
         setError(null);
 
-        let url = `${API_BASE_URL}potongan?page=${currentPage}`;
+        let url = `${API_BASE_URL}santri-potongan?page=${currentPage}`;
 
         if (debouncedSearchTerm) url += `&q=${encodeURIComponent(debouncedSearchTerm)}`;
         if (filters?.status) url += `&status=${encodeURIComponent(filters.status)}`;
@@ -59,22 +59,22 @@ const useFetchPotongan = (filters) => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const result = await response.json();
 
-            setPotongan(Array.isArray(result.data) ? result.data : []);
+            setPotonganKhusus(Array.isArray(result.data) ? result.data : []);
             setTotalPages(result.data.last_pages || 1);
             setTotalData(result.data.length || 0);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);
-            setPotongan([]);
+            setPotonganKhusus([]);
         } finally {
-            setLoadingPotongan(false);
+            setLoadingPotonganKhusus(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, debouncedSearchTerm, filters, currentPage]);
 
     useEffect(() => {
-        fetchPotongan();
-    }, [fetchPotongan]);
+        fetchPotonganKhusus();
+    }, [fetchPotonganKhusus]);
 
     const handleDelete = async (id) => {
         const confirmResult = await Swal.fire({
@@ -102,7 +102,7 @@ const useFetchPotongan = (filters) => {
             });
 
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}potongan/${id}`, {
+            const response = await fetch(`${API_BASE_URL}santri-potongan/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -140,7 +140,7 @@ const useFetchPotongan = (filters) => {
                 text: "Data berhasil dihapus.",
             });
 
-            fetchPotongan();
+            fetchPotonganKhusus();
         } catch (error) {
             console.error("Error saat menghapus:", error);
             await Swal.fire({
@@ -152,10 +152,10 @@ const useFetchPotongan = (filters) => {
     };
 
     return {
-        potongan,
-        loadingPotongan,
+        potonganKhusus,
+        loadingPotonganKhusus,
         error,
-        fetchPotongan,
+        fetchPotonganKhusus,
         handleDelete,
         searchTerm,
         setSearchTerm,
@@ -166,4 +166,4 @@ const useFetchPotongan = (filters) => {
     };
 };
 
-export default useFetchPotongan;
+export default useFetchPotonganKhusus;

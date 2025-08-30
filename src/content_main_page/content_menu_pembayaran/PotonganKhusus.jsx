@@ -4,18 +4,18 @@ import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
-import useFetchPotongan from "../../hooks/hooks_menu_pembayaran/Potongan";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
-import { ModalAddOrEditPotongan, ModalDetailPotongan } from "../../components/modal/ModalFormPotongan";
+import useFetchPotonganKhusus from "../../hooks/hooks_menu_pembayaran/PotonganKhusus";
+import { ModalAddOrEditSantriPotongan, ModalDetailSantriPotongan } from "../../components/modal/ModalFormSantriPotongan";
 
-const Potongan = () => {
+const PotonganKhusus = () => {
     const [openModal, setOpenModal] = useState(false);
     const [openDetailModal, setOpenDetailModal] = useState(false);
-    const [potonganData, setPotonganData] = useState("");
-    const [idPotongan, setIdPotongan] = useState("");
+    const [potonganKhususData, setPotonganKhususData] = useState("");
+    const [idPotonganKhusus, setIdPotonganKhusus] = useState("");
     const [feature, setFeature] = useState("");
-    const { potongan, loadingPotongan, error, fetchPotongan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchPotongan();
+    const { potonganKhusus, loadingPotonganKhusus, error, fetchPotonganKhusus, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchPotonganKhusus();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -23,34 +23,26 @@ const Potongan = () => {
         }
     }
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(amount);
-    };
-
-    if (!hasAccess("potongan")) {
+    if (!hasAccess("potongan_khusus")) {
         return <Navigate to="/forbidden" replace />;
     }
 
     return (
         <div className="flex-1 p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Potongan</h1>
+                <h1 className="text-2xl font-bold">Data Potongan Khusus</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setFeature(1);
-                        setPotonganData(null);
+                        setPotonganKhususData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditPotongan isOpen={openModal} onClose={() => setOpenModal(false)} data={potonganData} refetchData={fetchPotongan} feature={feature} />
+            <ModalAddOrEditSantriPotongan isOpen={openModal} onClose={() => setOpenModal(false)} initialData={potonganKhususData} refetchData={fetchPotonganKhusus} feature={feature} />
 
-            <ModalDetailPotongan isOpen={openDetailModal} onClose={() => setOpenDetailModal(false)} id={idPotongan} />
+            <ModalDetailSantriPotongan isOpen={openDetailModal} onClose={() => setOpenDetailModal(false)} id={idPotonganKhusus} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -78,39 +70,39 @@ const Potongan = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-10">#</th>
+                                        <th className="px-3 py-2 border-b">Nama Santri</th>
                                         <th className="px-3 py-2 border-b">Nama Potongan</th>
-                                        <th className="px-3 py-2 border-b">Jenis</th>
-                                        <th className="px-3 py-2 border-b">Nilai</th>
+                                        <th className="px-3 py-2 border-b">Keterangan</th>
+                                        <th className="px-3 py-2 border-b">Berlaku</th>
                                         <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
-                                    {loadingPotongan ? (
+                                    {loadingPotonganKhusus ? (
                                         <tr>
                                             <td colSpan="7" className="text-center p-4">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ) : potongan.length === 0 ? (
+                                    ) : potonganKhusus.length === 0 ? (
                                         <tr>
                                             <td colSpan="7" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
-                                        potongan.map((item, index) => (
+                                        potonganKhusus.map((item, index) => (
                                             <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
-                                                setIdPotongan(item.id)
+                                                setIdPotonganKhusus(item.id)
                                                 setOpenDetailModal(true)
                                             }}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_santri}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_potongan}</td>
                                                 <td className="px-3 py-2 border-b capitalize">
-                                                    {item.jenis}
+                                                    {item.keterangan}
                                                 </td>
                                                 <td className="px-3 py-2 border-b">
-                                                    {item.jenis === "persentase"
-                                                        ? `${parseFloat(item.nilai)} %`
-                                                        : formatCurrency(item.nilai)}
+                                                    {item.berlaku_dari} s.d. {item.berlaku_sampai}
                                                 </td>
                                                 <td className="px-3 py-2 border-b w-30">
                                                     <span
@@ -126,7 +118,7 @@ const Potongan = () => {
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation()
-                                                            setPotonganData(item);
+                                                            setPotonganKhususData(item);
                                                             setFeature(2);
                                                             setOpenModal(true);
                                                         }}
@@ -160,4 +152,4 @@ const Potongan = () => {
     );
 };
 
-export default Potongan;
+export default PotonganKhusus;

@@ -17,26 +17,26 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
     const navigate = useNavigate()
     const id = data?.id
     const [formData, setFormData] = useState({
-        nama_potongan: "",
-        jenis: "",
+        nama: "",
+        jenis: 'persentase',
         nilai: "",
         status: true,
         keterangan: "",
-        kategori_ids: [],
+        tagihan_ids: [],
     })
-    const [categories, setCategories] = useState([])
-    const [loadingCategories, setLoadingCategories] = useState(false)
+    const [tagihan, setTagihan] = useState([])
+    const [loadingTagihan, setLoadingTagihan] = useState(false)
     const JENIS_OPTIONS = [
         { value: 'persentase', label: 'Persentase (%)' },
         { value: 'nominal', label: 'Nominal (Rp)' }
     ];
-    const selectedJenis = JENIS_OPTIONS.find(option => option.value === formData.jenis);
+    const selectedJenis = JENIS_OPTIONS.find(option => option.value == formData.jenis);
 
-    const fetchCategories = async () => {
-        setLoadingCategories(true)
+    const fetchTagihan = async () => {
+        setLoadingTagihan(true)
         try {
             const token = sessionStorage.getItem("token") || getCookie("token")
-            const response = await fetch(`${API_BASE_URL}kategori`, {
+            const response = await fetch(`${API_BASE_URL}tagihan`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -45,12 +45,12 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
 
             if (response.ok) {
                 const result = await response.json()
-                setCategories(result.data.data || [])
+                setTagihan(result.data.data || [])
             }
         } catch (error) {
-            console.error("Error fetching categories:", error)
+            console.error("Error fetching tagihan:", error)
         } finally {
-            setLoadingCategories(false)
+            setLoadingTagihan(false)
         }
     }
 
@@ -60,19 +60,25 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
 
     useEffect(() => {
         if (isOpen) {
-            fetchCategories()
+            fetchTagihan()
 
             if (feature == 2 && data) {
                 setFormData({
-                    nama_potongan: data.nama_potongan || "",
+                    nama: data.nama || "",
+                    jenis: data.jenis || "",
+                    nilai: data.nilai || "",
+                    keterangan: data.keterangan || "",
                     status: data.status == 1 ? true : false,
-                    kategori_ids: data.kategori ? data.kategori.map(item => item.id) : [],
+                    tagihan_ids: data.tagihans ? data.tagihans.map(item => item.id) : [],
                 })
             } else {
                 setFormData({
-                    nama_potongan: "",
+                    nama: "",
+                    jenis: 'persentase',
+                    nilai: "",
                     status: true,
-                    kategori_ids: [],
+                    keterangan: "",
+                    tagihan_ids: [],
                 })
             }
         }
@@ -81,16 +87,16 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
     const handleCategoryChange = (categoryId) => {
         setFormData((prev) => ({
             ...prev,
-            kategori_ids: prev.kategori_ids.includes(categoryId)
-                ? prev.kategori_ids.filter((id) => id !== categoryId)
-                : [...prev.kategori_ids, categoryId],
+            tagihan_ids: prev.tagihan_ids.includes(categoryId)
+                ? prev.tagihan_ids.filter((id) => id !== categoryId)
+                : [...prev.tagihan_ids, categoryId],
         }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (formData.kategori_ids.length === 0) {
+        if (formData.tagihan_ids.length === 0) {
             await Swal.fire({
                 icon: "error",
                 title: "Validasi Gagal",
@@ -131,9 +137,9 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
             const method = isEdit ? "PUT" : "POST"
 
             const payload = {
-                nama_potongan: formData.nama_potongan,
+                nama: formData.nama,
                 status: formData.status,
-                kategori_ids: formData.kategori_ids,
+                tagihan_ids: formData.tagihan_ids,
             }
             console.log("Payload yang dikirim ke API:", JSON.stringify(payload, null, 2))
 
@@ -143,7 +149,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(formData),
             })
 
             const result = await response.json()
@@ -254,15 +260,15 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                             <div className="space-y-4">
                                                 <div>
                                                     <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Nama Diskon <span className="text-error-500">*</span>
+                                                        Nama Potongan <span className="text-error-500">*</span>
                                                     </label>
                                                     <input
                                                         type="text"
                                                         id="nama"
                                                         value={formData.nama}
                                                         onChange={(e) => setFormData(prev => ({ ...prev, nama: e.target.value }))}
-                                                        className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors`}
-                                                        placeholder="Masukkan nama diskon"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"
+                                                        placeholder="Masukkan nama potongan"
                                                         maxLength={100}
                                                     />
                                                 </div>
@@ -270,7 +276,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                 {/* Jenis Field */}
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Jenis Diskon <span className="text-error-500">*</span>
+                                                        Jenis Potongan <span className="text-error-500">*</span>
                                                     </label>
                                                     <Listbox value={formData.jenis} onChange={(value) => setFormData(prev => ({ ...prev, jenis: value }))}>
                                                         <div className="relative">
@@ -328,7 +334,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                             id="nilai"
                                                             value={formData.nilai}
                                                             onChange={(e) => setFormData(prev => ({ ...prev, nilai: e.target.value }))}
-                                                            className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors
+                                                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none
                                                                 ${formData.jenis === 'nominal' ? 'pl-12' : 'pr-8'}`}
                                                             placeholder={formData.jenis === 'persentase' ? '0-100' : '0'}
                                                             min="0"
@@ -348,19 +354,6 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                     </div>
                                                 </div>
 
-                                                {/* Status Field */}
-                                                <div>
-                                                    <label className="flex items-center space-x-3">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={formData.status}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
-                                                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition-colors"
-                                                        />
-                                                        <span className="text-sm font-medium text-gray-700">Aktifkan Diskon</span>
-                                                    </label>
-                                                </div>
-
                                                 {/* Keterangan Field */}
                                                 <div>
                                                     <label htmlFor="keterangan" className="block text-sm font-medium text-gray-700 mb-2">
@@ -377,35 +370,50 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-gray-700 mb-2">Kategori *</label>
-                                                    {loadingCategories ? (
+                                                    <label htmlFor="keterangan" className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Berlaku Untuk Tagihan
+                                                    </label>
+                                                    {loadingTagihan ? (
                                                         <div className="flex justify-center py-4">
                                                             <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                                         </div>
                                                     ) : (
                                                         <div className="border border-gray-300 rounded-md p-3 max-h-40 overflow-y-auto">
-                                                            {categories.length > 0 ? (
+                                                            {tagihan.length > 0 ? (
                                                                 <div className="space-y-2">
-                                                                    {categories.map((category) => (
-                                                                        <label key={category.id} className="flex items-center">
+                                                                    {tagihan.map((item) => (
+                                                                        <label key={item.id} className="flex items-center">
                                                                             <input
                                                                                 type="checkbox"
-                                                                                checked={formData.kategori_ids.includes(category.id)}
-                                                                                onChange={() => handleCategoryChange(category.id)}
+                                                                                checked={formData.tagihan_ids.includes(item.id)}
+                                                                                onChange={() => handleCategoryChange(item.id)}
                                                                                 className="form-checkbox text-blue-600 rounded"
                                                                             />
-                                                                            <span className="ml-2 text-sm text-gray-700">{category.nama_kategori}</span>
+                                                                            <span className="ml-2 text-sm text-gray-700">{item.nama_tagihan}</span>
                                                                         </label>
                                                                     ))}
                                                                 </div>
                                                             ) : (
-                                                                <p className="text-gray-500 text-sm">Tidak ada kategori tersedia</p>
+                                                                <p className="text-gray-500 text-sm">Tidak ada jenis tagihan tersedia</p>
                                                             )}
                                                         </div>
                                                     )}
-                                                    {formData.kategori_ids.length === 0 && (
-                                                        <p className="text-red-500 text-xs mt-1">Minimal pilih satu kategori</p>
+                                                    {formData.tagihan_ids.length === 0 && (
+                                                        <p className="text-red-500 text-xs mt-1">Minimal pilih satu</p>
                                                     )}
+                                                </div>
+
+                                                {/* Status Field */}
+                                                <div>
+                                                    <label className="flex items-center space-x-3">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formData.status}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.checked }))}
+                                                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded transition-colors"
+                                                        />
+                                                        <span className="text-sm font-medium text-gray-700">Aktifkan Potongan</span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
@@ -473,8 +481,17 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
             day: "numeric",
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "UTC"
         })
     }
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -521,51 +538,59 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                             <h3 className="text-md font-semibold text-gray-800 mb-3">Informasi Potongan</h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {[
-                                                    //   ["ID", data.data.id],
-                                                    ["Nama Potongan", data.data.nama_potongan],
+                                                    ["Nama Potongan", data.data.nama],
                                                     ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
+                                                    ["Nilai", data.data.nilai],
+                                                    ["Keterangan", data.data.keterangan],
                                                     ["Tanggal Dibuat", formatDate(data.data.created_at)],
                                                     ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
                                                 ].map(([label, value]) => (
                                                     <div key={label} className="flex flex-col">
                                                         <span className="text-sm font-medium text-gray-600">{label}</span>
-                                                        <span className="text-sm text-gray-900 mt-1">{value}</span>
+                                                        <span className="text-sm text-gray-900 mt-1 break-words whitespace-pre-line">
+                                                            {value || "-"}
+                                                        </span>
                                                     </div>
                                                 ))}
                                             </div>
+
                                         </div>
 
                                         <div className="bg-blue-50 p-4 rounded-lg">
-                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Kategori Terkait</h3>
-                                            {data.data.kategori && data.data.kategori.length > 0 ? (
+                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Tagihan Terkait</h3>
+                                            {data.data.tagihans && data.data.tagihans.length > 0 ? (
                                                 <div className="space-y-3">
-                                                    {data.data.kategori.map((kategori) => (
-                                                        <div key={kategori.id} className="bg-white p-3 rounded border border-blue-200">
+                                                    {data.data.tagihans.map((tagihan) => (
+                                                        <div key={tagihan.id} className="bg-white p-3 rounded border border-blue-200">
                                                             <div className="flex justify-between items-start">
-                                                                <h4 className="font-medium text-gray-800">{kategori.nama_kategori}</h4>
+                                                                <h4 className="font-medium text-gray-800">{tagihan.nama_tagihan}</h4>
                                                                 <span
-                                                                    className={`px-2 py-1 text-xs rounded-full ${kategori.status == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                                                    className={`px-2 py-1 text-xs rounded-full ${tagihan.status == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                                                                         }`}
                                                                 >
-                                                                    {kategori.status == 1 ? "Aktif" : "Nonaktif"}
+                                                                    {tagihan.status == 1 ? "Aktif" : "Nonaktif"}
                                                                 </span>
                                                             </div>
-                                                            {/* <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                <div>
-                                  <span className="font-medium">ID Kategori:</span> {kategori.id}
-                                </div>
-                                <div>
-                                  <span className="font-medium">Dibuat:</span> {formatDate(kategori.created_at)}
-                                </div>
-                                <div>
-                                  <span className="font-medium">Status Pivot:</span>{" "}
-                                  {kategori.pivot.status == 1 ? "Aktif" : "Nonaktif"}
-                                </div>
-                                <div>
-                                  <span className="font-medium">Terhubung:</span>{" "}
-                                  {formatDate(kategori.pivot.created_at)}
-                                </div>
-                              </div> */}
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                                                                <div className="capitalize">
+                                                                    <span className="font-medium">Tipe:</span> {tagihan.tipe}
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-medium">Nominal:</span> {formatCurrency(tagihan.nominal)}
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-medium">Jatuh Tempo:</span>{" "}
+                                                                    {/* {formatDate(tagihan.jatuh_tempo)} */}
+                                                                    {new Date(tagihan.jatuh_tempo).toLocaleString("id-ID", {
+                                                                        year: "numeric",
+                                                                        month: "long",
+                                                                        day: "numeric",
+                                                                    })}
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-medium">Dibuat:</span> {formatDate(tagihan.created_at)}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>

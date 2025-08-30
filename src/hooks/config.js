@@ -101,6 +101,7 @@ export const rolesWithAccess = {
   virtual_account: ['admin', 'superadmin'],
   tagihan: ['admin', 'superadmin'],
   potongan: ['admin', 'superadmin'],
+  potongan_khusus: ['admin', 'superadmin'],
   
   // Akademik
   tahun_ajaran: ['admin', 'superadmin'],
