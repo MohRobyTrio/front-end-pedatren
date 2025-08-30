@@ -9,13 +9,13 @@ const useDropdownBerkas = () => {
     useEffect(() => {
         const localData = sessionStorage.getItem("menuBerkas");
 
-        if (localData) {
-            const parsedData = JSON.parse(localData);
+        // if (localData) {
+        //     const parsedData = JSON.parse(localData);
 
-            setJenisBerkasList([
-                ...parsedData.data.map(a => ({ value: a.id, label: a.nama_jenis_berkas }))
-            ]);
-        } else {
+        //     setJenisBerkasList([
+        //         ...parsedData.data.map(a => ({ value: a.id, label: a.nama_jenis_berkas }))
+        //     ]);
+        // } else {
             fetch(`${API_BASE_URL}jenis-berkas`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -35,8 +35,9 @@ const useDropdownBerkas = () => {
                     setJenisBerkasList([]);
                 });
         }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    , []);
 
     return { jenisBerkasList };
 };

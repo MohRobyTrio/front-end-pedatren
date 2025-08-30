@@ -11,16 +11,16 @@ const DropdownNegara = () => {
     useEffect(() => {
         const sessionData = sessionStorage.getItem("menuNegara");
 
-        if (sessionData) {
-            const parsed = JSON.parse(sessionData);
-            setData(parsed.negara);
-            setFilterNegara({
-                negara: [{ value: "", label: "Semua Negara" }, ...parsed.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
-                provinsi: [{ value: "", label: "Semua Provinsi" }],
-                kabupaten: [{ value: "", label: "Semua Kabupaten" }],
-                kecamatan: [{ value: "", label: "Semua Kecamatan" }]
-            });
-        } else {
+        // if (sessionData) {
+        //     const parsed = JSON.parse(sessionData);
+        //     setData(parsed.negara);
+        //     setFilterNegara({
+        //         negara: [{ value: "", label: "Semua Negara" }, ...parsed.negara.map(n => ({ value: n.id, label: n.nama_negara }))],
+        //         provinsi: [{ value: "", label: "Semua Provinsi" }],
+        //         kabupaten: [{ value: "", label: "Semua Kabupaten" }],
+        //         kecamatan: [{ value: "", label: "Semua Kecamatan" }]
+        //     });
+        // } else {
             fetch(`${API_BASE_URL}dropdown/negara`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -49,8 +49,9 @@ const DropdownNegara = () => {
                 }
             );
         }
+        // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    , []);
 
     const handleFilterChangeNegara = (newFilter) => {
         setSelectedNegara(prevFilters => {

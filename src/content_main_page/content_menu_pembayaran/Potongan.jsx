@@ -2,39 +2,18 @@ import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
-import { hasAccess } from "../../utils/hasAccess";
-import { Navigate } from "react-router-dom";
-import useFetchTagihan from "../../hooks/hooks_menu_pembayaran/tagihan";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
-import Filters from "../../components/Filters";
-import { ModalAddOrEditTagihan } from "../../components/modal/ModalFormTagihan";
+import useFetchPotongan from "../../hooks/hooks_menu_pembayaran/Potongan";
+import { hasAccess } from "../../utils/hasAccess";
+import { Navigate } from "react-router-dom";
+import { ModalAddOrEditPotongan } from "../../components/modal/ModalFormPotongan";
 
-const Tagihan = () => {
-    const [filters, setFilters] = useState({
-        status: "",
-        tipe: "",
-    })
+const Potongan = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [tagihanData, setTagihanData] = useState("");
+    const [potonganData, setPotonganData] = useState("");
     const [feature, setFeature] = useState("");
-    const [showFilters, setShowFilters] = useState(false)
-    const { tagihan, loadingTagihan, error, fetchTagihan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchTagihan(filters);
-
-    const filter = {
-        status: [
-            { label: "Semua Status", value: "" },
-            { label: "Aktif", value: "true" },
-            { label: "Nonaktif", value: "false" },
-        ],
-        tipe: [
-            { label: "Semua Tipe", value: "" },
-            { label: "Bulanan", value: "bulanan" },
-            { label: "Semester", value: "semester" },
-            { label: "Tahunan", value: "tahunan" },
-            { label: "Sekali Bayar", value: "sekali_bayar" },
-        ],
-    }
+    const { potongan, loadingPotongan, error, fetchPotongan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchPotongan();
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -60,24 +39,24 @@ const Tagihan = () => {
         });
     };
 
-    // if (!hasAccess("tagihan")) {
-    //     return <Navigate to="/forbidden" replace />;
-    // }
+    if (!hasAccess("potongan")) {
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Tagihan</h1>
+                <h1 className="text-2xl font-bold">Data Potongan</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setFeature(1);
-                        setTagihanData(null);
+                        setPotonganData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={tagihanData} refetchData={fetchTagihan} feature={feature} />
+            <ModalAddOrEditPotongan isOpen={openModal} onClose={() => setOpenModal(false)} data={potonganData} refetchData={fetchPotongan} feature={feature} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -116,7 +95,7 @@ const Tagihan = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-10">#</th>
-                                        <th className="px-3 py-2 border-b">Nama Tagihan</th>
+                                        <th className="px-3 py-2 border-b">Nama Potongan</th>
                                         <th className="px-3 py-2 border-b">Tipe</th>
                                         <th className="px-3 py-2 border-b">Nominal</th>
                                         <th className="px-3 py-2 border-b">Jatuh Tempo</th>
@@ -125,21 +104,21 @@ const Tagihan = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
-                                    {loadingTagihan ? (
+                                    {loadingPotongan ? (
                                         <tr>
                                             <td colSpan="7" className="text-center p-4">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ) : tagihan.length === 0 ? (
+                                    ) : potongan.length === 0 ? (
                                         <tr>
                                             <td colSpan="7" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
-                                        tagihan.map((item, index) => (
+                                        potongan.map((item, index) => (
                                             <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_potongan}</td>
                                                 <td className="px-3 py-2 border-b">
                                                     {item.tipe === 'bulanan' ? 'Bulanan' : 
                                                      item.tipe === 'semester' ? 'Semester' :
@@ -160,7 +139,7 @@ const Tagihan = () => {
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                     <button
                                                         onClick={() => {
-                                                            setTagihanData(item);
+                                                            setPotonganData(item);
                                                             setFeature(2);
                                                             setOpenModal(true);
                                                         }}
@@ -191,4 +170,4 @@ const Tagihan = () => {
     );
 };
 
-export default Tagihan;
+export default Potongan;

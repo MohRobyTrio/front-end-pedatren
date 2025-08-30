@@ -10,7 +10,7 @@ const useLogout = () => {
   const clearAuthData = () => {
     removeTokenCookie();
     localStorage.clear();
-    sessionStorage.clear();    
+    sessionStorage.clear();
   };
 
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const useLogout = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -40,6 +40,9 @@ const useLogout = () => {
       //   clearAuthData();
       //   throw new Error("Unauthorized. Logging out.");
       // }
+
+      clearAuthData();
+      navigate("/login");
 
       if (response.status === 401) {
         clearAuthData();
@@ -78,7 +81,7 @@ const useLogout = () => {
     } finally {
       setIsLoggingOut(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

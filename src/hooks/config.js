@@ -100,6 +100,7 @@ export const rolesWithAccess = {
   bank: ['admin', 'superadmin'],
   virtual_account: ['admin', 'superadmin'],
   tagihan: ['admin', 'superadmin'],
+  potongan: ['admin', 'superadmin'],
   
   // Akademik
   tahun_ajaran: ['admin', 'superadmin'],
