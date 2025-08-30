@@ -13,7 +13,7 @@ export const rolesWithAccess = {
   kesantrian: ['admin', 'superadmin'],
     kelembagaan: ['admin', 'superadmin'],
     kewilayahan: ['admin', 'superadmin'],
-  kewaliasuhan: ['admin', 'superadmin','waliasuh'],
+  kewaliasuhan: ['admin', 'superadmin','wali_asuh'],
   kepesantrenan: ['admin', 'superadmin','ustadz'],
     hafalan: ['admin', 'superadmin', 'ustadz'],
     csholat: ['admin', 'superadmin', 'ustadz'],
@@ -57,8 +57,8 @@ export const rolesWithAccess = {
     anak_asuh: ['admin', 'superadmin'],
     group_kewaliasuhan: ['admin', 'superadmin'],
     hubungkan_wali_asuh: ['admin', 'superadmin'],
-    catatan_afektif: ['admin', 'superadmin', 'waliasuh'],
-    catatan_kognitif: ['admin', 'superadmin', 'waliasuh'],
+    catatan_afektif: ['admin', 'superadmin', 'wali_asuh'],
+    catatan_kognitif: ['admin', 'superadmin', 'wali_asuh'],
 
   // Kepesantrenan
     perizinan: ['admin', 'superadmin', 'biktren', 'kamtib', 'pengasuh'],

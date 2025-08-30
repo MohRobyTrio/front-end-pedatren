@@ -35,7 +35,7 @@ import TabPengajar from "../content_main_page/content_tab_formulir/TabPengajar";
 import TabPengurus from "../content_main_page/content_tab_formulir/TabPengurus";
 import TabProgress from "../content_main_page/content_tab_formulir/TabProgress";
 import TabSantri from "../content_main_page/content_tab_formulir/TabSantri";
-import TabAnakAsuh from "../content_main_page/content_tab_formulir/TabAnakAsuh";
+// import TabAnakAsuh from "../content_main_page/content_tab_formulir/TabAnakAsuh";
 import TabWaliAsuh from "../content_main_page/content_tab_formulir/TabWaliAsuh";
 import TabWaliKelas from "../content_main_page/content_tab_formulir/TabWaliKelas";
 import TabWarPes from "../content_main_page/content_tab_formulir/TabWarPes";
@@ -126,7 +126,7 @@ export const menuKewaliasuhanItems = [
     { id: "waliasuh", icon: "fa-user-shield", text: "Wali Asuh", link: "/wali-asuh", content: <WaliAsuh />, access: "wali_asuh" },
     { id: "anakasuh", icon: "fa-users", text: "Anak Asuh", link: "/anak-asuh", content: <AnakAsuh />, access: "anak_asuh" },
     { id: "groupkewaliasuhan", icon: "fa-book-open", text: "Group Kewaliasuhan", link: "/group-kewaliasuhan", content: <GroupKewaliasuhan />, access: "group_kewaliasuhan" },
-    { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh /> },
+    { id: "hubungkanwaliasuh", icon: "fa-link", text: "Hubungkan Wali Asuh", link: "/hubungkan-wali-asuh", content: <HubungkanWaliAsuh />, access: "hubungkan_wali_asuh" },
     { id: "catatanafektif", icon: "fa-hand-holding-heart", text: "Catatan Afektif", link: "/catatan-afektif", content: <CatatanAfektif />, access: "catatan_afektif" },
     { id: "catatankognitif", icon: "fa-brain", text: "Catatan Kognitif", link: "/catatan-kognitif", content: <CatatanKognitif />, access: "catatan_kognitif" },
 ];
@@ -253,7 +253,7 @@ export const tabsFormulir = [
   { id: "santri", label: "Santri", link: "santri", content: <TabSantri /> },
   { id: "domisili", label: "Domisili Santri", link: "domisili-santri", content: <TabDomisiliSantri /> },
   { id: "waliasuh", label: "Wali Asuh", link: "wali-asuh", content: <TabWaliAsuh /> },
-  { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh", content: <TabAnakAsuh /> },
+//   { id: "anakasuh", label: "Anak Asuh", link: "anak-asuh", content: <TabAnakAsuh /> },
   { id: "pendidikan", label: "Pendidikan", link: "pendidikan", content: <TabPendidikan /> },
   { id: "pengajar", label: "Pengajar", link: "pengajar", content: <TabPengajar /> },
   { id: "karyawan", label: "Karyawan", link: "karyawan", content: <TabKaryawan /> },
