@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import viteCompression from 'vite-plugin-compression';
-import strip from '@rollup/plugin-strip';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import viteCompression from "vite-plugin-compression";
+import strip from "@rollup/plugin-strip";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,29 +14,29 @@ export default defineConfig({
     // }),
     tailwindcss(),
     viteCompression({
-      algorithm: 'brotliCompress',
-      ext: '.br',
+      algorithm: "brotliCompress",
+      ext: ".br",
     }),
   ],
   // base: 'pedatren/frontend/',
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 5173, // Atur port sesuai kebutuhan
-    allowedHosts: ['8353-36-73-207-44.ngrok-free.app'],
   },
   optimizeDeps: {
-    exclude: ['react-icons', 'fontawesome']
+    include: ["lucide-react"],
+    exclude: ["react-icons", "fontawesome"],
   },
   build: {
     chunkSizeWarningLimit: 1000, // opsional: biar warning gak muncul
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'
+          if (id.includes("node_modules")) {
+            return "vendor";
           }
-        }
-      }
-    }
+        },
+      },
+    },
   },
-})
+});

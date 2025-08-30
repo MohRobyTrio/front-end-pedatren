@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const NotFound = () => {
+    const navigate = useNavigate();
     return (
         <section className="bg-gray-900 h-screen flex items-center justify-center">
             <div className="px-4 mx-auto max-w-screen-xl text-center">
@@ -9,14 +12,14 @@ const NotFound = () => {
                     Halaman Tidak Ditemukan
                 </p>
                 <p className="mb-4 text-lg font-light text-gray-400">
-                    Maaf, kami tidak dapat menemukan halaman yang Anda cari. Silakan kembali ke beranda untuk melanjutkan.
+                    Maaf, kami tidak dapat menemukan halaman yang Anda cari. Silakan kembali untuk melanjutkan.
                 </p>
-                <a
-                    href="/"
-                    className="inline-flex text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-blue-900 my-4"
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex font-bold text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-blue-900 my-4"
                 >
-                    Kembali ke Beranda
-                </a>
+                    Kembali
+                </button>
             </div>
         </section>
     );

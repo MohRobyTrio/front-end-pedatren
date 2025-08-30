@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const Forbidden = () => {
+    const navigate = useNavigate();
     return (
         <section className="bg-gray-900 h-screen flex items-center justify-center">
             <div className="px-4 mx-auto max-w-screen-xl text-center">
@@ -11,12 +14,12 @@ const Forbidden = () => {
                 <p className="mb-4 text-lg font-light text-gray-400">
                     Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.
                 </p>
-                <a
-                    href="/"
-                    className="inline-flex text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-red-900 my-4"
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex font-bold text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-red-900 my-4"
                 >
-                    Kembali ke Beranda
-                </a>
+                    Kembali
+                </button>
             </div>
         </section>
     );

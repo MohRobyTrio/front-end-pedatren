@@ -47,7 +47,7 @@ const HubungkanWaliAsuh = () => {
   const [selectedWaliAsuh, setSelectedWaliAsuh] = useState(null)
   const [isAllSelected, setIsAllSelected] = useState(false)
   const [showSelectWaliAsuhModal, setShowSelectWaliAsuhModal] = useState(false)
-  const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null)
+  // const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null)
   const [waliAsuhTerpilihMethod1, setWaliAsuhTerpilihMethod1] = useState(null);
   const [waliAsuhTerpilihMethod2, setWaliAsuhTerpilihMethod2] = useState(null);
   const [filters, setFilters] = useState({
@@ -142,6 +142,7 @@ const HubungkanWaliAsuh = () => {
         anak_asuh: selectedSantriIds.map((id) => ({ id_santri: id })),
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSantriIds, selectedMethod])
 
   const handlePageChange = (page) => {
@@ -309,7 +310,7 @@ const HubungkanWaliAsuh = () => {
           },
           anak_asuh: [],
         })
-        setWaliAsuhTerpilih(null)
+        // setWaliAsuhTerpilih(null)
         setSelectedWaliAsuh(null)
       }
       if (selectedMethod === 1) {

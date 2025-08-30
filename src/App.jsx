@@ -45,6 +45,14 @@ import ContainerSaldo from './content_main_page/content_menu_kepesantrenan/Conta
 import { Toaster } from 'sonner';
 import DashboardOrtu from './content_main_page/content_ortu/Dashboard';
 import ExportPage from './content_main_page/Tes';
+import LoginOrtuPage from './content_main_page/content_ortu/Login';
+import RegisterOrtuPage from './content_main_page/content_ortu/Register';
+import { AppLayout } from './content_main_page/content_ortu/AppLayout';
+import { DashboardPage } from './content_main_page/content_ortu/Home';
+import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
+import { AkademikPage } from './content_main_page/content_ortu/Akademik';
+import { KeuanganPage } from './content_main_page/content_ortu/Keuangan';
+import { ProfilPage } from './content_main_page/content_ortu/Profil';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -171,6 +179,20 @@ function App() {
                         {/* <Route path="/register" element={<RegisterPage />} /> */}
                         <Route path="/forgot" element={<ForgotPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        <Route path="/login-ortu" element={<LoginOrtuPage />} />
+                        <Route path="/register-ortu" element={<RegisterOrtuPage />} />
+                        <Route path="/app-ortu" element={<AppLayout />} />
+                        <Route path="/home-ortu" element={<DashboardPage />} />
+                        <Route path="/wali" element={<AppLayout />}>
+                            <Route index element={<Navigate to="/wali/home" replace />} />
+                            <Route path="/wali/home" element={<DashboardPage />} />
+                            <Route path="/wali/hafalan" element={<HafalanPage />} />
+                            <Route path="/wali/akademik" element={<AkademikPage />} />
+                            <Route path="/wali/keuangan" element={<KeuanganPage />} />
+                            <Route path="/wali/profil" element={<ProfilPage />} />
+                        </Route>
+
+
 
                     </Route>
 
@@ -243,6 +265,8 @@ function App() {
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/transaksi" element={<Transaksi />} />
                             <Route path="/ortu" element={<DashboardOrtu />} />
+                            <Route path="/login-ortu" element={<LoginOrtuPage />} />
+                            <Route path="/register-ortu" element={<RegisterOrtuPage />} />
                             <Route path="/export-img" element={<ExportPage />} />
                             {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
                         </Route>
