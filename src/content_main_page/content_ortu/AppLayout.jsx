@@ -228,6 +228,20 @@ export const AppLayout = () => {
             )
             }
 
+            {/* Mobile AppBar */}
+            {isMobile && (
+                <div className="fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm">
+                    <h1 className="text-base font-semibold text-emerald-700">Portal Wali</h1>
+                    <button
+                        className="text-red-500 text-sm flex items-center"
+                        onClick={handleLogout}
+                    >
+                        <LogOut className="h-4 w-4 mr-1" />
+                        Keluar
+                    </button>
+                </div>
+            )}
+
             {/* Mobile bottom navigation */}
             {
                 isMobile && (
@@ -255,7 +269,7 @@ export const AppLayout = () => {
                 )
             }
 
-            <div className={`${isMobile ? "" : "sm:pl-64"}`}>
+            <div className={`${isMobile ? "pt-12" : "sm:pl-64"}`}>
                 <main className={`flex-1 overflow-auto p-1 lg:p-8 ${isMobile ? "pb-20" : ""}`}><Outlet /></main>
             </div>
 
