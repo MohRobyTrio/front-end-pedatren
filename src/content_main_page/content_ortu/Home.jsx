@@ -188,11 +188,11 @@ export const DashboardPage = () => {
                                                     >
                                                         <div className="flex items-center space-x-3">
                                                             <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                                                                <span className="text-xs font-semibold text-emerald-700">{child.name.charAt(0)}</span>
+                                                                <span className="text-xs font-semibold text-emerald-700">{child.nama.charAt(0)}</span>
                                                             </div>
                                                             <div>
-                                                                <p className="font-medium text-sm">{child.name}</p>
-                                                                <p className="text-xs text-gray-500">Kelas {child.class}</p>
+                                                                <p className="font-medium text-sm">{child.nama}</p>
+                                                                <p className="text-xs text-gray-500">NIS: {child.nis}</p>
                                                             </div>
                                                         </div>
                                                     </button>
