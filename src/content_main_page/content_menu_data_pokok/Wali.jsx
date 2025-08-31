@@ -65,7 +65,8 @@ const Wali = () => {
         totalDataWali,
         totalPages,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        fetchData
     } = useFetchWali(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
@@ -165,6 +166,8 @@ const Wali = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingWali}
                 />
 
                 {error ? (
@@ -241,15 +244,15 @@ const Wali = () => {
                                             <td className="px-3 py-2 border-b">{item.telepon_2 || "-"}</td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                 {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi3')
-                                                        }}
-                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaEdit />
-                                                    </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEditClick(item.biodata_id || item.id || item, 'kondisi3')
+                                                    }}
+                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                >
+                                                    <FaEdit />
+                                                </button>
                                                 {/* </Link> */}
                                             </td>
 

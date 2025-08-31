@@ -164,7 +164,7 @@ const SantriNonDomisili = () => {
             { label: "Tidak Ada Phone Number", value: "tidak ada phone number" },
         ],
     }
-    
+
     // const filter6 = {
     //     // Sudah
     //     smartcard: [
@@ -272,6 +272,8 @@ const SantriNonDomisili = () => {
                     // totalFiltered={santriNonDomisili.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingSantriNonDomisili}
                 />
 
                 {error ? (

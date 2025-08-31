@@ -9,6 +9,7 @@ import useFetchSemester from "../../hooks/hooks_menu_akademik/Semester";
 import { ModalAddOrEditSemester, ModalDetailSemester } from "../../components/modal/modal_kelembagaan/ModalFormSemester";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
+import SearchBar from "../../components/SearchBar";
 
 const Semester = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -54,6 +55,14 @@ const Semester = () => {
                     </div>
                 ) : (
                     <>
+                    <SearchBar
+                            totalData={semester.length}
+                            onRefresh={() => fetchSemester(true)}
+                            loadingRefresh={loadingSemester}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">

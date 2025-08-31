@@ -327,6 +327,8 @@ const PesertaDidik = () => {
                             toggleLimit={(e) => setLimit(Number(e.target.value))}
                             toggleFilters={() => setShowFilters(!showFilters)}
                             toggleView={setViewMode}
+                            onRefresh={() => fetchData(true)}
+                            loadingRefresh={loadingPesertaDidik}
                         />
 
                         {error ? (

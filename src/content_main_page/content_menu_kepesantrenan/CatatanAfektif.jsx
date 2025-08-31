@@ -186,8 +186,8 @@ const CatatanAfektif = () => {
     const [showFormModal, setShowFormModal] = useState(false);
 
     if (!hasAccess("catatan_afektif")) {
-            return <Navigate to="/forbidden" replace />;
-        }
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6 overflow-y-auto">
@@ -247,6 +247,8 @@ const CatatanAfektif = () => {
                     // totalFiltered={groupedData.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loading}
                 />
 
                 <div>

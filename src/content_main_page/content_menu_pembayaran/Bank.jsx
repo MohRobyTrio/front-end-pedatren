@@ -84,6 +84,8 @@ const Bank = () => {
                             totalData={totalData}
                             toggleFilters={() => setShowFilters(!showFilters)}
                             showLimit={false}
+                            onRefresh={() => fetchBank(true)}
+                            loadingRefresh={loadingBank}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

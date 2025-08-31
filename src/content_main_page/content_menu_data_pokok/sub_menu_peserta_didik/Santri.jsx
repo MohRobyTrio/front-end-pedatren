@@ -280,6 +280,8 @@ const Santri = () => {
                     // totalFiltered={santri.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingSantri}
                 />
 
                 {error ? (
@@ -345,17 +347,17 @@ const Santri = () => {
                                                 <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
-                                                        <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation()
-                                                                }}
-                                                                className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                            >
-                                                                <FaEdit />
-                                                            </button>
-                                                        </Link>
-                                                    </td>
+                                                    <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             </tr>
                                         ))
                                     )}

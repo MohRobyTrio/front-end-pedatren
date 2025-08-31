@@ -110,6 +110,8 @@ const Tagihan = () => {
                             showLimit={false}
                             showSearch={false}
                             showFilterButtons={false}
+                            onRefresh={() => fetchTagihan(true)}
+                            loadingRefresh={loadingTagihan}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

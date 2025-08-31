@@ -596,7 +596,7 @@ export const TahfidzRekap = () => {
         totalPages,
         currentPage,
         setCurrentPage,
-        // fetchData,
+        fetchData,
     } = useFetchTahfidz(updatedFilters)
 
     const [showFilters, setShowFilters] = useState(false)
@@ -703,6 +703,8 @@ export const TahfidzRekap = () => {
                             toggleLimit={(e) => setLimit(Number(e.target.value))}
                             toggleFilters={() => setShowFilters(!showFilters)}
                             toggleView={false}
+                            onRefresh={() => fetchData(true)}
+                            loadingRefresh={loadingTahfidz}
                         />
 
                         {error ? (

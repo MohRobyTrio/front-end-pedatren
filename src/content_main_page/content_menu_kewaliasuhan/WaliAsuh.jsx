@@ -104,7 +104,7 @@ const WaliAsuh = () => {
         rombel: rombelTerpilih
     }), [filters, negaraTerpilih, provinsiTerpilih, kabupatenTerpilih, kecamatanTerpilih, wilayahTerpilih, blokTerpilih, kamarTerpilih, lembagaTerpilih, jurusanTerpilih, kelasTerpilih, rombelTerpilih]);
 
-    const { waliAsuh, loadingWaliAsuh, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliAsuh, totalPages, currentPage, setCurrentPage } = useFetchWaliAsuh(updatedFilters);
+    const { waliAsuh, loadingWaliAsuh, searchTerm, setSearchTerm, error, limit, setLimit, totalDataWaliAsuh, totalPages, currentPage, setCurrentPage, fetchData } = useFetchWaliAsuh(updatedFilters);
 
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
@@ -255,6 +255,8 @@ const WaliAsuh = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingWaliAsuh}
                 />
 
                 {error ? (

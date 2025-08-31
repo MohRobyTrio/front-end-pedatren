@@ -123,22 +123,22 @@ const Khadam = () => {
     }
 
     // const filter5 = {
-        // Sudah
-        // wargaPesantren: [
-        //     { label: "Warga Pesantren", value: "" },
-        //     { label: "Memiliki NIUP", value: "memiliki niup" },
-        //     { label: "Tanpa NIUP", value: "tanpa niup" }
-        // ],
-        // Sudah
-        // pemberkasan: [
-        //     { label: "Pemberkasan", value: "" },
-        //     { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
-        //     { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
-        //     { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
-        //     { label: "Tidak Ada KK", value: "tidak ada kk" },
-        //     { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
-        //     { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
-        // ]
+    // Sudah
+    // wargaPesantren: [
+    //     { label: "Warga Pesantren", value: "" },
+    //     { label: "Memiliki NIUP", value: "memiliki niup" },
+    //     { label: "Tanpa NIUP", value: "tanpa niup" }
+    // ],
+    // Sudah
+    // pemberkasan: [
+    //     { label: "Pemberkasan", value: "" },
+    //     { label: "Tidak Ada Berkas", value: "tidak ada berkas" },
+    //     { label: "Tidak Ada Foto Diri", value: "tidak ada foto diri" },
+    //     { label: "Memiliki Foto Diri", value: "memiliki foto diri" },
+    //     { label: "Tidak Ada KK", value: "tidak ada kk" },
+    //     { label: "Tidak Ada Akta Kelahiran", value: "tidak ada akta kelahiran" },
+    //     { label: "Tidak Ada Ijazah", value: "tidak ada ijazah" }
+    // ]
     // }
 
     // const filter4 = {
@@ -247,6 +247,8 @@ const Khadam = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingKhadam}
                 />
 
                 {error ? (
@@ -323,15 +325,15 @@ const Khadam = () => {
                                                 <td className="px-3 py-2 border-b">{item.keterangan || "-"}</td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/s/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
 

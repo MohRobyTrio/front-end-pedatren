@@ -285,6 +285,8 @@ const BersaudaraKandung = () => {
                     // totalFiltered={pesertaDidikBersaudara.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingBersaudara}
                 />
 
                 {error ? (

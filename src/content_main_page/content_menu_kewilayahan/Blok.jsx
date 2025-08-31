@@ -91,6 +91,8 @@ const Blok = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchBlok}
+                            loadingRefresh={loadingBlok}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

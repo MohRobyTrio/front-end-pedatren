@@ -67,6 +67,8 @@ const Kelas = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchKelas}
+                            loadingRefresh={loadingKelas}
                         />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">

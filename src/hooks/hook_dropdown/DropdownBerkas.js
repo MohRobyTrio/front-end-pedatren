@@ -7,7 +7,7 @@ const useDropdownBerkas = () => {
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        const localData = sessionStorage.getItem("menuBerkas");
+        // const localData = sessionStorage.getItem("menuBerkas");
 
         // if (localData) {
         //     const parsedData = JSON.parse(localData);
@@ -27,7 +27,7 @@ const useDropdownBerkas = () => {
                     sessionStorage.setItem("menuBerkas", JSON.stringify({ data }));
 
                     setJenisBerkasList([
-                        ...data.map(a => ({ value: a.id, label: a.nama_jenis_berkas }))
+                        ...data.map(a => ({ id: a.id, label: a.nama_jenis_berkas }))
                     ]);
                 })
                 .catch((error) => {

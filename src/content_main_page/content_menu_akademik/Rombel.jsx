@@ -67,6 +67,8 @@ const Rombel = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchRombel}
+                            loadingRefresh={loadingRombel}
                         />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">

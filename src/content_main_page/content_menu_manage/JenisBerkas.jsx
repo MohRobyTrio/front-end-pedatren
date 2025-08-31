@@ -6,6 +6,7 @@ import { ModalAddOrEditJenisBerkas, ModalDetailJenisBerkas } from "../../compone
 import useFetchJenisBerkas from "../../hooks/hooks_menu_manage/jenisBerkas";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
+import SearchBar from "../../components/SearchBar";
 
 const JenisBerkas = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -51,6 +52,14 @@ const JenisBerkas = () => {
                     </div>
                 ) : (
                     <>
+                        <SearchBar
+                            totalData={jenisBerkas.length}
+                            onRefresh={() => fetchJenisBerkas(true)}
+                            loadingRefresh={loadingJenisBerkas}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">

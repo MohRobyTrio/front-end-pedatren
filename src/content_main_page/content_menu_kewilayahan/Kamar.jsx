@@ -91,6 +91,8 @@ const Kamar = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchKamar}
+                            loadingRefresh={loadingKamar}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

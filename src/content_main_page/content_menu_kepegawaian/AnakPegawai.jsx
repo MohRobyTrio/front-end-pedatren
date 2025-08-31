@@ -27,16 +27,16 @@ const AnakPegawai = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [openModalExport, setOpenModalExport] = useState(false);
     const { jenisBerkasList } = useDropdownBerkas();
-    
+
     const openModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
-    
+
     const closeModal = () => {
         setSelectedItem(null);
         setIsModalOpen(false);
-    };    
+    };
 
     const [filters, setFilters] = useState({
         phoneNumber: "",
@@ -178,13 +178,13 @@ const AnakPegawai = () => {
         ]
     }
     // const filter6 = {
-        // Sudah
-        // smartcard: [
-        //     { label: "Smartcard", value: "" },
-        //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
-        //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
-        // ],
-        // Sudah
+    // Sudah
+    // smartcard: [
+    //     { label: "Smartcard", value: "" },
+    //     { label: "Memiliki Smartcard", value: "memiliki smartcard" },
+    //     { label: "Tidak Ada Smartcard", value: "tanpa smartcard" }
+    // ],
+    // Sudah
     //     phoneNumber: [
     //         { label: "Phone Number", value: "" },
     //         { label: "Memiliki Phone Number", value: "memiliki phone number" },
@@ -251,13 +251,13 @@ const AnakPegawai = () => {
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
                     >
-                                <FaFileExport />
-                                <span>Export</span>
+                        <FaFileExport />
+                        <span>Export</span>
                     </button>
                 </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}>
                     <Filters showFilters={showFilters} filterOptions={filterNegara} onChange={handleFilterChangeNegara} selectedFilters={selectedNegara} />
                     <Filters showFilters={showFilters} filterOptions={filterWilayah} onChange={handleFilterChangeWilayah} selectedFilters={selectedWilayah} />
                     <Filters showFilters={showFilters} filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />
@@ -273,6 +273,8 @@ const AnakPegawai = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingAnakPegawai}
                 />
 
                 {error ? (
@@ -366,17 +368,17 @@ const AnakPegawai = () => {
                                                 <td className="px-3 py-2 border-b">{item.nama_ortu || "-"}</td>
                                                 {/* <td className="px-3 py-2 border-b">{item.tgl_update || "-"}</td>
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
-                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi2')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
                                             </tr>

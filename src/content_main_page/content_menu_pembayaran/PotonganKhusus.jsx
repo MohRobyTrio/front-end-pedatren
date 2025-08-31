@@ -64,6 +64,8 @@ const PotonganKhusus = () => {
                             showLimit={false}
                             showSearch={false}
                             showFilterButtons={false}
+                            onRefresh={() => fetchPotonganKhusus(true)}
+                            loadingRefresh={loadingPotonganKhusus}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

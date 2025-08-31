@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaSync } from "react-icons/fa";
 
 const SearchBar = ({
     searchTerm,
@@ -13,8 +14,11 @@ const SearchBar = ({
     showFilterButtons = true,
     showSearch = true,
     showLimit = true,
-    showTotalData = true
+    showTotalData = true,
+    onRefresh,
+    loadingRefresh
 }) => {
+    // eslint-disable-next-line no-unused-vars
     const [viewMode, setViewMode] = useState("table");
 
     useEffect(() => {
@@ -66,6 +70,20 @@ const SearchBar = ({
                 {showFilterButtons && (
                     <button aria-label="filter" className="p-3 bg-green-500 text-white rounded flex items-center justify-center cursor-pointer" onClick={toggleFilters}>
                         <i className="fas fa-filter text-lg"></i>
+                    </button>
+                )}
+
+                {onRefresh && (
+                    <button
+                        aria-label="refresh"
+                        className={`p-3 bg-blue-500 text-white rounded flex items-center justify-center cursor-pointer ${loadingRefresh
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-blue-700"
+                                    }`}
+                        onClick={onRefresh}
+                        disabled={loadingRefresh}
+                    >
+                        <FaSync className={`w-4 h-4 ${loadingRefresh ? "animate-spin" : ""}`} />
                     </button>
                 )}
             </div>

@@ -20,7 +20,7 @@ const LogActivity = () => {
 
     useEffect(() => {
         fetchLogs()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname])
 
     const [filters, setFilters] = useState({
@@ -131,6 +131,8 @@ const LogActivity = () => {
                     showViewButtons={false}
                     showSearch={false}
                     showLimit={false}
+                    onRefresh={() => fetchLogs(true)}
+                    loadingRefresh={loading}
                 />
 
                 <div>
