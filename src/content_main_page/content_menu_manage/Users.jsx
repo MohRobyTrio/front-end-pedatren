@@ -75,6 +75,8 @@ const Users = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={() => fetchUsers(true)}
+                            loadingRefresh={loadingUsers}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

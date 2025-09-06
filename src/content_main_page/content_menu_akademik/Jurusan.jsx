@@ -67,6 +67,8 @@ const Jurusan = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchJurusan}
+                            loadingRefresh={loadingJurusan}
                         />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">

@@ -168,6 +168,62 @@ const RedirectToBiodata = () => {
     return null;
 };
 
+// Helper untuk cek login ortu/wali
+const isOrtuLoggedIn = () => {
+    const token = getCookie("auth_  token_ortu"); // token khusus ortu
+    const expiredAt = getCookie("expiredAt_ortu");
+    const sessionToken = sessionStorage.getItem("auth_token_ortu");
+    const isSessionActive = sessionStorage.getItem("activeSessionOrtu") === "true";
+
+    console.log("cek ortu login", { token, expiredAt, sessionToken, isSessionActive });
+
+    if (!token && !sessionToken) return false;
+
+    if (expiredAt && Date.now() > parseInt(expiredAt, 10) && !isSessionActive) {
+        removeTokenCookie("token_ortu");
+        Swal.fire({
+            title: 'Sesi Berakhir',
+            text: 'Sesi anda telah berakhir, silakan login kembali.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return false;
+    }
+    return true;
+};
+
+// Private route khusus ortu/wali
+const PrivateRouteOrtu = () => {
+    return isOrtuLoggedIn() ? <Outlet /> : <Navigate to="/login-ortu" replace />;
+};
+
+// Public route khusus ortu/wali
+const PublicRouteOrtu = () => {
+    return !isOrtuLoggedIn() ? <Outlet /> : <Navigate to="/wali/home" replace />;
+};
+
+const RedirectToRegisterOrtu = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const firstVisitRaw = localStorage.getItem("ortu_first_visit");
+        const firstVisit = firstVisitRaw == "true";
+        console.log("data local", firstVisit);
+
+        if (!firstVisit) {
+            console.log("Pertama kali → ke register ortu");
+            localStorage.setItem("ortu_first_visit", "visited");
+            navigate("/register-ortu", { replace: true });
+        } else {
+            console.log("Sudah pernah → ke login ortu");
+            navigate("/login-ortu", { replace: true });
+        }
+    }, [navigate]);
+
+    return null;
+};
+
+
 function App() {
     return (
         <Router>
@@ -179,10 +235,28 @@ function App() {
                         {/* <Route path="/register" element={<RegisterPage />} /> */}
                         <Route path="/forgot" element={<ForgotPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
+                        {/* <Route path="/login-ortu" element={<LoginOrtuPage />} />
+                        <Route path="/register-ortu" element={<RegisterOrtuPage />} />
+                        <Route path="/wali" element={<AppLayout />}>
+                            <Route index element={<Navigate to="/wali/home" replace />} />
+                            <Route path="/wali/home" element={<DashboardPage />} />
+                            <Route path="/wali/hafalan" element={<HafalanPage />} />
+                            <Route path="/wali/akademik" element={<AkademikPage />} />
+                            <Route path="/wali/keuangan" element={<KeuanganPage />} />
+                            <Route path="/wali/profil" element={<ProfilPage />} />
+                        </Route> */}
+
+
+
+                    </Route>
+
+                    <Route element={<PublicRouteOrtu />}>
+                        <Route path="/ortu" element={<RedirectToRegisterOrtu />} />
                         <Route path="/login-ortu" element={<LoginOrtuPage />} />
                         <Route path="/register-ortu" element={<RegisterOrtuPage />} />
-                        <Route path="/app-ortu" element={<AppLayout />} />
-                        <Route path="/home-ortu" element={<DashboardPage />} />
+                    </Route>
+
+                    <Route element={<PrivateRouteOrtu />}>
                         <Route path="/wali" element={<AppLayout />}>
                             <Route index element={<Navigate to="/wali/home" replace />} />
                             <Route path="/wali/home" element={<DashboardPage />} />
@@ -191,9 +265,6 @@ function App() {
                             <Route path="/wali/keuangan" element={<KeuanganPage />} />
                             <Route path="/wali/profil" element={<ProfilPage />} />
                         </Route>
-
-
-
                     </Route>
 
                     {/* Private Route: Semua halaman ini butuh login */}

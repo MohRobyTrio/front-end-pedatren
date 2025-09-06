@@ -68,6 +68,8 @@ const Lembaga = () => {
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
+                            onRefresh={fetchLembaga}
+                            loadingRefresh={loadingLembaga}
                         />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">

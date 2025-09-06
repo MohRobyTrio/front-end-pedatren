@@ -11,6 +11,8 @@ const FormBerkasPeserta = ({ control, setValue, jenisBerkasList }) => {
     });
 
     useEffect(() => {
+        console.log(jenisBerkasList);
+        
         if (!watchedFiles) return;
 
         const updated = jenisBerkasList.map(({ id }, index) => {

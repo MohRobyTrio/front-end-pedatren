@@ -9,6 +9,7 @@ import { ModalAddOrEditAngkatan, ModalDetailAngkatan } from "../../components/mo
 import useFetchAngkatan from "../../hooks/hooks_menu_akademik/Angkatan";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
+import SearchBar from "../../components/SearchBar";
 
 const Angkatan = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -54,6 +55,14 @@ const Angkatan = () => {
                     </div>
                 ) : (
                     <>
+                        <SearchBar
+                            totalData={angkatan.length}
+                            onRefresh={() => fetchAngkatan(true)}
+                            loadingRefresh={loadingAngkatan}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">

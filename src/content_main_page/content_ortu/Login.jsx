@@ -2,9 +2,11 @@ import { LucideLoader2 } from "lucide-react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../hooks/config";
+import { toast } from "sonner";
 
 const LoginOrtuPage = () => {
-    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -12,22 +14,18 @@ const LoginOrtuPage = () => {
     const navigate = useNavigate();
 
     const validateForm = () => {
-        // if (!email.trim()) {
-        //     setError("Email harus diisi");
-        //     return false;
-        // }
-        // if (!email.includes("@")) {
-        //     setError("Format email tidak valid");
-        //     return false;
-        // }
-        // if (!password.trim()) {
-        //     setError("Password harus diisi");
-        //     return false;
-        // }
-        // if (password.length < 6) {
-        //     setError("Password minimal 6 karakter");
-        //     return false;
-        // }
+        if (!phone.trim()) {
+            setError("No HP harus diisi");
+            return false;
+        }
+        if (!password.trim()) {
+            setError("Password harus diisi");
+            return false;
+        }
+        if (password.length < 8) {
+            setError("Password minimal 8 karakter");
+            return false;
+        }
         return true;
     };
 
@@ -40,26 +38,41 @@ const LoginOrtuPage = () => {
         setLoading(true);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            const mockToken = "mock-jwt-token-" + Date.now();
-            sessionStorage.setItem("auth_token", mockToken);
-            sessionStorage.setItem(
-                "user_data",
-                JSON.stringify({
-                    id: 1,
-                    name: "Ahmad Wijaya",
-                    email: email,
-                    children: [
-                        { id: 1, name: "Muhammad Faiz", nis: "2024001", class: "7A", photo: "/student-boy.png" },
-                        { id: 2, name: "Fatimah Zahra", nis: "2024002", class: "8B", photo: "/student-girl-hijab.png" },
-                    ],
+            const response = await fetch(`${API_BASE_URL}login-ortu`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    no_hp: phone,
+                    password: password,
                 }),
-            );
+            });
 
-            navigate("/wali");
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message || "Login gagal, periksa No HP dan password");
+                return;
+            }
+
+            // simpan token dan data user
+            sessionStorage.setItem("auth_token_ortu", data.token);
+
+            // simpan data orang tua
+            sessionStorage.setItem("user_data", JSON.stringify({
+                id: data.data.id,
+                no_kk: data.data.no_kk,
+                no_hp: data.data.no_hp,
+                email: data.data.email,
+                status: data.data.status,
+                children: data.anak
+            }));
+
+            localStorage.setItem("ortu_first_visit", "false");
+            toast.success("Berhasil Login");
+            navigate("/wali"); // arahkan ke dashboard wali santri
         } catch (err) {
-            setError("Login gagal. Silakan coba lagi.", err.messagge);
+            console.error(err);
+            setError("Terjadi kesalahan, silakan coba lagi.");
         } finally {
             setLoading(false);
         }
@@ -88,19 +101,20 @@ const LoginOrtuPage = () => {
                     )}
 
                     <div className="space-y-1">
-                        <label htmlFor="email" className="block text-emerald-700 text-sm font-medium">
-                            Email
+                        <label htmlFor="phone" className="block text-emerald-700 text-sm font-medium">
+                            No HP
                         </label>
                         <input
-                            id="email"
-                            type="email"
-                            placeholder="contoh@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            id="phone"
+                            type="tel"
+                            placeholder="Masukkan No HP"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
                     </div>
+
 
                     <div className="space-y-1">
                         <label htmlFor="password" className="block text-emerald-700 text-sm font-medium">

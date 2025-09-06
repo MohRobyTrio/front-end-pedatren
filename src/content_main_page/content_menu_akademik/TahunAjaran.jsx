@@ -9,6 +9,7 @@ import useFetchTahunAjaran from "../../hooks/hooks_menu_akademik/TahunAjaran";
 import { ModalAddOrEditTahunAjaran, ModalDetailTahunAjaran } from "../../components/modal/modal_kelembagaan/ModalFormTahunAjaran";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
+import SearchBar from "../../components/SearchBar";
 
 const TahunAjaran = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -60,14 +61,15 @@ const TahunAjaran = () => {
                     </div>
                 ) : (
                     <>
-                        {/* <SearchBar
-                            totalData={totalDataTahunAjaran}
-                            limit={limit}
-                            toggleLimit={(e) => setLimit(Number(e.target.value))}
+                        <SearchBar
+                            totalData={tahunAjaran.length || 0}
+                            showLimit={false}
                             showFilterButtons={false}
                             showViewButtons={false}
                             showSearch={false}
-                        /> */}
+                            onRefresh={() => fetchTahunAjaran(true)}
+                            loadingRefresh={loadingTahunAjaran}
+                        />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">

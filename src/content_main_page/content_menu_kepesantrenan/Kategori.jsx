@@ -65,6 +65,8 @@ const Kategori = () => {
                             showSearch={false}
                             showLimit={false}
                             totalData={totalData}
+                            onRefresh={() => fetchKategori(true)}
+                            loadingRefresh={loadingKategori}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

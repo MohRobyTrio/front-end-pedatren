@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import {
     Home,
@@ -40,6 +40,7 @@ export const AppLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const pathname = location.pathname;
+    const sidebarRef = useRef(null);
 
     // Detect mobile screen
     useEffect(() => {
@@ -83,6 +84,19 @@ export const AppLayout = () => {
         setMobileMenuOpen(false);
     };
 
+    useEffect(() => {
+        const sidebar = sidebarRef.current;
+        if (!sidebar) return;
+
+        const handleTouchMove = (e) => {
+            e.stopPropagation();
+        };
+
+        sidebar.addEventListener("touchmove", handleTouchMove, { passive: false });
+        return () => sidebar.removeEventListener("touchmove", handleTouchMove);
+    }, []);
+
+
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen text-gray-500">
@@ -123,12 +137,14 @@ export const AppLayout = () => {
                 <>
                     {/* Sidebar */}
                     < div
-                        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isMobile
+                        ref={sidebarRef}
+                        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto overscroll-contain ${isMobile
                             ? mobileMenuOpen
                                 ? "translate-x-0"
                                 : "-translate-x-full"
                             : "translate-x-0"
                             }`}
+                        style={{ WebkitOverflowScrolling: 'touch', height: '100vh' }}
                     >
                         <div className="flex flex-col h-full">
                             {/* Header */}
@@ -157,7 +173,7 @@ export const AppLayout = () => {
                                     >
                                         {user.children.map((child) => (
                                             <option key={child.id} value={child.id}>
-                                                {child.name} - {child.class} ({child.nis})
+                                                {child.nama} - {child.nis}
                                             </option>
                                         ))}
                                     </select>
@@ -192,10 +208,10 @@ export const AppLayout = () => {
                             <div className="p-4 border-t border-gray-200">
                                 <div className="flex items-center space-x-3">
                                     <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-medium">
-                                        {user.name.charAt(0)}
+                                        {user.email.charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-sm">{user.name}</p>
+                                        <p className="font-medium text-sm">{user.nama}</p>
                                         <p className="text-xs text-gray-500">{user.email}</p>
                                     </div>
                                     <button
@@ -211,6 +227,20 @@ export const AppLayout = () => {
                 </>
             )
             }
+
+            {/* Mobile AppBar */}
+            {isMobile && (
+                <div className="fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm">
+                    <h1 className="text-base font-semibold text-emerald-700">Portal Wali</h1>
+                    <button
+                        className="text-red-500 text-sm flex items-center"
+                        onClick={handleLogout}
+                    >
+                        <LogOut className="h-4 w-4 mr-1" />
+                        Keluar
+                    </button>
+                </div>
+            )}
 
             {/* Mobile bottom navigation */}
             {
@@ -239,7 +269,7 @@ export const AppLayout = () => {
                 )
             }
 
-            <div className={`${isMobile ? "" : "lg:pl-64"}`}>
+            <div className={`${isMobile ? "pt-12" : "sm:pl-64"}`}>
                 <main className={`flex-1 overflow-auto p-1 lg:p-8 ${isMobile ? "pb-20" : ""}`}><Outlet /></main>
             </div>
 

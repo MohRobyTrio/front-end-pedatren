@@ -116,6 +116,8 @@ const VirtualAccount = () => {
                             showFilterButtons={false}
                             showSearch={false}
                             showLimit={false}
+                            onRefresh={() => fetchAccount(true)}
+                            loadingRefresh={loadingAccount}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">

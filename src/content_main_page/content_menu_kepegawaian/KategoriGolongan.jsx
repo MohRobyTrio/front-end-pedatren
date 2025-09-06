@@ -6,6 +6,7 @@ import ModalAddOrEditKategoriGolongan from "../../components/modal/modal_kelemba
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { Navigate } from "react-router-dom";
 import { hasAccess } from "../../utils/hasAccess";
+import SearchBar from "../../components/SearchBar";
 
 const KategoriGolongan = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -43,66 +44,76 @@ const KategoriGolongan = () => {
                         </button>
                     </div>
                 ) : (
-                    <DoubleScrollbarTable>
-                        <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                <tr>
-                                    <th className="px-3 py-2 border-b w-10">#</th>
-                                    <th className="px-3 py-2 border-b">Nama Kategori Golongan</th>
-                                    <th className="px-3 py-2 border-b">Status</th>
-                                    <th className="px-3 py-2 border-b text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-800">
-                                {loadingKategori ? (
+                    <>
+                        <SearchBar
+                            totalData={kategoriGolongan.length}
+                            onRefresh={() => fetchKategoriGolongan(true)}
+                            loadingRefresh={loadingKategori}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
+                        <DoubleScrollbarTable>
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <td colSpan="6" className="text-center p-4">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                        </td>
+                                        <th className="px-3 py-2 border-b w-10">#</th>
+                                        <th className="px-3 py-2 border-b">Nama Kategori Golongan</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
+                                        <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
-                                ) : kategoriGolongan.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    kategoriGolongan.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
-                                            <td className="px-3 py-2 border-b">{item.nama_kategori_golongan}</td>
-                                            <td className="px-3 py-2 border-b w-30">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td>
-                                            <td className="px-3 py-2 border-b text-center space-x-2 w-20">
-                                                <button
-                                                    onClick={() => {
-                                                        setLembagaData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                >
-                                                    <FaTrash/>
-                                                </button>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingKategori ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center p-4">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </DoubleScrollbarTable>
+                                    ) : kategoriGolongan.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        kategoriGolongan.map((item, index) => (
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_kategori_golongan}</td>
+                                                <td className="px-3 py-2 border-b w-30">
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status == 1 ? "Aktif" : "Nonaktif"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-20">
+                                                    <button
+                                                        onClick={() => {
+                                                            setLembagaData(item);
+                                                            setFeature(2);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(item.id)}
+                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </DoubleScrollbarTable>
+                    </>
                 )}
             </div>
         </div>

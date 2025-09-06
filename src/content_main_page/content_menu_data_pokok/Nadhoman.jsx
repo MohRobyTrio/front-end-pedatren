@@ -74,7 +74,7 @@ export const Nadhoman = ({ nadhoman }) => {
             console.log("Fetching detail for nadhoman ID:", nadhoman.santri_id);
             fetchNadhomanDetail(nadhoman.santri_id)
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nadhoman, nadhoman.santri_id]);
 
     useEffect(() => {
@@ -682,6 +682,8 @@ export const NadhomanAllData = () => {
                                         toggleLimit={(e) => setLimit(Number(e.target.value))}
                                         toggleFilters={() => setShowFilters(!showFilters)}
                                         toggleView={setViewMode}
+                                        onRefresh={() => fetchData(true)}
+                                        loadingRefresh={loadingNadhoman}
                                     />
 
                                     <DoubleScrollbarTable>

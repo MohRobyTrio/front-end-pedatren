@@ -2,11 +2,18 @@ import { LucideLoader2 } from "lucide-react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../hooks/config";
+import { toast } from "sonner";
 
 const RegisterOrtuPage = () => {
+    const [noKK, setNoKK] = useState("");
+    const [nisAnak, setNisAnak] = useState("");
+    const [noHP, setNoHP] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -31,39 +38,89 @@ const RegisterOrtuPage = () => {
         return true;
     };
 
-    const handleLogin = async (e) => {
+    const friendlyMessages = {
+        no_kk: {
+            required: "Nomor KK harus diisi",
+            string: "Nomor KK harus berupa teks",
+            max: "Nomor KK maksimal 16 karakter",
+            exists: "Nomor KK tidak terdaftar",
+        },
+        nis_anak: {
+            required: "NIS anak harus diisi",
+            string: "NIS anak harus berupa teks",
+            max: "NIS anak maksimal 20 karakter",
+            exists: "NIS anak tidak ditemukan",
+        },
+        no_hp: {
+            max: "Nomor HP maksimal 15 karakter",
+            unique: "Nomor HP sudah digunakan",
+        },
+        email: {
+            email: "Email tidak valid",
+            max: "Email maksimal 100 karakter",
+            unique: "Email sudah digunakan",
+        },
+        password: {
+            required: "Password harus diisi",
+            string: "Password harus berupa teks",
+            min: "Password minimal 8 karakter",
+            confirmed: "Konfirmasi password tidak cocok",
+        },
+    };
+
+    const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
-
         if (!validateForm()) return;
 
         setLoading(true);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            const mockToken = "mock-jwt-token-" + Date.now();
-            sessionStorage.setItem("auth_token", mockToken);
-            sessionStorage.setItem(
-                "user_data",
-                JSON.stringify({
-                    id: 1,
-                    name: "Ahmad Wijaya",
-                    email: email,
-                    children: [
-                        { id: 1, name: "Muhammad Faiz", nis: "2024001", class: "7A", photo: "/student-boy.png" },
-                        { id: 2, name: "Fatimah Zahra", nis: "2024002", class: "8B", photo: "/student-girl-hijab.png" },
-                    ],
+            const response = await fetch(`${API_BASE_URL}register-ortu`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    no_kk: noKK,
+                    nis_anak: nisAnak,
+                    no_hp: noHP,
+                    email,
+                    password,
+                    password_confirmation: passwordConfirm,
                 }),
-            );
+            });
 
-            navigate("/dashboard");
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errors = data.errors || data.error;
+
+                if (errors) {
+                    Object.entries(errors).forEach(([field, messages]) => {
+                        messages.forEach((msg) => {
+                            // Ambil pesan friendly jika ada
+                            const key = msg.split(".")[1] || msg; // contoh: validation.exists
+                            const friendly = friendlyMessages[field]?.[key] || msg;
+                            toast.error(friendly);
+                        });
+                    });
+                } else {
+                    toast.error(data.message || "Registrasi gagal");
+                }
+
+                return;
+            }
+
+            localStorage.setItem("ortu_first_visit", "false");
+            toast.success(data.message || "Registrasi berhasil!");
+            navigate("/login-ortu");
         } catch (err) {
-            setError("Login gagal. Silakan coba lagi.", err.messagge);
+            console.error(err);
+            toast.error("Terjadi kesalahan, silakan coba lagi.");
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-100 to-white flex items-center justify-center px-4 py-6">
@@ -80,7 +137,7 @@ const RegisterOrtuPage = () => {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleLogin} className="space-y-5 mt-6">
+                <form onSubmit={handleRegister} className="space-y-5 mt-6">
                     {error && (
                         <div className="border border-red-200 bg-red-50 text-red-700 p-3 rounded-lg text-sm text-center">
                             {error}
@@ -95,8 +152,8 @@ const RegisterOrtuPage = () => {
                             id="no_kk"
                             type="text"
                             placeholder="Masukkan No KK"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={noKK}
+                            onChange={(e) => setNoKK(e.target.value)}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
@@ -109,8 +166,8 @@ const RegisterOrtuPage = () => {
                             id="nis_anak"
                             type="text"
                             placeholder="Masukkan NIS Anak"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={nisAnak}
+                            onChange={(e) => setNisAnak(e.target.value)}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
@@ -123,8 +180,8 @@ const RegisterOrtuPage = () => {
                             id="no_hp"
                             type="text"
                             placeholder="Masukkan No HP"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={noHP}
+                            onChange={(e) => setNoHP(e.target.value)}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
@@ -165,6 +222,31 @@ const RegisterOrtuPage = () => {
                                 disabled={loading}
                             >
                                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1">
+                        <label htmlFor="password" className="block text-emerald-700 text-sm font-medium">
+                            Konfirmasi Password
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="password"
+                                type={showPasswordConfirm ? "text" : "password"}
+                                placeholder="Masukkan password"
+                                value={passwordConfirm}
+                                onChange={(e) => setPasswordConfirm(e.target.value)}
+                                className="w-full border border-emerald-200 rounded-lg px-3 py-3 pr-10 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
+                                disabled={loading}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600"
+                                disabled={loading}
+                            >
+                                {showPasswordConfirm ? <FiEyeOff size={20} /> : <FiEye size={20} />}
                             </button>
                         </div>
                     </div>

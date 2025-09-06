@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import useFetchKognitif from "../../hooks/hook_menu_kepesantrenan/catatan_kognitif"; 
+import useFetchKognitif from "../../hooks/hook_menu_kepesantrenan/catatan_kognitif";
 import SantriAfektifCard from "../../components/catatanCard";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
@@ -85,7 +85,7 @@ const CatatanKognitif = () => {
         };
 
         fetchPeriode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [listPeriode, setListPeriode] = useState([]);
@@ -199,8 +199,8 @@ const CatatanKognitif = () => {
     const [showFormModal, setShowFormModal] = useState(false);
 
     if (!hasAccess("catatan_kognitif")) {
-            return <Navigate to="/forbidden" replace />;
-        }
+        return <Navigate to="/forbidden" replace />;
+    }
 
     return (
         <div className="flex-1 p-6 overflow-y-auto">
@@ -214,7 +214,7 @@ const CatatanKognitif = () => {
             </div>
 
             {showFormModal && (
-                <ModalAddProgressKognitif isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData}/>
+                <ModalAddProgressKognitif isOpen={showFormModal} onClose={() => setShowFormModal(false)} refetchData={fetchData} />
             )}
 
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -237,7 +237,7 @@ const CatatanKognitif = () => {
                         onChange={handleFilterChangeLembaga}
                         selectedFilters={selectedLembaga}
                     />
-                    <Filters 
+                    <Filters
                         showFilters={showFilters}
                         filterOptions={{
                             ...filter3,
@@ -261,6 +261,8 @@ const CatatanKognitif = () => {
                     // totalFiltered={groupedData.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loading}
                 // toggleView={setViewMode}
                 />
 
@@ -277,9 +279,9 @@ const CatatanKognitif = () => {
                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                             </div>
                         ) : catatanKognitif.length > 0 ? (
-                                <SantriAfektifCard santri={catatanKognitif} menu={20} fetchData={fetchData} label="kognitif" />
+                            <SantriAfektifCard santri={catatanKognitif} menu={20} fetchData={fetchData} label="kognitif" />
                         ) : (
-                        <p className="text-center py-8 text-gray-500">Tidak ada data</p>
+                            <p className="text-center py-8 text-gray-500">Tidak ada data</p>
                         )}
                     </div>
                 </div>

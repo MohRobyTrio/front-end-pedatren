@@ -288,6 +288,8 @@ const WaliAsuh = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingWaliAsuh}
                 />
 
                 {error ? (

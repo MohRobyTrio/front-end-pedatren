@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 import useFetchKitab from "../../hooks/hooks_menu_data_pokok/Kitab";
 import ToggleStatus from "../../components/ToggleStatus";
 import { ModalAddOrEditKitab, ModalDetailKitab } from "../../components/modal/ModalFormKitab";
+import SearchBar from "../../components/SearchBar";
 
 const Kitab = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,69 +55,79 @@ const Kitab = () => {
                         </button>
                     </div>
                 ) : (
-                    <DoubleScrollbarTable>
-                        <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                <tr>
-                                    <th className="px-3 py-2 border-b w-10">#</th>
-                                    <th className="px-3 py-2 border-b">Nama Kitab</th>
-                                    <th className="px-3 py-2 border-b">Total Bait</th>
-                                    <th className="px-3 py-2 border-b">Status</th>
-                                    <th className="px-3 py-2 border-b text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-800">
-                                {loadingKitab ? (
+                    <>
+                        <SearchBar
+                            totalData={kitab.length}
+                            onRefresh={() => fetchKitab(true)}
+                            loadingRefresh={loadingKitab}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
+                        <DoubleScrollbarTable>
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <td colSpan="6" className="text-center p-4">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                        </td>
+                                        <th className="px-3 py-2 border-b w-10">#</th>
+                                        <th className="px-3 py-2 border-b">Nama Kitab</th>
+                                        <th className="px-3 py-2 border-b">Total Bait</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
+                                        <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
-                                ) : kitab.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    kitab.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
-                                            setSelectedId(item.id);
-                                            setIsModalOpen(true);
-                                        }}>
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
-                                            <td className="px-3 py-2 border-b">{item.nama_kitab}</td>
-                                            <td className="px-3 py-2 border-b">{item.total_bait}</td>
-                                            <td className="px-3 py-2 border-b w-30">
-                                                <span
-                                                    className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                        }`}
-                                                >
-                                                    {item.status == 1 ? "Aktif" : "Nonaktif"}
-                                                </span>
-                                            </td>
-                                            <td className="px-3 py-2 border-b text-center space-x-2 w-20">
-                                                <div className="flex justify-center items-center space-x-2">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setLembagaData(item);
-                                                            setFeature(2);
-                                                            setOpenModal(true);
-                                                        }}
-                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaEdit />
-                                                    </button>
-                                                    <ToggleStatus active={item.status == 1} onClick={() => handleToggleStatus(item)} />
-                                                </div>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingKitab ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center p-4">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </DoubleScrollbarTable>
+                                    ) : kitab.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        kitab.map((item, index) => (
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                                setSelectedId(item.id);
+                                                setIsModalOpen(true);
+                                            }}>
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_kitab}</td>
+                                                <td className="px-3 py-2 border-b">{item.total_bait}</td>
+                                                <td className="px-3 py-2 border-b w-30">
+                                                    <span
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status == 1
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                            }`}
+                                                    >
+                                                        {item.status == 1 ? "Aktif" : "Nonaktif"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-20">
+                                                    <div className="flex justify-center items-center space-x-2">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setLembagaData(item);
+                                                                setFeature(2);
+                                                                setOpenModal(true);
+                                                            }}
+                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                        >
+                                                            <FaEdit />
+                                                        </button>
+                                                        <ToggleStatus active={item.status == 1} onClick={() => handleToggleStatus(item)} />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </DoubleScrollbarTable>
+                    </>
                 )}
             </div>
         </div>

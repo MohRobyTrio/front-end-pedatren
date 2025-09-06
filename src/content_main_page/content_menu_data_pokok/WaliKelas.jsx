@@ -121,7 +121,7 @@ const WaliKelas = () => {
     }
 
     // const filter4 = {
-        
+
     // };
 
     const [openModalImport, setOpenModalImport] = useState(false)
@@ -193,6 +193,8 @@ const WaliKelas = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingWaliKelas}
                 />
 
                 {error ? (
@@ -281,15 +283,15 @@ const WaliKelas = () => {
                                                 <td className="px-3 py-2 border-b">{item.tgl_input || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
                                             </tr>

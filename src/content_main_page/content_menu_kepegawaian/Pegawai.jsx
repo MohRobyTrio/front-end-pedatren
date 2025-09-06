@@ -218,7 +218,7 @@ const Pegawai = () => {
     };
 
     const handleImportSuccess = () => {
-        fetchData(true) 
+        fetchData(true)
     }
 
     if (!hasAccess("pegawai")) {
@@ -280,6 +280,8 @@ const Pegawai = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingPegawai}
                 />
 
                 {error ? (

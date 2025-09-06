@@ -146,6 +146,8 @@ const DataPengunjung = () => {
           limit={limit}
           toggleLimit={(e) => setLimit(Number(e.target.value))}
           showViewButtons={false}
+          onRefresh={() => fetchData(true)}
+          loadingRefresh={loading}
         />
 
         <div>
@@ -321,8 +323,8 @@ const PengunjungCard = ({ data, openModal, setShowFormModal, setFeature, setSele
           <div className="flex flex-col items-center">
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai !== "menunggu"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-300 text-gray-600"
+                ? "bg-green-500 text-white"
+                : "bg-gray-300 text-gray-600"
                 }`}
             >
               {data.status_selesai !== "menunggu" ? "✓" : "1"}
@@ -336,10 +338,10 @@ const PengunjungCard = ({ data, openModal, setShowFormModal, setFeature, setSele
           <div className="flex flex-col items-center">
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai == "ditolak"
-                  ? "bg-red-500 text-white"
-                  : data.status_selesai == "berlangsung" || data.status_selesai == "selesai"
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-300 text-gray-600"
+                ? "bg-red-500 text-white"
+                : data.status_selesai == "berlangsung" || data.status_selesai == "selesai"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-300 text-gray-600"
                 }`}
             >
               {data.status_selesai == "ditolak"
@@ -359,8 +361,8 @@ const PengunjungCard = ({ data, openModal, setShowFormModal, setFeature, setSele
           <div className="flex flex-col items-center">
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status_selesai == "selesai"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-300 text-gray-600"
+                ? "bg-green-500 text-white"
+                : "bg-gray-300 text-gray-600"
                 }`}
             >
               {data.status_selesai == "selesai" ? "✓" : "3"}

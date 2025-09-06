@@ -8,9 +8,10 @@ import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchJadwalSholat from "../../hooks/hook_menu_kepesantrenan/JadwalSholat";
 import { ModalAddOrEditJadwalSholat } from "../../components/modal/ModalFormJadwalSholat";
+import SearchBar from "../../components/SearchBar";
 
 const JadwalSholat = () => {
-    
+
     const [openModal, setOpenModal] = useState(false);
     const [jadwalSholatData, setJadwalSholatData] = useState("");
     const [feature, setFeature] = useState("");
@@ -47,60 +48,70 @@ const JadwalSholat = () => {
                         </button>
                     </div>
                 ) : (
-                    <DoubleScrollbarTable>
-                        <table className="min-w-full text-sm text-left">
-                            <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
-                                <tr>
-                                    <th className="px-3 py-2 border-b w-10">#</th>
-                                    <th className="px-3 py-2 border-b">Nama Sholat</th>
-                                    <th className="px-3 py-2 border-b">Jam</th>
-                                    <th className="px-3 py-2 border-b">Berlaku</th>
-                                    <th className="px-3 py-2 border-b">Status</th>
-                                    {/* <th className="px-3 py-2 border-b text-center">Aksi</th> */}
-                                </tr>
-                            </thead>
-                            <tbody className="text-gray-800">
-                                {loadingJadwalSholat ? (
+                    <>
+                        <SearchBar
+                            totalData={jadwalSholat.length}
+                            onRefresh={() => fetchJadwalSholat(true)}
+                            loadingRefresh={loadingJadwalSholat}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
+                        <DoubleScrollbarTable>
+                            <table className="min-w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
-                                        <td colSpan="6" className="text-center p-4">
-                                            <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                        </td>
+                                        <th className="px-3 py-2 border-b w-10">#</th>
+                                        <th className="px-3 py-2 border-b">Nama Sholat</th>
+                                        <th className="px-3 py-2 border-b">Jam</th>
+                                        <th className="px-3 py-2 border-b">Berlaku</th>
+                                        <th className="px-3 py-2 border-b">Status</th>
+                                        {/* <th className="px-3 py-2 border-b text-center">Aksi</th> */}
                                     </tr>
-                                ) : jadwalSholat.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center py-6">Tidak ada data</td>
-                                    </tr>
-                                ) : (
-                                    jadwalSholat.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
-                                            <td className="px-3 py-2 border-b">{index + 1}</td>
-                                            <td className="px-3 py-2 border-b">{item?.sholat?.nama_sholat || "-"}</td>
-                                            <td className="px-3 py-2 border-b">{item.jam_mulai} s.d. {item.jam_selesai}</td>
-                                            <td className="px-3 py-2 border-b">{item.berlaku_mulai} s.d. {item.berlaku_sampai}</td>
-                                            <td className="px-3 py-2 border-b text-center space-x-2 w-20">
-                                                <button
-                                                    onClick={() => {
-                                                        setJadwalSholatData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                >
-                                                    <FaTrash />
-                                                </button>
+                                </thead>
+                                <tbody className="text-gray-800">
+                                    {loadingJadwalSholat ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center p-4">
+                                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </DoubleScrollbarTable>
+                                    ) : jadwalSholat.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="text-center py-6">Tidak ada data</td>
+                                        </tr>
+                                    ) : (
+                                        jadwalSholat.map((item, index) => (
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                                <td className="px-3 py-2 border-b">{index + 1}</td>
+                                                <td className="px-3 py-2 border-b">{item?.sholat?.nama_sholat || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.jam_mulai} s.d. {item.jam_selesai}</td>
+                                                <td className="px-3 py-2 border-b">{item.berlaku_mulai} s.d. {item.berlaku_sampai}</td>
+                                                <td className="px-3 py-2 border-b text-center space-x-2 w-20">
+                                                    <button
+                                                        onClick={() => {
+                                                            setJadwalSholatData(item);
+                                                            setFeature(2);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(item.id)}
+                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </DoubleScrollbarTable>
+                    </>
                 )}
             </div>
         </div>

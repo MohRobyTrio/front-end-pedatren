@@ -77,7 +77,7 @@ const Alumni = () => {
         rombel: rombelTerpilih
     }), [filters, jurusanTerpilih, kabupatenTerpilih, kecamatanTerpilih, kelasTerpilih, lembagaTerpilih, negaraTerpilih, provinsiTerpilih, rombelTerpilih]);
 
-    const { alumni, loadingAlumni, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAlumni, totalPages, currentPage, setCurrentPage } = useFetchAlumni(updatedFilters);
+    const { alumni, loadingAlumni, searchTerm, setSearchTerm, error, limit, setLimit, totalDataAlumni, totalPages, currentPage, setCurrentPage, fetchData } = useFetchAlumni(updatedFilters);
     const [showFilters, setShowFilters] = useState(false);
     const [viewMode, setViewMode] = useState("");
 
@@ -221,6 +221,8 @@ const Alumni = () => {
                     toggleView={setViewMode}
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingAlumni}
                 />
 
                 {error ? (

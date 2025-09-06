@@ -280,6 +280,8 @@ const Pelajar = () => {
                     // totalFiltered={pelajar.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingPelajar}
                 />
 
                 {error ? (

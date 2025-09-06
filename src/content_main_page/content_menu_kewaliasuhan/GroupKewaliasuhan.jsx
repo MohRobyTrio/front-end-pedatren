@@ -266,6 +266,8 @@ const GroupKewaliasuhan = () => {
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                     showViewButtons={false}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingGroupKewaliasuhan}
                 />
 
                 {error ? (

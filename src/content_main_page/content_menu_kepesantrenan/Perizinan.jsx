@@ -275,6 +275,8 @@ const DataPerizinan = () => {
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loading}
                 />
 
                 <div>
@@ -791,7 +793,7 @@ const PerizinanCard = ({
                                 }`}>
                                 {(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
                                     data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali)")
-                                ? "✓": "3"}
+                                    ? "✓" : "3"}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Keluar</span>
                         </div>
@@ -807,7 +809,7 @@ const PerizinanCard = ({
                                     : "bg-gray-300 text-gray-600"
                                 }`}>
                                 {data.status == "kembali tepat waktu" ? '✓' :
-                                 (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)") ? '!' : '4'}
+                                    (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)") ? '!' : '4'}
                             </div>
                             <span className="text-xs text-gray-600 mt-1 font-medium">Kembali</span>
                         </div>

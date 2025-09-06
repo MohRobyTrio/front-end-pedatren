@@ -263,6 +263,8 @@ const Pengurus = () => {
                     // totalFiltered={pengurus.length}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     toggleView={setViewMode}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loadingPengurus}
                 />
                 {error ? (
                     <div className="col-span-3 text-center py-10">
@@ -346,15 +348,15 @@ const Pengurus = () => {
                                                 <td className="px-3 py-2 border-b">{item.pendidikan_terakhir || "-"}</td>
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-10">
                                                     {/* <Link to={`/formulir/${item.biodata_id || item.id || item}/biodata`}> */}
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
-                                                            }}
-                                                            className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleEditClick(item.biodata_id || item.id || item, 'kondisi1')
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                     {/* </Link> */}
                                                 </td>
                                             </tr>

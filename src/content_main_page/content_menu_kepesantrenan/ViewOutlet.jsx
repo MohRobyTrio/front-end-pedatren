@@ -6,6 +6,7 @@ import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchDataOutlet from "../../hooks/hook_menu_kepesantrenan/belanja/hookOutlet";
 import { ModalAddOrEditOutlet, ModalDetailOutlet } from "../../components/modal/ModalFormOutlet";
+import SearchBar from "../../components/SearchBar";
 
 const ViewOutlet = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +52,15 @@ const ViewOutlet = () => {
                         </button>
                     </div>
                 ) : (
+                    <>
+                    <SearchBar
+                            totalData={dataOutlet.length}
+                            onRefresh={() => fetchDataOutlet(true)}
+                            loadingRefresh={loadingDataOutlet}
+                            showFilterButtons={false}
+                            showSearch={false}
+                            showLimit={false}
+                        />
                     <DoubleScrollbarTable>
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
@@ -134,6 +144,7 @@ const ViewOutlet = () => {
                             </tbody>
                         </table>
                     </DoubleScrollbarTable>
+                    </>
                 )}
             </div>
         </div>

@@ -377,7 +377,7 @@ export const ModalKeluarDomisiliFormulir = ({ isOpen, onClose, id, refetchData }
       //   return;
       // }
 
-      if (result.message && result.message.toLowerCase().includes("tidak boleh")) {
+      if (result.message && result.message.toLowerCase().includes("tidak boleh") || !result.status) {
         await Swal.fire({
           icon: "error",
           title: "Gagal",

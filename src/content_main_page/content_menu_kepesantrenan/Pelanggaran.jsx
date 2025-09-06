@@ -169,6 +169,8 @@ const DataPelanggaran = () => {
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                     toggleFilters={() => setShowFilters(!showFilters)}
                     showViewButtons={false}
+                    onRefresh={() => fetchData(true)}
+                    loadingRefresh={loading}
                 />
 
                 <div>

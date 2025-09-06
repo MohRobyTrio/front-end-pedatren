@@ -229,6 +229,8 @@ const KartuRFID = () => {
                     limit={limit}
                     toggleLimit={(e) => setLimit(Number(e.target.value))}
                     toggleFilters={() => setShowFilters(!showFilters)}
+                    onRefresh={() => fetchKartuRFID(true)}
+                    loadingRefresh={loadingKartuRFID}
                 />
 
                 <ModalAddKartuRFID
