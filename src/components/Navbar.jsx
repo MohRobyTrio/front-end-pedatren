@@ -233,9 +233,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                     <div ref={profilRef} className="relative">
                         <button
                             type="button"
-                            className="flex items-center bg-gray-800/80 border border-gray-700
-              rounded-full shadow focus:ring-2 focus:ring-blue-900
-              hover:scale-105 active:scale-95 transition"
+                            className="flex items-center bg-gray-800/80 border border-gray-700 rounded-full shadow focus:ring-2 focus:ring-blue-900 hover:scale-105 active:scale-95 transition"
                             onClick={toggleDropdownProfil}
                             style={{ padding: 2 }}
                             aria-label="Open user menu"
@@ -255,12 +253,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                         </Access>
                         {isOpen && (
                             <div
-                                className="
-              absolute right-0 mt-2 w-56
-              bg-gray-900/95 backdrop-blur-lg
-              rounded-xl shadow-2xl border border-gray-800
-              z-50 overflow-hidden
-            "
+                                className="absolute right-0 mt-2 w-56 bg-gray-900/95 backdrop-blur-lg rounded-xl shadow-2xl border border-gray-800 z-50 overflow-hidden"
                             >
                                 <div className="px-4 py-3 border-b border-gray-800 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-900">
                                     <p className="text-sm font-bold text-white">{userName}</p>
@@ -270,9 +263,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                                     <li>
                                         <button
                                             onClick={handleProfileClick}
-                                            className="flex items-center gap-3 w-full px-4 py-2
-                      text-gray-200 hover:bg-gray-800 hover:text-blue-400
-                      font-medium rounded-lg transition text-sm"
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-blue-400 font-medium rounded-lg transition text-sm"
                                         >
                                             <FontAwesomeIcon icon={faUser} />
                                             Profile
@@ -282,10 +273,7 @@ const Navbar = ({ toggleSidebar, toggleDropdownProfil, isOpen, profilRef, toggle
                                         <button
                                             onClick={handleLogout}
                                             disabled={isLoggingOut}
-                                            className="flex items-center gap-3 w-full px-4 py-2
-                      text-red-400 hover:bg-red-900 hover:text-white
-                      font-medium rounded-lg transition text-sm
-                      disabled:opacity-60"
+                                            className="flex items-center gap-3 w-full px-4 py-2 text-red-400 hover:bg-red-900 hover:text-white font-medium rounded-lg transition text-sm disabled:opacity-60"
                                         >
                                             <FontAwesomeIcon icon={faRightFromBracket} />
                                             {isLoggingOut ? "Logging out..." : "Log out"}

@@ -1,175 +1,1134 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Wallet, ArrowUpRight, ArrowDownLeft, FileText, Download, CreditCard, Receipt } from "lucide-react"
+import {
+    Wallet,
+    ArrowUpRight,
+    ArrowDownLeft,
+    FileText,
+    CreditCard,
+    Receipt,
+    Search,
+    ChevronLeft,
+    ChevronRight,
+} from "lucide-react"
+import { useActiveChild } from "../../components/ortu/useActiveChild"
 
 export const KeuanganPage = () => {
-  const [selectedChild, setSelectedChild] = useState(null)
-  const [transactionFilter, setTransactionFilter] = useState("semua")
-  const [transferFilter, setTransferFilter] = useState("semua")
-  const [dateRange, setDateRange] = useState({ start: "", end: "" })
-  const [selectedTab, setSelectedTab] = useState("transaksi")
+    const { activeChild: selectedChild } = useActiveChild()
+    const [transactionFilter, setTransactionFilter] = useState("semua")
+    const [transferFilter, setTransferFilter] = useState("semua")
+    // eslint-disable-next-line no-unused-vars
+    const [dateRange, setDateRange] = useState({ start: "", end: "" })
+    const [activeTab, setActiveTab] = useState("transaksi")
+    const [loading, setLoading] = useState(true)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [currentPage, setCurrentPage] = useState(1)
+    // eslint-disable-next-line no-unused-vars
+    const [pageSize] = useState(10)
 
-  // Mock data (sama seperti yang kamu punya)
-  const mockSaldo = 250000
-  const mockTransaksiData = [ /* ... */ ]
-  const mockTransferData = [ /* ... */ ]
-  const mockTagihanData = [ /* ... */ ]
+    // Mock data - replace with actual API calls
+    const mockSaldo = 250000
 
-  useEffect(() => {
-    const activeChild = sessionStorage.getItem("active_child")
-    if (activeChild) setSelectedChild(JSON.parse(activeChild))
-  }, [])
+    const mockTransaksiData = [
+        {
+            id: 1,
+            tanggal: "2025-01-15T14:30:00",
+            jenis: "pembelian",
+            deskripsi: "Kantin - Makan siang",
+            nominal: -15000,
+            saldoAkhir: 250000,
+            kategori: "makanan",
+            outlet: { nama_outlet: "Kantin Utama" },
+        },
+        {
+            id: 2,
+            tanggal: "2025-01-15T10:15:00",
+            jenis: "pembelian",
+            deskripsi: "Koperasi - Alat tulis",
+            nominal: -25000,
+            saldoAkhir: 265000,
+            kategori: "alat_tulis",
+            outlet: { nama_outlet: "Koperasi Santri" },
+        },
+        {
+            id: 3,
+            tanggal: "2025-01-14T16:00:00",
+            jenis: "top_up",
+            deskripsi: "Transfer dari orang tua",
+            nominal: 200000,
+            saldoAkhir: 290000,
+            kategori: "transfer",
+            outlet: { nama_outlet: "Transfer" },
+        },
+        {
+            id: 4,
+            tanggal: "2025-01-12T12:45:00",
+            jenis: "pembelian",
+            deskripsi: "Kantin - Snack",
+            nominal: -8000,
+            saldoAkhir: 90000,
+            kategori: "makanan",
+            outlet: { nama_outlet: "Kantin Utama" },
+        },
+        {
+            id: 5,
+            tanggal: "2025-01-10T09:30:00",
+            jenis: "pembelian",
+            deskripsi: "Laundry",
+            nominal: -12000,
+            saldoAkhir: 98000,
+            kategori: "laundry",
+            outlet: { nama_outlet: "Laundry Santri" },
+        },
+    ]
 
-  const formatRupiah = (value) => `Rp ${value.toLocaleString("id-ID")}`
-  const formatTanggal = (date) => new Date(date).toLocaleDateString("id-ID")
-  const formatTanggalWaktu = (date) => new Date(date).toLocaleString("id-ID")
-  const getStatusColor = (status) =>
-    status === "berhasil"
-      ? "bg-emerald-100 text-emerald-800"
-      : status === "pending"
-      ? "bg-yellow-100 text-yellow-800"
-      : status === "gagal"
-      ? "bg-red-100 text-red-800"
-      : "bg-gray-100 text-gray-800"
+    const mockTransferData = [
+        {
+            id: 1,
+            tanggal: "2025-01-14T16:00:00",
+            jenis: "masuk",
+            nominal: 200000,
+            pengirim: "Ahmad Wijaya (Ayah)",
+            status: "berhasil",
+            keterangan: "Top up bulanan",
+        },
+        {
+            id: 2,
+            tanggal: "2025-01-01T08:00:00",
+            jenis: "masuk",
+            nominal: 150000,
+            pengirim: "Ahmad Wijaya (Ayah)",
+            status: "berhasil",
+            keterangan: "Uang saku awal bulan",
+        },
+        {
+            id: 3,
+            tanggal: "2024-12-28T14:30:00",
+            jenis: "keluar",
+            nominal: -50000,
+            penerima: "Rekening Bank - 1234567890",
+            status: "berhasil",
+            keterangan: "Penarikan tunai",
+        },
+    ]
 
-  const filteredTransactions = mockTransaksiData.filter((item) => {
-    const typeMatch = transactionFilter === "semua" || item.jenis === transactionFilter
-    const dateMatch = (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
-    return typeMatch && dateMatch
-  })
+    const mockTagihanData = [
+        {
+            id: 1,
+            nama: "SPP Bulanan",
+            periode: "Januari 2025",
+            jatuhTempo: "2025-01-25",
+            jumlah: 500000,
+            terbayar: 0,
+            sisa: 500000,
+            status: "belum_lunas",
+            kategori: "spp",
+        },
+        {
+            id: 2,
+            nama: "Biaya Makan",
+            periode: "Januari 2025",
+            jatuhTempo: "2025-01-20",
+            jumlah: 300000,
+            terbayar: 300000,
+            sisa: 0,
+            status: "lunas",
+            kategori: "makan",
+        },
+        {
+            id: 3,
+            nama: "Biaya Asrama",
+            periode: "Semester Genap 2024/2025",
+            jatuhTempo: "2025-02-01",
+            jumlah: 1000000,
+            terbayar: 500000,
+            sisa: 500000,
+            status: "cicilan",
+            kategori: "asrama",
+        },
+    ]
 
-  const filteredTransfers = mockTransferData.filter((item) => {
-    const typeMatch = transferFilter === "semua" || item.jenis === transferFilter
-    const dateMatch = (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
-    return typeMatch && dateMatch
-  })
+    useEffect(() => {
+        setLoading(true)
+        // const activeChild = sessionStorage.getItem("active_child")
+        // if (activeChild) {
+        //     setSelectedChild(JSON.parse(activeChild))
+        // }
 
-  const exportToCSV = (data, filename) => {
-    if (!data.length) return
-    const headers = Object.keys(data[0]).join(",")
-    const csvContent = [headers, ...data.map((row) => Object.values(row).join(","))].join("\n")
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `${filename}_${new Date().toISOString().split("T")[0]}.csv`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
+        // Simulate loading
+        setTimeout(() => setLoading(false), 1500)
+    }, [selectedChild])
 
-  const stats = {
-    saldo: mockSaldo,
-    totalPengeluaran: mockTransaksiData.filter((t) => t.nominal < 0).reduce((sum, t) => sum + Math.abs(t.nominal), 0),
-    totalTopUp: mockTransaksiData.filter((t) => t.nominal > 0).reduce((sum, t) => sum + t.nominal, 0),
-    tagihanAktif: mockTagihanData.filter((t) => t.status !== "lunas").length,
-    totalTagihan: mockTagihanData.filter((t) => t.status !== "lunas").reduce((sum, t) => sum + t.sisa, 0),
-  }
+    // Utility functions
+    const formatRupiah = (amount) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+        }).format(amount)
+    }
 
-  return (
-      <div className="space-y-6 p-4">
-        <header>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Wallet className="mr-3 h-6 w-6 text-purple-600" /> Keuangan
-          </h1>
-          <p className="text-gray-600 mt-1">Kelola keuangan {selectedChild?.name || "santri"}</p>
-        </header>
+    const formatTanggal = (dateString) => {
+        return new Date(dateString).toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        })
+    }
 
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-          <div className="border-purple-100 p-6 rounded-lg shadow-lg lg:col-span-2 flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium text-purple-600">Saldo Dompet</p>
-              <p className="text-3xl font-bold text-purple-700">{formatRupiah(stats.saldo)}</p>
-              <p className="text-sm text-gray-600">Tersedia untuk digunakan</p>
-            </div>
-            <Wallet className="h-12 w-12 text-purple-600" />
-          </div>
-          <div className="border-red-100 p-6 rounded-lg shadow-lg flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium text-red-600">Pengeluaran</p>
-              <p className="text-2xl font-bold text-red-700">{formatRupiah(stats.totalPengeluaran)}</p>
-            </div>
-            <ArrowUpRight className="h-8 w-8 text-red-600" />
-          </div>
-          <div className="border-emerald-100 p-6 rounded-lg shadow-lg flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium text-emerald-600">Top Up</p>
-              <p className="text-2xl font-bold text-emerald-700">{formatRupiah(stats.totalTopUp)}</p>
-            </div>
-            <ArrowDownLeft className="h-8 w-8 text-emerald-600" />
-          </div>
-          <div className="border-orange-100 p-6 rounded-lg shadow-lg flex justify-between items-center">
-            <div>
-              <p className="text-sm font-medium text-orange-600">Tagihan Aktif</p>
-              <p className="text-2xl font-bold text-orange-700">{stats.tagihanAktif}</p>
-              <p className="text-xs text-gray-600">{formatRupiah(stats.totalTagihan)}</p>
-            </div>
-            <Receipt className="h-8 w-8 text-orange-600" />
-          </div>
-        </div>
+    const formatTanggalWaktu = (dateString) => {
+        return new Date(dateString).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    }
 
-        {/* Tabs */}
-        <div className="space-y-6">
-          <div className="flex space-x-4 border-b">
-            {["transaksi", "transfer", "tagihan"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`px-4 py-2 -mb-px font-medium ${
-                  selectedTab === tab ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"
-                }`}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "berhasil":
+            case "lunas":
+                return "bg-emerald-100 text-emerald-800"
+            case "pending":
+            case "cicilan":
+                return "bg-amber-100 text-amber-800"
+            case "gagal":
+            case "belum_lunas":
+            case "terlambat":
+                return "bg-red-100 text-red-800"
+            default:
+                return "bg-gray-100 text-gray-800"
+        }
+    }
 
-          {/* Tab Contents */}
-          {selectedTab === "transaksi" && (
-            <div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <input type="date" value={dateRange.start} onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })} />
-                <input type="date" value={dateRange.end} onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })} />
-                <select value={transactionFilter} onChange={(e) => setTransactionFilter(e.target.value)}>
-                  <option value="semua">Semua Jenis</option>
-                  <option value="pembelian">Pembelian</option>
-                  <option value="top_up">Top Up</option>
-                </select>
-                <button onClick={() => exportToCSV(filteredTransactions, "transaksi")} className="px-3 py-1 bg-gray-100 rounded flex items-center gap-1">
-                  <Download className="h-4 w-4" /> Export CSV
+    // Custom components
+    const Card = ({ children, className = "" }) => (
+        <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+    )
+
+    const CardHeader = ({ children, className = "" }) => (
+        <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>{children}</div>
+    )
+
+    const CardContent = ({ children, className = "" }) => <div className={`px-6 py-4 ${className}`}>{children}</div>
+
+    const CardTitle = ({ children, className = "" }) => (
+        <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>{children}</h3>
+    )
+
+    const Badge = ({ children, className = "" }) => (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}>
+            {children}
+        </span>
+    )
+
+    const Button = ({ children, onClick, variant = "default", className = "", ...props }) => {
+        const baseClasses =
+            "inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+        const variants = {
+            default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+            outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+            ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+        }
+
+        return (
+            <button onClick={onClick} className={`${baseClasses} ${variants[variant]} ${className}`} {...props}>
+                {children}
+            </button>
+        )
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const Select = ({ value, onValueChange, children, className = "" }) => {
+        const [isOpen, setIsOpen] = useState(false)
+
+        return (
+            <div className={`relative ${className}`}>
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full px-3 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    <span className="block truncate">{value}</span>
+                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <ChevronRight className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-90" : ""}`} />
+                    </span>
                 </button>
-              </div>
-              <table className="w-full border rounded-lg">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="p-2 border">Tanggal</th>
-                    <th className="p-2 border">Deskripsi</th>
-                    <th className="p-2 border">Jenis</th>
-                    <th className="p-2 border">Nominal</th>
-                    <th className="p-2 border">Saldo Akhir</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTransactions.map((t) => (
-                    <tr key={t.id} className="hover:bg-gray-50">
-                      <td className="p-2 border">{formatTanggalWaktu(t.tanggal)}</td>
-                      <td className="p-2 border">{t.deskripsi}</td>
-                      <td className={`p-2 border px-3 py-1 rounded ${t.jenis === "top_up" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
-                        {t.jenis === "top_up" ? "Top Up" : "Pembelian"}
-                      </td>
-                      <td className={`p-2 border font-semibold ${t.nominal > 0 ? "text-emerald-600" : "text-red-600"}`}>{t.nominal > 0 ? "+" : ""}{formatRupiah(t.nominal)}</td>
-                      <td className="p-2 border font-medium">{formatRupiah(t.saldoAkhir)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+                {isOpen && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+                        <div className="py-1">{children}</div>
+                    </div>
+                )}
             </div>
-          )}
-          {/* ...transfer dan tagihan bisa dibuat serupa dengan table + filter + CSV export */}
+        )
+    }
+
+    const SelectItem = ({ value, children, onSelect }) => (
+        <button
+            onClick={() => onSelect(value)}
+            className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+        >
+            {children}
+        </button>
+    )
+
+    const DataTable = ({ data, columns, searchPlaceholder, pageSize }) => {
+        const filteredData = data.filter((item) =>
+            Object.values(item).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
+        )
+
+        const totalPages = Math.ceil(filteredData.length / pageSize)
+        const startIndex = (currentPage - 1) * pageSize
+        const paginatedData = filteredData.slice(startIndex, startIndex + pageSize)
+
+        return (
+            <div className="space-y-4">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder={searchPlaceholder}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                {columns.map((column) => (
+                                    <th
+                                        key={column.key}
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >
+                                        {column.label}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {paginatedData.map((row, index) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                    {columns.map((column) => (
+                                        <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {column.render ? column.render(row[column.key], row) : row[column.key]}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between">
+                        <div className="text-sm text-gray-700">
+                            Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, filteredData.length)} dari{" "}
+                            {filteredData.length} data
+                        </div>
+                        <div className="flex space-x-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <span className="px-3 py-2 text-sm text-gray-700">
+                                {currentPage} / {totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
+    // Loading skeleton component
+    const LoadingSkeleton = () => (
+        <div className="space-y-6 animate-pulse">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                {[...Array(5)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-lg border border-gray-200 p-6">
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                    <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+                </div>
+                <div className="px-6 py-4 space-y-4">
+                    {[...Array(5)].map((_, i) => (
+                        <div key={i} className="flex space-x-4">
+                            <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                            <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                            <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                            <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
-      </div>
-  )
+    )
+
+    // Filter functions
+    const filteredTransactions = mockTransaksiData.filter((item) => {
+        const typeMatch = transactionFilter === "semua" || item.jenis === transactionFilter
+        const dateMatch =
+            (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
+        return typeMatch && dateMatch
+    })
+
+    const filteredTransfers = mockTransferData.filter((item) => {
+        const typeMatch = transferFilter === "semua" || item.jenis === transferFilter
+        const dateMatch =
+            (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
+        return typeMatch && dateMatch
+    })
+
+    // const exportToCSV = (data, filename) => {
+    //     const headers = Object.keys(data[0]).join(",")
+    //     const csvContent = [
+    //         headers,
+    //         ...data.map((row) =>
+    //             Object.values(row)
+    //                 .map((value) => (typeof value === "string" && value.includes(",") ? `"${value}"` : value))
+    //                 .join(","),
+    //         ),
+    //     ].join("\n")
+
+    //     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    //     const url = URL.createObjectURL(blob)
+    //     const link = document.createElement("a")
+    //     link.setAttribute("href", url)
+    //     link.setAttribute("download", `${filename}_${new Date().toISOString().split("T")[0]}.csv`)
+    //     link.style.visibility = "hidden"
+    //     document.body.appendChild(link)
+    //     link.click()
+    //     document.body.removeChild(link)
+    //     URL.revokeObjectURL(url)
+    // }
+
+    const stats = {
+        saldo: mockSaldo,
+        totalPengeluaran: mockTransaksiData.filter((t) => t.nominal < 0).reduce((sum, t) => sum + Math.abs(t.nominal), 0),
+        totalTopUp: mockTransaksiData.filter((t) => t.nominal > 0).reduce((sum, t) => sum + t.nominal, 0),
+        tagihanAktif: mockTagihanData.filter((t) => t.status !== "lunas").length,
+        totalTagihan: mockTagihanData.filter((t) => t.status !== "lunas").reduce((sum, t) => sum + t.sisa, 0),
+    }
+
+    const transactionColumns = [
+        {
+            key: "tanggal",
+            label: "Tanggal",
+            sortable: true,
+            render: (value) => formatTanggalWaktu(value),
+        },
+        {
+            key: "deskripsi",
+            label: "Deskripsi",
+            sortable: true,
+        },
+        {
+            key: "outlet",
+            label: "Outlet",
+            sortable: true,
+            render: (value) => value?.nama_outlet || "-",
+        },
+        {
+            key: "jenis",
+            label: "Jenis",
+            sortable: true,
+            render: (value) => (
+                <Badge className={value === "top_up" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}>
+                    {value === "top_up" ? "Top Up" : "Pembelian"}
+                </Badge>
+            ),
+        },
+        {
+            key: "nominal",
+            label: "Nominal",
+            sortable: true,
+            render: (value) => (
+                <span className={`font-semibold ${value > 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    {value > 0 ? "+" : ""}
+                    {formatRupiah(value)}
+                </span>
+            ),
+        },
+        {
+            key: "saldoAkhir",
+            label: "Saldo Akhir",
+            sortable: true,
+            render: (value) => <span className="font-medium text-gray-900">{formatRupiah(value)}</span>,
+        },
+    ]
+
+    const transferColumns = [
+        {
+            key: "tanggal",
+            label: "Tanggal",
+            sortable: true,
+            render: (value) => formatTanggalWaktu(value),
+        },
+        {
+            key: "jenis",
+            label: "Jenis",
+            sortable: true,
+            render: (value) => (
+                <div className="flex items-center">
+                    {value === "masuk" ? (
+                        <ArrowDownLeft className="h-4 w-4 text-emerald-600 mr-2" />
+                    ) : (
+                        <ArrowUpRight className="h-4 w-4 text-red-600 mr-2" />
+                    )}
+                    <Badge className={value === "masuk" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}>
+                        {value === "masuk" ? "Masuk" : "Keluar"}
+                    </Badge>
+                </div>
+            ),
+        },
+        {
+            key: "nominal",
+            label: "Nominal",
+            sortable: true,
+            render: (value) => (
+                <span className={`font-semibold ${value > 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    {formatRupiah(Math.abs(value))}
+                </span>
+            ),
+        },
+        {
+            key: "pengirim",
+            label: "Pengirim/Penerima",
+            sortable: false,
+            render: (value, row) => row.pengirim || row.penerima || "-",
+        },
+        {
+            key: "status",
+            label: "Status",
+            sortable: true,
+            render: (value) => (
+                <Badge className={getStatusColor(value)}>
+                    {value === "berhasil" ? "Berhasil" : value === "pending" ? "Pending" : value === "gagal" ? "Gagal" : value}
+                </Badge>
+            ),
+        },
+    ]
+
+    const tagihanColumns = [
+        {
+            key: "nama",
+            label: "Nama Tagihan",
+            sortable: true,
+        },
+        {
+            key: "periode",
+            label: "Periode",
+            sortable: true,
+        },
+        {
+            key: "jatuhTempo",
+            label: "Jatuh Tempo",
+            sortable: true,
+            render: (value) => {
+                const isOverdue = new Date(value) < new Date()
+                return <span className={isOverdue ? "text-red-600 font-medium" : "text-gray-900"}>{formatTanggal(value)}</span>
+            },
+        },
+        {
+            key: "jumlah",
+            label: "Jumlah",
+            sortable: true,
+            render: (value) => formatRupiah(value),
+        },
+        {
+            key: "sisa",
+            label: "Sisa",
+            sortable: true,
+            render: (value) => (
+                <span className={`font-semibold ${value > 0 ? "text-red-600" : "text-emerald-600"}`}>
+                    {formatRupiah(value)}
+                </span>
+            ),
+        },
+        {
+            key: "status",
+            label: "Status",
+            sortable: true,
+            render: (value) => (
+                <Badge className={getStatusColor(value)}>
+                    {value === "lunas"
+                        ? "Lunas"
+                        : value === "belum_lunas"
+                            ? "Belum Lunas"
+                            : value === "cicilan"
+                                ? "Cicilan"
+                                : value === "terlambat"
+                                    ? "Terlambat"
+                                    : value}
+                </Badge>
+            ),
+        },
+    ]
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-4">
+                <LoadingSkeleton />
+            </div>
+        )
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50 p-4">
+            <div className="max-w-7xl mx-auto space-y-6">
+                {/* Header */}
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+                        <Wallet className="mr-3 h-6 w-6 text-purple-600" />
+                        Keuangan
+                    </h1>
+                    <p className="text-gray-600 mt-1">Kelola keuangan {selectedChild?.nama || "santri"}</p>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                    <Card className="border-purple-100 lg:col-span-2">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-purple-600">Saldo Dompet</p>
+                                    <p className="text-3xl font-bold text-purple-700">{formatRupiah(stats.saldo)}</p>
+                                    <p className="text-sm text-gray-600">Tersedia untuk digunakan</p>
+                                </div>
+                                <Wallet className="h-12 w-12 text-purple-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-red-100">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-red-600">Pengeluaran</p>
+                                    <p className="text-2xl font-bold text-red-700">{formatRupiah(stats.totalPengeluaran)}</p>
+                                </div>
+                                <ArrowUpRight className="h-8 w-8 text-red-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-emerald-100">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-emerald-600">Top Up</p>
+                                    <p className="text-2xl font-bold text-emerald-700">{formatRupiah(stats.totalTopUp)}</p>
+                                </div>
+                                <ArrowDownLeft className="h-8 w-8 text-emerald-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-orange-100">
+                        <CardContent className="p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-orange-600">Tagihan Aktif</p>
+                                    <p className="text-2xl font-bold text-orange-700">{stats.tagihanAktif}</p>
+                                    <p className="text-xs text-gray-600">{formatRupiah(stats.totalTagihan)}</p>
+                                </div>
+                                <Receipt className="h-8 w-8 text-orange-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Tabs */}
+                <div className="space-y-6">
+                    {/* <div className="border-b border-gray-200">
+                        <nav className="-mb-px flex space-x-8">
+                            {[
+                                { id: "transaksi", label: "Transaksi", icon: CreditCard },
+                                { id: "transfer", label: "Transfer", icon: ArrowUpRight },
+                                { id: "tagihan", label: "Tagihan", icon: FileText },
+                                // { id: "topup", label: "Top Up", icon: Wallet },
+                            ].map((tab) => {
+                                const Icon = tab.icon
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
+                                            ? "border-blue-500 text-blue-600"
+                                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                            }`}
+                                    >
+                                        <Icon className="mr-2 h-4 w-4" />
+                                        {tab.label}
+                                    </button>
+                                )
+                            })}
+                        </nav>
+                    </div> */}
+
+                    <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
+                        {[
+                            { id: "transaksi", label: "Transaksi", icon: CreditCard },
+                            { id: "transfer", label: "Transfer", icon: ArrowUpRight },
+                            { id: "tagihan", label: "Tagihan", icon: FileText },
+                            // { id: "topup", label: "Top Up", icon: Wallet },
+                        ].map((tab) => {
+                            const Icon = tab.icon
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${activeTab === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+                                        }`}
+                                >
+                                    <Icon className="mr-2 h-4 w-4" />
+                                    {tab.label}
+                                </button>
+                            )
+                        })}
+                    </div>
+
+                    {activeTab === "transaksi" && (
+                        <Card>
+                            <CardHeader>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                    <CardTitle>Riwayat Transaksi</CardTitle>
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <Select
+                                            value={
+                                                transactionFilter === "semua"
+                                                    ? "Semua Jenis"
+                                                    : transactionFilter === "pembelian"
+                                                        ? "Pembelian"
+                                                        : "Top Up"
+                                            }
+                                            onValueChange={(value) =>
+                                                setTransactionFilter(
+                                                    value === "Semua Jenis" ? "semua" : value === "Pembelian" ? "pembelian" : "top_up",
+                                                )
+                                            }
+                                            className="w-full sm:w-48"
+                                        >
+                                            <SelectItem value="semua" onSelect={() => setTransactionFilter("semua")}>
+                                                Semua Jenis
+                                            </SelectItem>
+                                            <SelectItem value="pembelian" onSelect={() => setTransactionFilter("pembelian")}>
+                                                Pembelian
+                                            </SelectItem>
+                                            <SelectItem value="top_up" onSelect={() => setTransactionFilter("top_up")}>
+                                                Top Up
+                                            </SelectItem>
+                                        </Select>
+                                        {/* <Button
+                                            variant="outline"
+                                            onClick={() => exportToCSV(filteredTransactions, "transaksi")}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <Download className="h-4 w-4 mr-2" />
+                                            Export CSV
+                                        </Button> */}
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <DataTable
+                                    data={filteredTransactions}
+                                    columns={transactionColumns}
+                                    searchPlaceholder="Cari deskripsi transaksi..."
+                                    pageSize={10}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {activeTab === "transfer" && (
+                        <Card>
+                            <CardHeader>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                    <CardTitle>Riwayat Transfer</CardTitle>
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <Select
+                                            value={
+                                                transferFilter === "semua"
+                                                    ? "Semua Jenis"
+                                                    : transferFilter === "masuk"
+                                                        ? "Transfer Masuk"
+                                                        : "Transfer Keluar"
+                                            }
+                                            onValueChange={(value) =>
+                                                setTransferFilter(
+                                                    value === "Semua Jenis" ? "semua" : value === "Transfer Masuk" ? "masuk" : "keluar",
+                                                )
+                                            }
+                                            className="w-full sm:w-48"
+                                        >
+                                            <SelectItem value="semua" onSelect={() => setTransferFilter("semua")}>
+                                                Semua Jenis
+                                            </SelectItem>
+                                            <SelectItem value="masuk" onSelect={() => setTransferFilter("masuk")}>
+                                                Transfer Masuk
+                                            </SelectItem>
+                                            <SelectItem value="keluar" onSelect={() => setTransferFilter("keluar")}>
+                                                Transfer Keluar
+                                            </SelectItem>
+                                        </Select>
+                                        {/* <Button
+                                            variant="outline"
+                                            onClick={() => exportToCSV(filteredTransfers, "transfer")}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <Download className="h-4 w-4 mr-2" />
+                                            Export CSV
+                                        </Button> */}
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <DataTable
+                                    data={filteredTransfers}
+                                    columns={transferColumns}
+                                    searchPlaceholder="Cari pengirim atau keterangan..."
+                                    pageSize={10}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {activeTab === "tagihan" && (
+                        <div className="space-y-6">
+                            <Card>
+                                <CardHeader>
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                        <CardTitle>Daftar Tagihan</CardTitle>
+                                        {/* <Button
+                                            variant="outline"
+                                            onClick={() => exportToCSV(mockTagihanData, "tagihan")}
+                                            className="w-full sm:w-auto"
+                                        >
+                                            <Download className="h-4 w-4 mr-2" />
+                                            Export CSV
+                                        </Button> */}
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <DataTable
+                                        data={mockTagihanData}
+                                        columns={tagihanColumns}
+                                        searchPlaceholder="Cari nama tagihan atau periode..."
+                                        pageSize={10}
+                                    />
+                                </CardContent>
+                            </Card>
+
+                            {/* Active Bills Summary */}
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <Card className="border-red-100">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg text-red-700">Tagihan Belum Lunas</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {mockTagihanData
+                                                .filter((t) => t.status === "belum_lunas")
+                                                .map((tagihan) => (
+                                                    <div key={tagihan.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                                                        <div>
+                                                            <p className="font-medium text-gray-900">{tagihan.nama}</p>
+                                                            <p className="text-sm text-gray-600">{tagihan.periode}</p>
+                                                            <p className="text-xs text-red-600">Jatuh tempo: {formatTanggal(tagihan.jatuhTempo)}</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="font-bold text-red-600">{formatRupiah(tagihan.sisa)}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card className="border-emerald-100">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg text-emerald-700">Tagihan Lunas</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {mockTagihanData
+                                                .filter((t) => t.status === "lunas")
+                                                .map((tagihan) => (
+                                                    <div
+                                                        key={tagihan.id}
+                                                        className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg"
+                                                    >
+                                                        <div>
+                                                            <p className="font-medium text-gray-900">{tagihan.nama}</p>
+                                                            <p className="text-sm text-gray-600">{tagihan.periode}</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="font-bold text-emerald-600">{formatRupiah(tagihan.jumlah)}</p>
+                                                            <Badge className="bg-emerald-100 text-emerald-800">Lunas</Badge>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "topup" && (
+                        <div className="space-y-6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Top Up Saldo Dompet</CardTitle>
+                                    <p className="text-sm text-gray-600 mt-1">
+                                        Transfer ke salah satu nomor Virtual Account di bawah ini untuk menambah saldo dompet santri
+                                    </p>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                        {/* BCA Virtual Account */}
+                                        <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-sm">BCA</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">Bank BCA</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    70014 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`70014${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* BNI Virtual Account */}
+                                        <div className="border border-orange-200 rounded-lg p-4 bg-orange-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-sm">BNI</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">Bank BNI</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    8808 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`8808${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-orange-600 hover:text-orange-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* BRI Virtual Account */}
+                                        <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-blue-800 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-sm">BRI</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">Bank BRI</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    26207 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`26207${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Mandiri Virtual Account */}
+                                        <div className="border border-yellow-200 rounded-lg p-4 bg-yellow-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-xs">MDR</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">Bank Mandiri</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    70012 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`70012${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-yellow-600 hover:text-yellow-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* BSI Virtual Account */}
+                                        <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-sm">BSI</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">Bank Syariah Indonesia</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    8091 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`8091${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-green-600 hover:text-green-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* CIMB Niaga Virtual Account */}
+                                        <div className="border border-red-200 rounded-lg p-4 bg-red-50">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center">
+                                                    <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                                                        <span className="text-white font-bold text-xs">CIMB</span>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="font-semibold text-gray-900">CIMB Niaga</h3>
+                                                        <p className="text-xs text-gray-600">Virtual Account</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-3 border">
+                                                <p className="text-xs text-gray-600 mb-1">Nomor Virtual Account</p>
+                                                <p className="font-mono text-lg font-bold text-gray-900">
+                                                    7221 {selectedChild?.id || "123456"}
+                                                </p>
+                                                <button
+                                                    onClick={() => navigator.clipboard.writeText(`7221${selectedChild?.id || "123456"}`)}
+                                                    className="text-xs text-red-600 hover:text-red-800 mt-1"
+                                                >
+                                                    Salin Nomor
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Instructions Card */}
+                            <Card className="border-blue-100 bg-blue-50">
+                                <CardHeader>
+                                    <CardTitle className="text-blue-800">Cara Top Up Saldo</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            <div>
+                                                <h4 className="font-semibold text-gray-900 mb-2">Melalui ATM</h4>
+                                                <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+                                                    <li>Pilih menu &quot;Transfer&quot;</li>
+                                                    <li>Pilih &quot;Virtual Account&quot; atau &quot;Rekening Lain&quot;</li>
+                                                    <li>Masukkan nomor Virtual Account</li>
+                                                    <li>Masukkan nominal yang ingin ditransfer</li>
+                                                    <li>Konfirmasi transaksi</li>
+                                                </ol>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-gray-900 mb-2">Melalui Mobile Banking</h4>
+                                                <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+                                                    <li>Buka aplikasi mobile banking</li>
+                                                    <li>Pilih menu &quot;Transfer&quot;</li>
+                                                    <li>Pilih &quot;Virtual Account&quot;</li>
+                                                    <li>Masukkan nomor Virtual Account</li>
+                                                    <li>Masukkan nominal dan konfirmasi</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                        <div className="bg-white rounded-lg p-4 border border-blue-200">
+                                            <div className="flex items-start">
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                                        <span className="text-white text-xs font-bold">!</span>
+                                                    </div>
+                                                </div>
+                                                <div className="ml-3">
+                                                    <h5 className="font-medium text-gray-900">Penting untuk diketahui:</h5>
+                                                    <ul className="text-sm text-gray-700 mt-1 space-y-1">
+                                                        <li>• Saldo akan otomatis bertambah setelah transfer berhasil (maksimal 15 menit)</li>
+                                                        <li>• Minimum top up Rp 10.000</li>
+                                                        <li>• Tidak ada biaya admin untuk top up</li>
+                                                        <li>• Simpan bukti transfer untuk keperluan konfirmasi</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
 }

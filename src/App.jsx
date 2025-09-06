@@ -49,10 +49,14 @@ import LoginOrtuPage from './content_main_page/content_ortu/Login';
 import RegisterOrtuPage from './content_main_page/content_ortu/Register';
 import { AppLayout } from './content_main_page/content_ortu/AppLayout';
 import { DashboardPage } from './content_main_page/content_ortu/Home';
-import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
 import { AkademikPage } from './content_main_page/content_ortu/Akademik';
 import { KeuanganPage } from './content_main_page/content_ortu/Keuangan';
 import { ProfilPage } from './content_main_page/content_ortu/Profil';
+import BatasPengeluaranPage from './content_main_page/content_ortu/BatasPengeluaran';
+import PerizinanPage from './content_main_page/content_ortu/Perizinan';
+import PelanggaranPage from './content_main_page/content_ortu/Pelanggaran';
+import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
+import PresensiPage from './content_main_page/content_ortu/Presensi';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -170,7 +174,7 @@ const RedirectToBiodata = () => {
 
 // Helper untuk cek login ortu/wali
 const isOrtuLoggedIn = () => {
-    const token = getCookie("auth_  token_ortu"); // token khusus ortu
+    const token = getCookie("auth_token_ortu"); // token khusus ortu
     const expiredAt = getCookie("expiredAt_ortu");
     const sessionToken = sessionStorage.getItem("auth_token_ortu");
     const isSessionActive = sessionStorage.getItem("activeSessionOrtu") === "true";
@@ -194,7 +198,7 @@ const isOrtuLoggedIn = () => {
 
 // Private route khusus ortu/wali
 const PrivateRouteOrtu = () => {
-    return isOrtuLoggedIn() ? <Outlet /> : <Navigate to="/login-ortu" replace />;
+    return isOrtuLoggedIn() ? <Outlet /> : <Navigate to="/ortu" replace />;
 };
 
 // Public route khusus ortu/wali
@@ -207,12 +211,12 @@ const RedirectToRegisterOrtu = () => {
 
     useEffect(() => {
         const firstVisitRaw = localStorage.getItem("ortu_first_visit");
-        const firstVisit = firstVisitRaw == "true";
+        const firstVisit = firstVisitRaw == "false";
         console.log("data local", firstVisit);
 
         if (!firstVisit) {
             console.log("Pertama kali → ke register ortu");
-            localStorage.setItem("ortu_first_visit", "visited");
+            // localStorage.setItem("ortu_first_visit", "visited");
             navigate("/register-ortu", { replace: true });
         } else {
             console.log("Sudah pernah → ke login ortu");
@@ -263,6 +267,10 @@ function App() {
                             <Route path="/wali/hafalan" element={<HafalanPage />} />
                             <Route path="/wali/akademik" element={<AkademikPage />} />
                             <Route path="/wali/keuangan" element={<KeuanganPage />} />
+                            <Route path="/wali/batas-pengeluaran" element={<BatasPengeluaranPage />} />
+                            <Route path="/wali/perizinan" element={<PerizinanPage />} />
+                            <Route path="/wali/pelanggaran" element={<PelanggaranPage />} />
+                            <Route path="/wali/presensi" element={<PresensiPage />} />
                             <Route path="/wali/profil" element={<ProfilPage />} />
                         </Route>
                     </Route>
