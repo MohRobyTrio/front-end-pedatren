@@ -15,12 +15,39 @@ import { FaEdit, FaFileExport } from "react-icons/fa";
 import { ModalExport } from "../../components/modal/ModalExport";
 import { Navigate, useNavigate } from "react-router-dom";
 import { hasAccess } from "../../utils/hasAccess";
+import { ModalAddWaliAsuh } from "../../components/modal/ModalFormWaliAsuh";
+import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh";
 
 const WaliAsuh = () => {
     const navigate = useNavigate();
     const [selectedItem, setSelectedItem] = useState(null);
     const [openModalExport, setOpenModalExport] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalAddWaliAsuhOpen, setIsModalAddWaliAsuhOpen] = useState(false);
+
+    const [showSelectSantriModal, setShowSelectSantriModal] = useState(false);
+    // const [santriSelectionCancelled, setSantriSelectionCancelled] = useState(false);
+    const [santri, setSantri] = useState(null);
+
+
+    // Trigger pemilihan santri
+    const handleTambahWaliAsuh = () => {
+        setSantri(null);
+        setShowSelectSantriModal(true);
+    };
+
+    // Setelah santri dipilih, buka modal form
+    const handleSantriSelected = (selectedSantri) => {
+        setSantri(selectedSantri)
+        setShowSelectSantriModal(false);
+        setIsModalAddWaliAsuhOpen(true);
+    };
+
+    // Handle close modal add wali asuh
+    const handleCloseModalAddWaliAsuh = () => {
+        setIsModalAddWaliAsuhOpen(false);
+        setSantri(null);
+    };
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -226,6 +253,12 @@ const WaliAsuh = () => {
                 <h1 className="text-2xl font-bold">Data Wali Asuh</h1>
                 <div className="flex items-center space-x-2">
                     <button
+                        onClick={handleTambahWaliAsuh}
+                        className="px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-green-600 hover:bg-green-700"
+                    >
+                        + Tambah Wali
+                    </button>
+                    <button
                         onClick={() => setOpenModalExport(true)}
                         // disabled={exportLoading}
                         className={`px-4 py-2 rounded flex items-center gap-2 text-white cursor-pointer bg-blue-500 hover:bg-blue-700`}
@@ -394,6 +427,27 @@ const WaliAsuh = () => {
                     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
                 )}
             </div>
+            {/* Modal Select Santri (ModalSelectWaliAsuh) */}
+            <ModalSelectWaliAsuh
+                isOpen={showSelectSantriModal}
+                 onClose={() => {
+                    setShowSelectSantriModal(false);
+                    // if (!santri) {
+                    //     setSantriSelectionCancelled(true);
+                    // }
+                }}
+                onWaliAsuhSelected={handleSantriSelected}
+                menu="menu2"
+            />
+            {/* Modal Add Wali Asuh, hanya muncul jika santri sudah dipilih */}
+            {santri && (
+                <ModalAddWaliAsuh
+                    isOpen={isModalAddWaliAsuhOpen}
+                    onClose={handleCloseModalAddWaliAsuh}
+                    refetchData={fetchData}
+                    santriTerpilih={santri}
+                />
+            )}
         </div>
     );
 };

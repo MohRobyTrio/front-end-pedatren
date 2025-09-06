@@ -1,13 +1,14 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState, useEffect } from "react";
+import { Combobox, Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState, useEffect, useMemo } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../hooks/config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../../hooks/Logout";
 import { useNavigate } from "react-router-dom";
 import useDropdownWaliAsuh from "../../hooks/hook_dropdown/DropdownWaliAsuh";
+import { Check, ChevronsUpDown } from "lucide-react";
 export const ModalFormGrupWaliAsuh = ({
     isOpen,
     onClose,
@@ -32,7 +33,21 @@ export const ModalFormGrupWaliAsuh = ({
 
     // Isi form dengan data grup jika mode edit
     console.log("Grup Data for Modal:", grupData);
-    
+
+    // Lookup pilihan yang aktif berdasarkan formData.wali_asuh_id
+    const selectedWali = useMemo(
+        () => menuWaliAsuh3.find((w) => w.id === formData.wali_asuh_id) || null,
+        [menuWaliAsuh3, formData.wali_asuh_id]
+    );
+
+    // Filter berdasarkan search
+    const filteredWali = useMemo(() => {
+        if (!waliSearch) return menuWaliAsuh3;
+        return menuWaliAsuh3.filter((w) =>
+            w.value.toLowerCase().includes(waliSearch.toLowerCase())
+        );
+    }, [waliSearch, menuWaliAsuh3]);
+
     useEffect(() => {
         if (mode === 'edit' && grupData) {
             setWaliAsuhId(grupData.wali_asuh || "");
@@ -71,11 +86,12 @@ export const ModalFormGrupWaliAsuh = ({
                 setWaliSearch(waliTerpilih.nama);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [menuWaliAsuh3]);
 
-    const filteredWali = menuWaliAsuh3.filter(item =>
-        (item.nama || "").toLowerCase().includes(waliSearch.toLowerCase())
-    );
+    // const filteredWali = menuWaliAsuh3.filter(item =>
+    //     (item.nama || "").toLowerCase().includes(waliSearch.toLowerCase())
+    // );
 
 
     const handleSelectWali = (item) => {
@@ -256,55 +272,7 @@ export const ModalFormGrupWaliAsuh = ({
 
                                             {/* FORM ISI */}
                                             <div className="space-y-4">
-                                                <div className="relative">
-                                                    <label htmlFor="waliAsuhId" className="block text-sm font-medium text-gray-700">
-                                                        Wali Asuh *
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Wali asuh"
-                                                        value={waliSearch}
-                                                        onChange={e => {
-                                                            setWaliSearch(e.target.value);
-                                                            setShowDropdown(true);
-                                                        }}
-                                                        onFocus={() => setShowDropdown(true)}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                    />
-                                                    {showDropdown && waliSearch && filteredWali.length > 0 && (
-                                                        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm max-h-48 overflow-y-auto">
-                                                            {filteredWali.map(item => (
-                                                                <li
-                                                                    key={item.id}
-                                                                    onClick={() => handleSelectWali(item)}
-                                                                    className="p-2 cursor-pointer hover:bg-gray-50"
-                                                                >
-                                                                    {item.nama}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="id_wilayah" className="block text-sm font-medium text-gray-700">
-                                                        Wilayah *
-                                                    </label>
-                                                    <select
-                                                        id="id_wilayah"
-                                                        name="id_wilayah"
-                                                        value={formData.id_wilayah}
-                                                        onChange={handleChange}
-                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                                        required
-                                                    >
-                                                        <option value="">Pilih Wilayah</option>
-                                                        {wilayahList.slice(1).map(wilayah => (
-                                                            <option key={wilayah.id} value={wilayah.id}>
-                                                                {wilayah.nama_wilayah}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
+
 
                                                 <div>
                                                     <label htmlFor="nama_grup" className="block text-sm font-medium text-gray-700">
@@ -340,6 +308,97 @@ export const ModalFormGrupWaliAsuh = ({
                                                     </select>
                                                 </div>
 
+                                                <div>
+                                                    <label htmlFor="id_wilayah" className="block text-sm font-medium text-gray-700">
+                                                        Wilayah *
+                                                    </label>
+                                                    <select
+                                                        id="id_wilayah"
+                                                        name="id_wilayah"
+                                                        value={formData.id_wilayah}
+                                                        onChange={handleChange}
+                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                        required
+                                                    >
+                                                        <option value="">Pilih Wilayah</option>
+                                                        {wilayahList.slice(1).map(wilayah => (
+                                                            <option key={wilayah.id} value={wilayah.id}>
+                                                                {wilayah.nama_wilayah}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <label className="block text-sm font-semibold text-gray-800">
+                                                        Wali Asuh
+                                                    </label>
+
+                                                    <Combobox
+                                                        value={formData.wali_asuh_id}
+                                                        onChange={(value) =>
+                                                            setFormData((prev) => ({ ...prev, wali_asuh_id: value }))
+                                                        }
+                                                    >
+                                                        <div className="relative">
+                                                            {/* Input */}
+                                                            <Combobox.Input
+                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base text-gray-900 focus:outline-none transition-all duration-200"
+                                                                displayValue={() => (selectedWali ? selectedWali.nama : "")}
+                                                                onChange={(event) => setWaliSearch(event.target.value)}
+                                                                placeholder="Pilih wali asuh..."
+                                                            />
+
+                                                            {/* Tombol dropdown */}
+                                                            <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                                                <ChevronsUpDown className="h-5 w-5 text-gray-400" />
+                                                            </Combobox.Button>
+
+                                                            {/* Dropdown Options */}
+                                                            <Transition
+                                                                as={Fragment}
+                                                                leave="transition ease-in duration-100"
+                                                                leaveFrom="opacity-100"
+                                                                leaveTo="opacity-0"
+                                                            >
+                                                                <Combobox.Options className="absolute z-50 mt-1 max-h-48 sm:max-h-60 w-full overflow-auto rounded-lg bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none border border-gray-200">
+                                                                    {filteredWali.length === 0 ? (
+                                                                        <div className="cursor-default select-none py-2 px-4 text-gray-500">
+                                                                            Tidak ditemukan
+                                                                        </div>
+                                                                    ) : (
+                                                                        filteredWali.map((wali) => (
+                                                                            <Combobox.Option
+                                                                                key={wali.id}
+                                                                                value={wali.id}
+                                                                                className={({ active }) =>
+                                                                                    `relative cursor-pointer select-none py-2 sm:py-3 pl-8 sm:pl-10 pr-3 sm:pr-4 ${active ? "bg-blue-100 text-blue-900" : "text-gray-900"
+                                                                                    }`
+                                                                                }
+                                                                            >
+                                                                                {({ selected }) => (
+                                                                                    <>
+                                                                                        <span
+                                                                                            className={`block truncate ${selected ? "font-medium" : "font-normal"
+                                                                                                }`}
+                                                                                        >
+                                                                                            {wali.nama}
+                                                                                        </span>
+                                                                                        {selected && (
+                                                                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
+                                                                                                {/* <Check className="h-5 w-5" /> */}
+                                                                                            </span>
+                                                                                        )}
+                                                                                    </>
+                                                                                )}
+                                                                            </Combobox.Option>
+                                                                        ))
+                                                                    )}
+                                                                </Combobox.Options>
+                                                            </Transition>
+                                                        </div>
+                                                    </Combobox>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -530,7 +589,6 @@ export const ModalConfirmationStatusGrup = ({
 export const ModalStatusAnakAsuh = ({
     isOpen,
     onClose,
-    waliAsuhId,
     anakAsuhId,
     anakAsuhData,
     refetchData
@@ -543,10 +601,11 @@ export const ModalStatusAnakAsuh = ({
         setIsProcessing(true);
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${waliAsuhId}/anak-asuh/${anakAsuhId}/nonaktif`;
+            // const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${waliAsuhId}/anak-asuh/${anakAsuhId}/nonaktif`;
+            const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${anakAsuhId}/nonaktif`;
 
             const response = await fetch(endpoint, {
-                method: "PATCH",
+                method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Accept": "application/json"
@@ -637,6 +696,150 @@ export const ModalStatusAnakAsuh = ({
                                         </Dialog.Title>
                                         <p className="text-center mb-6">
                                             Apakah Anda yakin ingin menonaktifkan {anakAsuhData?.nama || '-'} dari grup wali asuh?
+                                        </p>
+                                        <div className="flex justify-center space-x-4">
+                                            <button
+                                                type="button"
+                                                onClick={onClose}
+                                                disabled={isProcessing}
+                                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 disabled:opacity-50"
+                                            >
+                                                Batal
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleConfirm}
+                                                disabled={isProcessing}
+                                                className="px-4 py-2 text-white rounded bg-red-600 hover:bg-red-700 disabled:opacity-50"
+                                            >
+                                                {isProcessing ? (
+                                                    <span>Memproses...</span>
+                                                ) : (
+                                                    'Non-Aktifkan'
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+            </Dialog>
+        </Transition>
+    );
+};
+
+export const ModalStatusWaliAsuh = ({
+    isOpen,
+    onClose,
+    waliAsuhId,
+    waliAsuhData,
+    refetchData
+}) => {
+    const { clearAuthData } = useLogout();
+    const navigate = useNavigate();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handleConfirm = async () => {
+        setIsProcessing(true);
+        try {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            // const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${waliAsuhId}/anak-asuh/${anakAsuhId}/nonaktif`;
+            const endpoint = `${API_BASE_URL}crud/grup-wali-asuh/${waliAsuhId}/nonaktif/waliasuh`;
+
+            const response = await fetch(endpoint, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.status === 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login");
+                return;
+            }
+
+            let result;
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error("Respon bukan JSON:\n" + text);
+            }
+
+            if (!response.ok) {
+                throw new Error(result.message || "Terjadi kesalahan pada server.");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: `Anak ${waliAsuhData || ''} berhasil dinonaktifkan dari grup`,
+            });
+
+            refetchData?.(true);
+            onClose?.();
+        } catch (error) {
+            console.error("Gagal menonaktifkan wali asuh:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: error.message,
+            });
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-300 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all w-full max-w-sm sm:max-w-lg sm:align-middle">
+                            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div className="sm:flex sm:items-start">
+                                    <div className="mt-2 sm:mt-0 text-left w-full">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg leading-6 font-medium text-gray-900 text-center mb-4"
+                                        >
+                                            Konfirmasi
+                                        </Dialog.Title>
+                                        <p className="text-center mb-6">
+                                            Apakah Anda yakin ingin menonaktifkan {waliAsuhData || '-'} dari grup wali asuh?
                                         </p>
                                         <div className="flex justify-center space-x-4">
                                             <button
