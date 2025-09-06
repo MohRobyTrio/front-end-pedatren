@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { OrbitProgress } from "react-loading-indicators"
 import { getCookie } from "../../utils/cookieUtils"
 import Swal from "sweetalert2"
@@ -13,6 +13,9 @@ import { hasAccess } from "../../utils/hasAccess"
 import useFetchSantriNonAnakAsuh from "../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/SantriNonAnakAsuh"
 import { ModalSelectWaliAsuh } from "../../components/ModalSelectWaliAsuh"
 import { WaliAsuhInfoCardCompact } from "../../components/CardInfo"
+import { ChevronsUpDown, Check, X } from "lucide-react";
+import useDropdownGrupWaliAsuh from "../../hooks/hook_dropdown/DropdownGrupWaliAsuh"
+
 
 const Filters = ({ filterOptions, onChange, selectedFilters, vertical = false }) => {
   return (
@@ -48,8 +51,15 @@ const HubungkanWaliAsuh = () => {
   const [isAllSelected, setIsAllSelected] = useState(false)
   const [showSelectWaliAsuhModal, setShowSelectWaliAsuhModal] = useState(false)
   // const [waliAsuhTerpilih, setWaliAsuhTerpilih] = useState(null)
-  const [waliAsuhTerpilihMethod1, setWaliAsuhTerpilihMethod1] = useState(null);
+  // const [waliAsuhTerpilihMethod1, setWaliAsuhTerpilihMethod1] = useState(null);
   const [waliAsuhTerpilihMethod2, setWaliAsuhTerpilihMethod2] = useState(null);
+  //grup wali asuh
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { menuGrup2 } = useDropdownGrupWaliAsuh();
+  const [selectedGrup, setSelectedGrup] = useState(null);
+  const dropdownRef = useRef(null);
+
   const [filters, setFilters] = useState({
     wilayah: "",
     blok: "",
@@ -69,6 +79,20 @@ const HubungkanWaliAsuh = () => {
   useEffect(() => {
     console.log(selectedSantriIds)
   }, [selectedSantriIds])
+
+  // Handler untuk click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const {
     filterWilayah: filterWilayahFilter,
@@ -142,7 +166,7 @@ const HubungkanWaliAsuh = () => {
         anak_asuh: selectedSantriIds.map((id) => ({ id_santri: id })),
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSantriIds, selectedMethod])
 
   const handlePageChange = (page) => {
@@ -204,7 +228,8 @@ const HubungkanWaliAsuh = () => {
     if (selectedMethod === 1) {
       // Metode 1: Hubungkan ke wali asuh existing
       payload = {
-        id_wali_asuh: selectedWaliAsuh,
+        // id_wali_asuh: selectedWaliAsuh,
+        grup_wali_asuh_id: selectedWaliAsuh,
         santri_id: selectedSantriIds,
       }
       endpoint = `${API_BASE_URL}fitur/anakasuh`
@@ -214,10 +239,8 @@ const HubungkanWaliAsuh = () => {
         id_wilayah: formDataMethod2.id_wilayah,
         nama_grup: formDataMethod2.nama_grup,
         jenis_kelamin: formDataMethod2.jenis_kelamin,
-        wali_asuh: {
-          id_santri: selectedWaliAsuh,
-        },
-        anak_asuh: selectedSantriIds.map((id) => ({ id_santri: id })),
+        wali_santri_id:  selectedWaliAsuh,
+        anak_santri_ids: selectedSantriIds,
       }
       endpoint = `${API_BASE_URL}crud/kewaliasuhan`
     }
@@ -288,6 +311,7 @@ const HubungkanWaliAsuh = () => {
         return
       }
 
+      sessionStorage.removeItem("menuWaliAsuh4")
       await Swal.fire({
         icon: "success",
         title: "Berhasil",
@@ -314,7 +338,8 @@ const HubungkanWaliAsuh = () => {
         setSelectedWaliAsuh(null)
       }
       if (selectedMethod === 1) {
-        setWaliAsuhTerpilihMethod1(null);
+        // setWaliAsuhTerpilihMethod1(null);
+        setSelectedGrup(null);
         setSelectedWaliAsuh(null);
       }
       fetchData(true)
@@ -536,7 +561,7 @@ const HubungkanWaliAsuh = () => {
             <div className="sticky top-6">
               <form
                 onSubmit={handleSubmit}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-fit"
+                className="bg-white rounded-xl shadow-sm border border-gray-100 h-fit"
               >
                 <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4">
                   <h2 className="text-xl font-semibold text-white flex items-center space-x-2">
@@ -562,7 +587,7 @@ const HubungkanWaliAsuh = () => {
                         : "text-white/80 hover:text-white hover:bg-white/10"
                         }`}
                     >
-                      Wali Asuh
+                      Grup Wali Asuh
                     </button>
                     <button
                       type="button"
@@ -581,19 +606,72 @@ const HubungkanWaliAsuh = () => {
                   {selectedMethod === 1 ? (
                     <div className="space-y-4 mb-6">
                       <div className="space-y-2">
-                        {waliAsuhTerpilihMethod1 ? (
-                          <WaliAsuhInfoCardCompact
-                            waliAsuh={waliAsuhTerpilihMethod1}
-                            setShowSelectWaliAsuh={() => setShowSelectWaliAsuhModal(true)}
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Pilih Grup Wali Asuh
+                        </label>
+                        <div className="relative" ref={dropdownRef}>
+                          <input
+                            type="text"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                            placeholder="Cari grup wali asuh..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => setIsDropdownOpen(true)}
                           />
-                        ) : (
                           <button
                             type="button"
-                            onClick={() => setShowSelectWaliAsuhModal(true)}
-                            className="w-full px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                           >
-                            Pilih Wali Asuh
+                            <ChevronsUpDown className="h-5 w-5 text-gray-400" />
                           </button>
+
+                          {isDropdownOpen && (
+                            <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                              {menuGrup2
+                                .filter((grup) =>
+                                  grup.label.toLowerCase().includes(searchQuery.toLowerCase())
+                                )
+                                .map((grup) => (
+                                  <div
+                                    key={grup.id}
+                                    className="px-4 py-3 hover:bg-blue-50 cursor-pointer flex items-center justify-between"
+                                    onClick={() => {
+                                      setSelectedGrup(grup);
+                                      setSelectedWaliAsuh(grup.id);
+                                      setIsDropdownOpen(false);
+                                      setSearchQuery("");
+                                    }}
+                                  >
+                                    <span>{grup.label}</span>
+                                    {selectedGrup?.id === grup.id && (
+                                      <Check className="h-5 w-5 text-blue-500" />
+                                    )}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {selectedGrup && (
+                          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium text-blue-800">{selectedGrup.label}</h4>
+                                <p className="text-sm text-blue-600">Wilayah: {selectedGrup.wilayah}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedGrup(null);
+                                  setSelectedWaliAsuh(null);
+                                }}
+                                className="text-red-500 hover:text-red-700"
+                              >
+                                <X className="h-5 w-5" />
+                              </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -714,19 +792,19 @@ const HubungkanWaliAsuh = () => {
         isOpen={showSelectWaliAsuhModal}
         onClose={() => setShowSelectWaliAsuhModal(false)}
         onWaliAsuhSelected={(wali) => {
-          if (selectedMethod === 1) {
-            setWaliAsuhTerpilihMethod1(wali);
-            setSelectedWaliAsuh(wali.id);
-          } else {
-            setWaliAsuhTerpilihMethod2(wali);
-            setSelectedWaliAsuh(wali.id);
-            setFormDataMethod2({
-              ...formDataMethod2,
-              wali_asuh: {
-                id_santri: wali.id,
-              },
-            });
-          }
+          // if (selectedMethod === 1) {
+          //   setWaliAsuhTerpilihMethod1(wali);
+          //   setSelectedWaliAsuh(wali.id);
+          // } else {
+          setWaliAsuhTerpilihMethod2(wali);
+          setSelectedWaliAsuh(wali.id);
+          setFormDataMethod2({
+            ...formDataMethod2,
+            wali_asuh: {
+              id_santri: wali.id,
+            },
+          });
+          // }
         }}
       />
     </div>

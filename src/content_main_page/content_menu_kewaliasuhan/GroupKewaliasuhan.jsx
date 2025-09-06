@@ -168,7 +168,7 @@ const GroupKewaliasuhan = () => {
                 id_wilayah: grupDetail.id_wilayah,
                 nama_grup: grupDetail.nama_grup,
                 jenis_kelamin: grupDetail.jenis_kelamin,
-                wali_asuh_id: grupDetail.wali_asuh.id
+                wali_asuh_id: grupDetail.wali_asuh_id
             });
             setIsModalOpen(true);
         }
@@ -333,9 +333,9 @@ const GroupKewaliasuhan = () => {
                                                                     event.stopPropagation();
                                                                     openStatusModal(item, false);
                                                                 }}
-                                                                className="w-20 h-8 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                                className="w-10 h-8 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
                                                             >
-                                                                Non-Aktif
+                                                                OFF
                                                             </button>
                                                         ) : (
                                                             <button
@@ -343,9 +343,9 @@ const GroupKewaliasuhan = () => {
                                                                     event.stopPropagation();
                                                                     openStatusModal(item, true);
                                                                 }}
-                                                                className="w-20 h-8 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                                className="w-10 h-8 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                             >
-                                                                Aktifkan
+                                                                ON
                                                             </button>
                                                         )}
                                                     </div>
@@ -382,6 +382,7 @@ const GroupKewaliasuhan = () => {
                     isOpen={isDetailModalOpen}
                     onClose={() => setIsDetailModalOpen(false)}
                     grupId={selectedDetailGrupId}
+                    refetchData={fetchData}
                 />
 
                 {/* Pagination */}

@@ -11,19 +11,21 @@ import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { OrbitProgress } from "react-loading-indicators";
 import blankProfile from "../../assets/blank_profile.png"
-import { ModalStatusAnakAsuh } from "./ModalFormGrupwaliasuh"; // sesuaikan path jika perlu
-import { FaTrash } from "react-icons/fa"
+import { ModalStatusAnakAsuh, ModalStatusWaliAsuh } from "./ModalFormGrupwaliasuh"; // sesuaikan path jika perlu
+import { FaSignOutAlt } from "react-icons/fa"
 
 
-export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
+export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId, refetchData }) => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState(null)
   const { clearAuthData } = useLogout()
   const navigate = useNavigate()
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isStatusModalWaliOpen, setIsStatusModalWaliOpen] = useState(false);
   const [selectedWaliAsuhId, setSelectedWaliAsuhId] = useState(null);
   const [selectedAnakAsuhId, setSelectedAnakAsuhId] = useState(null);
   const [selectedAnakAsuhData, setSelectedAnakAsuhData] = useState(null);
+  const [selectedWaliAsuhData, setSelectedWaliAsuhData] = useState(null);
 
   const fetchDetailGrup = async () => {
     if (!grupId) return
@@ -79,6 +81,7 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
     if (isOpen && grupId) {
       fetchDetailGrup()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, grupId])
 
   useEffect(() => {
@@ -92,6 +95,11 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
     setSelectedAnakAsuhId(anak.anak_asuh_id);
     setSelectedAnakAsuhData(anak);
     setIsStatusModalOpen(true);
+  };
+  const openStatusModalWali = (wali, waliId) => {
+    setSelectedWaliAsuhId(waliId);
+    setSelectedWaliAsuhData(wali);
+    setIsStatusModalWaliOpen(true);
   };
 
 
@@ -142,7 +150,18 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                     ) : data ? (
                       <div className="space-y-6">
                         {/* Info Grup */}
-                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 relative">
+                          {/* Tombol Sign Out - Pojok Kanan Atas */}
+                          {data.group.wali_asuh_id !== "-" && (
+                            <button
+                              className="absolute top-3 right-3 p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                              onClick={() => openStatusModalWali(data.group.nama_wali_asuh, data.group.wali_asuh_id)}
+                              title="Sign Out"
+                            >
+                              <FaSignOutAlt className="w-4 h-4" />
+                            </button>
+                          )}
+
                           <div className="flex flex-col sm:flex-row gap-4">
                             {/* Foto Wali Asuh */}
                             <div className="flex justify-center sm:justify-start">
@@ -161,7 +180,6 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                             <div className="flex-1 space-y-3">
                               <div>
                                 <h4 className="text-xl font-bold text-gray-800">{data.group.nama_group}</h4>
-                                {/* <p className="text-blue-600 font-medium">{data.total} Anak Asuh</p> */}
                               </div>
 
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
@@ -213,11 +231,11 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                                         </span> */}
                                         <button
                                           type="button"
-                                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium cursor-pointer"
+                                          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-sm text-xs font-medium cursor-pointer"
                                           onClick={() => openStatusModal(anak, data.group.wali_asuh_id)}
                                         >
                                           {/* Nonaktifkan */}
-                                          <FaTrash/>
+                                          <FaSignOutAlt />
                                         </button>
                                       </td>
                                     </tr>
@@ -247,9 +265,21 @@ export const ModalDetailGrupWaliAsuh = ({ isOpen, onClose, grupId }) => {
                 waliAsuhId={selectedWaliAsuhId}
                 anakAsuhId={selectedAnakAsuhId}
                 anakAsuhData={selectedAnakAsuhData}
-                refetchData={() => fetchDetailGrup()}
+                refetchData={() => {
+                  fetchDetailGrup();
+                  refetchData(true);
+                }}
               />
-
+              <ModalStatusWaliAsuh
+                isOpen={isStatusModalWaliOpen}
+                onClose={() => setIsStatusModalWaliOpen(false)}
+                waliAsuhId={selectedWaliAsuhId}
+                waliAsuhData={selectedWaliAsuhData}
+                refetchData={() => {
+                  fetchDetailGrup();
+                  refetchData(true);
+                }}
+              />
               {/* Footer */}
               <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
                 <button
