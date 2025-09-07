@@ -224,6 +224,11 @@ console.log(result);
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal!",
+                text: "Terjadi Kesalahan",
+            });
         }
     };
 

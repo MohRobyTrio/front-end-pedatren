@@ -1,142 +1,99 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { FileText, Eye, Clock, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState } from "react"
+import { FileText } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
+import useFetchPerizinanOrtu from "../../hooks/hooks_ortu/Perizinan"
+import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardList, FaClock, FaEdit, FaExclamationTriangle, FaHome, FaMapMarkerAlt, FaSchool, FaSignOutAlt, FaUsers } from "react-icons/fa"
+import blankProfile from "../../assets/blank_profile.png"
 
 export default function PerizinanPage() {
     const { activeChild: selectedChild } = useActiveChild()
-    const [currentPage, setCurrentPage] = useState(1)
-    const [searchTerm, setSearchTerm] = useState("")
-    const [selectedDetail, setSelectedDetail] = useState(null)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [perizinanData, setPerizinanData] = useState([])
-    const [loading, setLoading] = useState(true)
+    // const [selectedDetail, setSelectedDetail] = useState(null)
+    // const [isModalOpen, setIsModalOpen] = useState(false)
+    // const [perizinanData, setPerizinanData] = useState([])
+    // const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        setLoading(true)
-        // const activeChild = sessionStorage.getItem("active_child")
-        // if (activeChild) {
-        //     setSelectedChild(JSON.parse(activeChild))
-        // }
+    const { data, error, fetchData, loading, totalData } = useFetchPerizinanOrtu({});
 
-        // Simulate API call - replace with actual API
-        setTimeout(() => {
-            // Mock API response structure
-            const apiResponse = {
-                success: true,
-                message: "Data perizinan berhasil diambil.",
-                status: 200,
-                data: [
-                    {
-                        id: 51,
-                        nama_santri: "Jasmin Zelaya Fujiati S.H.",
-                        jenis_kelamin: "p",
-                        alasan_izin: "Sakit demam",
-                        alamat_tujuan: "Rumah",
-                        tanggal_mulai: "2025-01-16 08:00:00",
-                        tanggal_akhir: "2025-01-18 17:00:00",
-                        bermalam: "tidak bermalam",
-                        lama_izin: "2 hari",
-                        tanggal_kembali: "2025-01-18 17:00:00",
-                        jenis_izin: "Kesehatan",
-                        status: "sedang proses izin",
-                        pembuat: "Super Admin",
-                        nama_pengasuh: "Ustadz Ahmad",
-                        keterangan: "Izin pulang untuk berobat ke dokter",
-                        created_at: "2025-01-15 14:30:00",
-                        updated_at: "2025-01-15 14:30:00",
-                    },
-                ],
-            }
+    // const formatTanggal = (dateString) => {
+    //     if (!dateString) return "-"
+    //     const date = new Date(dateString)
+    //     return date.toLocaleDateString("id-ID", {
+    //         day: "2-digit",
+    //         month: "2-digit",
+    //         year: "numeric",
+    //     })
+    // }
 
-            setPerizinanData(apiResponse.data)
-            setLoading(false)
-        }, 1000)
-    }, [selectedChild])
+    // const formatTanggalWaktu = (dateString) => {
+    //     if (!dateString) return "-"
+    //     const date = new Date(dateString)
+    //     return date.toLocaleString("id-ID", {
+    //         day: "2-digit",
+    //         month: "2-digit",
+    //         year: "numeric",
+    //         hour: "2-digit",
+    //         minute: "2-digit",
+    //     })
+    // }
 
-    const formatTanggal = (dateString) => {
-        if (!dateString) return "-"
-        const date = new Date(dateString)
-        return date.toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-        })
-    }
+    // const getStatusColor = (status) => {
+    //     switch (status) {
+    //         case "sedang proses izin":
+    //             return "bg-yellow-100 text-yellow-800 border-yellow-200"
+    //         case "disetujui":
+    //             return "bg-green-100 text-green-800 border-green-200"
+    //         case "ditolak":
+    //             return "bg-red-100 text-red-800 border-red-200"
+    //         case "selesai":
+    //             return "bg-blue-100 text-blue-800 border-blue-200"
+    //         default:
+    //             return "bg-gray-100 text-gray-800 border-gray-200"
+    //     }
+    // }
 
-    const formatTanggalWaktu = (dateString) => {
-        if (!dateString) return "-"
-        const date = new Date(dateString)
-        return date.toLocaleString("id-ID", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    }
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "sedang proses izin":
-                return "bg-yellow-100 text-yellow-800 border-yellow-200"
-            case "disetujui":
-                return "bg-green-100 text-green-800 border-green-200"
-            case "ditolak":
-                return "bg-red-100 text-red-800 border-red-200"
-            case "selesai":
-                return "bg-blue-100 text-blue-800 border-blue-200"
-            default:
-                return "bg-gray-100 text-gray-800 border-gray-200"
-        }
-    }
-
-    const getStatusLabel = (status) => {
-        switch (status) {
-            case "sedang proses izin":
-                return "Sedang Proses"
-            case "disetujui":
-                return "Disetujui"
-            case "ditolak":
-                return "Ditolak"
-            case "selesai":
-                return "Selesai"
-            default:
-                return status
-        }
-    }
+    // const getStatusLabel = (status) => {
+    //     switch (status) {
+    //         case "sedang proses izin":
+    //             return "Sedang Proses"
+    //         case "disetujui":
+    //             return "Disetujui"
+    //         case "ditolak":
+    //             return "Ditolak"
+    //         case "selesai":
+    //             return "Selesai"
+    //         default:
+    //             return status
+    //     }
+    // }
 
     // Filter data based on search
-    const filteredData = perizinanData.filter(
-        (item) =>
-            item.alasan_izin?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.keterangan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.jenis_izin?.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+    // const filteredData = perizinanData.filter(
+    //     (item) =>
+    //         item.alasan_izin?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item.keterangan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item.jenis_izin?.toLowerCase().includes(searchTerm.toLowerCase()),
+    // )
 
-    // Pagination
-    const pageSize = 10
-    const totalPages = Math.ceil(filteredData.length / pageSize)
-    const startIndex = (currentPage - 1) * pageSize
-    const paginatedData = filteredData.slice(startIndex, startIndex + pageSize)
 
-    const stats = {
-        total: perizinanData.length,
-        proses: perizinanData.filter((item) => item.status === "sedang proses izin").length,
-        disetujui: perizinanData.filter((item) => item.status === "disetujui").length,
-        ditolak: perizinanData.filter((item) => item.status === "ditolak").length,
-    }
 
-    const openModal = (item) => {
-        setSelectedDetail(item)
-        setIsModalOpen(true)
-    }
+    // const stats = {
+    //     total: perizinanData.length,
+    //     proses: perizinanData.filter((item) => item.status === "sedang proses izin").length,
+    //     disetujui: perizinanData.filter((item) => item.status === "disetujui").length,
+    //     ditolak: perizinanData.filter((item) => item.status === "ditolak").length,
+    // }
 
-    const closeModal = () => {
-        setIsModalOpen(false)
-        setSelectedDetail(null)
-    }
+    // const openModal = (item) => {
+    //     setSelectedDetail(item)
+    //     setIsModalOpen(true)
+    // }
+
+    // const closeModal = () => {
+    //     setIsModalOpen(false)
+    //     setSelectedDetail(null)
+    // }
 
     if (loading) {
         return (
@@ -144,11 +101,11 @@ export default function PerizinanPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="animate-pulse space-y-6">
                         <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-                        <div className="grid gap-4 md:grid-cols-4">
+                        {/* <div className="grid gap-4 md:grid-cols-4">
                             {[...Array(4)].map((_, i) => (
                                 <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
                             ))}
-                        </div>
+                        </div> */}
                         <div className="h-96 bg-gray-200 rounded-lg"></div>
                     </div>
                 </div>
@@ -169,7 +126,7 @@ export default function PerizinanPage() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-4">
+                {/* <div className="grid gap-4 md:grid-cols-4">
                     <div className="bg-white rounded-lg border border-blue-100 shadow-sm">
                         <div className="p-6">
                             <div className="flex items-center justify-between">
@@ -221,137 +178,31 @@ export default function PerizinanPage() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Table */}
-                <div className="bg-white rounded-lg shadow-sm">
+                {/* <div className="bg-white rounded-lg shadow-sm">
                     <div className="pl-6 pr-6 pt-6">
                         <h3 className="text-lg font-semibold text-gray-900">Riwayat Perizinan</h3>
-                    </div>
-                    <div className="p-6">
-                        {/* Search */}
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                placeholder="Cari alasan atau keterangan..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            />
-                        </div>
+                    </div> */}
 
-                        {filteredData.length === 0 ? (
-                            <div className="text-center py-12">
-                                <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                                <h3 className="mt-2 text-sm font-medium text-gray-900">Tidak ada data perizinan</h3>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    {perizinanData.length === 0
-                                        ? "Santri belum memiliki data perizinan."
-                                        : "Tidak ada data yang sesuai dengan pencarian."}
-                                </p>
+                    {/* <div className="p-6"> */}
+                        {data.length > 0 && (
+                            <div className="">
+                                {data.map((perizinan) => (
+                                    <PerizinanCard
+                                        key={perizinan.id}
+                                        data={perizinan}
+                                    />
+                                ))}
                             </div>
-                        ) : (
-                            <>
-                                {/* Table */}
-                                <div className="overflow-x-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Tanggal Pengajuan
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Alasan
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Jenis Izin
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Tanggal Mulai
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Tanggal Akhir
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Status
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Aksi
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {paginatedData.map((item) => (
-                                                <tr key={item.id} className="hover:bg-gray-50">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                        {formatTanggal(item.created_at)}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.alasan_izin}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.jenis_izin}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                        {formatTanggal(item.tanggal_mulai)}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                        {formatTanggal(item.tanggal_akhir)}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span
-                                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(item.status)}`}
-                                                        >
-                                                            {getStatusLabel(item.status)}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                        <button
-                                                            onClick={() => openModal(item)}
-                                                            className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                        >
-                                                            <Eye className="h-4 w-4 mr-1" />
-                                                            Detail
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="flex items-center justify-between mt-6">
-                                        <div className="text-sm text-gray-700">
-                                            Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, filteredData.length)} dari{" "}
-                                            {filteredData.length} data
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <button
-                                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                                disabled={currentPage === 1}
-                                                className="p-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </button>
-                                            <span className="px-3 py-1 text-sm font-medium">
-                                                {currentPage} / {totalPages}
-                                            </span>
-                                            <button
-                                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                                disabled={currentPage === totalPages}
-                                                className="p-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                                            >
-                                                <ChevronRight className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </>
                         )}
-                    </div>
-                </div>
+                    {/* </div> */}
+                {/* </div> */}
 
                 {/* Modal */}
-                {isModalOpen && selectedDetail && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                {/* {isModalOpen && selectedDetail && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
                             <div className="p-6 border-b">
                                 <h3 className="text-lg font-semibold text-gray-900">Detail Perizinan</h3>
@@ -425,6 +276,372 @@ export default function PerizinanPage() {
                                 >
                                     Tutup
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                )} */}
+            </div>
+        </div>
+    )
+}
+
+const PerizinanCard = ({ data }) => {
+    const [isExpanded, setIsExpanded] = useState(false)
+
+    const getStatusConfig = (status) => {
+        switch (status) {
+            case "sedang proses izin":
+                return {
+                    bg: "bg-amber-50",
+                    text: "text-amber-800",
+                    border: "border-amber-200",
+                    icon: FaClock,
+                    iconColor: "text-amber-600",
+                }
+            case "perizinan diterima":
+                return {
+                    bg: "bg-emerald-50",
+                    text: "text-emerald-800",
+                    border: "border-emerald-200",
+                    icon: FaCheckCircle,
+                    iconColor: "text-emerald-600",
+                }
+            case "sudah berada diluar pondok":
+                return {
+                    bg: "bg-blue-50",
+                    text: "text-blue-800",
+                    border: "border-blue-200",
+                    icon: FaSignOutAlt,
+                    iconColor: "text-blue-600",
+                }
+            case "kembali tepat waktu":
+                return {
+                    bg: "bg-green-50",
+                    text: "text-green-800",
+                    border: "border-green-200",
+                    icon: FaHome,
+                    iconColor: "text-green-600",
+                }
+            case "perizinan ditolak":
+            case "dibatalkan":
+                return {
+                    bg: "bg-red-50",
+                    text: "text-red-800",
+                    border: "border-red-200",
+                    icon: FaExclamationTriangle,
+                    iconColor: "text-red-600",
+                }
+            case "telat(sudah kembali)":
+            case "telat(belum kembali)":
+                return {
+                    bg: "bg-orange-50",
+                    text: "text-orange-800",
+                    border: "border-orange-200",
+                    icon: FaExclamationTriangle,
+                    iconColor: "text-orange-600",
+                }
+            default:
+                return {
+                    bg: "bg-gray-50",
+                    text: "text-gray-800",
+                    border: "border-gray-200",
+                    icon: FaClipboardList,
+                    iconColor: "text-gray-600",
+                }
+        }
+    }
+
+    const statusConfig = getStatusConfig(data.status)
+    const StatusIcon = statusConfig.icon
+
+    return (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3 overflow-hidden hover:shadow-md transition-all duration-300">
+            {/* Compact Header */}
+            <div
+                className={`${statusConfig.bg} px-3 sm:px-4 py-2 sm:py-3 border-b ${statusConfig.border} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2`}
+            >
+                <div
+                    className={`inline-flex items-center gap-2 px-2 sm:px-3 py-1 rounded-lg font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border} shadow-sm text-xs sm:text-sm`}
+                >
+                    <StatusIcon className={`${statusConfig.iconColor} text-xs`} />
+                    <span className="capitalize font-semibold">{data.status}</span>
+                </div>
+            </div>
+
+            {/* Compact Main Content */}
+            <div className="p-3 sm:p-4 cursor-pointer">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    {/* Compact Photo Section */}
+                    <div className="flex-shrink-0 flex justify-center sm:justify-start">
+                        <div className="relative">
+                            <img
+                                alt={data.nama_santri || "-"}
+                                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm border-2 border-white"
+                                src={data.foto_profil || "/placeholder.svg"}
+                                onError={(e) => {
+                                    e.target.onerror = null
+                                    e.target.src = blankProfile
+                                }}
+                            />
+                            <div className="absolute -top-0 -right-1 w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm border border-white">
+                                {data.jenis_kelamin == "p" ? "♀" : "♂"}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Compact Information Section */}
+                    <div className="flex-1 min-w-0">
+                        {/* Name and Basic Info */}
+                        <div className="mb-3">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 truncate">{data.nama_santri}</h3>
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                                <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded">
+                                    <FaSchool className="text-blue-600 text-xs" />
+                                    <span className="font-medium truncate max-w-20 sm:max-w-none">{data.lembaga}</span>
+                                </div>
+                                <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded">
+                                    <FaMapMarkerAlt className="text-green-600 text-xs" />
+                                    <span className="truncate">
+                                        {data.kamar} - {data.blok}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded">
+                                    <FaCalendarAlt className="text-purple-600 text-xs" />
+                                    <span className="truncate">{data.lama_izin}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Compact Permission Details */}
+                        <div className="grid grid-cols-1 gap-2 mb-3">
+                            {/* Reason */}
+                            <div className="bg-white p-2 rounded-lg border border-gray-200">
+                                <div className="flex items-start gap-2">
+                                    <FaClipboardList className="text-blue-600 text-sm mt-0.5 flex-shrink-0" />
+                                    <div className="min-w-0">
+                                        <h4 className="font-semibold text-gray-900 mb-1 text-sm">Alasan</h4>
+                                        <p className="text-gray-700 text-xs leading-relaxed line-clamp-2">{data.alasan_izin}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Destination */}
+                            <div className="bg-white p-2 rounded-lg border border-gray-200">
+                                <div className="flex items-start gap-2">
+                                    <FaMapMarkerAlt className="text-purple-600 text-sm mt-0.5 flex-shrink-0" />
+                                    <div className="min-w-0">
+                                        <h4 className="font-semibold text-gray-900 mb-1 text-sm">Tujuan</h4>
+                                        <p className="text-gray-700 text-xs leading-relaxed line-clamp-2">{data.alamat_tujuan}</p>
+                                        <p className="text-xs text-gray-500 mt-1 truncate">
+                                            {data.kecamatan}, {data.kabupaten}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Return Date for completed permissions */}
+                        {(data.status == "kembali tepat waktu" ||
+                            data.status == "telat(sudah kembali)" ||
+                            data.status == "telat(belum kembali)") && (
+                                <div className="mb-3">
+                                    <div className="bg-gray-50 border border-gray-200 p-2 rounded-lg inline-flex items-center gap-2">
+                                        <FaHome className="text-green-600 text-sm" />
+                                        <div>
+                                            <span className="font-semibold text-gray-900 text-xs">Kembali: </span>
+                                            <span className="text-gray-700 text-xs">{data.tanggal_kembali}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                    </div>
+                </div>
+
+                {/* Compact Progress Timeline */}
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+
+                        {/* Step 1 - Ajuan */}
+                        <div className="flex flex-col items-center">
+                            <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-sm text-xs">
+                                ✓
+                            </div>
+                            <span className="text-xs text-gray-600 mt-1 font-medium">Ajuan</span>
+                        </div>
+
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 2 - Setuju/Tolak/Batal */}
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${(data.status == "perizinan ditolak" || data.status == "dibatalkan")
+                                ? "bg-red-500 text-white"
+                                : (data.status !== "sedang proses izin")
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {(data.status == "perizinan ditolak" || data.status == "dibatalkan")
+                                    ? "✗"
+                                    : (data.status !== "sedang proses izin")
+                                        ? "✓"
+                                        : "2"}
+                            </div>
+                            <span className="text-xs text-gray-600 mt-1 font-medium">
+                                {data.status == "dibatalkan" ? "Batal" :
+                                    data.status == "perizinan ditolak" ? "Tolak" : "Setuju"}
+                            </span>
+                        </div>
+
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 3 - Keluar */}
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
+                                data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali)")
+                                ? "bg-green-500 text-white"
+                                : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {(data.status == "sudah berada diluar pondok" || data.status == "kembali tepat waktu" ||
+                                    data.status == "telat(sudah kembali)" || data.status == "telat(belum kembali)")
+                                    ? "✓" : "3"}
+                            </div>
+                            <span className="text-xs text-gray-600 mt-1 font-medium">Keluar</span>
+                        </div>
+
+                        <div className="flex-1 h-0.5 bg-gray-200 mx-1 rounded-full"></div>
+
+                        {/* Step 4 - Kembali */}
+                        <div className="flex flex-col items-center">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm text-xs ${data.status == "kembali tepat waktu"
+                                ? "bg-green-500 text-white"
+                                : (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)")
+                                    ? "bg-red-500 text-white"
+                                    : "bg-gray-300 text-gray-600"
+                                }`}>
+                                {data.status == "kembali tepat waktu" ? '✓' :
+                                    (data.status == "telat(belum kembali)" || data.status == "telat(sudah kembali)") ? '!' : '4'}
+                            </div>
+                            <span className="text-xs text-gray-600 mt-1 font-medium">Kembali</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Compact Toggle Button */}
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setIsExpanded(!isExpanded)
+                        }}
+                        className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md text-sm"
+                    >
+                        {isExpanded ? <FaChevronUp className="text-xs" /> : <FaChevronDown className="text-xs" />}
+                        <span>{isExpanded ? "Sembunyikan" : "Detail Lengkap"}</span>
+                    </button>
+                </div>
+
+                {/* Compact Extended Information */}
+                {isExpanded && (
+                    <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-100">
+                        <div className="grid grid-cols-1 gap-3">
+                            {/* Duration Info */}
+                            <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                                <h4 className="flex items-center gap-2 font-bold text-gray-900 mb-3 text-sm">
+                                    <FaClock className="text-blue-600" />
+                                    Informasi Waktu
+                                </h4>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Mulai:</span>
+                                        <span className="font-semibold text-gray-900 text-xs">{data.tanggal_mulai}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Akhir:</span>
+                                        <span className="font-semibold text-gray-900 text-xs">{data.tanggal_akhir}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Durasi:</span>
+                                        <span className="font-semibold text-purple-700 bg-gray-100 px-2 py-1 rounded text-xs">
+                                            {data.lama_izin}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Bermalam:</span>
+                                        <span className="font-semibold text-indigo-700 bg-gray-100 px-2 py-1 rounded text-xs">
+                                            {data.bermalam}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1">
+                                        <span className="text-gray-600 font-medium text-xs">Jenis:</span>
+                                        <span className="font-semibold text-orange-700 bg-gray-100 px-2 py-1 rounded text-xs">
+                                            {data.jenis_izin}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Approval Team */}
+                            <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                                <h4 className="flex items-center gap-2 font-bold text-gray-900 mb-3 text-sm">
+                                    <FaUsers className="text-emerald-600" />
+                                    Tim Persetujuan
+                                </h4>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Pembuat:</span>
+                                        <span className="font-semibold text-gray-900 text-xs truncate max-w-32">{data.pembuat}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Biktren:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-semibold text-gray-900 text-xs truncate max-w-20">
+                                                {data.nama_biktren || "-"}
+                                            </span>
+                                            {data.approved_by_biktren == 1 && (
+                                                <div className="bg-green-100 p-0.5 rounded-full">
+                                                    <FaCheckCircle className="text-green-600 text-xs" />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                                        <span className="text-gray-600 font-medium text-xs">Pengasuh:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-semibold text-gray-900 text-xs truncate max-w-20">
+                                                {data.nama_pengasuh || "-"}
+                                            </span>
+                                            {data.approved_by_pengasuh == 1 && (
+                                                <div className="bg-green-100 p-0.5 rounded-full">
+                                                    <FaCheckCircle className="text-green-600 text-xs" />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center py-1">
+                                        <span className="text-gray-600 font-medium text-xs">Kamtib:</span>
+                                        <div className="flex items-center gap-1">
+                                            <span className="font-semibold text-gray-900 text-xs truncate max-w-20">
+                                                {data.nama_kamtib || "-"}
+                                            </span>
+                                            {data.approved_by_kamtib == 1 && (
+                                                <div className="bg-green-100 p-0.5 rounded-full">
+                                                    <FaCheckCircle className="text-green-600 text-xs" />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Timestamps */}
+                        <div className="mt-3 pt-2 border-t border-gray-200 flex flex-col sm:flex-row justify-between gap-1 text-xs text-gray-500">
+                            <div className="flex items-center gap-1">
+                                <FaCalendarAlt className="text-gray-400 text-xs" />
+                                <span>Dibuat: {data.created_at}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <FaEdit className="text-gray-400 text-xs" />
+                                <span>Diubah: {data.updated_at}</span>
                             </div>
                         </div>
                     </div>

@@ -5,9 +5,7 @@ import {
     Wallet,
     ArrowUpRight,
     ArrowDownLeft,
-    FileText,
     CreditCard,
-    Receipt,
     Search,
     ChevronLeft,
     ChevronRight,
@@ -609,7 +607,7 @@ export const KeuanganPage = () => {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card className="border-purple-100 lg:col-span-2">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
@@ -647,7 +645,7 @@ export const KeuanganPage = () => {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-orange-100">
+                    {/* <Card className="border-orange-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -658,7 +656,7 @@ export const KeuanganPage = () => {
                                 <Receipt className="h-8 w-8 text-orange-600" />
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
 
                 {/* Tabs */}
@@ -693,7 +691,7 @@ export const KeuanganPage = () => {
                         {[
                             { id: "transaksi", label: "Transaksi", icon: CreditCard },
                             { id: "transfer", label: "Transfer", icon: ArrowUpRight },
-                            { id: "tagihan", label: "Tagihan", icon: FileText },
+                            // { id: "tagihan", label: "Tagihan", icon: FileText },
                             // { id: "topup", label: "Top Up", icon: Wallet },
                         ].map((tab) => {
                             const Icon = tab.icon

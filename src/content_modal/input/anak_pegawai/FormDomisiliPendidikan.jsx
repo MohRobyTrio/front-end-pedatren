@@ -28,7 +28,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
             setValue("modalAnakPegawai.kamar_id", "");
             setValue("modalAnakPegawai.tanggal_masuk_domisili", "");
             setValue("modalAnakPegawai.tanggal_masuk_santri", "");
-            setValue("modalAnakPegawai.nis", "");
+            // setValue("modalAnakPegawai.nis", "");
             setValue("modalAnakPegawai.angkatan_santri_id", "");
         }
     }, [isDomisiliDisabled, mondok, setValue]);
@@ -151,7 +151,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     </label>
                 </div>
                 {/* Nama Lengkap */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="nis" className="md:w-1/4 text-black">
                         NIS 
                     </label>
@@ -173,7 +173,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                             />
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="angkatan_santri_id" className="md:w-1/4 text-black">

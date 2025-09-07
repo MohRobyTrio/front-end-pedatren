@@ -1,15 +1,65 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { BookOpen, FileText, AlertTriangle, GraduationCap, Wallet, Settings, Bell, ChevronRight, Calendar } from "lucide-react"
+import {
+    BookOpen,
+    FileText,
+    AlertTriangle,
+    GraduationCap,
+    Wallet,
+    Settings,
+    ChevronRight,
+    Calendar,
+    Receipt,
+} from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 
 // ... existing StatCard and ChildCard components ...
-function StatCard({ title, value, subtitle, icon: Icon, color = "emerald", href }) {
+function StatCard({ title, value, subtitle, icon: Icon, color = "emerald", href, isMobile }) {
+    const isKeuangan = title === "Keuangan" && isMobile
+
+    if (isKeuangan) {
+        return (
+            <Link to={href}>
+                <div className="relative p-6 md:p-4 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 md:bg-white rounded-2xl md:rounded-xl border md:border-purple-100 shadow-lg hover:shadow-xl md:hover:shadow-md transition-all duration-300 md:duration-200 overflow-hidden group md:hover:border-purple-200">
+                    {/* Background decoration - only on mobile */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16 md:hidden"></div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12 md:hidden"></div>
+
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-4 md:mb-3">
+                            <div className="p-3 md:p-2 rounded-xl md:rounded-lg bg-white/20 md:bg-purple-100 backdrop-blur-sm md:backdrop-blur-none">
+                                <Icon className="h-6 w-6 md:h-5 md:w-5 text-white md:text-purple-600" />
+                            </div>
+                            <div className="flex items-center space-x-2 text-white/80 group-hover:text-white transition-colors">
+                                <span className="text-sm font-medium hidden md:inline">Lihat Detail</span>
+                                <ChevronRight className="h-4 w-4" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 md:space-y-1">
+                            <h3 className="text-white font-bold text-xl md:text-lg">{title}</h3>
+                            <p className="text-white/80 text-sm md:text-xs">{subtitle}</p>
+                            <div className="flex items-baseline space-x-2">
+                                <p className="text-white font-bold text-2xl md:text-lg">{value}</p>
+                                {/* <div className="flex items-center space-x-1 text-green-300">
+                                    <div className="w-2 h-2 bg-green-300 md:bg-green-600 rounded-full animate-pulse"></div>
+                                    <span className="text-xs font-medium">Aktif</span>
+                                </div> */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        )
+    }
+
     return (
         <Link to={href}>
-            <div className={`p-4 bg-white rounded-lg border border-${color}-100 shadow-sm`}>
+            <div
+                className={`p-4 bg-white rounded-xl border border-${color}-100 shadow-sm hover:shadow-md transition-all duration-200 hover:border-${color}-200`}
+            >
                 <div className="flex items-center justify-between mb-3">
                     <div className={`p-2 rounded-lg bg-${color}-100`}>
                         <Icon className={`h-5 w-5 text-${color}-600`} />
@@ -65,6 +115,7 @@ export const DashboardPage = () => {
         totalTagihan: 500000,
     }
 
+    // eslint-disable-next-line no-unused-vars
     const mockNotifications = [
         {
             id: 1,
@@ -94,14 +145,6 @@ export const DashboardPage = () => {
 
     const quickAccessItems = [
         {
-            title: "Hafalan",
-            subtitle: `${mockChildSummary.hafalan.current}/${mockChildSummary.hafalan.total} surah`,
-            icon: BookOpen,
-            color: "emerald",
-            value: `${mockChildSummary.hafalan.percentage}%`,
-            href: "/wali/hafalan",
-        },
-        {
             title: "Keuangan",
             subtitle: "Saldo dompet",
             icon: Wallet,
@@ -110,11 +153,27 @@ export const DashboardPage = () => {
             href: "/wali/keuangan",
         },
         {
+            title: "Hafalan",
+            subtitle: `Tahfidz & Nadhoman`,
+            icon: BookOpen,
+            color: "emerald",
+            value: `Tidak Ada`,
+            href: "/wali/hafalan",
+        },
+        {
+            title: "Presensi",
+            subtitle: "Kehadiran",
+            icon: Calendar,
+            color: "blue",
+            value: "Tidak Ada",
+            href: "/wali/presensi",
+        },
+        {
             title: "Akademik",
             subtitle: "Nilai rata-rata",
             icon: GraduationCap,
             color: "blue",
-            value: `${Math.round((mockChildSummary.afektif.rata + mockChildSummary.kognitif.rata) / 2)}`,
+            value: `Tidak Ada`,
             href: "/wali/akademik",
         },
         {
@@ -142,12 +201,12 @@ export const DashboardPage = () => {
             href: "/wali/batas-pengeluaran",
         },
         {
-            title: "Presensi",
-            subtitle: "Kehadiran",
-            icon: Calendar,
-            color: "blue",
-            value: "20%",
-            href: "/wali/presensi",
+            title: "Tagihan",
+            subtitle: "Pengaturan",
+            icon: Receipt,
+            color: "red",
+            value: "3",
+            href: "/wali/tagihan",
         },
     ]
 
@@ -168,7 +227,7 @@ export const DashboardPage = () => {
         }
 
         const parsedUser = JSON.parse(userData)
-        const stored = sessionStorage.getItem("active_child");
+        const stored = sessionStorage.getItem("active_child")
         setUser(parsedUser)
 
         if (!stored && !selectedChild && parsedUser.children && parsedUser.children.length > 0) {
@@ -227,51 +286,17 @@ export const DashboardPage = () => {
                         <h1 className={`font-bold text-gray-900 ${isMobile ? "text-xl" : "text-2xl"}`}>
                             {isMobile ? "Quick Access" : `Dashboard ${selectedChild?.nama || "Santri"}`}
                         </h1>
-                        {/* {selectedChild && (
-                            <p className="text-sm text-gray-600 mt-1">
-                                Santri {selectedChild.nama} (NIS: {selectedChild.nis})
-                            </p>
-                        )} */}
                     </div>
                 </div>
 
                 {/* Quick Access Grid */}
                 <div className={`grid gap-4 ${isMobile ? "grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3"}`}>
                     {quickAccessItems.map((item, index) => (
-                        <StatCard key={index} {...item} />
+                        <div key={index} className={index === 0 && isMobile ? "col-span-full" : ""}>
+                            <StatCard {...item} isMobile={isMobile} />
+                        </div>
                     ))}
                 </div>
-
-                {/* Notifications */}
-                {mockNotifications.length > 0 && (
-                    <div className="bg-white rounded-lg border border-gray-200 p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                                <Bell className="mr-2 h-5 w-5 text-emerald-600" /> Notifikasi Terbaru
-                            </h2>
-                            <button
-                                onClick={() => navigate("/notifikasi")}
-                                className="text-sm text-emerald-600 hover:text-emerald-700"
-                            >
-                                Lihat Semua
-                            </button>
-                        </div>
-                        <div className="space-y-3">
-                            {mockNotifications.slice(0, isMobile ? 2 : 3).map((notification) => (
-                                <div key={notification.id} className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50">
-                                    <div
-                                        className={`w-2 h-2 rounded-full mt-2 ${notification.priority === "high" ? "bg-red-500" : notification.priority === "medium" ? "bg-yellow-500" : "bg-green-500"}`}
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-medium text-gray-900 text-sm">{notification.title}</p>
-                                        <p className="text-gray-600 text-xs mt-1">{notification.message}</p>
-                                        <p className="text-gray-500 text-xs mt-1">{notification.time}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
         </SimpleLayout>
     )

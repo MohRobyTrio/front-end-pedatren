@@ -206,7 +206,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
                     )}</div>`,
                 });
 
-                throw new Error(result.message);
+                throw new Error(result.message || "Terjadi Kesalahan pada server");
             }            
             
 
@@ -227,7 +227,12 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
             onClose?.();
             resetData();
         } catch (error) {
-            console.error("Terjadi kesalahan:", error);
+            console.error(error.message || "Terjadi Kesalahan");
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal!",
+                text: "Terjadi Kesalahan",
+            });
         }
     };
 

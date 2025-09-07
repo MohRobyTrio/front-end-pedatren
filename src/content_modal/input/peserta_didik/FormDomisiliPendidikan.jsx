@@ -28,7 +28,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
             setValue("modalPeserta.kamar_id", "");
             setValue("modalPeserta.tanggal_masuk_domisili", "");
             setValue("modalPeserta.tanggal_masuk_santri", "");
-            setValue("modalPeserta.nis", "");
+            // setValue("modalPeserta.nis", "");
             setValue("modalPeserta.angkatan_santri_id", "");
         }
     }, [isDomisiliDisabled, mondok, setValue]);
@@ -152,7 +152,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                     </label>
                 </div>
                 {/* Nama Lengkap */}
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="nis" className="md:w-1/4 text-black">
                         NIS 
                     </label>
@@ -174,7 +174,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                             />
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="angkatan_santri_id" className="md:w-1/4 text-black">
