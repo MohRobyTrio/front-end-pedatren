@@ -4,7 +4,7 @@ import { useState } from "react"
 import { FileText } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchPerizinanOrtu from "../../hooks/hooks_ortu/Perizinan"
-import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardList, FaClock, FaCommentDots, FaEdit, FaExclamationTriangle, FaHome, FaMapMarkerAlt, FaSchool, FaSignOutAlt, FaUsers } from "react-icons/fa"
+import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardList, FaClock, FaCommentDots, FaEdit, FaExclamationTriangle, FaHome, FaMapMarkerAlt, FaSignOutAlt, FaUsers } from "react-icons/fa"
 
 export default function PerizinanPage() {
     const { activeChild: selectedChild } = useActiveChild()
