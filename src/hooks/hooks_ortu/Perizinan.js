@@ -114,6 +114,7 @@ const useFetchPerizinanOrtu = () => {
         fetchData(true);
         console.log(activeChild.id);
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeChild]);
 
     // Reset to page 1 when limit or search changes

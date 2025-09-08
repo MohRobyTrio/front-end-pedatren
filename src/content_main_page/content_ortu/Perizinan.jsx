@@ -4,8 +4,7 @@ import { useState } from "react"
 import { FileText } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchPerizinanOrtu from "../../hooks/hooks_ortu/Perizinan"
-import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardList, FaClock, FaEdit, FaExclamationTriangle, FaHome, FaMapMarkerAlt, FaSchool, FaSignOutAlt, FaUsers } from "react-icons/fa"
-import blankProfile from "../../assets/blank_profile.png"
+import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardList, FaClock, FaCommentDots, FaEdit, FaExclamationTriangle, FaHome, FaMapMarkerAlt, FaSchool, FaSignOutAlt, FaUsers } from "react-icons/fa"
 
 export default function PerizinanPage() {
     const { activeChild: selectedChild } = useActiveChild()
@@ -186,18 +185,57 @@ export default function PerizinanPage() {
                         <h3 className="text-lg font-semibold text-gray-900">Riwayat Perizinan</h3>
                     </div> */}
 
-                    {/* <div className="p-6"> */}
-                        {data.length > 0 && (
-                            <div className="">
-                                {data.map((perizinan) => (
-                                    <PerizinanCard
-                                        key={perizinan.id}
-                                        data={perizinan}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    {/* </div> */}
+                {/* <div className="p-6"> */}
+                {error ? (
+                    // Error State
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-8 w-8 text-red-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Terjadi Kesalahan
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            {error || "Gagal mengambil data perizinan"}
+                        </p>
+                        <button
+                            onClick={() => fetchData(true)}
+                            className="mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                            Coba Lagi
+                        </button>
+                    </div>
+                ) : data.length > 0 ? (
+                    <div className="">
+                        {data.map((perizinan) => (
+                            <PerizinanCard
+                                key={perizinan.id}
+                                data={perizinan}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <FaClipboardList className="text-2xl text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Tidak Ada Data
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-sm">
+                            Belum ada data perizinan
+                        </p>
+                    </div>
+                )}
+                {/* </div> */}
                 {/* </div> */}
 
                 {/* Modal */}
@@ -372,12 +410,12 @@ const PerizinanCard = ({ data }) => {
             <div className="p-3 sm:p-4 cursor-pointer">
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     {/* Compact Photo Section */}
-                    <div className="flex-shrink-0 flex justify-center sm:justify-start">
+                    {/* <div className="flex-shrink-0 flex justify-center sm:justify-start">
                         <div className="relative">
                             <img
                                 alt={data.nama_santri || "-"}
                                 className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm border-2 border-white"
-                                src={data.foto_profil || "/placeholder.svg"}
+                                src={data.foto_profil || blankProfile}
                                 onError={(e) => {
                                     e.target.onerror = null
                                     e.target.src = blankProfile
@@ -387,14 +425,14 @@ const PerizinanCard = ({ data }) => {
                                 {data.jenis_kelamin == "p" ? "♀" : "♂"}
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Compact Information Section */}
                     <div className="flex-1 min-w-0">
                         {/* Name and Basic Info */}
                         <div className="mb-3">
                             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 truncate">{data.nama_santri}</h3>
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                            {/* <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
                                 <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded">
                                     <FaSchool className="text-blue-600 text-xs" />
                                     <span className="font-medium truncate max-w-20 sm:max-w-none">{data.lembaga}</span>
@@ -409,7 +447,7 @@ const PerizinanCard = ({ data }) => {
                                     <FaCalendarAlt className="text-purple-600 text-xs" />
                                     <span className="truncate">{data.lama_izin}</span>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Compact Permission Details */}
@@ -432,9 +470,21 @@ const PerizinanCard = ({ data }) => {
                                     <div className="min-w-0">
                                         <h4 className="font-semibold text-gray-900 mb-1 text-sm">Tujuan</h4>
                                         <p className="text-gray-700 text-xs leading-relaxed line-clamp-2">{data.alamat_tujuan}</p>
-                                        <p className="text-xs text-gray-500 mt-1 truncate">
+                                        {/* <p className="text-xs text-gray-500 mt-1 truncate">
                                             {data.kecamatan}, {data.kabupaten}
-                                        </p>
+                                        </p> */}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white p-2 rounded-lg border border-gray-200">
+                                <div className="flex items-start gap-2">
+                                    <FaCommentDots className="text-purple-600 text-sm mt-0.5 flex-shrink-0" />
+                                    <div className="min-w-0">
+                                        <h4 className="font-semibold text-gray-900 mb-1 text-sm">Keterangan</h4>
+                                        <p className="text-gray-700 text-xs leading-relaxed line-clamp-2">{data.keterangan}</p>
+                                        {/* <p className="text-xs text-gray-500 mt-1 truncate">
+                                            {data.kecamatan}, {data.kabupaten}
+                                        </p> */}
                                     </div>
                                 </div>
                             </div>

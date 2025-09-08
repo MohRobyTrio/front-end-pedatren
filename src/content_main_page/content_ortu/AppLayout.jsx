@@ -49,9 +49,9 @@ export const AppLayout = () => {
     const [isMobile, setIsMobile] = useState(false)
     const [showChildSelector, setShowChildSelector] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
-    // const [billingData, setBillingData] = useState({})
     // eslint-disable-next-line no-unused-vars
-    const [billingData, setBillingData] = useState({ count: 3, total: 2500000 })
+    const [billingData, setBillingData] = useState({})
+    // const [billingData, setBillingData] = useState({ count: 3, total: 2500000 })
 
 
     const navigate = useNavigate()
