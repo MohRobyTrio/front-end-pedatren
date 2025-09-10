@@ -2,13 +2,20 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import useDropdownSantri from "../hooks/hook_dropdown/DropdownSantri";
 
-export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = false }) => {
+export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 }) => {
     const [search, setSearch] = useState("");
 
-    const { menuSantri, menuSantriCatatan } = useDropdownSantri();
+    const { menuSantri, menuSantriCatatan, menuSantriCard } = useDropdownSantri();
 
     // pilih data berdasarkan list
-    const dataSource = list ? menuSantriCatatan : menuSantri;
+    const sources = {
+        1: menuSantri,
+        2: menuSantriCatatan,
+        3: menuSantriCard,
+    };
+
+    const dataSource = sources[list] || [];
+
 
     const menuSantriFilter = dataSource.filter((s) =>
         s.value.toLowerCase().includes(search.toLowerCase()) ||
@@ -53,17 +60,17 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = fa
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                                    <div className="overflow-x-auto max-h-[400px] overflow-y-auto rounded">
-                                        <table className="min-w-full text-sm text-left">
-                                            <thead className="bg-gray-100 sticky top-0">
-                                                <tr>
-                                                    <th className="p-2">NIS</th>
-                                                    <th className="p-2">Nama</th>
-                                                    <th className="p-2">Lembaga</th>
-                                                    <th className="p-2">Wilayah</th>
-                                                    <th className="p-2">Kamar</th>
-                                                </tr>
-                                            </thead>
+                                <div className="overflow-x-auto max-h-[400px] overflow-y-auto rounded">
+                                    <table className="min-w-full text-sm text-left">
+                                        <thead className="bg-gray-100 sticky top-0">
+                                            <tr>
+                                                <th className="p-2">NIS</th>
+                                                <th className="p-2">Nama</th>
+                                                <th className="p-2">Lembaga</th>
+                                                <th className="p-2">Wilayah</th>
+                                                <th className="p-2">Kamar</th>
+                                            </tr>
+                                        </thead>
                                         <tbody>
                                             {menuSantriFilter
                                                 .filter(s => s.id !== null)
@@ -84,8 +91,8 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = fa
                                                     </tr>
                                                 ))}
                                         </tbody>
-                                        </table>
-                                    </div>
+                                    </table>
+                                </div>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>

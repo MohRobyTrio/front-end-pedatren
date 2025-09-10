@@ -122,10 +122,10 @@ export const AppLayout = () => {
     }, [selectedChild])
 
     const handleLogout = () => {
-        sessionStorage.removeItem("auth_token")
+        sessionStorage.removeItem("auth_token_ortu")
         sessionStorage.removeItem("user_data")
         sessionStorage.removeItem("active_child")
-        navigate("/login")
+        navigate("/ortu")
     }
 
     const handleChildSelect = (child) => {

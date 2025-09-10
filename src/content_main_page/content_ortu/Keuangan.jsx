@@ -11,6 +11,7 @@ import {
     ChevronRight,
 } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
+import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
 
 export const KeuanganPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
@@ -19,67 +20,70 @@ export const KeuanganPage = () => {
     // eslint-disable-next-line no-unused-vars
     const [dateRange, setDateRange] = useState({ start: "", end: "" })
     const [activeTab, setActiveTab] = useState("transaksi")
-    const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     // eslint-disable-next-line no-unused-vars
     const [pageSize] = useState(10)
 
+    const { data, loading, error, fetchData } = useFetchTransaksiOrtu({})
+
     // Mock data - replace with actual API calls
     const mockSaldo = 250000
 
-    const mockTransaksiData = [
-        {
-            id: 1,
-            tanggal: "2025-01-15T14:30:00",
-            jenis: "pembelian",
-            deskripsi: "Kantin - Makan siang",
-            nominal: -15000,
-            saldoAkhir: 250000,
-            kategori: "makanan",
-            outlet: { nama_outlet: "Kantin Utama" },
-        },
-        {
-            id: 2,
-            tanggal: "2025-01-15T10:15:00",
-            jenis: "pembelian",
-            deskripsi: "Koperasi - Alat tulis",
-            nominal: -25000,
-            saldoAkhir: 265000,
-            kategori: "alat_tulis",
-            outlet: { nama_outlet: "Koperasi Santri" },
-        },
-        {
-            id: 3,
-            tanggal: "2025-01-14T16:00:00",
-            jenis: "top_up",
-            deskripsi: "Transfer dari orang tua",
-            nominal: 200000,
-            saldoAkhir: 290000,
-            kategori: "transfer",
-            outlet: { nama_outlet: "Transfer" },
-        },
-        {
-            id: 4,
-            tanggal: "2025-01-12T12:45:00",
-            jenis: "pembelian",
-            deskripsi: "Kantin - Snack",
-            nominal: -8000,
-            saldoAkhir: 90000,
-            kategori: "makanan",
-            outlet: { nama_outlet: "Kantin Utama" },
-        },
-        {
-            id: 5,
-            tanggal: "2025-01-10T09:30:00",
-            jenis: "pembelian",
-            deskripsi: "Laundry",
-            nominal: -12000,
-            saldoAkhir: 98000,
-            kategori: "laundry",
-            outlet: { nama_outlet: "Laundry Santri" },
-        },
-    ]
+    const mockTransaksiData = data
+
+    // const mockTransaksiData = [
+    //     {
+    //         id: 1,
+    //         tanggal: "2025-01-15T14:30:00",
+    //         jenis: "pembelian",
+    //         deskripsi: "Kantin - Makan siang",
+    //         nominal: -15000,
+    //         saldoAkhir: 250000,
+    //         kategori: "makanan",
+    //         outlet: { nama_outlet: "Kantin Utama" },
+    //     },
+    //     {
+    //         id: 2,
+    //         tanggal: "2025-01-15T10:15:00",
+    //         jenis: "pembelian",
+    //         deskripsi: "Koperasi - Alat tulis",
+    //         nominal: -25000,
+    //         saldoAkhir: 265000,
+    //         kategori: "alat_tulis",
+    //         outlet: { nama_outlet: "Koperasi Santri" },
+    //     },
+    //     {
+    //         id: 3,
+    //         tanggal: "2025-01-14T16:00:00",
+    //         jenis: "top_up",
+    //         deskripsi: "Transfer dari orang tua",
+    //         nominal: 200000,
+    //         saldoAkhir: 290000,
+    //         kategori: "transfer",
+    //         outlet: { nama_outlet: "Transfer" },
+    //     },
+    //     {
+    //         id: 4,
+    //         tanggal: "2025-01-12T12:45:00",
+    //         jenis: "pembelian",
+    //         deskripsi: "Kantin - Snack",
+    //         nominal: -8000,
+    //         saldoAkhir: 90000,
+    //         kategori: "makanan",
+    //         outlet: { nama_outlet: "Kantin Utama" },
+    //     },
+    //     {
+    //         id: 5,
+    //         tanggal: "2025-01-10T09:30:00",
+    //         jenis: "pembelian",
+    //         deskripsi: "Laundry",
+    //         nominal: -12000,
+    //         saldoAkhir: 98000,
+    //         kategori: "laundry",
+    //         outlet: { nama_outlet: "Laundry Santri" },
+    //     },
+    // ]
 
     const mockTransferData = [
         {
@@ -147,16 +151,16 @@ export const KeuanganPage = () => {
         },
     ]
 
-    useEffect(() => {
-        setLoading(true)
-        // const activeChild = sessionStorage.getItem("active_child")
-        // if (activeChild) {
-        //     setSelectedChild(JSON.parse(activeChild))
-        // }
+    // useEffect(() => {
+    //     setLoading(true)
+    //     // const activeChild = sessionStorage.getItem("active_child")
+    //     // if (activeChild) {
+    //     //     setSelectedChild(JSON.parse(activeChild))
+    //     // }
 
-        // Simulate loading
-        setTimeout(() => setLoading(false), 1500)
-    }, [selectedChild])
+    //     // Simulate loading
+    //     setTimeout(() => setLoading(false), 1500)
+    // }, [selectedChild])
 
     // Utility functions
     const formatRupiah = (amount) => {
@@ -175,15 +179,24 @@ export const KeuanganPage = () => {
         })
     }
 
+    // const formatTanggalWaktu = (dateString) => {
+    //     return new Date(dateString).toLocaleString("id-ID", {
+    //         day: "2-digit",
+    //         month: "2-digit",
+    //         year: "numeric",
+    //         hour: "2-digit",
+    //         minute: "2-digit",
+    //     })
+    // }
+
     const formatTanggalWaktu = (dateString) => {
-        return new Date(dateString).toLocaleString("id-ID", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    }
+        if (!dateString) return "-";
+        const [date, time] = dateString.split("T");
+        const [year, month, day] = date.split("-");
+        const [hour, minute] = time.split(":");
+        return `${day}/${month}/${year} ${hour}:${minute}`;
+    };
+
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -386,12 +399,12 @@ export const KeuanganPage = () => {
     )
 
     // Filter functions
-    const filteredTransactions = mockTransaksiData.filter((item) => {
-        const typeMatch = transactionFilter === "semua" || item.jenis === transactionFilter
-        const dateMatch =
-            (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
-        return typeMatch && dateMatch
-    })
+    // const filteredTransactions = mockTransaksiData.filter((item) => {
+    //     const typeMatch = transactionFilter === "semua" || item.jenis === transactionFilter
+    //     const dateMatch =
+    //         (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
+    //     return typeMatch && dateMatch
+    // })
 
     const filteredTransfers = mockTransferData.filter((item) => {
         const typeMatch = transferFilter === "semua" || item.jenis === transferFilter
@@ -423,13 +436,13 @@ export const KeuanganPage = () => {
     //     URL.revokeObjectURL(url)
     // }
 
-    const stats = {
-        saldo: mockSaldo,
-        totalPengeluaran: mockTransaksiData.filter((t) => t.nominal < 0).reduce((sum, t) => sum + Math.abs(t.nominal), 0),
-        totalTopUp: mockTransaksiData.filter((t) => t.nominal > 0).reduce((sum, t) => sum + t.nominal, 0),
-        tagihanAktif: mockTagihanData.filter((t) => t.status !== "lunas").length,
-        totalTagihan: mockTagihanData.filter((t) => t.status !== "lunas").reduce((sum, t) => sum + t.sisa, 0),
-    }
+    // const stats = {
+    //     saldo: mockSaldo,
+    //     totalPengeluaran: mockTransaksiData.filter((t) => t.nominal < 0).reduce((sum, t) => sum + Math.abs(t.nominal), 0),
+    //     totalTopUp: mockTransaksiData.filter((t) => t.nominal > 0).reduce((sum, t) => sum + t.nominal, 0),
+    //     tagihanAktif: mockTagihanData.filter((t) => t.status !== "lunas").length,
+    //     totalTagihan: mockTagihanData.filter((t) => t.status !== "lunas").reduce((sum, t) => sum + t.sisa, 0),
+    // }
 
     const transactionColumns = [
         {
@@ -439,9 +452,10 @@ export const KeuanganPage = () => {
             render: (value) => formatTanggalWaktu(value),
         },
         {
-            key: "deskripsi",
-            label: "Deskripsi",
+            key: "santri",
+            label: "Santri",
             sortable: true,
+            render: (value) => value?.biodata?.nama || "-",
         },
         {
             key: "outlet",
@@ -450,33 +464,27 @@ export const KeuanganPage = () => {
             render: (value) => value?.nama_outlet || "-",
         },
         {
-            key: "jenis",
-            label: "Jenis",
+            key: "kategori",
+            label: "Kategori",
             sortable: true,
             render: (value) => (
-                <Badge className={value === "top_up" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}>
-                    {value === "top_up" ? "Top Up" : "Pembelian"}
-                </Badge>
+                console.log(value),
+
+                value?.nama_kategori || "-"
             ),
         },
         {
-            key: "nominal",
+            key: "total_bayar",
             label: "Nominal",
             sortable: true,
             render: (value) => (
-                <span className={`font-semibold ${value > 0 ? "text-emerald-600" : "text-red-600"}`}>
-                    {value > 0 ? "+" : ""}
-                    {formatRupiah(value)}
+                <span className="font-semibold text-red-600">
+                    -{formatRupiah(value)}
                 </span>
             ),
         },
-        {
-            key: "saldoAkhir",
-            label: "Saldo Akhir",
-            sortable: true,
-            render: (value) => <span className="font-medium text-gray-900">{formatRupiah(value)}</span>,
-        },
-    ]
+    ];
+
 
     const transferColumns = [
         {
@@ -607,7 +615,7 @@ export const KeuanganPage = () => {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card className="border-purple-100 lg:col-span-2">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
@@ -645,7 +653,7 @@ export const KeuanganPage = () => {
                         </CardContent>
                     </Card>
 
-                    {/* <Card className="border-orange-100">
+                    <Card className="border-orange-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -656,8 +664,8 @@ export const KeuanganPage = () => {
                                 <Receipt className="h-8 w-8 text-orange-600" />
                             </div>
                         </CardContent>
-                    </Card> */}
-                </div>
+                    </Card>
+                </div> */}
 
                 {/* Tabs */}
                 <div className="space-y-6">
@@ -687,7 +695,7 @@ export const KeuanganPage = () => {
                         </nav>
                     </div> */}
 
-                    <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
+                    {/* <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
                         {[
                             { id: "transaksi", label: "Transaksi", icon: CreditCard },
                             { id: "transfer", label: "Transfer", icon: ArrowUpRight },
@@ -707,7 +715,7 @@ export const KeuanganPage = () => {
                                 </button>
                             )
                         })}
-                    </div>
+                    </div> */}
 
                     {activeTab === "transaksi" && (
                         <Card>
@@ -753,7 +761,7 @@ export const KeuanganPage = () => {
                             </CardHeader>
                             <CardContent>
                                 <DataTable
-                                    data={filteredTransactions}
+                                    data={data.data}
                                     columns={transactionColumns}
                                     searchPlaceholder="Cari deskripsi transaksi..."
                                     pageSize={10}

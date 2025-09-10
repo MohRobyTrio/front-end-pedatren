@@ -362,7 +362,7 @@ export const ModalAddProgressAfektif = ({ isOpen, onClose, refetchData }) => {
                     }
                 }}
                 onSantriSelected={(santri) => setSantri(santri)}
-                list={true}
+                list={2}
             />
         </Transition>
     )
@@ -841,7 +841,7 @@ export const ModalAddProgressKognitif = ({ isOpen, onClose, refetchData }) => {
                     }
                 }}
                 onSantriSelected={(santri) => setSantri(santri)}
-                list={true}
+                list={2}
             />
         </Transition>
     )

@@ -106,7 +106,11 @@ const LoginOrtuPage = () => {
                         </label>
                         <input
                             id="phone"
-                            type="tel"
+                            type="text"
+                            inputMode="numeric"
+                            onInput={(e) => {
+                                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                            }}
                             placeholder="Masukkan No HP"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}

@@ -8,91 +8,8 @@ import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardLi
 
 export default function PerizinanPage() {
     const { activeChild: selectedChild } = useActiveChild()
-    // const [selectedDetail, setSelectedDetail] = useState(null)
-    // const [isModalOpen, setIsModalOpen] = useState(false)
-    // const [perizinanData, setPerizinanData] = useState([])
-    // const [loading, setLoading] = useState(true)
 
     const { data, error, fetchData, loading, totalData } = useFetchPerizinanOrtu({});
-
-    // const formatTanggal = (dateString) => {
-    //     if (!dateString) return "-"
-    //     const date = new Date(dateString)
-    //     return date.toLocaleDateString("id-ID", {
-    //         day: "2-digit",
-    //         month: "2-digit",
-    //         year: "numeric",
-    //     })
-    // }
-
-    // const formatTanggalWaktu = (dateString) => {
-    //     if (!dateString) return "-"
-    //     const date = new Date(dateString)
-    //     return date.toLocaleString("id-ID", {
-    //         day: "2-digit",
-    //         month: "2-digit",
-    //         year: "numeric",
-    //         hour: "2-digit",
-    //         minute: "2-digit",
-    //     })
-    // }
-
-    // const getStatusColor = (status) => {
-    //     switch (status) {
-    //         case "sedang proses izin":
-    //             return "bg-yellow-100 text-yellow-800 border-yellow-200"
-    //         case "disetujui":
-    //             return "bg-green-100 text-green-800 border-green-200"
-    //         case "ditolak":
-    //             return "bg-red-100 text-red-800 border-red-200"
-    //         case "selesai":
-    //             return "bg-blue-100 text-blue-800 border-blue-200"
-    //         default:
-    //             return "bg-gray-100 text-gray-800 border-gray-200"
-    //     }
-    // }
-
-    // const getStatusLabel = (status) => {
-    //     switch (status) {
-    //         case "sedang proses izin":
-    //             return "Sedang Proses"
-    //         case "disetujui":
-    //             return "Disetujui"
-    //         case "ditolak":
-    //             return "Ditolak"
-    //         case "selesai":
-    //             return "Selesai"
-    //         default:
-    //             return status
-    //     }
-    // }
-
-    // Filter data based on search
-    // const filteredData = perizinanData.filter(
-    //     (item) =>
-    //         item.alasan_izin?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //         item.keterangan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //         item.jenis_izin?.toLowerCase().includes(searchTerm.toLowerCase()),
-    // )
-
-
-
-    // const stats = {
-    //     total: perizinanData.length,
-    //     proses: perizinanData.filter((item) => item.status === "sedang proses izin").length,
-    //     disetujui: perizinanData.filter((item) => item.status === "disetujui").length,
-    //     ditolak: perizinanData.filter((item) => item.status === "ditolak").length,
-    // }
-
-    // const openModal = (item) => {
-    //     setSelectedDetail(item)
-    //     setIsModalOpen(true)
-    // }
-
-    // const closeModal = () => {
-    //     setIsModalOpen(false)
-    //     setSelectedDetail(null)
-    // }
 
     if (loading) {
         return (
@@ -100,11 +17,6 @@ export default function PerizinanPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="animate-pulse space-y-6">
                         <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-                        {/* <div className="grid gap-4 md:grid-cols-4">
-                            {[...Array(4)].map((_, i) => (
-                                <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
-                            ))}
-                        </div> */}
                         <div className="h-96 bg-gray-200 rounded-lg"></div>
                     </div>
                 </div>

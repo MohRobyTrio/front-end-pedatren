@@ -380,7 +380,7 @@ export const ModalAddWaliAsuh = ({ isOpen, onClose, refetchData, santriTerpilih 
                     }
                 }}
                 onSantriSelected={(selectedSantri) => setSantri(selectedSantri)}
-                list={true}
+                list={2}
             />
         </Transition>
     )

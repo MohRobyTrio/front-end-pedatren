@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useActiveChild } from "../../components/ortu/useActiveChild";
 
-const useFetchPerizinanOrtu = () => {
+const useFetchPelanggaranOrtu = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [data, setData] = useState([]);
@@ -35,7 +35,7 @@ const useFetchPerizinanOrtu = () => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async (force = false) => {
-            let url = `${API_BASE_URL}view-ortu/perizinan?santri_id=${activeChild?.id || idSantri}`;
+            let url = `${API_BASE_URL}view-ortu/pelanggaran?santri_id=${activeChild?.id || idSantri}`;
             // if (currentPage > 1) {
             //     url += `&page=${currentPage}`;
             // }
@@ -93,21 +93,6 @@ const useFetchPerizinanOrtu = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentPage, limit, debouncedSearchTerm, activeChild]
     );
-
-    // Helper function untuk menghitung durasi
-    // const calculateDuration = (start, end) => {
-    //   const startDate = new Date(start);
-    //   const endDate = new Date(end);
-    //   const diff = endDate - startDate;
-
-    //   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    //   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-    //   if (days > 0) {
-    //     return `${days} Hari ${hours} Jam`;
-    //   }
-    //   return `${hours} Jam`;
-    // };
 
     // Auto fetch when dependencies change
     useEffect(() => {
@@ -167,4 +152,4 @@ const useFetchPerizinanOrtu = () => {
     };
 };
 
-export default useFetchPerizinanOrtu;
+export default useFetchPelanggaranOrtu;

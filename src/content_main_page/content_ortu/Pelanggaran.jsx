@@ -1,175 +1,178 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { AlertTriangle, Calendar, Search, ChevronLeft, ChevronRight } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
+import useFetchPelanggaranOrtu from "../../hooks/hooks_ortu/Pelanggaran"
+import { FaCalendarAlt, FaClipboardList, FaGavel, FaSchool, FaUsers } from "react-icons/fa"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCheck, faX } from "@fortawesome/free-solid-svg-icons"
 
 export default function PelanggaranPage() {
     const { activeChild: selectedChild } = useActiveChild()
-    const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [searchTerm, setSearchTerm] = useState("")
-    const [currentPage, setCurrentPage] = useState(1)
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" })
-    const pageSize = 10
+    // const [searchTerm, setSearchTerm] = useState("")
+    // const [currentPage, setCurrentPage] = useState(1)
+    // const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" })
+    // const pageSize = 10
 
-    useEffect(() => {
-        setLoading(true)
-        // const activeChild = sessionStorage.getItem("active_child")
-        // if (activeChild) {
-        //     setSelectedChild(JSON.parse(activeChild))
-        // }
+    const { data, error, fetchData, loading, totalData } = useFetchPelanggaranOrtu({});
 
-        // Simulate API call - replace with actual API
-        setTimeout(() => {
-            // Mock empty response
-            // eslint-disable-next-line no-unused-vars
-            const emptyResponse = {
-                success: true,
-                message: "Santri belum memiliki data pelanggaran.",
-                data: [],
-                status: 200,
-            }
+    // useEffect(() => {
+    //     setLoading(true)
+    //     // const activeChild = sessionStorage.getItem("active_child")
+    //     // if (activeChild) {
+    //     //     setSelectedChild(JSON.parse(activeChild))
+    //     // }
 
-            // Mock populated response
-            const populatedResponse = {
-                success: true,
-                message: "Data pelanggaran berhasil diambil.",
-                status: 200,
-                meta: {
-                    current_page: 1,
-                    per_page: 25,
-                    total: 4,
-                    last_page: 1,
-                },
-                data: [
-                    {
-                        status_pelanggaran: "Selesai",
-                        jenis_pelanggaran: "Ringan",
-                        jenis_putusan: "Teguran lisan",
-                        diproses_mahkamah: 0,
-                        keterangan: "Terlambat sholat subuh 10 menit",
-                        created_at: "2025-01-15 06:30:00",
-                        pencatat: "Ustadz Ahmad",
-                    },
-                    {
-                        status_pelanggaran: "Sedang diproses",
-                        jenis_pelanggaran: "Sedang",
-                        jenis_putusan: "Pembinaan khusus",
-                        diproses_mahkamah: 1,
-                        keterangan: "Keluar kamar tanpa izin setelah jam 22:00",
-                        created_at: "2025-01-10 22:15:00",
-                        pencatat: "Ustadz Budi",
-                    },
-                    {
-                        status_pelanggaran: "Selesai",
-                        jenis_pelanggaran: "Ringan",
-                        jenis_putusan: "Peringatan tertulis",
-                        diproses_mahkamah: 0,
-                        keterangan: "Tidak rapi berpakaian",
-                        created_at: "2025-01-08 07:00:00",
-                        pencatat: "Ustadz Candra",
-                    },
-                    {
-                        status_pelanggaran: "Sedang diproses",
-                        jenis_pelanggaran: "Ringan",
-                        jenis_putusan: "Dibebaskan",
-                        diproses_mahkamah: 1,
-                        keterangan: "Sip",
-                        created_at: "2025-09-04 13:51:26",
-                        pencatat: "Super Admin",
-                    },
-                ],
-            }
+    //     // Simulate API call - replace with actual API
+    //     setTimeout(() => {
+    //         // Mock empty response
+    //         // eslint-disable-next-line no-unused-vars
+    //         const emptyResponse = {
+    //             success: true,
+    //             message: "Santri belum memiliki data pelanggaran.",
+    //             data: [],
+    //             status: 200,
+    //         }
 
-            // Use populated response for demo
-            setData(populatedResponse.data)
-            setLoading(false)
-        }, 1000)
-    }, [selectedChild])
+    //         // Mock populated response
+    //         const populatedResponse = {
+    //             success: true,
+    //             message: "Data pelanggaran berhasil diambil.",
+    //             status: 200,
+    //             meta: {
+    //                 current_page: 1,
+    //                 per_page: 25,
+    //                 total: 4,
+    //                 last_page: 1,
+    //             },
+    //             data: [
+    //                 {
+    //                     status_pelanggaran: "Selesai",
+    //                     jenis_pelanggaran: "Ringan",
+    //                     jenis_putusan: "Teguran lisan",
+    //                     diproses_mahkamah: 0,
+    //                     keterangan: "Terlambat sholat subuh 10 menit",
+    //                     created_at: "2025-01-15 06:30:00",
+    //                     pencatat: "Ustadz Ahmad",
+    //                 },
+    //                 {
+    //                     status_pelanggaran: "Sedang diproses",
+    //                     jenis_pelanggaran: "Sedang",
+    //                     jenis_putusan: "Pembinaan khusus",
+    //                     diproses_mahkamah: 1,
+    //                     keterangan: "Keluar kamar tanpa izin setelah jam 22:00",
+    //                     created_at: "2025-01-10 22:15:00",
+    //                     pencatat: "Ustadz Budi",
+    //                 },
+    //                 {
+    //                     status_pelanggaran: "Selesai",
+    //                     jenis_pelanggaran: "Ringan",
+    //                     jenis_putusan: "Peringatan tertulis",
+    //                     diproses_mahkamah: 0,
+    //                     keterangan: "Tidak rapi berpakaian",
+    //                     created_at: "2025-01-08 07:00:00",
+    //                     pencatat: "Ustadz Candra",
+    //                 },
+    //                 {
+    //                     status_pelanggaran: "Sedang diproses",
+    //                     jenis_pelanggaran: "Ringan",
+    //                     jenis_putusan: "Dibebaskan",
+    //                     diproses_mahkamah: 1,
+    //                     keterangan: "Sip",
+    //                     created_at: "2025-09-04 13:51:26",
+    //                     pencatat: "Super Admin",
+    //                 },
+    //             ],
+    //         }
 
-    const formatTanggal = (dateString) => {
-        const date = new Date(dateString)
-        return date.toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        })
-    }
+    //         // Use populated response for demo
+    //         setData(populatedResponse.data)
+    //         setLoading(false)
+    //     }, 1000)
+    // }, [selectedChild])
 
-    const getKategoriColor = (kategori) => {
-        switch (kategori?.toLowerCase()) {
-            case "ringan":
-                return "bg-yellow-100 text-yellow-800 border-yellow-200"
-            case "sedang":
-                return "bg-orange-100 text-orange-800 border-orange-200"
-            case "berat":
-                return "bg-red-100 text-red-800 border-red-200"
-            default:
-                return "bg-gray-100 text-gray-800 border-gray-200"
-        }
-    }
+    // const formatTanggal = (dateString) => {
+    //     const date = new Date(dateString)
+    //     return date.toLocaleDateString("id-ID", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric",
+    //     })
+    // }
 
-    const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
-            case "selesai":
-                return "bg-green-100 text-green-800 border-green-200"
-            case "sedang diproses":
-                return "bg-blue-100 text-blue-800 border-blue-200"
-            default:
-                return "bg-gray-100 text-gray-800 border-gray-200"
-        }
-    }
+    // const getKategoriColor = (kategori) => {
+    //     switch (kategori?.toLowerCase()) {
+    //         case "ringan":
+    //             return "bg-yellow-100 text-yellow-800 border-yellow-200"
+    //         case "sedang":
+    //             return "bg-orange-100 text-orange-800 border-orange-200"
+    //         case "berat":
+    //             return "bg-red-100 text-red-800 border-red-200"
+    //         default:
+    //             return "bg-gray-100 text-gray-800 border-gray-200"
+    //     }
+    // }
 
-    const filteredData = data.filter(
-        (item) =>
-            item.keterangan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.jenis_pelanggaran?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.jenis_putusan?.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+    // const getStatusColor = (status) => {
+    //     switch (status?.toLowerCase()) {
+    //         case "selesai":
+    //             return "bg-green-100 text-green-800 border-green-200"
+    //         case "sedang diproses":
+    //             return "bg-blue-100 text-blue-800 border-blue-200"
+    //         default:
+    //             return "bg-gray-100 text-gray-800 border-gray-200"
+    //     }
+    // }
 
-    const sortedData = [...filteredData].sort((a, b) => {
-        if (!sortConfig.key) return 0
+    // const filteredData = data.filter(
+    //     (item) =>
+    //         item.keterangan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item.jenis_pelanggaran?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item.jenis_putusan?.toLowerCase().includes(searchTerm.toLowerCase()),
+    // )
 
-        const aValue = a[sortConfig.key]
-        const bValue = b[sortConfig.key]
+    // const sortedData = [...filteredData].sort((a, b) => {
+    //     if (!sortConfig.key) return 0
 
-        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1
-        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1
-        return 0
-    })
+    //     const aValue = a[sortConfig.key]
+    //     const bValue = b[sortConfig.key]
 
-    const paginatedData = sortedData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    //     if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1
+    //     if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1
+    //     return 0
+    // })
 
-    const totalPages = Math.ceil(sortedData.length / pageSize)
+    // const paginatedData = sortedData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
-    const handleSort = (key) => {
-        setSortConfig((prev) => ({
-            key,
-            direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
-        }))
-    }
+    // const totalPages = Math.ceil(sortedData.length / pageSize)
 
-    const stats = {
-        total: data.length,
-        bulanIni: data.filter((item) => {
-            const itemDate = new Date(item.created_at)
-            const now = new Date()
-            return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()
-        }).length,
-        diproses: data.filter((item) => item.diproses_mahkamah === 1).length,
-        ringan: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "ringan").length,
-        sedang: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "sedang").length,
-        berat: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "berat").length,
-    }
+    // const handleSort = (key) => {
+    //     setSortConfig((prev) => ({
+    //         key,
+    //         direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    //     }))
+    // }
 
-    // eslint-disable-next-line no-unused-vars
-    const mockChartData = [
-        { label: "Okt", value: 2 },
-        { label: "Nov", value: 4 },
-        { label: "Des", value: 1 },
-        { label: "Jan", value: 3 },
-    ]
+    // const stats = {
+    //     total: data.length,
+    //     bulanIni: data.filter((item) => {
+    //         const itemDate = new Date(item.created_at)
+    //         const now = new Date()
+    //         return itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear()
+    //     }).length,
+    //     diproses: data.filter((item) => item.diproses_mahkamah === 1).length,
+    //     ringan: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "ringan").length,
+    //     sedang: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "sedang").length,
+    //     berat: data.filter((item) => item.jenis_pelanggaran?.toLowerCase() === "berat").length,
+    // }
+
+    // // eslint-disable-next-line no-unused-vars
+    // const mockChartData = [
+    //     { label: "Okt", value: 2 },
+    //     { label: "Nov", value: 4 },
+    //     { label: "Des", value: 1 },
+    //     { label: "Jan", value: 3 },
+    // ]
 
     if (loading) {
         return (
@@ -183,7 +186,6 @@ export default function PelanggaranPage() {
                             ))}
                         </div>
                         <div className="h-64 bg-gray-200 rounded-lg"></div>
-                        {/* <div className="h-96 bg-gray-200 rounded-lg"></div> */}
                     </div>
                 </div>
             </div>
@@ -202,101 +204,9 @@ export default function PelanggaranPage() {
                     <p className="text-gray-600 mt-1">Riwayat pelanggaran {selectedChild?.nama || "santri"}</p>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <div className="bg-white rounded-lg shadow-sm border border-orange-100 p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-orange-600">Total Pelanggaran</p>
-                                <p className="text-2xl font-bold text-orange-700">{stats.total}</p>
-                            </div>
-                            <AlertTriangle className="h-8 w-8 text-orange-600" />
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow-sm border border-red-100 p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-red-600">Bulan Ini</p>
-                                <p className="text-2xl font-bold text-red-700">{stats.bulanIni}</p>
-                            </div>
-                            <Calendar className="h-8 w-8 text-red-600" />
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow-sm border border-purple-100 p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-purple-600">Diproses Mahkamah</p>
-                                <p className="text-2xl font-bold text-purple-700">{stats.diproses}</p>
-                            </div>
-                            <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                <span className="text-purple-600 font-bold text-sm">⚖</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-gray-600">Kategori</p>
-                            <div className="space-y-1">
-                                <div className="flex justify-between text-xs">
-                                    <span className="text-yellow-600">Ringan</span>
-                                    <span className="font-semibold">{stats.ringan}</span>
-                                </div>
-                                <div className="flex justify-between text-xs">
-                                    <span className="text-orange-600">Sedang</span>
-                                    <span className="font-semibold">{stats.sedang}</span>
-                                </div>
-                                <div className="flex justify-between text-xs">
-                                    <span className="text-red-600">Berat</span>
-                                    <span className="font-semibold">{stats.berat}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Chart */}
-                {/* <div className="bg-white rounded-lg shadow-sm border p-6">
-                    <div className="mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                            <TrendingDown className="mr-2 h-5 w-5 text-orange-600" />
-                            Grafik Pelanggaran per Bulan
-                        </h3>
-                    </div>
-                    <div className="h-64 flex items-end justify-center space-x-4">
-                        {mockChartData.map((item, index) => (
-                            <div key={index} className="flex flex-col items-center">
-                                <div
-                                    className="bg-orange-500 rounded-t w-12 transition-all duration-300 hover:bg-orange-600"
-                                    style={{ height: `${(item.value / Math.max(...mockChartData.map((d) => d.value))) * 200}px` }}
-                                ></div>
-                                <div className="mt-2 text-sm text-gray-600">{item.label}</div>
-                                <div className="text-xs text-gray-500">{item.value}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
-
                 {/* Table */}
                 <div className="bg-white rounded-lg shadow-sm">
-                    <div className="pl-6 pt-6 pr-6">
-                        <h3 className="text-lg font-semibold text-gray-900">Riwayat Pelanggaran</h3>
-                    </div>
                     <div className="p-6">
-                        <div className="mb-4">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                <input
-                                    type="text"
-                                    placeholder="Cari jenis pelanggaran atau keterangan..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-                                />
-                            </div>
-                        </div>
 
                         {data.length === 0 ? (
                             <div className="text-center py-12">
@@ -306,64 +216,11 @@ export default function PelanggaranPage() {
                             </div>
                         ) : (
                             <>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr className="border-b border-gray-200">
-                                                <th
-                                                    className="text-left py-3 px-4 font-medium text-gray-700 cursor-pointer hover:bg-gray-50"
-                                                    onClick={() => handleSort("created_at")}
-                                                >
-                                                    Tanggal
-                                                </th>
-                                                <th
-                                                    className="text-left py-3 px-4 font-medium text-gray-700 cursor-pointer hover:bg-gray-50"
-                                                    onClick={() => handleSort("jenis_pelanggaran")}
-                                                >
-                                                    Jenis
-                                                </th>
-                                                <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                                                <th className="text-left py-3 px-4 font-medium text-gray-700">Putusan</th>
-                                                <th className="text-left py-3 px-4 font-medium text-gray-700">Mahkamah</th>
-                                                <th className="text-left py-3 px-4 font-medium text-gray-700">Keterangan</th>
-                                                <th className="text-left py-3 px-4 font-medium text-gray-700">Pencatat</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {paginatedData.map((item, index) => (
-                                                <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                                                    <td className="py-3 px-4 text-sm text-gray-900">{formatTanggal(item.created_at)}</td>
-                                                    <td className="py-3 px-4">
-                                                        <span
-                                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getKategoriColor(item.jenis_pelanggaran)}`}
-                                                        >
-                                                            {item.jenis_pelanggaran}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <span
-                                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(item.status_pelanggaran)}`}
-                                                        >
-                                                            {item.status_pelanggaran}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-sm text-gray-900">{item.jenis_putusan}</td>
-                                                    <td className="py-3 px-4 text-sm">
-                                                        {item.diproses_mahkamah ? (
-                                                            <span className="text-blue-600 font-medium">Ya</span>
-                                                        ) : (
-                                                            <span className="text-gray-500">Tidak</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="py-3 px-4 text-sm text-gray-600 max-w-xs truncate">{item.keterangan}</td>
-                                                    <td className="py-3 px-4 text-sm text-gray-600">{item.pencatat}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                {data.map((item, index) => (
+                                    <PelanggaranCard key={index} data={item} />
+                                ))}
 
-                                {totalPages > 1 && (
+                                {/* {totalPages > 1 && (
                                     <div className="flex items-center justify-between mt-6">
                                         <div className="text-sm text-gray-700">
                                             Menampilkan {(currentPage - 1) * pageSize + 1} -{" "}
@@ -383,8 +240,8 @@ export default function PelanggaranPage() {
                                                     key={i + 1}
                                                     onClick={() => setCurrentPage(i + 1)}
                                                     className={`px-3 py-2 rounded-lg text-sm font-medium ${currentPage === i + 1
-                                                            ? "bg-orange-600 text-white"
-                                                            : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                                                        ? "bg-orange-600 text-white"
+                                                        : "border border-gray-300 text-gray-700 hover:bg-gray-50"
                                                         }`}
                                                 >
                                                     {i + 1}
@@ -400,7 +257,7 @@ export default function PelanggaranPage() {
                                             </button>
                                         </div>
                                     </div>
-                                )}
+                                )} */}
                             </>
                         )}
                     </div>
@@ -409,3 +266,128 @@ export default function PelanggaranPage() {
         </div>
     )
 }
+
+const PelanggaranCard = ({ data }) => {
+    const getStatusConfig = (status) => {
+        switch (status) {
+            case 'Sudah diproses':
+                return {
+                    bg: 'bg-green-100',
+                    text: 'text-green-800',
+                    border: 'border-green-300'
+                };
+            case 'Sedang diproses':
+                return {
+                    bg: 'bg-blue-100',
+                    text: 'text-blue-800',
+                    border: 'border-blue-300'
+                };
+            case 'Belum diproses':
+                return {
+                    bg: 'bg-gray-100',
+                    text: 'text-gray-800',
+                    border: 'border-gray-300'
+                };
+            default:
+                return {
+                    bg: 'bg-gray-100',
+                    text: 'text-gray-800',
+                    border: 'border-gray-300'
+                };
+        }
+    };
+
+    const getSeverityColor = (jenis) => {
+        switch (jenis) {
+            case 'Berat': return 'text-red-600 bg-red-50 border-red-200';
+            case 'Sedang': return 'text-orange-600 bg-orange-50 border-orange-200';
+            case 'Ringan': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+            default: return 'text-gray-600 bg-gray-50 border-gray-200';
+        }
+    };
+
+    const statusConfig = getStatusConfig(data.status_pelanggaran);
+
+    return (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3 overflow-hidden hover:shadow-md transition-shadow duration-200">
+            {/* Simple Header */}
+            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
+                    {data.status_pelanggaran}
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className={`px-2 py-1 rounded text-xs font-medium border ${getSeverityColor(data.jenis_pelanggaran)}`}>
+                        {data.jenis_pelanggaran}
+                    </span>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="p-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+
+                    {/* Information Section */}
+                    <div className="flex-1 min-w-0">
+
+                        {/* Information Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            {/* Left Column */}
+                            <div className="space-y-2 text-sm">
+                                {/* Jenis Putusan */}
+                                <div className="flex items-center gap-2">
+                                    <FaGavel className="text-blue-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Putusan</span>
+                                    <span className="font-medium text-gray-800">: {data.jenis_putusan}</span>
+                                </div>
+
+                                {/* Mahkamah */}
+                                <div className="flex items-center gap-2">
+                                    <FaSchool className="text-indigo-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Mahkamah</span>
+                                    {data.diproses_mahkamah == 1 ? (
+                                        <span className="text-green-600 font-medium flex items-center gap-1">
+                                            : Ya <FontAwesomeIcon icon={faCheck} className="text-green-600 text-xs" />
+                                        </span>
+                                    ) : (
+                                        <span className="text-red-600 font-medium flex items-center gap-1">
+                                            : Tidak <FontAwesomeIcon icon={faX} className="text-red-600 text-xs" />
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Right Column */}
+                            <div className="space-y-2 text-sm">
+                                {/* Tanggal */}
+                                <div className="flex items-center gap-2">
+                                    <FaCalendarAlt className="text-gray-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Tanggal</span>
+                                    <span className="font-medium text-gray-800">: {data.created_at}</span>
+                                </div>
+
+                                {/* Pencatat */}
+                                <div className="flex items-center gap-2">
+                                    <FaUsers className="text-purple-500 text-sm flex-shrink-0" />
+                                    <span className="text-gray-600 min-w-[80px]">Pencatat</span>
+                                    <span className="font-medium text-gray-800">: {data.pencatat}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Keterangan Section */}
+                        <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex items-start gap-2">
+                                <FaClipboardList className="text-gray-600 text-sm mt-0.5 flex-shrink-0" />
+                                <div className="min-w-0">
+                                    <span className="text-gray-600 text-sm font-medium block mb-1">Keterangan Pelanggaran:</span>
+                                    <p className="text-gray-800 text-sm leading-relaxed">{data.keterangan}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

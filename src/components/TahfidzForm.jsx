@@ -231,7 +231,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                 return;
             }
 
-            if (!response.ok || result.success) {
+            if (!response.ok || !result.success) {
                 throw new Error(result.error || "Terjadi kesalahan pada server.");
             }
 

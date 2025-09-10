@@ -730,7 +730,7 @@ const Scan = ({ refetch }) => {
                 kategori_id: kategori,
                 total_bayar: totalHarga,
                 pin: pin,
-                ...(inputMode !== "manual" && { uid_kartu: customerData.uid_kartu }),
+                uid_kartu: customerData.uid_kartu,
                 ...(getRolesString() == "Superadmin" && { outlet_id: outlet })
             }
 
@@ -1400,6 +1400,7 @@ const Scan = ({ refetch }) => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
+                    list={3}
                 />
             </div>
         </div>

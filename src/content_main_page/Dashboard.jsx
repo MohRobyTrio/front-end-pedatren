@@ -3,388 +3,388 @@
 import { useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  faArrowRight,
-  faUsers,
-  faUserGraduate,
-  faUserTie,
-  faUserShield,
-  faClock,
-  faExclamationTriangle,
-  faChartLine,
-  faRotateRight, // refresh icon
+    faArrowRight,
+    faUsers,
+    faUserGraduate,
+    faUserTie,
+    faUserShield,
+    faClock,
+    faExclamationTriangle,
+    faChartLine,
+    faRotateRight, // refresh icon
 } from "@fortawesome/free-solid-svg-icons"
 import { Link, Navigate } from "react-router-dom"
 import { hasAccess } from "../utils/hasAccess"
 import { API_BASE_URL } from "../hooks/config"
 
 const Dashboard = () => {
-  const [loading, setLoading] = useState(true)
-  const [data, setData] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState({})
 
-  const refreshData = async () => {
-    setLoading(true)
-    try {
-      const res = await fetch(`${API_BASE_URL}dashboard`)
-      const json = await res.json()
-      setData(json)
-    } catch (err) {
-      console.error("Gagal fetch dashboard:", err)
-    } finally {
-      setLoading(false)
+    const refreshData = async () => {
+        setLoading(true)
+        try {
+            const res = await fetch(`${API_BASE_URL}dashboard`)
+            const json = await res.json()
+            setData(json)
+        } catch (err) {
+            console.error("Gagal fetch dashboard:", err)
+        } finally {
+            setLoading(false)
+        }
     }
-  }
 
-  useEffect(() => {
-    refreshData()
-  }, [])
+    useEffect(() => {
+        refreshData()
+    }, [])
 
-  const LoadingSpinner = () => {
+    const LoadingSpinner = () => {
+        return (
+            <div className="flex justify-center items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-slate-300 border-t-slate-600"></div>
+            </div>
+        )
+    }
+
+    const stats = [
+        // Students
+        {
+            label: "Peserta Didik",
+            value: loading ? <LoadingSpinner /> : data?.peserta_didik || 0,
+            color: "blue",
+            icon: faUsers,
+            link: "/peserta-didik",
+            description: "Total peserta didik aktif",
+            category: "students",
+        },
+        {
+            label: "Santri",
+            value: loading ? <LoadingSpinner /> : data?.santri || 0,
+            color: "blue",
+            icon: faUsers,
+            link: "/peserta-didik/santri",
+            description: "Santri yang sedang mondok",
+            category: "students",
+        },
+        {
+            label: "Pelajar",
+            value: loading ? <LoadingSpinner /> : data?.pelajar || 0,
+            color: "blue",
+            icon: faUserGraduate,
+            link: "/peserta-didik/pelajar",
+            description: "Pelajar terdaftar",
+            category: "students",
+        },
+        {
+            label: "Alumni",
+            value: loading ? <LoadingSpinner /> : data?.alumni || 0,
+            color: "blue",
+            icon: faUserGraduate,
+            link: "/alumni",
+            description: "Alumni terdaftar",
+            category: "students",
+        },
+
+        // Staff
+        {
+            label: "Pegawai",
+            value: loading ? <LoadingSpinner /> : data?.pegawai || 0,
+            color: "emerald",
+            icon: faUserTie,
+            link: "/pegawai",
+            description: "Total pegawai aktif",
+            category: "staff",
+        },
+        {
+            label: "Pengajar",
+            value: loading ? <LoadingSpinner /> : data?.pengajar || 0,
+            color: "emerald",
+            icon: faUserTie,
+            link: "/pegawai/pengajar",
+            description: "Tenaga pengajar",
+            category: "staff",
+        },
+        {
+            label: "Pengurus",
+            value: loading ? <LoadingSpinner /> : data?.pengurus || 0,
+            color: "emerald",
+            icon: faUserShield,
+            link: "/pegawai/pengurus",
+            description: "Pengurus pesantren",
+            category: "staff",
+        },
+        {
+            label: "Wali Kelas",
+            value: loading ? <LoadingSpinner /> : data?.wali_kelas || 0,
+            color: "emerald",
+            icon: faUserShield,
+            link: "/pegawai/wali-kelas",
+            description: "Wali kelas aktif",
+            category: "staff",
+        },
+        {
+            label: "Karyawan",
+            value: loading ? <LoadingSpinner /> : data?.karyawan || 0,
+            color: "emerald",
+            icon: faUserTie,
+            link: "/pegawai/karyawan",
+            description: "Karyawan operasional",
+            category: "staff",
+        },
+        {
+            label: "Khadam",
+            value: loading ? <LoadingSpinner /> : data?.khadam || 0,
+            color: "emerald",
+            icon: faUserTie,
+            link: "/khadam",
+            description: "Khadam pesantren",
+            category: "staff",
+        },
+
+        // Guardians
+        {
+            label: "Wali Asuh",
+            value: loading ? <LoadingSpinner /> : data?.wali_asuh || 0,
+            color: "amber",
+            icon: faUserShield,
+            link: "/wali-asuh",
+            description: "Wali asuh terdaftar",
+            category: "guardians",
+        },
+        {
+            label: "Orang Tua",
+            value: loading ? <LoadingSpinner /> : data?.orang_tua || 0,
+            color: "amber",
+            icon: faUsers,
+            link: "/orang-tua",
+            description: "Data orang tua santri",
+            category: "guardians",
+        },
+        {
+            label: "Wali",
+            value: loading ? <LoadingSpinner /> : data?.wali || 0,
+            color: "amber",
+            icon: faUserShield,
+            link: "/orang-tua/wali",
+            description: "Wali murid terdaftar",
+            category: "guardians",
+        },
+
+        // Alerts
+        {
+            label: "Dalam Masa Izin",
+            value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin || 0,
+            color: "orange",
+            icon: faClock,
+            link: "/perizinan?status=sudah%20berada%20diluar%20pondok",
+            description: "Santri sedang izin keluar",
+            category: "alerts",
+        },
+        {
+            label: "Telat Belum Kembali",
+            value: loading ? <LoadingSpinner /> : data?.telat_belum_kembali || 0,
+            color: "red",
+            icon: faExclamationTriangle,
+            link: "/perizinan?status=telat(belum%20kembali)",
+            description: "Memerlukan tindak lanjut",
+            category: "alerts",
+        },
+    ]
+
+    const groupedStats = {
+        students: stats.filter((s) => s.category === "students"),
+        staff: stats.filter((s) => s.category === "staff"),
+        guardians: stats.filter((s) => s.category === "guardians"),
+        alerts: stats.filter((s) => s.category === "alerts"),
+    }
+
+    const categoryConfig = {
+        students: {
+            title: "Data Santri ",
+            icon: faUsers,
+            color: "blue",
+            bgColor: "bg-blue-50",
+            textColor: "text-blue-700",
+            iconBg: "bg-blue-100",
+        },
+        staff: {
+            title: "Data Staff",
+            icon: faUserTie,
+            color: "emerald",
+            bgColor: "bg-emerald-50",
+            textColor: "text-emerald-700",
+            iconBg: "bg-emerald-100",
+        },
+        guardians: {
+            title: "Data Wali",
+            icon: faUserShield,
+            color: "amber",
+            bgColor: "bg-amber-50",
+            textColor: "text-amber-700",
+            iconBg: "bg-amber-100",
+        },
+        alerts: {
+            title: "Status & Peringatan",
+            icon: faExclamationTriangle,
+            color: "red",
+            bgColor: "bg-red-50",
+            textColor: "text-red-700",
+            iconBg: "bg-red-100",
+        },
+    }
+
+    const getColorClasses = (color) => {
+        const map = {
+            blue: {
+                bg: "bg-blue-500",
+                hover: "hover:bg-blue-600",
+                text: "text-blue-600",
+                border: "border-blue-200",
+                accent: "bg-blue-500",
+            },
+            emerald: {
+                bg: "bg-emerald-500",
+                hover: "hover:bg-emerald-600",
+                text: "text-emerald-600",
+                border: "border-emerald-200",
+                accent: "bg-emerald-500",
+            },
+            amber: {
+                bg: "bg-amber-500",
+                hover: "hover:bg-amber-600",
+                text: "text-amber-600",
+                border: "border-amber-200",
+                accent: "bg-amber-500",
+            },
+            orange: {
+                bg: "bg-orange-500",
+                hover: "hover:bg-orange-600",
+                text: "text-orange-600",
+                border: "border-orange-200",
+                accent: "bg-orange-500",
+            },
+            red: {
+                bg: "bg-red-500",
+                hover: "hover:bg-red-600",
+                text: "text-red-600",
+                border: "border-red-200",
+                accent: "bg-red-500",
+            },
+        }
+        return map[color] || map.blue
+    }
+
+    if (!hasAccess("dashboard")) {
+        return <Navigate to="/not-found" replace />
+    }
+
     return (
-      <div className="flex justify-center items-center">
-        <div className="animate-spin rounded-full h-5 w-5 border-2 border-slate-300 border-t-slate-600"></div>
-      </div>
-    )
-  }
-
-  const stats = [
-    // Students
-    {
-      label: "Peserta Didik",
-      value: loading ? <LoadingSpinner /> : data?.peserta_didik || 0,
-      color: "blue",
-      icon: faUsers,
-      link: "/peserta-didik",
-      description: "Total peserta didik aktif",
-      category: "students",
-    },
-    {
-      label: "Santri",
-      value: loading ? <LoadingSpinner /> : data?.santri || 0,
-      color: "blue",
-      icon: faUsers,
-      link: "/peserta-didik/santri",
-      description: "Santri yang sedang mondok",
-      category: "students",
-    },
-    {
-      label: "Pelajar",
-      value: loading ? <LoadingSpinner /> : data?.pelajar || 0,
-      color: "blue",
-      icon: faUserGraduate,
-      link: "/peserta-didik/pelajar",
-      description: "Pelajar terdaftar",
-      category: "students",
-    },
-    {
-      label: "Alumni",
-      value: loading ? <LoadingSpinner /> : data?.alumni || 0,
-      color: "blue",
-      icon: faUserGraduate,
-      link: "/alumni",
-      description: "Alumni terdaftar",
-      category: "students",
-    },
-
-    // Staff
-    {
-      label: "Pegawai",
-      value: loading ? <LoadingSpinner /> : data?.pegawai || 0,
-      color: "emerald",
-      icon: faUserTie,
-      link: "/pegawai",
-      description: "Total pegawai aktif",
-      category: "staff",
-    },
-    {
-      label: "Pengajar",
-      value: loading ? <LoadingSpinner /> : data?.pengajar || 0,
-      color: "emerald",
-      icon: faUserTie,
-      link: "/pegawai/pengajar",
-      description: "Tenaga pengajar",
-      category: "staff",
-    },
-    {
-      label: "Pengurus",
-      value: loading ? <LoadingSpinner /> : data?.pengurus || 0,
-      color: "emerald",
-      icon: faUserShield,
-      link: "/pegawai/pengurus",
-      description: "Pengurus pesantren",
-      category: "staff",
-    },
-    {
-      label: "Wali Kelas",
-      value: loading ? <LoadingSpinner /> : data?.wali_kelas || 0,
-      color: "emerald",
-      icon: faUserShield,
-      link: "/pegawai/wali-kelas",
-      description: "Wali kelas aktif",
-      category: "staff",
-    },
-    {
-      label: "Karyawan",
-      value: loading ? <LoadingSpinner /> : data?.karyawan || 0,
-      color: "emerald",
-      icon: faUserTie,
-      link: "/pegawai/karyawan",
-      description: "Karyawan operasional",
-      category: "staff",
-    },
-    {
-      label: "Khadam",
-      value: loading ? <LoadingSpinner /> : data?.khadam || 0,
-      color: "emerald",
-      icon: faUserTie,
-      link: "/khadam",
-      description: "Khadam pesantren",
-      category: "staff",
-    },
-
-    // Guardians
-    {
-      label: "Wali Asuh",
-      value: loading ? <LoadingSpinner /> : data?.wali_asuh || 0,
-      color: "amber",
-      icon: faUserShield,
-      link: "/wali-asuh",
-      description: "Wali asuh terdaftar",
-      category: "guardians",
-    },
-    {
-      label: "Orang Tua",
-      value: loading ? <LoadingSpinner /> : data?.orang_tua || 0,
-      color: "amber",
-      icon: faUsers,
-      link: "/orang-tua",
-      description: "Data orang tua santri",
-      category: "guardians",
-    },
-    {
-      label: "Wali",
-      value: loading ? <LoadingSpinner /> : data?.wali || 0,
-      color: "amber",
-      icon: faUserShield,
-      link: "/orang-tua/wali",
-      description: "Wali murid terdaftar",
-      category: "guardians",
-    },
-
-    // Alerts
-    {
-      label: "Dalam Masa Izin",
-      value: loading ? <LoadingSpinner /> : data?.dalam_masa_izin || 0,
-      color: "orange",
-      icon: faClock,
-      link: "/perizinan?status=sudah%20berada%20diluar%20pondok",
-      description: "Santri sedang izin keluar",
-      category: "alerts",
-    },
-    {
-      label: "Telat Belum Kembali",
-      value: loading ? <LoadingSpinner /> : data?.telat_belum_kembali || 0,
-      color: "red",
-      icon: faExclamationTriangle,
-      link: "/perizinan?status=telat(belum%20kembali)",
-      description: "Memerlukan tindak lanjut",
-      category: "alerts",
-    },
-  ]
-
-  const groupedStats = {
-    students: stats.filter((s) => s.category === "students"),
-    staff: stats.filter((s) => s.category === "staff"),
-    guardians: stats.filter((s) => s.category === "guardians"),
-    alerts: stats.filter((s) => s.category === "alerts"),
-  }
-
-  const categoryConfig = {
-    students: {
-      title: "Data Siswa",
-      icon: faUsers,
-      color: "blue",
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-700",
-      iconBg: "bg-blue-100",
-    },
-    staff: {
-      title: "Data Staff",
-      icon: faUserTie,
-      color: "emerald",
-      bgColor: "bg-emerald-50",
-      textColor: "text-emerald-700",
-      iconBg: "bg-emerald-100",
-    },
-    guardians: {
-      title: "Data Wali",
-      icon: faUserShield,
-      color: "amber",
-      bgColor: "bg-amber-50",
-      textColor: "text-amber-700",
-      iconBg: "bg-amber-100",
-    },
-    alerts: {
-      title: "Status & Peringatan",
-      icon: faExclamationTriangle,
-      color: "red",
-      bgColor: "bg-red-50",
-      textColor: "text-red-700",
-      iconBg: "bg-red-100",
-    },
-  }
-
-  const getColorClasses = (color) => {
-    const map = {
-      blue: {
-        bg: "bg-blue-500",
-        hover: "hover:bg-blue-600",
-        text: "text-blue-600",
-        border: "border-blue-200",
-        accent: "bg-blue-500",
-      },
-      emerald: {
-        bg: "bg-emerald-500",
-        hover: "hover:bg-emerald-600",
-        text: "text-emerald-600",
-        border: "border-emerald-200",
-        accent: "bg-emerald-500",
-      },
-      amber: {
-        bg: "bg-amber-500",
-        hover: "hover:bg-amber-600",
-        text: "text-amber-600",
-        border: "border-amber-200",
-        accent: "bg-amber-500",
-      },
-      orange: {
-        bg: "bg-orange-500",
-        hover: "hover:bg-orange-600",
-        text: "text-orange-600",
-        border: "border-orange-200",
-        accent: "bg-orange-500",
-      },
-      red: {
-        bg: "bg-red-500",
-        hover: "hover:bg-red-600",
-        text: "text-red-600",
-        border: "border-red-200",
-        accent: "bg-red-500",
-      },
-    }
-    return map[color] || map.blue
-  }
-
-  if (!hasAccess("dashboard")) {
-    return <Navigate to="/not-found" replace />
-  }
-
-  return (
-    <div className="flex-1 p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
-        {/* Header + Refresh */}
-        <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">
-          {/* Header kiri */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="relative">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
-                <FontAwesomeIcon icon={faChartLine} className="text-base sm:text-lg text-white" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-lg flex items-center justify-center">
-                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
-              </div>
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-              <p className="text-sm sm:text-base lg:text-lg text-slate-600 mt-1">Sistem Manajemen Pesantren</p>
-            </div>
-          </div>
-
-          {/* Tombol refresh kanan */}
-          <button
-            onClick={refreshData}
-            disabled={loading}
-            className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-            title={loading ? "Memuat data..." : "Refresh data"}
-          >
-            <FontAwesomeIcon
-              icon={faRotateRight}
-              className={`text-sm sm:text-base transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
-            />
-          </button>
-        </div>
-      </div>
-
-      {/* Kategori cards */}
-      <div className="space-y-6 sm:space-y-8">
-        {Object.entries(groupedStats).map(([category, categoryStats]) => {
-          const config = categoryConfig[category]
-          return (
-            <div key={category} className="space-y-3 sm:space-y-4">
-              <div className={`${config.bgColor} rounded-2xl p-3 sm:p-4 border border-gray-100`}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 ${config.iconBg} rounded-lg flex items-center justify-center`}
-                    >
-                      <FontAwesomeIcon icon={config.icon} className={`text-xs sm:text-sm ${config.textColor}`} />
-                    </div>
-                    <h2 className="text-base sm:text-lg font-bold text-slate-900">{config.title}</h2>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-slate-500">{categoryStats.length} kategori</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-                {categoryStats.map((stat, index) => {
-                  const colors = getColorClasses(stat.color)
-                  return (
-                    <div
-                      key={index}
-                      className="group bg-white rounded-2xl sm:rounded-3xl border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
-                    >
-                      <div className="p-5 sm:p-6 lg:p-8">
-                        <div className="flex items-start justify-between mb-4 sm:mb-6">
-                          <div
-                            className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 ${colors.bg} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm`}
-                          >
-                            <FontAwesomeIcon icon={stat.icon} className="text-base sm:text-lg lg:text-xl text-white" />
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
-                              {stat.value}
+        <div className="flex-1 p-6 bg-gray-50 min-h-screen">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+                {/* Header + Refresh */}
+                <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">
+                    {/* Header kiri */}
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="relative">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
+                                <FontAwesomeIcon icon={faChartLine} className="text-base sm:text-lg text-white" />
                             </div>
-                            <div className={`w-6 h-0.5 sm:w-8 sm:h-1 ${colors.accent} rounded-full ml-auto`}></div>
-                          </div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-white rounded-full"></div>
+                            </div>
                         </div>
-
-                        <div className="mb-4 sm:mb-6 lg:mb-8">
-                          <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">{stat.label}</h3>
-                          <p className="text-sm sm:text-base text-slate-500 leading-relaxed">{stat.description}</p>
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+                            <p className="text-sm sm:text-base lg:text-lg text-slate-600 mt-1">Sistem Manajemen Pesantren</p>
                         </div>
-
-                        <Link
-                          to={stat.link}
-                          className="group/btn w-full flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-xl sm:rounded-2xl font-semibold transition-all duration-200 border border-slate-100 hover:border-slate-200 text-sm sm:text-base"
-                        >
-                          <span>Lihat Detail</span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className="transition-transform duration-200 group-hover/btn:translate-x-1"
-                          />
-                        </Link>
-                      </div>
                     </div>
-                  )
-                })}
-              </div>
+
+                    {/* Tombol refresh kanan */}
+                    <button
+                        onClick={refreshData}
+                        disabled={loading}
+                        className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                        title={loading ? "Memuat data..." : "Refresh data"}
+                    >
+                        <FontAwesomeIcon
+                            icon={faRotateRight}
+                            className={`text-sm sm:text-base transition-transform duration-300 ${loading ? "animate-spin" : "group-hover:rotate-180"}`}
+                        />
+                    </button>
+                </div>
             </div>
-          )
-        })}
-      </div>
-    </div>
-  )
+
+            {/* Kategori cards */}
+            <div className="space-y-6 sm:space-y-8">
+                {Object.entries(groupedStats).map(([category, categoryStats]) => {
+                    const config = categoryConfig[category]
+                    return (
+                        <div key={category} className="space-y-3 sm:space-y-4">
+                            <div className={`${config.bgColor} rounded-2xl p-3 sm:p-4 border border-gray-100`}>
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className={`w-7 h-7 sm:w-8 sm:h-8 ${config.iconBg} rounded-lg flex items-center justify-center`}
+                                        >
+                                            <FontAwesomeIcon icon={config.icon} className={`text-xs sm:text-sm ${config.textColor}`} />
+                                        </div>
+                                        <h2 className="text-base sm:text-lg font-bold text-slate-900">{config.title}</h2>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xs text-slate-500">{categoryStats.length} kategori</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+                                {categoryStats.map((stat, index) => {
+                                    const colors = getColorClasses(stat.color)
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="group bg-white rounded-2xl sm:rounded-3xl border border-gray-100 hover:border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                                        >
+                                            <div className="p-5 sm:p-6 lg:p-8">
+                                                <div className="flex items-start justify-between mb-4 sm:mb-6">
+                                                    <div
+                                                        className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 ${colors.bg} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm`}
+                                                    >
+                                                        <FontAwesomeIcon icon={stat.icon} className="text-base sm:text-lg lg:text-xl text-white" />
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-1">
+                                                            {stat.value}
+                                                        </div>
+                                                        <div className={`w-6 h-0.5 sm:w-8 sm:h-1 ${colors.accent} rounded-full ml-auto`}></div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mb-4 sm:mb-6 lg:mb-8">
+                                                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">{stat.label}</h3>
+                                                    <p className="text-sm sm:text-base text-slate-500 leading-relaxed">{stat.description}</p>
+                                                </div>
+
+                                                <Link
+                                                    to={stat.link}
+                                                    className="group/btn w-full flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 rounded-xl sm:rounded-2xl font-semibold transition-all duration-200 border border-slate-100 hover:border-slate-200 text-sm sm:text-base"
+                                                >
+                                                    <span>Lihat Detail</span>
+                                                    <FontAwesomeIcon
+                                                        icon={faArrowRight}
+                                                        className="transition-transform duration-200 group-hover/btn:translate-x-1"
+                                                    />
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
 }
 
 export default Dashboard
