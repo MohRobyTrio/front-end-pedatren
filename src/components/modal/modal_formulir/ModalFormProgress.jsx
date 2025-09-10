@@ -82,7 +82,7 @@ export const ModalAddProgressAfektifFormulir = ({ isOpen, onClose, biodataId, re
             });
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/catatan-afektif`, {
+            const response = await fetch(`${API_BASE_URL}${biodataId}/catatan-afektif`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -465,7 +465,7 @@ export const ModalAddProgressKognitifFormulir = ({ isOpen, onClose, biodataId, r
             });
             console.log("Payload yang dikirim ke API:", JSON.stringify(formData, null, 2));
             const token = sessionStorage.getItem("token") || getCookie("token");
-            const response = await fetch(`${API_BASE_URL}formulir/${biodataId}/catatan-kognitif`, {
+            const response = await fetch(`${API_BASE_URL}${biodataId}/catatan-kognitif`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
