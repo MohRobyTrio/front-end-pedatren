@@ -12,6 +12,7 @@ const useFetchPresensiOrtu = () => {
     const [data, setData] = useState([]);
     const [dataToday, setDataToday] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtering, setFiltering] = useState(false);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(10);
     const [totalData, setTotalData] = useState(0);
@@ -36,85 +37,98 @@ const useFetchPresensiOrtu = () => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async (force = false) => {
-            let url = `${API_BASE_URL}view-ortu/presensi-today?santri_id=${activeChild?.id || idSantri}`;
-            // if (currentPage > 1) {
-            //     url += `&page=${currentPage}`;
-            // }
-            // // Handle search
-            // if (debouncedSearchTerm) {
-            //     url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
-            // }
+        let url = `${API_BASE_URL}view-ortu/presensi-today?santri_id=${activeChild?.id || idSantri}`;
+        // if (currentPage > 1) {
+        //     url += `&page=${currentPage}`;
+        // }
+        // // Handle search
+        // if (debouncedSearchTerm) {
+        //     url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
+        // }
 
-            // Skip duplicate requests
-            if (!force && lastRequest.current === url) {
-                console.log("Skip duplicate request");
+        // Skip duplicate requests
+        if (!force && lastRequest.current === url) {
+            console.log("Skip duplicate request");
+            return;
+        }
+        lastRequest.current = url;
+        console.log("Fetching data from:", url);
+
+        try {
+            setError(null);
+            setLoading(true);
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login-ortu");
                 return;
             }
-            lastRequest.current = url;
-            console.log("Fetching data from:", url);
 
-            try {
-                setLoading(true);
-                const response = await fetch(url, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login-ortu");
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log("hasil today ",result);
-                setDataToday(result || []);
-                setTotalData(result.total_data || 0);
-                setTotalPages(result.total_pages || 1);
-                setCurrentPage(result.current_page || 1);
-            } catch (err) {
-                setError(err.message);
-                setDataToday([]);
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
-        },
+
+            const result = await response.json();
+            console.log("hasil today ", result);
+            setDataToday(result || []);
+            setTotalData(result.total_data || 0);
+            setTotalPages(result.total_pages || 1);
+            setCurrentPage(result.current_page || 1);
+        } catch (err) {
+            setError(err.message);
+            setDataToday([]);
+        } finally {
+            setLoading(false);
+        }
+    },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentPage, limit, debouncedSearchTerm, activeChild]
     );
 
-    const fetchAllData = useCallback(async (force = false) => {
+    const fetchAllData = useCallback(
+        async (filters = {}, force = false, isFilter = false) => {
             let url = `${API_BASE_URL}view-ortu/presensi?santri_id=${activeChild?.id || idSantri}`;
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    url += `&${key}=${encodeURIComponent(filters[key])}`;
+                }
+            });
+
             // if (currentPage > 1) {
             //     url += `&page=${currentPage}`;
             // }
-            // // Handle search
+
             // if (debouncedSearchTerm) {
             //     url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
             // }
 
-            // Skip duplicate requests
             if (!force && lastRequest.current === url) {
                 console.log("Skip duplicate request");
                 return;
             }
             lastRequest.current = url;
-            console.log("Fetching data from:", url);
 
             try {
-                setLoading(true);
+                setError(null);
+                if (isFilter) {
+                    setFiltering(true);   // loading khusus filter
+                } else {
+                    setLoading(true);     // loading utama (skeleton)
+                }
+
                 const response = await fetch(url, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -134,12 +148,13 @@ const useFetchPresensiOrtu = () => {
                     return;
                 }
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                const result = await response.json();
+                console.log("hasil all data", result);
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || `HTTP ${response.status}`);
                 }
 
-                const result = await response.json();
-                console.log("hasil",result);
                 setData(result || []);
                 setTotalData(result.total_data || 0);
                 setTotalPages(result.total_pages || 1);
@@ -148,45 +163,31 @@ const useFetchPresensiOrtu = () => {
                 setError(err.message);
                 setData([]);
             } finally {
-                setLoading(false);
+                if (isFilter) {
+                    setFiltering(false);
+                } else {
+                    setLoading(false);
+                }
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentPage, limit, debouncedSearchTerm, activeChild]
     );
 
+
     // Auto fetch when dependencies change
     useEffect(() => {
         fetchData();
         fetchAllData();
         console.log(activeChild.id);
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeChild]);
 
     // Reset to page 1 when limit or search changes
     useEffect(() => {
         setCurrentPage(1);
     }, [limit, searchTerm]);
-
-    // Filter options (tidak digunakan)
-    // const filterOptions = useMemo(() => {
-    //     const options = {
-    //         alasan_izin: [],
-    //         status: [],
-    //         jenis_izin: [],
-    //     };
-
-    //     data.forEach((item) => {
-    //         Object.keys(options).forEach((key) => {
-    //             if (item[key] && !options[key].includes(item[key])) {
-    //                 options[key].push(item[key]);
-    //             }
-    //         });
-    //     });
-
-    //     return options;
-    // }, [data]);
 
     return {
         // Data states
@@ -209,9 +210,11 @@ const useFetchPresensiOrtu = () => {
 
         // Filter options
         // filterOptions,
+        filtering,
 
         // Fetch function
         fetchData,
+        fetchAllData
     };
 };
 

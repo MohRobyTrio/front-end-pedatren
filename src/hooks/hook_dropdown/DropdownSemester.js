@@ -13,7 +13,6 @@ const DropdownSemester = () => {
             const parsedData = JSON.parse(localData);
 
             setMenuSemester([
-                // { label: "Pilih Semester", value: "" },
                 ...parsedData.map((s) => ({
                     value: s.id,
                     label: s.semester.charAt(0).toUpperCase() + s.semester.slice(1)
@@ -40,7 +39,6 @@ const DropdownSemester = () => {
                 })
                 .catch((error) => {
                     console.error("Error fetching semester:", error);
-                    // setMenuSemester([{ label: "Pilih Semester", value: "" }]);
                 });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

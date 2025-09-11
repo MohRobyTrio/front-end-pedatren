@@ -1,130 +1,67 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Calendar, Clock, CheckCircle, XCircle, Filter, Users, BookMarked, Badge } from "lucide-react"
+import { Calendar, Clock, CheckCircle, XCircle, Filter, Users, BookMarked, RotateCcw, SlidersHorizontal, X } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchPresensiOrtu from "../../hooks/hooks_ortu/Presensi"
-import { data } from "react-router-dom"
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa"
+import DropdownSholat from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownSholat"
+import { toast } from "sonner"
 
 export default function PresensiPage() {
     // const [presensiData, setPresensiData] = useState(null)
     // const [presensiToday, setPresensiToday] = useState(null)
     const [activeTab, setActiveTab] = useState("today")
     const { activeChild } = useActiveChild()
+    const [showFilter, setShowFilter] = useState(false);
 
-    const { data: presensiData, dataToday: presensiToday, error, loading, fetchData, totalData } = useFetchPresensiOrtu()
+
+    const { data: presensiData, dataToday: presensiToday, error, loading, filtering, fetchAllData } = useFetchPresensiOrtu()
+    const { menuSholat, menuJadwalSholat } = DropdownSholat()
+    // const { jadwalSholat } = useFetchJadwalSholat()
+    const toggleFilter = () => setShowFilter((prev) => !prev);
+
+    // Mock data for dropdowns - replace with actual API calls
+
+    // const jadwalOptions = jadwalSholat.map((item) => ({
+    //     value: item.id,
+    //     label: `${item.sholat.nama_sholat} (${item.jam_mulai} s.d. ${item.jam_selesai})`,
+    // }))
+
+    const [filters, setFilters] = useState({
+        tanggal: "",
+        sholat_id: "",
+        jadwal_id: "",
+        metode: "",
+        status: "",
+        all: 0,
+    })
+
+    // const mockSholatOptions = [
+    //     { id: 1, nama: "Subuh" },
+    //     { id: 2, nama: "Dzuhur" },
+    //     { id: 3, nama: "Ashar" },
+    //     { id: 4, nama: "Maghrib" },
+    //     { id: 5, nama: "Isya" },
+    // ]
+
+    // const mockJadwalOptions = [
+    //     { id: 1, nama: "Jadwal Reguler" },
+    //     { id: 2, nama: "Jadwal Khusus" },
+    //     { id: 3, nama: "Jadwal Ramadhan" },
+    // ]
+
+
+    useEffect(() => {
+        fetchAllData(filters, true, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters])
 
     const Card = ({ children, className = "" }) => (
         <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
     )
 
     const CardContent = ({ children, className = "" }) => <div className={`px-6 py-4 ${className}`}>{children}</div>
-
-    // Mock API calls based on the provided endpoints
-    // const fetchPresensiData = async () => {
-    //     try {
-    //         setLoading(true)
-
-    //         // Simulate API call to /presensi
-    //         const presensiResponse = {
-    //             success: true,
-    //             filter: {
-    //                 santri_id: activeChild?.id?.toString() || "67",
-    //                 tanggal: null,
-    //                 sholat_id: null,
-    //                 jadwal_id: null,
-    //                 metode: null,
-    //                 status: "all",
-    //                 jenis_kelamin: null,
-    //                 all: false,
-    //             },
-    //             totals: {
-    //                 total_hadir: 25,
-    //                 total_tidak_hadir: 3,
-    //                 total_presensi_tercatat: 28,
-    //                 total_santri: 1,
-    //             },
-    //             data: [
-    //                 {
-    //                     id: 1,
-    //                     tanggal: "2025-01-15",
-    //                     sholat: "Subuh",
-    //                     status: "hadir",
-    //                     waktu_presensi: "05:30:00",
-    //                     metode: "manual",
-    //                 },
-    //                 {
-    //                     id: 2,
-    //                     tanggal: "2025-01-15",
-    //                     sholat: "Dzuhur",
-    //                     status: "tidak_hadir",
-    //                     waktu_presensi: null,
-    //                     metode: null,
-    //                 },
-    //                 {
-    //                     id: 3,
-    //                     tanggal: "2025-01-14",
-    //                     sholat: "Subuh",
-    //                     status: "hadir",
-    //                     waktu_presensi: "05:25:00",
-    //                     metode: "rfid",
-    //                 },
-    //             ],
-    //         }
-
-    //         // Simulate API call to /presensi-today
-    //         const presensiTodayResponse = {
-    //             success: true,
-    //             filter: {
-    //                 santri_id: activeChild?.id?.toString() || "67",
-    //                 tanggal: "2025-01-15",
-    //                 sholat_id: null,
-    //             },
-    //             data: [
-    //                 {
-    //                     id: 1,
-    //                     sholat: "Subuh",
-    //                     status: "hadir",
-    //                     waktu_presensi: "05:30:00",
-    //                     jadwal_waktu: "05:00:00",
-    //                     metode: "manual",
-    //                 },
-    //                 {
-    //                     id: 2,
-    //                     sholat: "Dzuhur",
-    //                     status: "tidak_hadir",
-    //                     waktu_presensi: null,
-    //                     jadwal_waktu: "12:00:00",
-    //                     metode: null,
-    //                 },
-    //                 {
-    //                     id: 3,
-    //                     sholat: "Ashar",
-    //                     status: "belum_dimulai",
-    //                     waktu_presensi: null,
-    //                     jadwal_waktu: "15:30:00",
-    //                     metode: null,
-    //                 },
-    //             ],
-    //         }
-
-    //         // Simulate network delay
-    //         await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    //         setPresensiData(presensiResponse)
-    //         setPresensiToday(presensiTodayResponse)
-    //     } catch (error) {
-    //         console.error("Error fetching presensi data:", error)
-    //     } finally {
-    //         setLoading(false)
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     fetchPresensiData()
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [activeChild])
 
     useEffect(() => {
         console.log("Presensi Today Data:", presensiToday);
@@ -297,6 +234,17 @@ export default function PresensiPage() {
         )
     }
 
+    const resetFilters = () => {
+        setFilters({
+            tanggal: "",
+            sholat_id: "",
+            jadwal_id: "",
+            metode: "",
+            status: "",
+            all: 0,
+        })
+    }
+
     const formatTanggal = (tanggal) => {
         return new Date(tanggal).toLocaleDateString("id-ID", {
             day: "numeric",
@@ -349,6 +297,20 @@ export default function PresensiPage() {
             render: (value) => <span className="text-sm text-gray-600 capitalize">{value || "-"}</span>,
         },
     ]
+
+    const Select = ({ value, onValueChange, children, className = "" }) => {
+        return (
+            <select
+                value={value}
+                onChange={(e) => onValueChange(e.target.value)}
+                className={`block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${className}`}
+            >
+                {children}
+            </select>
+        )
+    }
+
+    const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
     if (loading) {
         return (
@@ -502,13 +464,191 @@ export default function PresensiPage() {
 
                             {activeTab === "history" && presensiData && (
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold text-gray-900">Riwayat Presensi</h3>
-                                    {presensiData.data.length > 0 ? (
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold text-gray-900">
+                                            Riwayat Presensi
+                                        </h3>
+                                        <button
+                                            onClick={toggleFilter}
+                                            className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded-md transition-colors duration-200
+                                                ${showFilter
+                                                    ? "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+                                                    : "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
+                                                }`}
+                                        >
+                                            {showFilter ? (
+                                                <>
+                                                    <X className="w-3 h-3" />
+                                                    Tutup Filter
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <SlidersHorizontal className="w-3 h-3" />
+                                                    Filter
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+
+                                    {showFilter && (
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Filter className="h-4 w-4 text-gray-600" />
+                                                <span className="text-sm font-medium text-gray-700">Filter Data</span>
+
+                                                <button
+                                                    onClick={resetFilters}
+                                                    className="ml-auto flex items-center gap-1 px-3 py-1.5 text-xs rounded-md bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition-colors duration-200"
+                                                >
+                                                    <RotateCcw className="w-3 h-3" />
+                                                    Reset
+                                                </button>
+
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
+                                                    <input
+                                                        type="date"
+                                                        value={filters.tanggal}
+                                                        onChange={(e) => setFilters((prev) => ({ ...prev, tanggal: e.target.value }))}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Sholat</label>
+                                                    <Select
+                                                        value={filters.sholat_id}
+                                                        onValueChange={(value) => setFilters((prev) => ({ ...prev, sholat_id: value }))}
+                                                        className="text-sm"
+                                                    >
+                                                        <SelectItem value="">Semua Sholat</SelectItem>
+                                                        {menuSholat.map((sholat, i) => (
+                                                            <SelectItem key={i} value={sholat.value}>
+                                                                {sholat.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Jadwal</label>
+                                                    <Select
+                                                        value={filters.jadwal_id}
+                                                        onValueChange={(value) => setFilters((prev) => ({ ...prev, jadwal_id: value }))}
+                                                        className="text-sm"
+                                                    >
+                                                        <SelectItem value="">Semua Jadwal</SelectItem>
+                                                        {menuJadwalSholat.map((jadwal, i) => (
+                                                            <SelectItem key={i} value={jadwal.value}>
+                                                                {jadwal.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Metode</label>
+                                                    <Select
+                                                        value={filters.metode}
+                                                        onValueChange={(value) => setFilters((prev) => ({ ...prev, metode: value }))}
+                                                        className="text-sm"
+                                                    >
+                                                        <SelectItem value="">Semua Metode</SelectItem>
+
+                                                        <SelectItem value={"manual"}>
+                                                            Manual
+                                                        </SelectItem>
+                                                        <SelectItem value={"kartu"}>
+                                                            Kartu
+                                                        </SelectItem>
+
+                                                    </Select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                                                    <Select
+                                                        value={filters.status}
+                                                        onValueChange={(value) => {
+                                                            if (value === "tidak_hadir" && !filters.tanggal) {
+                                                                toast.warning("Silakan pilih tanggal terlebih dahulu sebelum filter Tidak Hadir.");
+                                                                return; // jangan set filter
+                                                            }
+
+                                                            setFilters((prev) => ({ ...prev, status: value }));
+                                                        }}
+                                                        className="text-sm"
+                                                    >
+                                                        <SelectItem value="">Semua Status</SelectItem>
+                                                        <SelectItem value="hadir">Hadir</SelectItem>
+                                                        <SelectItem value="tidak_hadir">Tidak Hadir</SelectItem>
+                                                    </Select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-medium text-gray-700 mb-1">Tampilkan Semua</label>
+                                                    <label className="flex items-center mt-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={filters.all === 1} // ✅ dianggap true kalau 1
+                                                            onChange={(e) =>
+                                                                setFilters((prev) => ({
+                                                                    ...prev,
+                                                                    all: e.target.checked ? 1 : 0, // ✅ simpan langsung 1 / 0
+                                                                }))
+                                                            }
+                                                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                        />
+                                                        <span className="ml-2 text-sm text-gray-700">Semua Data</span>
+                                                    </label>
+
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-4 text-xs text-gray-600">
+                                                {/* Menampilkan {filteredHistoryData.length} dari {mockPresensiData.data.length} data */}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {filtering ? (
+                                        <div className="text-center py-12">
+                                            <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
+                                            <p className="text-gray-500">Memuat data...</p>
+                                        </div>
+                                    ) : error ? (
+                                        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                                            <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-8 w-8 text-red-500"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                                Terjadi Kesalahan
+                                            </h3>
+                                            <p className="text-gray-600 text-sm">
+                                                {error || "Gagal mengambil data perizinan"}
+                                            </p>
+                                            <button
+                                                onClick={() => fetchAllData(filters, true, true)}
+                                                className="mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                                            >
+                                                Coba Lagi
+                                            </button>
+                                        </div>
+                                    ) : presensiData.data.length > 0 ? (
                                         <div className="space-y-3">
                                             <DataTable
                                                 data={presensiData.data}
                                                 columns={presensiColumns}
-                                                searchPlaceholder={`Cari ${activeTab === "tahfidz" ? "surat, jenis setoran" : "kitab, bait"}, atau catatan...`}
                                                 pageSize={10}
                                             />
                                             {/* {presensiData.data.map((item) => (

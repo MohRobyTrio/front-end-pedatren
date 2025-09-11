@@ -9,7 +9,7 @@ import { FaCalendarAlt, FaCheckCircle, FaChevronDown, FaChevronUp, FaClipboardLi
 export default function PerizinanPage() {
     const { activeChild: selectedChild } = useActiveChild()
 
-    const { data, error, fetchData, loading, totalData } = useFetchPerizinanOrtu({});
+    const { data, error, fetchData, loading } = useFetchPerizinanOrtu({});
 
     if (loading) {
         return (
