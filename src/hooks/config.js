@@ -102,6 +102,7 @@ export const rolesWithAccess = {
   tagihan: ['admin', 'superadmin'],
   potongan: ['admin', 'superadmin'],
   potongan_khusus: ['admin', 'superadmin'],
+  proses_tagihan: ['admin', 'superadmin'],
   
   // Akademik
   tahun_ajaran: ['admin', 'superadmin'],

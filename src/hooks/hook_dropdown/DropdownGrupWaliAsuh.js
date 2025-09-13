@@ -19,7 +19,7 @@ const useDropdownGrupWaliAsuh = () => {
                 sessionStorage.removeItem("menuGrup");
             }
         } else {
-            fetch(`${API_BASE_URL}dropdown/grup?tanpa_wali_asuh`, {
+            fetch(`${API_BASE_URL}dropdown/grup?filter=tanpa_wali_asuh`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

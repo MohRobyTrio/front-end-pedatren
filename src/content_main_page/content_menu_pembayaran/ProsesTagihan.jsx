@@ -4,42 +4,15 @@ import { useState } from "react";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
-import useFetchTagihan from "../../hooks/hooks_menu_pembayaran/tagihan";
+import useFetchProsesTagihan from "../../hooks/hooks_menu_pembayaran/prosesTagihan";
 import SearchBar from "../../components/SearchBar";
-import Pagination from "../../components/Pagination";
-import { ModalAddOrEditTagihan } from "../../components/modal/ModalFormTagihan";
+import { ModalAddOrEditProsesTagihan } from "../../components/modal/ModalFormProsesTagihan";
 
-const Tagihan = () => {
-    const [filters, setFilters] = useState({
-        status: "",
-        tipe: "",
-    })
+const ProsesTagihan = () => {
     const [openModal, setOpenModal] = useState(false);
-    const [tagihanData, setTagihanData] = useState("");
+    const [prosesTagihanData, setProsesTagihanData] = useState("");
     const [feature, setFeature] = useState("");
-    // const [showFilters, setShowFilters] = useState(false)
-    const { tagihan, loadingTagihan, error, fetchTagihan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchTagihan(filters);
-
-    // const filter = {
-    //     status: [
-    //         { label: "Semua Status", value: "" },
-    //         { label: "Aktif", value: "true" },
-    //         { label: "Nonaktif", value: "false" },
-    //     ],
-    //     tipe: [
-    //         { label: "Semua Tipe", value: "" },
-    //         { label: "Bulanan", value: "bulanan" },
-    //         { label: "Semester", value: "semester" },
-    //         { label: "Tahunan", value: "tahunan" },
-    //         { label: "Sekali Bayar", value: "sekali_bayar" },
-    //     ],
-    // }
-
-    const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page)
-        }
-    }
+    const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchProsesTagihan();
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('id-ID', {
@@ -59,24 +32,24 @@ const Tagihan = () => {
         });
     };
 
-    if (!hasAccess("tagihan")) {
+    if (!hasAccess("proses_prosesTagihan")) {
         return <Navigate to="/forbidden" replace />;
     }
 
     return (
         <div className="flex-1 p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Data Tagihan</h1>
+                <h1 className="text-2xl font-bold">Data Proses Tagihan</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
                         setFeature(1);
-                        setTagihanData(null);
+                        setProsesTagihanData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
                 </div>
             </div>
 
-            <ModalAddOrEditTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={tagihanData} refetchData={fetchTagihan} feature={feature} />
+            <ModalAddOrEditProsesTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -91,33 +64,22 @@ const Tagihan = () => {
                     </div>
                 ) : (
                     <>
-                        {/* <div
-                            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 w-full ${showFilters ? "mb-4" : ""}`}
-                        >
-                            <Filters
-                                showFilters={showFilters}
-                                filterOptions={filter}
-                                onChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-                                selectedFilters={filters}
-                            />
-                        </div> */}
                         <SearchBar
                             searchTerm={searchTerm}
                             setSearchTerm={setSearchTerm}
                             totalData={totalData}
-                            // toggleFilters={() => setShowFilters(!showFilters)}
                             showLimit={false}
                             showSearch={false}
                             showFilterButtons={false}
-                            onRefresh={() => fetchTagihan(true)}
-                            loadingRefresh={loadingTagihan}
+                            onRefresh={() => fetchProsesTagihan(true)}
+                            loadingRefresh={loadingProsesTagihan}
                         />
                         <DoubleScrollbarTable>
                             <table className="min-w-full text-sm text-left">
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-10">#</th>
-                                        <th className="px-3 py-2 border-b">Nama Tagihan</th>
+                                        <th className="px-3 py-2 border-b">Nama ProsesTagihan</th>
                                         <th className="px-3 py-2 border-b">Tipe</th>
                                         <th className="px-3 py-2 border-b">Nominal</th>
                                         <th className="px-3 py-2 border-b">Jatuh Tempo</th>
@@ -126,21 +88,21 @@ const Tagihan = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
-                                    {loadingTagihan ? (
+                                    {loadingProsesTagihan ? (
                                         <tr>
                                             <td colSpan="7" className="text-center p-4">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
-                                    ) : tagihan.length === 0 ? (
+                                    ) : prosesTagihan.length === 0 ? (
                                         <tr>
                                             <td colSpan="7" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
-                                        tagihan.map((item, index) => (
+                                        prosesTagihan.map((item, index) => (
                                             <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_prosesTagihan}</td>
                                                 <td className="px-3 py-2 border-b">
                                                     {item.tipe === 'bulanan' ? 'Bulanan' : 
                                                      item.tipe === 'semester' ? 'Semester' :
@@ -161,7 +123,7 @@ const Tagihan = () => {
                                                 <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                     <button
                                                         onClick={() => {
-                                                            setTagihanData(item);
+                                                            setProsesTagihanData(item);
                                                             setFeature(2);
                                                             setOpenModal(true);
                                                         }}
@@ -182,9 +144,6 @@ const Tagihan = () => {
                                 </tbody>
                             </table>
                         </DoubleScrollbarTable>
-                        {totalPages > 1 && (
-                            <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
-                        )}
                     </>
                 )}
             </div>
@@ -192,4 +151,4 @@ const Tagihan = () => {
     );
 };
 
-export default Tagihan;
+export default ProsesTagihan;
