@@ -86,7 +86,7 @@ import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
 import PotonganKhusus from "../content_main_page/content_menu_pembayaran/PotonganKhusus";
-import ProsesTagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
+import ProsesTagihan from "../content_main_page/content_menu_pembayaran/ProsesTagihan";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },

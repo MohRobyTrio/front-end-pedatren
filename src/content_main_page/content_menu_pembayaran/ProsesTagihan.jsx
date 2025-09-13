@@ -1,18 +1,17 @@
 import { OrbitProgress } from "react-loading-indicators";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
-import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
-import useFetchProsesTagihan from "../../hooks/hooks_menu_pembayaran/prosesTagihan";
 import SearchBar from "../../components/SearchBar";
-import { ModalAddOrEditProsesTagihan } from "../../components/modal/ModalFormProsesTagihan";
+import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
+import useFetchProsesTagihan from "../../hooks/hooks_menu_pembayaran/ProsesTagihan";
 
 const ProsesTagihan = () => {
     const [openModal, setOpenModal] = useState(false);
     const [prosesTagihanData, setProsesTagihanData] = useState("");
     const [feature, setFeature] = useState("");
-    const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchProsesTagihan();
+    const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, handleDelete, searchTerm, setSearchTerm, currentPage, setCurrentPage } = useFetchProsesTagihan();
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('id-ID', {
@@ -32,7 +31,7 @@ const ProsesTagihan = () => {
         });
     };
 
-    if (!hasAccess("proses_prosesTagihan")) {
+    if (!hasAccess("proses_tagihan")) {
         return <Navigate to="/forbidden" replace />;
     }
 
@@ -49,7 +48,7 @@ const ProsesTagihan = () => {
                 </div>
             </div>
 
-            <ModalAddOrEditProsesTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} />
+            {/* <ModalAddOrEditProsesTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} /> */}
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -67,7 +66,7 @@ const ProsesTagihan = () => {
                         <SearchBar
                             searchTerm={searchTerm}
                             setSearchTerm={setSearchTerm}
-                            totalData={totalData}
+                            totalData={0}
                             showLimit={false}
                             showSearch={false}
                             showFilterButtons={false}
@@ -79,10 +78,11 @@ const ProsesTagihan = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-10">#</th>
-                                        <th className="px-3 py-2 border-b">Nama ProsesTagihan</th>
+                                        <th className="px-3 py-2 border-b">Nama Tagihan</th>
                                         <th className="px-3 py-2 border-b">Tipe</th>
                                         <th className="px-3 py-2 border-b">Nominal</th>
                                         <th className="px-3 py-2 border-b">Jatuh Tempo</th>
+                                        <th className="px-3 py-2 border-b">Jumlah Tagihan Santri</th>
                                         <th className="px-3 py-2 border-b">Status</th>
                                         <th className="px-3 py-2 border-b text-center">Aksi</th>
                                     </tr>
@@ -102,7 +102,7 @@ const ProsesTagihan = () => {
                                         prosesTagihan.map((item, index) => (
                                             <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama_prosesTagihan}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
                                                 <td className="px-3 py-2 border-b">
                                                     {item.tipe === 'bulanan' ? 'Bulanan' : 
                                                      item.tipe === 'semester' ? 'Semester' :
@@ -110,6 +110,7 @@ const ProsesTagihan = () => {
                                                 </td>
                                                 <td className="px-3 py-2 border-b">{formatCurrency(item.nominal)}</td>
                                                 <td className="px-3 py-2 border-b">{formatDate(item.jatuh_tempo)}</td>
+                                                <td className="px-3 py-2 border-b text-center">{item.tagihan_santri_count}</td>
                                                 <td className="px-3 py-2 border-b w-30">
                                                     <span
                                                         className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
