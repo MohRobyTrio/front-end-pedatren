@@ -10,6 +10,7 @@ import Pagination from "../../components/Pagination";
 import { ModalAddOrEditTagihan } from "../../components/modal/ModalFormTagihan";
 
 const Tagihan = () => {
+    // eslint-disable-next-line no-unused-vars
     const [filters, setFilters] = useState({
         status: "",
         tipe: "",

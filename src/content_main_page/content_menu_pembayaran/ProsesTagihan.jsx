@@ -1,17 +1,18 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import useFetchProsesTagihan from "../../hooks/hooks_menu_pembayaran/ProsesTagihan";
+import { ModalAddOrEditTagihanSantri } from "../../components/modal/ModalFormProsesTagihan";
 
 const ProsesTagihan = () => {
     const [openModal, setOpenModal] = useState(false);
     const [prosesTagihanData, setProsesTagihanData] = useState("");
     const [feature, setFeature] = useState("");
-    const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, handleDelete, searchTerm, setSearchTerm, currentPage, setCurrentPage } = useFetchProsesTagihan();
+    const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, searchTerm, setSearchTerm } = useFetchProsesTagihan();
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('id-ID', {
@@ -40,15 +41,27 @@ const ProsesTagihan = () => {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Data Proses Tagihan</h1>
                 <div className="flex items-center space-x-2">
+                    {/* <button
+                        aria-label="refresh"
+                        className={`p-3 bg-blue-500 text-white rounded flex items-center justify-center cursor-pointer ${loadingProsesTagihan
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-blue-700"
+                            }`}
+                        onClick={() => fetchProsesTagihan(true)}
+                        disabled={loadingProsesTagihan}
+                    >
+                        <FaSync className={`w-4 h-4 ${loadingProsesTagihan ? "animate-spin" : ""}`} />
+                    </button> */}
                     <button onClick={() => {
                         setFeature(1);
                         setProsesTagihanData(null);
                         setOpenModal(true);
                     }} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2"><FaPlus />Tambah</button>
+
                 </div>
             </div>
 
-            {/* <ModalAddOrEditProsesTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} /> */}
+            <ModalAddOrEditTagihanSantri isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -66,7 +79,7 @@ const ProsesTagihan = () => {
                         <SearchBar
                             searchTerm={searchTerm}
                             setSearchTerm={setSearchTerm}
-                            totalData={0}
+                            totalData={prosesTagihan.length || 0}
                             showLimit={false}
                             showSearch={false}
                             showFilterButtons={false}
@@ -82,9 +95,9 @@ const ProsesTagihan = () => {
                                         <th className="px-3 py-2 border-b">Tipe</th>
                                         <th className="px-3 py-2 border-b">Nominal</th>
                                         <th className="px-3 py-2 border-b">Jatuh Tempo</th>
-                                        <th className="px-3 py-2 border-b">Jumlah Tagihan Santri</th>
+                                        <th className="px-3 py-2 border-b text-center">Jumlah Tagihan Santri</th>
                                         <th className="px-3 py-2 border-b">Status</th>
-                                        <th className="px-3 py-2 border-b text-center">Aksi</th>
+                                        {/* <th className="px-3 py-2 border-b text-center">Aksi</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-800">
@@ -104,9 +117,9 @@ const ProsesTagihan = () => {
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
                                                 <td className="px-3 py-2 border-b">
-                                                    {item.tipe === 'bulanan' ? 'Bulanan' : 
-                                                     item.tipe === 'semester' ? 'Semester' :
-                                                     item.tipe === 'tahunan' ? 'Tahunan' : 'Sekali Bayar'}
+                                                    {item.tipe === 'bulanan' ? 'Bulanan' :
+                                                        item.tipe === 'semester' ? 'Semester' :
+                                                            item.tipe === 'tahunan' ? 'Tahunan' : 'Sekali Bayar'}
                                                 </td>
                                                 <td className="px-3 py-2 border-b">{formatCurrency(item.nominal)}</td>
                                                 <td className="px-3 py-2 border-b">{formatDate(item.jatuh_tempo)}</td>
@@ -121,7 +134,7 @@ const ProsesTagihan = () => {
                                                         {item.status ? "Aktif" : "Nonaktif"}
                                                     </span>
                                                 </td>
-                                                <td className="px-3 py-2 border-b text-center space-x-2 w-20">
+                                                {/* <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                     <button
                                                         onClick={() => {
                                                             setProsesTagihanData(item);
@@ -132,13 +145,7 @@ const ProsesTagihan = () => {
                                                     >
                                                         <FaEdit />
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                    >
-                                                        <FaTrash />
-                                                    </button>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         ))
                                     )}

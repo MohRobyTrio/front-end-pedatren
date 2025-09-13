@@ -52,7 +52,6 @@ import { DashboardPage } from './content_main_page/content_ortu/Home';
 import { AkademikPage } from './content_main_page/content_ortu/Akademik';
 import { KeuanganPage } from './content_main_page/content_ortu/Keuangan';
 import { ProfilPage } from './content_main_page/content_ortu/Profil';
-import BatasPengeluaranPage from './content_main_page/content_ortu/BatasPengeluaran';
 import PerizinanPage from './content_main_page/content_ortu/Perizinan';
 import PelanggaranPage from './content_main_page/content_ortu/Pelanggaran';
 import { HafalanPage } from './content_main_page/content_ortu/Hafalan';

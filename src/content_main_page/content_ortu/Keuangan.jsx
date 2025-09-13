@@ -16,14 +16,12 @@ import {
 } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
-import { toast } from "sonner"
 import { FaClipboardList } from "react-icons/fa"
 import DropdownOutlet from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownOutlet"
 import DropdownKategori from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownKategori"
 
 export const KeuanganPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
-    const [transactionFilter, setTransactionFilter] = useState("semua")
     const [transferFilter, setTransferFilter] = useState("semua")
     const [showFilter, setShowFilter] = useState(false);
     // eslint-disable-next-line no-unused-vars
@@ -50,9 +48,8 @@ export const KeuanganPage = () => {
     const toggleFilter = () => setShowFilter((prev) => !prev);
 
     useEffect(() => {
-        console.log(filters);
         fetchData(filters, true, true);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters])
 
     // Mock data - replace with actual API calls
@@ -318,6 +315,32 @@ export const KeuanganPage = () => {
                         <p className="text-gray-600 text-sm">
                             Mohon tunggu sebentar, data sedang diproses.
                         </p>
+                    </div>
+                ) : error ? (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-8 w-8 text-red-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Terjadi Kesalahan
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            {error || "Gagal mengambil data perizinan"}
+                        </p>
+                        <button
+                            onClick={() => fetchData(true)}
+                            className="mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                            Coba Lagi
+                        </button>
                     </div>
                 ) : data.length == 0 ? (
                     <div className="p-8 text-center">
