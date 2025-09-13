@@ -11,6 +11,7 @@ const useFetchTransaksiOrtu = () => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtering, setFiltering] = useState(false);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(10);
     const [totalData, setTotalData] = useState(0);
@@ -28,68 +29,82 @@ const useFetchTransaksiOrtu = () => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
         }, 400);
-
-        return () => {
-            clearTimeout(handler);
-        };
+        return () => clearTimeout(handler);
     }, [searchTerm]);
 
-    const fetchData = useCallback(async (force = false) => {
-            let url = `${API_BASE_URL}view-ortu/transaksi?santri_id=${activeChild?.id || idSantri}`;
-            // if (currentPage > 1) {
-            //     url += `&page=${currentPage}`;
-            // }
-            // // Handle search
-            // if (debouncedSearchTerm) {
-            //     url += `&nama=${encodeURIComponent(debouncedSearchTerm)}`;
-            // }
+    const fetchData = useCallback(async (filters = {}, force = false, isFilter = false) => {
+        console.log("fetchData called with filters:", filters, { force, isFilter });
 
-            // Skip duplicate requests
-            if (!force && lastRequest.current === url) {
-                console.log("Skip duplicate request");
+        let url = `${API_BASE_URL}view-ortu/transaksi?santri_id=${activeChild?.id || idSantri}`;
+        // if (currentPage > 1) {
+        //     url += `&page=${currentPage}`;
+        // }
+        // // Handle search
+        Object.keys(filters).forEach((key) => {
+            if (filters[key]) {
+                url += `&${key}=${encodeURIComponent(filters[key])}`;
+            }
+        });
+
+        if (debouncedSearchTerm) {
+            url += `&q=${encodeURIComponent(debouncedSearchTerm)}`;
+        }
+
+        // Skip duplicate requests
+        if (!force && lastRequest.current === url) {
+            console.log("Skip duplicate request");
+            return;
+        }
+        lastRequest.current = url;
+        console.log("Fetching data from:", url);
+
+        try {
+            setError(null);
+            if (isFilter || debouncedSearchTerm) {
+                setFiltering(true);   // loading khusus filter
+            } else {
+                setLoading(true);     // loading utama (skeleton)
+            }
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status == 401 && !window.sessionExpiredShown) {
+                window.sessionExpiredShown = true;
+                await Swal.fire({
+                    title: "Sesi Berakhir",
+                    text: "Sesi anda telah berakhir, silakan login kembali.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                clearAuthData();
+                navigate("/login-ortu");
                 return;
             }
-            lastRequest.current = url;
-            console.log("Fetching data from:", url);
 
-            try {
-                setLoading(true);
-                const response = await fetch(url, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
 
-                if (response.status == 401 && !window.sessionExpiredShown) {
-                    window.sessionExpiredShown = true;
-                    await Swal.fire({
-                        title: "Sesi Berakhir",
-                        text: "Sesi anda telah berakhir, silakan login kembali.",
-                        icon: "warning",
-                        confirmButtonText: "OK",
-                    });
-                    clearAuthData();
-                    navigate("/login-ortu");
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log("hasil",result);
-                setData(result || []);
-                setTotalData(result.total_data || 0);
-                setTotalPages(result.total_pages || 1);
-                setCurrentPage(result.current_page || 1);
-            } catch (err) {
-                setError(err.message);
-                setData([]);
-            } finally {
+            const result = await response.json();
+            console.log("hasil", result);
+            setData(result || []);
+            setTotalData(result.total_data || 0);
+            setTotalPages(result.total_pages || 1);
+            setCurrentPage(result.current_page || 1);
+        } catch (err) {
+            setError(err.message);
+            setData([]);
+        } finally {
+            if (isFilter || debouncedSearchTerm) {
+                setFiltering(false);
+            } else {
                 setLoading(false);
             }
-        },
+        }
+    },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentPage, limit, debouncedSearchTerm, activeChild]
     );
@@ -97,40 +112,19 @@ const useFetchTransaksiOrtu = () => {
     // Auto fetch when dependencies change
     useEffect(() => {
         fetchData();
-        console.log(activeChild.id);
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeChild]);
+    }, [activeChild, fetchData]);
 
     // Reset to page 1 when limit or search changes
     useEffect(() => {
         setCurrentPage(1);
     }, [limit, searchTerm]);
 
-    // Filter options (tidak digunakan)
-    // const filterOptions = useMemo(() => {
-    //     const options = {
-    //         alasan_izin: [],
-    //         status: [],
-    //         jenis_izin: [],
-    //     };
-
-    //     data.forEach((item) => {
-    //         Object.keys(options).forEach((key) => {
-    //             if (item[key] && !options[key].includes(item[key])) {
-    //                 options[key].push(item[key]);
-    //             }
-    //         });
-    //     });
-
-    //     return options;
-    // }, [data]);
-
     return {
         // Data states
         data,
         loading,
         error,
+        filtering,
 
         // Pagination controls
         limit,

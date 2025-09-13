@@ -13,7 +13,7 @@ import {
     ChevronDown,
     Calendar,
     ChevronLeft,
-    Receipt
+    ReceiptText
 } from "lucide-react";
 import logoUser from "../../assets/user_no_bg.png"
 import { useActiveChild } from "../../components/ortu/useActiveChild";
@@ -27,8 +27,8 @@ const navigation = [
     { name: "Perizinan", href: "/wali/perizinan", icon: FileText },
     { name: "Pelanggaran", href: "/wali/pelanggaran", icon: AlertTriangle },
     { name: "Akademik", href: "/wali/akademik", icon: GraduationCap },
-    { name: "Keuangan", href: "/wali/keuangan", icon: Wallet },
-    { name: "Tagihan", href: "/wali/tagihan", icon: Receipt },
+    { name: "Transaksi", href: "/wali/transaksi", icon: Wallet },
+    { name: "Tagihan", href: "/wali/tagihan", icon: ReceiptText },
     { name: "Batas Pengeluaran", href: "/wali/batas-pengeluaran", icon: Settings },
     { name: "Profil Santri", href: "/wali/profil", icon: User },
 ]

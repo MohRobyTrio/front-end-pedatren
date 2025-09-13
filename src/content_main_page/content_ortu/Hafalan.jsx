@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BookOpen, Award, Calendar, BookMarked, CheckCircle, Clock } from "lucide-react"
 import { FaChartLine, FaSort, FaSortDown, FaSortUp } from "react-icons/fa"
 import useFetchTahfidzOrtu from "../../hooks/hooks_ortu/Tahfidz"
 import useFetchNadhomanOrtu from "../../hooks/hooks_ortu/Nadhoman"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
+import DropdownTahunAjaran from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownTahunAjaran"
 
 // const mockNadhomanData = {
 //     nadhoman: [
@@ -177,15 +178,41 @@ import { useActiveChild } from "../../components/ortu/useActiveChild"
 //     },
 // }
 
+
 export const HafalanPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
     const [activeTab, setActiveTab] = useState("tahfidz")
-    const [statusFilter, setStatusFilter] = useState("semua")
-    const [dateRange, setDateRange] = useState({ start: "", end: "" })
+    // const [statusFilter, setStatusFilter] = useState("semua")
+    const [selectedAcademicYear, setSelectedAcademicYear] = useState("")
+    // const [dateRange, setDateRange] = useState({ start: "", end: "" })
 
-    const { data, loading, error, fetchData, totalData } = useFetchTahfidzOrtu({})
-    const { data: dataNadhoman, loading: loadingNadhoman, error: errorNadhoman, fetchData: fetchDataNadhoman, totalData: totalDataNadhoman } = useFetchNadhomanOrtu({})
+    const { menuTahunAjaran } = DropdownTahunAjaran()
+    const { data, loading, filtering, error, fetchData } = useFetchTahfidzOrtu()
+    const { data: dataNadhoman, loading: loadingNadhoman, error: errorNadhoman, fetchData: fetchDataNadhoman } = useFetchNadhomanOrtu()
 
+    useEffect(() => {
+        if (menuTahunAjaran && menuTahunAjaran.length > 0) {
+            const aktif = menuTahunAjaran.find((t) => t.status === true);
+            if (aktif) {
+                setSelectedAcademicYear(aktif.value);
+            } else {
+                // fallback kalau tidak ada yang status true → pakai yang pertama
+                setSelectedAcademicYear(menuTahunAjaran[0].value);
+            }
+        }
+    }, [menuTahunAjaran]);
+
+    useEffect(() => {
+        console.log(selectedAcademicYear);
+    }, [selectedAcademicYear]);
+
+    useEffect(() => {
+        if (selectedChild && selectedAcademicYear) {
+            fetchData({ tahun_ajaran_id: selectedAcademicYear }, true, true);
+            fetchDataNadhoman({ tahun_ajaran_id: selectedAcademicYear }, true, true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedAcademicYear, selectedChild]);
 
     const Badge = ({ children, variant = "default" }) => {
         const variants = {
@@ -245,15 +272,16 @@ export const HafalanPage = () => {
 
     const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
-    const DataTable = ({ data, columns, searchPlaceholder }) => {
-        const [searchTerm, setSearchTerm] = useState("")
+    const DataTable = ({ data, columns }) => {
+        // const [searchTerm, setSearchTerm] = useState("")
         const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" })
         const [currentPage, setCurrentPage] = useState(1)
         const pageSize = 10
 
-        const filteredData = data.filter((item) =>
-            Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())),
-        )
+        // const filteredData = data.filter((item) =>
+        //     Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())),
+        // )
+        const filteredData = data
 
         const sortedData = [...filteredData].sort((a, b) => {
             if (!sortConfig.key) return 0
@@ -532,12 +560,13 @@ export const HafalanPage = () => {
     const currentData = activeTab === "tahfidz" ? data?.tahfidz || [] : dataNadhoman?.nadhoman || []
 
     // Filter data based on status and date range
-    const filteredData = currentData.filter((item) => {
-        const statusMatch = statusFilter === "semua" || item.status === statusFilter
-        const dateMatch =
-            (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
-        return statusMatch && dateMatch
-    })
+    // const filteredData = currentData.filter((item) => {
+    //     const statusMatch = statusFilter === "semua" || item.status === statusFilter
+    //     const dateMatch =
+    //         (!dateRange.start || item.tanggal >= dateRange.start) && (!dateRange.end || item.tanggal <= dateRange.end)
+    //     return statusMatch && dateMatch
+    // })
+    const filteredData = currentData
 
     const getNadhomanStats = () => {
         if (!dataNadhoman?.nadhoman || !dataNadhoman?.rekap_nadhoman) {
@@ -603,83 +632,164 @@ export const HafalanPage = () => {
                     <p className="text-gray-600 mt-1">Progress hafalan tahfidz dan nadhoman {selectedChild?.nama || "santri"}</p>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <CardHeader className="pb-4">
-                        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-                            <Button
-                                variant={activeTab === "tahfidz" ? "default" : "ghost"}
-                                onClick={() => setActiveTab("tahfidz")}
-                                className="flex-1 rounded-md"
-                            >
-                                <BookOpen className="h-4 w-4 mr-2" />
-                                Tahfidz
-                            </Button>
-                            <Button
-                                variant={activeTab === "nadhoman" ? "default" : "ghost"}
-                                onClick={() => setActiveTab("nadhoman")}
-                                className="flex-1 rounded-md"
-                            >
-                                <Award className="h-4 w-4 mr-2" />
-                                Nadhoman
-                            </Button>
+                <Card>
+                    <CardContent className="py-4">
+                        <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+                            <label className="text-sm font-medium text-gray-700 flex-shrink-0">Filter Tahun Ajaran:</label>
+                            <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3 flex-1">
+                                <Select
+                                    value={selectedAcademicYear}
+                                    onValueChange={setSelectedAcademicYear}
+                                    className="w-full sm:w-48 text-base py-3 sm:py-2"
+                                >
+                                    {menuTahunAjaran.map((year) => (
+                                        <SelectItem key={year.value} value={year.value}>
+                                            {year.label}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                                <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
+                                    Data akan dimuat ulang sesuai tahun ajaran yang dipilih
+                                </div>
+                            </div>
                         </div>
-                    </CardHeader>
+                    </CardContent>
+                </Card>
 
-                    <div className="p-6 space-y-6">
-                        {activeTab === "tahfidz" && (
-                            // <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                                    <FaChartLine className="mr-2 text-green-600" />
-                                    Progress Hafalan {activeTab === "tahfidz" ? "Tahfidz" : "Nadhoman"}
-                                </h2>
-                                <div className="space-y-6">
-                                    {/* Progress Bar */}
-                                    <div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm font-medium text-gray-700">
-                                                {activeTab === "tahfidz" ? "Persentase Khatam" : "Rata-rata Progress"}
-                                            </span>
-                                            <span className={`text-sm font-bold ${getProgressTextColor(percentage)}`}>
-                                                {percentage.toFixed(2)}%
-                                            </span>
-                                        </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-3">
-                                            <div
-                                                className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentage)}`}
-                                                style={{ width: `${percentage}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
+                {filtering ? (
+                    <div className="animate-pulse space-y-6">
+                        <div className="h-96 bg-gray-200 rounded-lg"></div>
+                    </div>
+                ) : activeTab === "tahfidz" && error ? (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-8 w-8 text-red-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Terjadi Kesalahan
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            {error || "Gagal mengambil data"}
+                        </p>
+                        <button
+                            onClick={() => fetchData({}, true, true)}
+                            className="mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                            Coba Lagi
+                        </button>
+                    </div>
+                ) : activeTab === "nadhoman" && errorNadhoman ? (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-8 w-8 text-red-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Terjadi Kesalahan
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            {errorNadhoman || "Gagal mengambil data"}
+                        </p>
+                        <button
+                            onClick={() => fetchDataNadhoman({}, true, true)}
+                            className="mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                            Coba Lagi
+                        </button>
+                    </div>
+                ) : (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <CardHeader className="pb-4">
+                            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                                <Button
+                                    variant={activeTab === "tahfidz" ? "default" : "ghost"}
+                                    onClick={() => setActiveTab("tahfidz")}
+                                    className="flex-1 rounded-md"
+                                >
+                                    <BookOpen className="h-4 w-4 mr-2" />
+                                    Tahfidz
+                                </Button>
+                                <Button
+                                    variant={activeTab === "nadhoman" ? "default" : "ghost"}
+                                    onClick={() => setActiveTab("nadhoman")}
+                                    className="flex-1 rounded-md"
+                                >
+                                    <Award className="h-4 w-4 mr-2" />
+                                    Nadhoman
+                                </Button>
+                            </div>
+                        </CardHeader>
 
-                                    {/* Statistics Grid */}
-
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="bg-green-50 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-green-600">{data?.rekap_tahfidz?.total_surat || 0}</div>
-                                            <div className="text-sm text-gray-600">Total Surat</div>
-                                        </div>
-
-                                        <div className="bg-blue-50 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-blue-600">{data?.rekap_tahfidz?.jumlah_setoran || 0}</div>
-                                            <div className="text-sm text-gray-600">Jumlah Setoran</div>
-                                        </div>
-
-                                        <div className="bg-purple-50 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-purple-600">
-                                                {data?.rekap_tahfidz?.surat_tersisa || 0}
+                        <div className="p-6 space-y-6">
+                            {activeTab === "tahfidz" && (
+                                // <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                                <div>
+                                    <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                                        <FaChartLine className="mr-2 text-green-600" />
+                                        Progress Hafalan {activeTab === "tahfidz" ? "Tahfidz" : "Nadhoman"}
+                                    </h2>
+                                    <div className="space-y-6">
+                                        {/* Progress Bar */}
+                                        <div>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-sm font-medium text-gray-700">
+                                                    {activeTab === "tahfidz" ? "Persentase Khatam" : "Rata-rata Progress"}
+                                                </span>
+                                                <span className={`text-sm font-bold ${getProgressTextColor(percentage)}`}>
+                                                    {percentage.toFixed(2)}%
+                                                </span>
                                             </div>
-                                            <div className="text-sm text-gray-600">Surat Tersisa</div>
+                                            <div className="w-full bg-gray-200 rounded-full h-3">
+                                                <div
+                                                    className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentage)}`}
+                                                    style={{ width: `${percentage}%` }}
+                                                ></div>
+                                            </div>
                                         </div>
 
-                                        <div className="bg-yellow-50 p-4 rounded-lg text-center">
-                                            <div className="text-2xl font-bold text-yellow-600">
-                                                {data?.rekap_tahfidz?.sisa_persentase || 0}%
+                                        {/* Statistics Grid */}
+
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div className="bg-green-50 p-4 rounded-lg text-center">
+                                                <div className="text-2xl font-bold text-green-600">{data?.rekap_tahfidz?.total_surat || 0}</div>
+                                                <div className="text-sm text-gray-600">Total Surat</div>
                                             </div>
-                                            <div className="text-sm text-gray-600">Tersisa</div>
+
+                                            <div className="bg-blue-50 p-4 rounded-lg text-center">
+                                                <div className="text-2xl font-bold text-blue-600">{data?.rekap_tahfidz?.jumlah_setoran || 0}</div>
+                                                <div className="text-sm text-gray-600">Jumlah Setoran</div>
+                                            </div>
+
+                                            <div className="bg-purple-50 p-4 rounded-lg text-center">
+                                                <div className="text-2xl font-bold text-purple-600">
+                                                    {data?.rekap_tahfidz?.surat_tersisa || 0}
+                                                </div>
+                                                <div className="text-sm text-gray-600">Surat Tersisa</div>
+                                            </div>
+
+                                            <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                                                <div className="text-2xl font-bold text-yellow-600">
+                                                    {data?.rekap_tahfidz?.sisa_persentase || 0}%
+                                                </div>
+                                                <div className="text-sm text-gray-600">Tersisa</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    {/* ) 
+                                        {/* ) 
                                 // : (
                                 //     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 //         <div className="bg-emerald-50 p-4 rounded-lg text-center">
@@ -703,45 +813,45 @@ export const HafalanPage = () => {
                                 //         </div>
                                 //     </div>
                                 // ) */}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {activeTab === "nadhoman" && dataNadhoman?.rekap_nadhoman && (
-                            <>
-                                {/* <div className="bg-white rounded-xl shadow-lg p-6"> */}
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                    <BookMarked className="mr-2 text-emerald-600" />
-                                    Progress Nadhoman per Kitab
-                                </h3>
-                                <div className="space-y-4">
-                                    {dataNadhoman.rekap_nadhoman.map((kitab, index) => (
-                                        <div key={index} className="border rounded-lg border-gray-300 p-4">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <h4 className="font-medium text-gray-900">{kitab.nama_kitab}</h4>
-                                                <span className="text-sm font-semibold text-emerald-600">
-                                                    {Number.parseFloat(kitab.persentase_selesai).toFixed(1)}%
-                                                </span>
+                            {activeTab === "nadhoman" && dataNadhoman?.rekap_nadhoman && (
+                                <>
+                                    {/* <div className="bg-white rounded-xl shadow-lg p-6"> */}
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                        <BookMarked className="mr-2 text-emerald-600" />
+                                        Progress Nadhoman per Kitab
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {dataNadhoman.rekap_nadhoman.map((kitab, index) => (
+                                            <div key={index} className="border rounded-lg border-gray-300 p-4">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <h4 className="font-medium text-gray-900">{kitab.nama_kitab}</h4>
+                                                    <span className="text-sm font-semibold text-emerald-600">
+                                                        {Number.parseFloat(kitab.persentase_selesai).toFixed(1)}%
+                                                    </span>
+                                                </div>
+                                                <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                                    <div
+                                                        className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                                                        style={{ width: `${kitab.persentase_selesai}%` }}
+                                                    ></div>
+                                                </div>
+                                                <div className="text-xs text-gray-500">{kitab.total_bait} bait total</div>
                                             </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                                                <div
-                                                    className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
-                                                    style={{ width: `${kitab.persentase_selesai}%` }}
-                                                ></div>
-                                            </div>
-                                            <div className="text-xs text-gray-500">{kitab.total_bait} bait total</div>
-                                        </div>
-                                    ))}
-                                </div>
-                                {/* </div> */}
-                            </>
-                        )}
+                                        ))}
+                                    </div>
+                                    {/* </div> */}
+                                </>
+                            )}
 
-                        {/* Filters and Table */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Detail {activeTab === "tahfidz" ? "Tahfidz" : "Nadhoman"}</CardTitle>
-                                {/* <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                            {/* Filters and Table */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Detail {activeTab === "tahfidz" ? "Tahfidz" : "Nadhoman"}</CardTitle>
+                                    {/* <div className="flex flex-col sm:flex-row gap-4 mt-4">
                                     <input
                                         type="date"
                                         value={dateRange.start}
@@ -762,18 +872,19 @@ export const HafalanPage = () => {
                                         <SelectItem value="proses">Proses</SelectItem>
                                     </Select>
                                 </div> */}
-                            </CardHeader>
-                            <CardContent>
-                                <DataTable
-                                    data={filteredData}
-                                    columns={currentColumns}
-                                    searchPlaceholder={`Cari ${activeTab === "tahfidz" ? "surat, jenis setoran" : "kitab, bait"}, atau catatan...`}
-                                    pageSize={10}
-                                />
-                            </CardContent>
-                        </Card>
+                                </CardHeader>
+                                <CardContent>
+                                    <DataTable
+                                        data={filteredData}
+                                        columns={currentColumns}
+                                        searchPlaceholder={`Cari ${activeTab === "tahfidz" ? "surat, jenis setoran" : "kitab, bait"}, atau catatan...`}
+                                        pageSize={10}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     )

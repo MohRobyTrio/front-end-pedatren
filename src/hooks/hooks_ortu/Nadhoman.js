@@ -11,6 +11,7 @@ const useFetchNadhomanOrtu = () => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtering, setFiltering] = useState(false);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(10);
     const [totalData, setTotalData] = useState(0);
@@ -34,8 +35,14 @@ const useFetchNadhomanOrtu = () => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async (force = false) => {
+    const fetchData = useCallback(async (filters = {}, force = false, isFilter = false) => {
             let url = `${API_BASE_URL}view-ortu/nadhoman?santri_id=${activeChild?.id || idSantri}`;
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    url += `&${key}=${encodeURIComponent(filters[key])}`;
+                }
+            });
             // if (currentPage > 1) {
             //     url += `&page=${currentPage}`;
             // }
@@ -53,7 +60,12 @@ const useFetchNadhomanOrtu = () => {
             console.log("Fetching data from:", url);
 
             try {
-                setLoading(true);
+                setError(null);
+                if (isFilter) {
+                    setFiltering(true);   // loading khusus filter
+                } else {
+                    setLoading(true);     // loading utama (skeleton)
+                }
                 const response = await fetch(url, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -83,11 +95,16 @@ const useFetchNadhomanOrtu = () => {
                 setTotalData(result.total_data || 0);
                 setTotalPages(result.total_pages || 1);
                 setCurrentPage(result.current_page || 1);
+                setError(null);
             } catch (err) {
                 setError(err.message);
                 setData([]);
             } finally {
-                setLoading(false);
+                if (isFilter) {
+                    setFiltering(false);
+                } else {
+                    setLoading(false);
+                }
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,6 +148,7 @@ const useFetchNadhomanOrtu = () => {
         data,
         loading,
         error,
+        filtering,
 
         // Pagination controls
         limit,

@@ -11,6 +11,7 @@ const useFetchTahfidzOrtu = () => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filtering, setFiltering] = useState(false);
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(10);
     const [totalData, setTotalData] = useState(0);
@@ -34,8 +35,14 @@ const useFetchTahfidzOrtu = () => {
         };
     }, [searchTerm]);
 
-    const fetchData = useCallback(async (force = false) => {
+    const fetchData = useCallback(async (filters = {}, force = false, isFilter = false) => {
             let url = `${API_BASE_URL}view-ortu/tahfidz?santri_id=${activeChild?.id || idSantri}`;
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    url += `&${key}=${encodeURIComponent(filters[key])}`;
+                }
+            });
             // if (currentPage > 1) {
             //     url += `&page=${currentPage}`;
             // }
@@ -53,7 +60,12 @@ const useFetchTahfidzOrtu = () => {
             console.log("Fetching data from:", url);
 
             try {
-                setLoading(true);
+                setError(null);
+                if (isFilter) {
+                    setFiltering(true);   // loading khusus filter
+                } else {
+                    setLoading(true);     // loading utama (skeleton)
+                }
                 const response = await fetch(url, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -83,11 +95,16 @@ const useFetchTahfidzOrtu = () => {
                 setTotalData(result.total_data || 0);
                 setTotalPages(result.total_pages || 1);
                 setCurrentPage(result.current_page || 1);
+                setError(null);
             } catch (err) {
                 setError(err.message);
                 setData([]);
             } finally {
-                setLoading(false);
+                if (isFilter) {
+                    setFiltering(false);
+                } else {
+                    setLoading(false);
+                }
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,29 +124,11 @@ const useFetchTahfidzOrtu = () => {
         setCurrentPage(1);
     }, [limit, searchTerm]);
 
-    // Filter options (tidak digunakan)
-    // const filterOptions = useMemo(() => {
-    //     const options = {
-    //         alasan_izin: [],
-    //         status: [],
-    //         jenis_izin: [],
-    //     };
-
-    //     data.forEach((item) => {
-    //         Object.keys(options).forEach((key) => {
-    //             if (item[key] && !options[key].includes(item[key])) {
-    //                 options[key].push(item[key]);
-    //             }
-    //         });
-    //     });
-
-    //     return options;
-    // }, [data]);
-
     return {
         // Data states
         data,
         loading,
+        filtering,
         error,
 
         // Pagination controls

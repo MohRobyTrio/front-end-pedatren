@@ -1,36 +1,64 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import {
     Wallet,
     ArrowUpRight,
     ArrowDownLeft,
-    CreditCard,
     Search,
     ChevronLeft,
     ChevronRight,
+    Filter,
+    RotateCcw,
+    X,
+    SlidersHorizontal,
+    Loader2,
 } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
+import { toast } from "sonner"
+import { FaClipboardList } from "react-icons/fa"
+import DropdownOutlet from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownOutlet"
+import DropdownKategori from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownKategori"
 
 export const KeuanganPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
     const [transactionFilter, setTransactionFilter] = useState("semua")
     const [transferFilter, setTransferFilter] = useState("semua")
+    const [showFilter, setShowFilter] = useState(false);
     // eslint-disable-next-line no-unused-vars
     const [dateRange, setDateRange] = useState({ start: "", end: "" })
+    // eslint-disable-next-line no-unused-vars
     const [activeTab, setActiveTab] = useState("transaksi")
-    const [searchTerm, setSearchTerm] = useState("")
+    // const [searchTerm, setSearchTerm] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     // eslint-disable-next-line no-unused-vars
     const [pageSize] = useState(10)
 
-    const { data, loading, error, fetchData } = useFetchTransaksiOrtu({})
+    const { data, loading, filtering, error, fetchData, searchTerm, setSearchTerm } = useFetchTransaksiOrtu()
+    const { menuOutlet } = DropdownOutlet()
+
+    const [filters, setFilters] = useState({
+        outlet_id: "",
+        kategori_id: "",
+        date_from: "",
+        date_to: "",
+        q: ""
+    })
+
+    const { menuKategori } = DropdownKategori(filters.outlet_id)
+    const toggleFilter = () => setShowFilter((prev) => !prev);
+
+    useEffect(() => {
+        console.log(filters);
+        fetchData(filters, true, true);
+
+    }, [filters])
 
     // Mock data - replace with actual API calls
-    const mockSaldo = 250000
+    // const mockSaldo = 250000
 
-    const mockTransaksiData = data
+    // const mockTransaksiData = data
 
     // const mockTransaksiData = [
     //     {
@@ -252,89 +280,86 @@ export const KeuanganPage = () => {
         )
     }
 
-    // eslint-disable-next-line no-unused-vars
-    const Select = ({ value, onValueChange, children, className = "" }) => {
-        const [isOpen, setIsOpen] = useState(false)
-
+    const Select = ({ value, onValueChange, children, className = "", disabled = false }) => {
         return (
-            <div className={`relative ${className}`}>
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="w-full px-3 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                    <span className="block truncate">{value}</span>
-                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <ChevronRight className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-90" : ""}`} />
-                    </span>
-                </button>
-
-                {isOpen && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                        <div className="py-1">{children}</div>
-                    </div>
-                )}
-            </div>
+            <select
+                value={value}
+                onChange={(e) => onValueChange(e.target.value)}
+                disabled={disabled} // ✅ disable kalau tidak ada data
+                className={`block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${className}`}
+            >
+                {children}
+            </select>
         )
     }
 
-    const SelectItem = ({ value, children, onSelect }) => (
-        <button
-            onClick={() => onSelect(value)}
-            className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-        >
-            {children}
-        </button>
-    )
+    const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
-    const DataTable = ({ data, columns, searchPlaceholder, pageSize }) => {
-        const filteredData = data.filter((item) =>
-            Object.values(item).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
-        )
+    const DataTable = ({ data, columns, pageSize }) => {
+        // const filteredData = data.filter((item) =>
+        //     Object.values(item).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
+        // )
+        const filteredData = data
 
         const totalPages = Math.ceil(filteredData.length / pageSize)
         const startIndex = (currentPage - 1) * pageSize
         const paginatedData = filteredData.slice(startIndex, startIndex + pageSize)
 
         return (
-            <div className="space-y-4">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder={searchPlaceholder}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                {columns.map((column) => (
-                                    <th
-                                        key={column.key}
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        {column.label}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {paginatedData.map((row, index) => (
-                                <tr key={index} className="hover:bg-gray-50">
+            <div>
+                {filtering ? (
+                    <div className="p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Memuat Data...
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                            Mohon tunggu sebentar, data sedang diproses.
+                        </p>
+                    </div>
+                ) : data.length == 0 ? (
+                    <div className="p-8 text-center">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <FaClipboardList className="text-2xl text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            Tidak Ada Data
+                        </h3>
+                        <p className="text-gray-600 mb-4 text-sm">
+                            Belum ada data yang tersedia.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
                                     {columns.map((column) => (
-                                        <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {column.render ? column.render(row[column.key], row) : row[column.key]}
-                                        </td>
+                                        <th
+                                            key={column.key}
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            {column.label}
+                                        </th>
                                     ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {paginatedData.map((row, index) => (
+                                    <tr key={index} className="hover:bg-gray-50">
+                                        {columns.map((column) => (
+                                            <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {column.render ? column.render(row[column.key], row) : row[column.key]}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
 
                 {totalPages > 1 && (
                     <div className="flex items-center justify-between">
@@ -370,7 +395,7 @@ export const KeuanganPage = () => {
     // Loading skeleton component
     const LoadingSkeleton = () => (
         <div className="space-y-6 animate-pulse">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 {[...Array(5)].map((_, i) => (
                     <div key={i} className="bg-white rounded-lg border border-gray-200 p-6">
                         <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -378,12 +403,12 @@ export const KeuanganPage = () => {
                         <div className="h-3 bg-gray-200 rounded w-1/3"></div>
                     </div>
                 ))}
-            </div>
+            </div> */}
 
+            <div className="py-4">
+                <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+            </div>
             <div className="bg-white rounded-lg border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-                </div>
                 <div className="px-6 py-4 space-y-4">
                     {[...Array(5)].map((_, i) => (
                         <div key={i} className="flex space-x-4">
@@ -451,12 +476,12 @@ export const KeuanganPage = () => {
             sortable: true,
             render: (value) => formatTanggalWaktu(value),
         },
-        {
-            key: "santri",
-            label: "Santri",
-            sortable: true,
-            render: (value) => value?.biodata?.nama || "-",
-        },
+        // {
+        //     key: "santri",
+        //     label: "Santri",
+        //     sortable: true,
+        //     render: (value) => value?.biodata?.nama || "-",
+        // },
         {
             key: "outlet",
             label: "Outlet",
@@ -468,8 +493,6 @@ export const KeuanganPage = () => {
             label: "Kategori",
             sortable: true,
             render: (value) => (
-                console.log(value),
-
                 value?.nama_kategori || "-"
             ),
         },
@@ -614,160 +637,155 @@ export const KeuanganPage = () => {
                     <p className="text-gray-600 mt-1">Kelola keuangan {selectedChild?.nama || "santri"}</p>
                 </div>
 
-                {/* Stats Cards */}
-                {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Card className="border-purple-100 lg:col-span-2">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-purple-600">Saldo Dompet</p>
-                                    <p className="text-3xl font-bold text-purple-700">{formatRupiah(stats.saldo)}</p>
-                                    <p className="text-sm text-gray-600">Tersedia untuk digunakan</p>
-                                </div>
-                                <Wallet className="h-12 w-12 text-purple-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-red-100">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-red-600">Pengeluaran</p>
-                                    <p className="text-2xl font-bold text-red-700">{formatRupiah(stats.totalPengeluaran)}</p>
-                                </div>
-                                <ArrowUpRight className="h-8 w-8 text-red-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-emerald-100">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-emerald-600">Top Up</p>
-                                    <p className="text-2xl font-bold text-emerald-700">{formatRupiah(stats.totalTopUp)}</p>
-                                </div>
-                                <ArrowDownLeft className="h-8 w-8 text-emerald-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-orange-100">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-orange-600">Tagihan Aktif</p>
-                                    <p className="text-2xl font-bold text-orange-700">{stats.tagihanAktif}</p>
-                                    <p className="text-xs text-gray-600">{formatRupiah(stats.totalTagihan)}</p>
-                                </div>
-                                <Receipt className="h-8 w-8 text-orange-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div> */}
-
                 {/* Tabs */}
                 <div className="space-y-6">
-                    {/* <div className="border-b border-gray-200">
-                        <nav className="-mb-px flex space-x-8">
-                            {[
-                                { id: "transaksi", label: "Transaksi", icon: CreditCard },
-                                { id: "transfer", label: "Transfer", icon: ArrowUpRight },
-                                { id: "tagihan", label: "Tagihan", icon: FileText },
-                                // { id: "topup", label: "Top Up", icon: Wallet },
-                            ].map((tab) => {
-                                const Icon = tab.icon
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id
-                                            ? "border-blue-500 text-blue-600"
-                                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                                            }`}
-                                    >
-                                        <Icon className="mr-2 h-4 w-4" />
-                                        {tab.label}
-                                    </button>
-                                )
-                            })}
-                        </nav>
-                    </div> */}
-
-                    {/* <div className="flex space-x-1 rounded-lg bg-gray-100 p-1">
-                        {[
-                            { id: "transaksi", label: "Transaksi", icon: CreditCard },
-                            { id: "transfer", label: "Transfer", icon: ArrowUpRight },
-                            // { id: "tagihan", label: "Tagihan", icon: FileText },
-                            // { id: "topup", label: "Top Up", icon: Wallet },
-                        ].map((tab) => {
-                            const Icon = tab.icon
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center ${activeTab === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
-                                        }`}
-                                >
-                                    <Icon className="mr-2 h-4 w-4" />
-                                    {tab.label}
-                                </button>
-                            )
-                        })}
-                    </div> */}
 
                     {activeTab === "transaksi" && (
-                        <Card>
+                        <div className={`bg-white rounded-lg border border-gray-200 shadow-sm`}>
                             <CardHeader>
-                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div className="flex flex-row items-center justify-between gap-4">
                                     <CardTitle>Riwayat Transaksi</CardTitle>
-                                    <div className="flex flex-col sm:flex-row gap-4">
-                                        <Select
-                                            value={
-                                                transactionFilter === "semua"
-                                                    ? "Semua Jenis"
-                                                    : transactionFilter === "pembelian"
-                                                        ? "Pembelian"
-                                                        : "Top Up"
-                                            }
-                                            onValueChange={(value) =>
-                                                setTransactionFilter(
-                                                    value === "Semua Jenis" ? "semua" : value === "Pembelian" ? "pembelian" : "top_up",
-                                                )
-                                            }
-                                            className="w-full sm:w-48"
-                                        >
-                                            <SelectItem value="semua" onSelect={() => setTransactionFilter("semua")}>
-                                                Semua Jenis
-                                            </SelectItem>
-                                            <SelectItem value="pembelian" onSelect={() => setTransactionFilter("pembelian")}>
-                                                Pembelian
-                                            </SelectItem>
-                                            <SelectItem value="top_up" onSelect={() => setTransactionFilter("top_up")}>
-                                                Top Up
-                                            </SelectItem>
-                                        </Select>
-                                        {/* <Button
-                                            variant="outline"
-                                            onClick={() => exportToCSV(filteredTransactions, "transaksi")}
-                                            className="w-full sm:w-auto"
-                                        >
-                                            <Download className="h-4 w-4 mr-2" />
-                                            Export CSV
-                                        </Button> */}
-                                    </div>
+                                    <button
+                                        onClick={toggleFilter}
+                                        className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 ${showFilter ? "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700" : "bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"}`}
+                                    >
+                                        {showFilter ? (
+                                            <>
+                                                <X className="w-4 h-4" />
+                                                Tutup Filter
+                                            </>
+                                        ) : (
+                                            <>
+                                                <SlidersHorizontal className="w-4 h-4" />
+                                                Filter
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
                             </CardHeader>
-                            <CardContent>
-                                <DataTable
-                                    data={data.data}
-                                    columns={transactionColumns}
-                                    searchPlaceholder="Cari deskripsi transaksi..."
-                                    pageSize={10}
-                                />
-                            </CardContent>
-                        </Card>
+                            <div className="px-6 py-4">
+                                {showFilter && (
+                                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Filter className="h-4 w-4 text-gray-600" />
+                                            <span className="text-sm font-medium text-gray-700">Filter Data</span>
+
+                                            <button
+                                                // onClick={resetFilters}
+                                                className="ml-auto flex items-center gap-1 px-3 py-1.5 text-xs rounded-md bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 transition-colors duration-200"
+                                            >
+                                                <RotateCcw className="w-3 h-3" />
+                                                Reset
+                                            </button>
+
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                            {/* Outlet */}
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">Outlet</label>
+                                                <Select
+                                                    value={filters.outlet_id}
+                                                    onValueChange={(value) =>
+                                                        setFilters((prev) => ({ ...prev, outlet_id: value }))
+                                                    }
+                                                    className="text-sm"
+                                                >
+                                                    <SelectItem value="">Semua Outlet</SelectItem>
+                                                    {menuOutlet.map((outlet, i) => (
+                                                        <SelectItem key={i} value={outlet.id}>
+                                                            {outlet.nama_outlet}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+
+                                            {/* Kategori */}
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
+                                                <Select
+                                                    value={filters.kategori_id}
+                                                    onValueChange={(value) =>
+                                                        setFilters((prev) => ({ ...prev, kategori_id: value }))
+                                                    }
+                                                    disabled={menuKategori.length == 0} // ✅ disable kalau tidak ada data
+                                                    className={`text-sm ${menuKategori.length == 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                >
+                                                    <SelectItem value="">Semua Kategori</SelectItem>
+                                                    {menuKategori.map((kategori, i) => (
+                                                        <SelectItem key={i} value={kategori.value}>
+                                                            {kategori.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+
+                                                {menuKategori.length === 0 && (
+                                                    <p className="text-xs text-gray-400 mt-1">Tidak ada kategori tersedia</p>
+                                                )}
+                                            </div>
+
+
+                                            {/* Date From */}
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                                                <input
+                                                    type="date"
+                                                    value={filters.date_from}
+                                                    onChange={(e) =>
+                                                        setFilters((prev) => ({ ...prev, date_from: e.target.value }))
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                            </div>
+
+                                            {/* Date To */}
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+                                                <input
+                                                    type="date"
+                                                    value={filters.date_to}
+                                                    onChange={(e) =>
+                                                        setFilters((prev) => ({ ...prev, date_to: e.target.value }))
+                                                    }
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )}
+                                {/* <div className="relative">
+                                    <input
+                                    
+                                        type="text"
+                                        placeholder="Cari transaksi..."
+                                        value={filters.q}
+                                        onChange={(e) => setFilters((prev) => ({ ...prev, q: e.target.value }))}
+                                        // className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div> */}
+                                <div className="space-y-4">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                        <input
+                                            type="text"
+                                            placeholder="Cari transaksi..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
+                                    </div>
+
+                                    <DataTable
+                                        data={data.data}
+                                        columns={transactionColumns}
+                                        pageSize={10}
+                                        searchTerm={searchTerm}
+                                        setSearchTerm={setSearchTerm}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     )}
 
                     {activeTab === "transfer" && (

@@ -14,11 +14,11 @@ import ServiceItem from "../../components/ortu/ServiceItem";
 export const DashboardPage = () => {
     const services = [
         {
-            title: "Keuangan",
-            subtitle: "Saldo dompet",
+            title: "Transaksi",
+            subtitle: "Riwayat transaksi",
             icon: Wallet,
             iconColor: "text-purple-500 bg-purple-100",
-            href: "/wali/keuangan",
+            href: "/wali/transaksi",
         },
         {
             title: "Hafalan",
@@ -91,7 +91,7 @@ export const DashboardPage = () => {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold text-foreground mb-2">
-                        {getGreeting() || "Halo"}, {"Hasta Rajasa S.I.Kom"}!
+                        {getGreeting() || "Halo"}, Wali Santri!
                     </h1>
                     <h2 className="text-2xl font-bold text-foreground">
                     </h2>

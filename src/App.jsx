@@ -58,6 +58,7 @@ import PelanggaranPage from './content_main_page/content_ortu/Pelanggaran';
 import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
 import PresensiPage from './content_main_page/content_ortu/Presensi';
 import { TagihanPage } from './content_main_page/content_ortu/Tagihan';
+import FeatureUnavailable from './content_main_page/FeatureUnavailable';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -267,8 +268,8 @@ function App() {
                             <Route path="/wali/home" element={<DashboardPage />} />
                             <Route path="/wali/hafalan" element={<HafalanPage />} />
                             <Route path="/wali/akademik" element={<AkademikPage />} />
-                            <Route path="/wali/keuangan" element={<KeuanganPage />} />
-                            <Route path="/wali/batas-pengeluaran" element={<BatasPengeluaranPage />} />
+                            <Route path="/wali/transaksi" element={<KeuanganPage />} />
+                            <Route path="/wali/batas-pengeluaran" element={<FeatureUnavailable />} />
                             <Route path="/wali/perizinan" element={<PerizinanPage />} />
                             <Route path="/wali/pelanggaran" element={<PelanggaranPage />} />
                             <Route path="/wali/presensi" element={<PresensiPage />} />

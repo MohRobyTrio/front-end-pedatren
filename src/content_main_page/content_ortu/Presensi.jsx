@@ -613,6 +613,7 @@ export default function PresensiPage() {
                                             </div>
                                         </div>
                                     )}
+                                    
                                     {filtering ? (
                                         <div className="text-center py-12">
                                             <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />

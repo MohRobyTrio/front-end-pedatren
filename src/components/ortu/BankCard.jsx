@@ -18,7 +18,7 @@ const BankCard = ({ className }) => {
                 {/* Card Holder */}
                 <div className="mb-6">
                     <h3 className="text-xl font-semibold">{activeChild?.nama || "User"}</h3>
-                    <p className="text-sm text-white/80">Peserta Didik</p>
+                    <p className="text-sm text-white/80">Santri</p>
                 </div>
 
                 {/* Card Number */}
