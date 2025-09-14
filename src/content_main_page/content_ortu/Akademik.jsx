@@ -1,8 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BookOpen, Heart, MessageSquare, Award, Calendar } from "lucide-react"
+import useFetchCatatanAfektifOrtu from "../../hooks/hooks_ortu/CatatanAfektif"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
+import useFetchCatatanKognitifOrtu from "../../hooks/hooks_ortu/CatatanKognitif"
+import { FaClipboardList } from "react-icons/fa"
 
 function SimpleLayout({ children }) {
     return (
@@ -62,58 +65,39 @@ function Button({ children, variant = "default", onClick, className = "" }) {
 }
 
 export const AkademikPage = () => {
-    // const [selectedChild, setSelectedChild] = useState(null)
     const [activeTab, setActiveTab] = useState("afektif")
     const { activeChild: selectedChild } = useActiveChild()
+    const { data: dataAfektif, loading: loadingAfektif, error: errorAfektif } = useFetchCatatanAfektifOrtu()
+    const { data: dataKognitif, loading: loadingKognitif, error: errorKognitif } = useFetchCatatanKognitifOrtu()
 
-    // const rataRataKognitif = 85 // Example value
-    // const rataRataAfektif = 92 // Example value
+    useEffect(() => {
+        console.log("Data Afektif", dataAfektif);
+        console.log("Data Kognitif", dataKognitif);
+    }, [dataAfektif, dataKognitif])
+
     const mockAfektifData = {
-        adab: 88,
-        disiplin: 90,
-        kebersihan: 75,
-        kerjaSama: 85,
+        kepedulian: dataAfektif.kepedulian_nilai || "-",
+        kebersihan: dataAfektif.kebersihan_nilai || "-",
+        akhlak: dataAfektif.akhlak_nilai || "-",
         catatan: "Catatan afektif",
-    } // Example data
-    const mockKognitifData = [
-        { mataPelajaran: "Matematika", semester: "Semester 1", nilai: 88 },
-        { mataPelajaran: "Bahasa Indonesia", semester: "Semester 1", nilai: 90 },
-        { mataPelajaran: "Ilmu Pengetahuan Alam", semester: "Semester 1", nilai: 75 },
-        { mataPelajaran: "Ilmu Pengetahuan Sosial", semester: "Semester 1", nilai: 85 },
-    ] // Example data
-    const mockCatatanUstadz = [
-        {
-            ustadz: "Ustadz Ahmad",
-            mataPelajaran: "Matematika",
-            tanggal: "2023-10-01",
-            catatan: "Santri berusaha keras dalam belajar matematika.",
-        },
-        {
-            ustadz: "Ustadz Siti",
-            mataPelajaran: "Bahasa Indonesia",
-            tanggal: "2023-10-02",
-            catatan: "Santri perlu lebih banyak latihan dalam membaca.",
-        },
-    ] // Example data
-
-    // useEffect(() => {
-    //     const activeChild = sessionStorage.getItem("active_child")
-    //     if (activeChild) setSelectedChild(JSON.parse(activeChild))
-    // }, [])
-
-    const getScoreColor = (score) => {
-        if (score >= 90) return "text-emerald-600"
-        if (score >= 80) return "text-amber-600"
-        if (score >= 70) return "text-orange-600"
-        return "text-red-600"
     }
 
-    const getScoreBadgeVariant = (score) => {
-        if (score >= 90) return "default"
-        if (score >= 80) return "secondary"
-        if (score >= 70) return "outline"
-        return "destructive"
+    const mockKognitifData = {
+        kebahasaan: dataKognitif.kebahasaan_nilai || "-",
+        baca_kitab_kuning: dataKognitif.baca_kitab_kuning_nilai || "-",
+        hafalan_tahfidz: dataKognitif.hafalan_tahfidz_nilai || "-",
+        furudul_ainiyah: dataKognitif.furudul_ainiyah_nilai || "-",
+        tulis_alquran: dataKognitif.tulis_alquran_nilai || "-",
+        baca_alquran: dataKognitif.baca_alquran_nilai || "-",
+        catatan: "Catatan kognitif",
     }
+
+    // const mockKognitifData = [
+    //     { mataPelajaran: "Matematika", semester: "Semester 1", nilai: 88 },
+    //     { mataPelajaran: "Bahasa Indonesia", semester: "Semester 1", nilai: 90 },
+    //     { mataPelajaran: "Ilmu Pengetahuan Alam", semester: "Semester 1", nilai: 75 },
+    //     { mataPelajaran: "Ilmu Pengetahuan Sosial", semester: "Semester 1", nilai: 85 },
+    // ]
 
     const formatTanggal = (dateString) => {
         const d = new Date(dateString)
@@ -122,12 +106,56 @@ export const AkademikPage = () => {
 
     const getAfektifLabel = (key) => {
         const labels = {
-            adab: "Adab & Sopan Santun",
-            disiplin: "Kedisiplinan",
+            kepedulian: "Kepedulian",
             kebersihan: "Kebersihan",
-            kerjaSama: "Kerja Sama",
+            akhlak: "Akhlak",
         }
         return labels[key] || key
+    }
+
+    const getKognitifLabel = (key) => {
+        const labels = {
+            kebahasaan: "Kebahasaan",
+            baca_kitab_kuning: "Baca Kitab Kuning",
+            hafalan_tahfidz: "Hafalan Tahfidz",
+            furudul_ainiyah: "Furudul Ainiyah",
+            tulis_alquran: "Tulis Al-Quran",
+            baca_alquran: "Baca Al-Quran",
+        }
+        return labels[key] || key
+    }
+
+    const nilaiConfig = {
+        A: { label: "Sangat Baik", color: "text-green-700 bg-green-50 border-green-200" },
+        B: { label: "Baik", color: "text-blue-700 bg-blue-50 border-blue-200" },
+        C: { label: "Cukup", color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
+        D: { label: "Kurang", color: "text-orange-700 bg-orange-50 border-orange-200" },
+        E: { label: "Sangat Kurang", color: "text-red-700 bg-red-50 border-red-200" },
+    }
+
+    const getScoreColor = (score) => {
+        const config = nilaiConfig[score]
+        if (!config) return "text-gray-600"
+        return config.color.split(" ").find((c) => c.startsWith("text-")) || "text-gray-600"
+    }
+
+    const getScoreBadgeVariant = (score) => {
+        const config = nilaiConfig[score]
+        return config ? config.color : "text-gray-600 bg-gray-100 border-gray-200"
+    }
+
+    if (loadingKognitif || loadingAfektif) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-4">
+                <div className="max-w-7xl mx-auto">
+                    <div className="animate-pulse space-y-6">
+                        <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+                        <div className="h-50 bg-gray-200 rounded-lg"></div>
+                        <div className="h-50 bg-gray-200 rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -143,45 +171,6 @@ export const AkademikPage = () => {
                         Laporan perkembangan akademik dan karakter {selectedChild?.nama || "santri"}
                     </p>
                 </div>
-
-                {/* Summary Cards */}
-                {/* <div className="grid gap-6 md:grid-cols-2">
-                    <Card className="shadow-lg bg-gradient-to-br from-white to-amber-50 hover:shadow-xl transition-all duration-300 border-amber-200">
-                        <CardContent className="p-8">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <BookOpen className="h-5 w-5 text-amber-600" />
-                                        <p className="text-sm font-medium text-amber-600">Rata-rata Kognitif</p>
-                                    </div>
-                                    <p className={`text-4xl font-bold ${getScoreColor(rataRataKognitif)}`}>{rataRataKognitif}</p>
-                                    <p className="text-sm text-gray-500">Nilai akademik</p>
-                                </div>
-                                <div className="p-4 bg-amber-100 rounded-full">
-                                    <TrendingUp className="h-8 w-8 text-amber-600" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="shadow-lg bg-gradient-to-br from-white to-emerald-50 hover:shadow-xl transition-all duration-300 border-emerald-200">
-                        <CardContent className="p-8">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <Heart className="h-5 w-5 text-emerald-600" />
-                                        <p className="text-sm font-medium text-emerald-600">Rata-rata Afektif</p>
-                                    </div>
-                                    <p className={`text-4xl font-bold ${getScoreColor(rataRataAfektif)}`}>{rataRataAfektif}</p>
-                                    <p className="text-sm text-gray-500">Adab & Akhlak</p>
-                                </div>
-                                <div className="p-4 bg-emerald-100 rounded-full">
-                                    <Heart className="h-8 w-8 text-emerald-600" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div> */}
 
                 {/* Tabs */}
                 <Card className="shadow-lg">
@@ -208,88 +197,196 @@ export const AkademikPage = () => {
 
                     <CardContent className="space-y-6">
                         {activeTab === "afektif" && (
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                                {Object.entries(mockAfektifData)
-                                    .filter(([k]) => k !== "catatan")
-                                    .map(([key, value], idx) => (
-                                        <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
-                                            <CardContent className="p-6 text-center space-y-3">
-                                                <h3 className="font-medium text-gray-900 text-sm">{getAfektifLabel(key)}</h3>
-                                                <p className={`text-3xl font-bold ${getScoreColor(value)}`}>{value}</p>
-                                                <Badge variant={getScoreBadgeVariant(value)} className="text-xs">
-                                                    {value >= 90
-                                                        ? "Sangat Baik"
-                                                        : value >= 80
-                                                            ? "Baik"
-                                                            : value >= 70
-                                                                ? "Cukup"
-                                                                : "Perlu Perbaikan"}
-                                                </Badge>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                            </div>
+                            Object.keys(dataAfektif || {}).length === 0 ? (
+                                <div className="p-8 text-center">
+                                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <FaClipboardList className="text-2xl text-gray-400" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        Tidak Ada Data
+                                    </h3>
+                                    <p className="text-gray-600 mb-4 text-sm">
+                                        Belum ada data penilaian afektif untuk ditampilkan.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {Object.entries(mockAfektifData)
+                                        .filter(([k]) => k !== "catatan")
+                                        .map(([key, value], idx) => {
+                                            const config = nilaiConfig[value];
+                                            return (
+                                                <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
+                                                    <CardContent className="p-6 text-center space-y-3">
+                                                        <h3 className="font-medium text-gray-900 text-sm">
+                                                            {getAfektifLabel(key)}
+                                                        </h3>
+                                                        <p className={`text-3xl font-bold ${getScoreColor(value)}`}>{value}</p>
+                                                        <Badge className={`text-xs border ${getScoreBadgeVariant(value)}`}>
+                                                            {config ? config.label : "N/A"}
+                                                        </Badge>
+                                                    </CardContent>
+                                                </Card>
+                                            );
+                                        })}
+                                </div>
+                            )
                         )}
 
                         {activeTab === "kognitif" && (
-                            <div className="space-y-4">
-                                {mockKognitifData.map((item, idx) => (
-                                    <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
-                                        <CardContent className="p-6">
-                                            <div className="flex justify-between items-center">
-                                                <div className="space-y-1">
-                                                    <h3 className="font-semibold text-gray-900 text-lg">{item.mataPelajaran}</h3>
-                                                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                                                        <Calendar className="h-3 w-3" />
-                                                        {item.semester}
-                                                    </p>
-                                                </div>
-                                                <div className="text-right space-y-2">
-                                                    <p className={`text-3xl font-bold ${getScoreColor(item.nilai)}`}>{item.nilai}</p>
-                                                    <Badge variant={getScoreBadgeVariant(item.nilai)}>
-                                                        {item.nilai >= 90 ? "A" : item.nilai >= 80 ? "B" : item.nilai >= 70 ? "C" : "D"}
-                                                    </Badge>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-                        )}
+                            Object.keys(dataKognitif || {}).length === 0 ? (
+                                <div className="p-8 text-center">
+                                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                        <FaClipboardList className="text-2xl text-gray-400" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        Tidak Ada Data
+                                    </h3>
+                                    <p className="text-gray-600 mb-4 text-sm">
+                                        Belum ada data penilaian kognitif untuk ditampilkan.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                                    {Object.entries(mockKognitifData)
+                                        .filter(([k]) => k !== "catatan")
+                                        .map(([key, value], idx) => {
+                                            const config = nilaiConfig[value]
+                                            return (
+                                                <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
+                                                    <CardContent className="p-6 text-center space-y-3">
+                                                        <h3 className="font-medium text-gray-900 text-sm">{getKognitifLabel(key)}</h3>
+                                                        <p className={`text-3xl font-bold ${getScoreColor(value)}`}>{value}</p>
+                                                        <Badge className={`text-xs border ${getScoreBadgeVariant(value)}`}>
+                                                            {config ? config.label : "N/A"}
+                                                        </Badge>
+                                                    </CardContent>
+                                                </Card>
+                                            )
+                                        })}
+                                </div>
+                            ))}
                     </CardContent>
                 </Card>
 
-                {/* Teacher Notes */}
-                <Card className="shadow-lg">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-3 text-xl">
-                            <MessageSquare className="h-6 w-6 text-blue-600" />
-                            Catatan Ustadz
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {mockCatatanUstadz.map((c, idx) => (
-                            <Card key={idx} className="border-gray-200 bg-gray-50">
-                                <CardContent className="p-6">
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div className="space-y-1">
-                                            <p className="font-semibold text-gray-900">{c.ustadz}</p>
-                                            <Badge variant="outline" className="text-xs">
-                                                {c.mataPelajaran}
-                                            </Badge>
+                {activeTab === "afektif" && !errorAfektif && Object.keys(dataAfektif).length > 0 && (
+                    <>
+                        {/* Teacher Notes */}
+                        <Card Card className="shadow-lg">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-3 text-xl">
+                                    <MessageSquare className="h-6 w-6 text-blue-600" />
+                                    Tindak Lanjut
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <Card className="border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                                    <CardContent className="p-6">
+                                        <div className="flex justify-end items-start pb-4 ">
+                                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                                                <Calendar className="h-4 w-4" />
+                                                {formatTanggal(dataAfektif.tanggal_buat)}
+                                            </p>
                                         </div>
-                                        <p className="text-sm text-gray-500 flex items-center gap-1">
-                                            <Calendar className="h-3 w-3" />
-                                            {formatTanggal(c.tanggal)}
-                                        </p>
-                                    </div>
-                                    <p className="text-gray-900 leading-relaxed">{c.catatan}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </CardContent>
-                </Card>
+
+                                        <div className="grid gap-4 md:grid-cols-3">
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Kepedulian</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.kepedulian_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Kebersihan</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.kebersihan_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Akhlak</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.akhlak_tindak_lanjut || "-"}</p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </CardContent>
+                        </Card>
+                    </>
+                )}
+
+                {activeTab === "kognitif" && !errorKognitif && Object.keys(dataKognitif).length > 0 && (
+                    <>
+                        {/* Teacher Notes */}
+                        <Card Card className="shadow-lg">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-3 text-xl">
+                                    <MessageSquare className="h-6 w-6 text-blue-600" />
+                                    Tindak Lanjut
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <Card className="border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                                    <CardContent className="p-6">
+                                        <div className="flex justify-end items-start pb-4 ">
+                                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                                                <Calendar className="h-4 w-4" />
+                                                {formatTanggal(dataKognitif.tanggal_buat)}
+                                            </p>
+                                        </div>
+
+                                        <div className="grid gap-4 lg:grid-cols-3">
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Kebahasaan</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.kebahasaan_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Baca Kitab Kuning</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.baca_kitab_kuning_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Hafalan Tahfidz</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.hafalan_tahfidz_tindak_lanjut || "-"}</p>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Furudul Ainiyah</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.furudul_ainiyah_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Tulis Al-Quran</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.tulis_alquran_tindak_lanjut || "-"}</p>
+                                            </div>
+
+                                            <div className="bg-white rounded-lg p-4 border border-gray-100">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <h4 className="font-medium text-gray-700 text-sm">Baca Al-Quran</h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.baca_alquran_tindak_lanjut || "-"}</p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </CardContent>
+                        </Card>
+                    </>
+                )}
             </div>
-        </SimpleLayout>
+        </SimpleLayout >
     )
 }

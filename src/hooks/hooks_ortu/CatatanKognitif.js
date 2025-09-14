@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { API_BASE_URL } from "../config";
 import { getCookie } from "../../utils/cookieUtils";
 import useLogout from "../Logout";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useActiveChild } from "../../components/ortu/useActiveChild";
 
-const useFetchPerizinanOrtu = () => {
+const useFetchCatatanKognitifOrtu = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [data, setData] = useState([]);
@@ -35,7 +35,7 @@ const useFetchPerizinanOrtu = () => {
     }, [searchTerm]);
 
     const fetchData = useCallback(async (force = false) => {
-            let url = `${API_BASE_URL}view-ortu/perizinan?santri_id=${activeChild?.id || idSantri}`;
+            let url = `${API_BASE_URL}view-ortu/catatanKognitif?santri_id=${activeChild?.id || idSantri}`;
 
             // Skip duplicate requests
             if (!force && lastRequest.current === url) {
@@ -72,13 +72,13 @@ const useFetchPerizinanOrtu = () => {
 
                 const result = await response.json();
                 console.log("hasil",result);
-                setData(result.data || []);
+                setData(result.data || {});
                 setTotalData(result.total_data || 0);
                 setTotalPages(result.total_pages || 1);
                 setCurrentPage(result.current_page || 1);
             } catch (err) {
                 setError(err.message);
-                setData([]);
+                setData({});
             } finally {
                 setLoading(false);
             }
@@ -86,21 +86,6 @@ const useFetchPerizinanOrtu = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentPage, limit, debouncedSearchTerm, activeChild]
     );
-
-    // Helper function untuk menghitung durasi
-    // const calculateDuration = (start, end) => {
-    //   const startDate = new Date(start);
-    //   const endDate = new Date(end);
-    //   const diff = endDate - startDate;
-
-    //   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    //   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-    //   if (days > 0) {
-    //     return `${days} Hari ${hours} Jam`;
-    //   }
-    //   return `${hours} Jam`;
-    // };
 
     // Auto fetch when dependencies change
     useEffect(() => {
@@ -114,25 +99,6 @@ const useFetchPerizinanOrtu = () => {
     useEffect(() => {
         setCurrentPage(1);
     }, [limit, searchTerm]);
-
-    // Filter options (tidak digunakan)
-    const filterOptions = useMemo(() => {
-        const options = {
-            alasan_izin: [],
-            status: [],
-            jenis_izin: [],
-        };
-
-        data.forEach((item) => {
-            Object.keys(options).forEach((key) => {
-                if (item[key] && !options[key].includes(item[key])) {
-                    options[key].push(item[key]);
-                }
-            });
-        });
-
-        return options;
-    }, [data]);
 
     return {
         // Data states
@@ -153,11 +119,11 @@ const useFetchPerizinanOrtu = () => {
         setSearchTerm,
 
         // Filter options
-        filterOptions,
+        // filterOptions,
 
         // Fetch function
         fetchData,
     };
 };
 
-export default useFetchPerizinanOrtu;
+export default useFetchCatatanKognitifOrtu;
