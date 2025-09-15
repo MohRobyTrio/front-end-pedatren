@@ -218,7 +218,7 @@ export const AkademikPage = () => {
                                             return (
                                                 <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
                                                     <CardContent className="p-6 text-center space-y-3">
-                                                        <h3 className="font-medium text-gray-900 text-sm">
+                                                        <h3 className="font-semibold text-gray-900 text-lg">
                                                             {getAfektifLabel(key)}
                                                         </h3>
                                                         <p className={`text-3xl font-bold ${getScoreColor(value)}`}>{value}</p>
@@ -255,7 +255,7 @@ export const AkademikPage = () => {
                                             return (
                                                 <Card key={idx} className="border-gray-200 hover:shadow-md transition-all duration-200">
                                                     <CardContent className="p-6 text-center space-y-3">
-                                                        <h3 className="font-medium text-gray-900 text-sm">{getKognitifLabel(key)}</h3>
+                                                        <h3 className="font-semibold text-gray-900 text-lg">{getKognitifLabel(key)}</h3>
                                                         <p className={`text-3xl font-bold ${getScoreColor(value)}`}>{value}</p>
                                                         <Badge className={`text-xs border ${getScoreBadgeVariant(value)}`}>
                                                             {config ? config.label : "N/A"}
@@ -292,21 +292,21 @@ export const AkademikPage = () => {
                                         <div className="grid gap-4 md:grid-cols-3">
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Kepedulian</h4>
+                                                    <h4 className="font-medium text-gray-700">Kepedulian</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.kepedulian_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Kebersihan</h4>
+                                                    <h4 className="font-medium text-gray-700">Kebersihan</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.kebersihan_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Akhlak</h4>
+                                                    <h4 className="font-medium text-gray-700">Akhlak</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataAfektif.akhlak_tindak_lanjut || "-"}</p>
                                             </div>
@@ -341,41 +341,41 @@ export const AkademikPage = () => {
                                         <div className="grid gap-4 lg:grid-cols-3">
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Kebahasaan</h4>
+                                                    <h4 className="font-medium text-gray-700">Kebahasaan</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.kebahasaan_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Baca Kitab Kuning</h4>
+                                                    <h4 className="font-medium text-gray-700">Baca Kitab Kuning</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.baca_kitab_kuning_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Hafalan Tahfidz</h4>
+                                                    <h4 className="font-medium text-gray-700">Hafalan Tahfidz</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.hafalan_tahfidz_tindak_lanjut || "-"}</p>
                                             </div>
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Furudul Ainiyah</h4>
+                                                    <h4 className="font-medium text-gray-700">Furudul Ainiyah</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.furudul_ainiyah_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Tulis Al-Quran</h4>
+                                                    <h4 className="font-medium text-gray-700">Tulis Al-Quran</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.tulis_alquran_tindak_lanjut || "-"}</p>
                                             </div>
 
                                             <div className="bg-white rounded-lg p-4 border border-gray-100">
                                                 <div className="flex items-center justify-between mb-3">
-                                                    <h4 className="font-medium text-gray-700 text-sm">Baca Al-Quran</h4>
+                                                    <h4 className="font-medium text-gray-700">Baca Al-Quran</h4>
                                                 </div>
                                                 <p className="text-sm text-gray-600 leading-relaxed">{dataKognitif.baca_alquran_tindak_lanjut || "-"}</p>
                                             </div>

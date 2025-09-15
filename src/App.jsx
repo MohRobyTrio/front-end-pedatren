@@ -56,7 +56,6 @@ import PerizinanPage from './content_main_page/content_ortu/Perizinan';
 import PelanggaranPage from './content_main_page/content_ortu/Pelanggaran';
 import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
 import PresensiPage from './content_main_page/content_ortu/Presensi';
-import { TagihanPage } from './content_main_page/content_ortu/Tagihan';
 import FeatureUnavailable from './content_main_page/FeatureUnavailable';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
@@ -272,7 +271,7 @@ function App() {
                             <Route path="/wali/perizinan" element={<PerizinanPage />} />
                             <Route path="/wali/pelanggaran" element={<PelanggaranPage />} />
                             <Route path="/wali/presensi" element={<PresensiPage />} />
-                            <Route path="/wali/tagihan" element={<TagihanPage />} />
+                            <Route path="/wali/tagihan" element={<FeatureUnavailable />} />
                             <Route path="/wali/profil" element={<ProfilPage />} />
                         </Route>
                     </Route>

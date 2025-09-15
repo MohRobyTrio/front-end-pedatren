@@ -29,11 +29,8 @@ export const KeuanganPage = () => {
     // eslint-disable-next-line no-unused-vars
     const [activeTab, setActiveTab] = useState("transaksi")
     // const [searchTerm, setSearchTerm] = useState("")
-    const [currentPage, setCurrentPage] = useState(1)
-    // eslint-disable-next-line no-unused-vars
-    const [pageSize] = useState(10)
 
-    const { data, loading, filtering, error, fetchData, searchTerm, setSearchTerm } = useFetchTransaksiOrtu()
+    const { data, loading, filtering, error, fetchData, searchTerm, setSearchTerm, currentPage, setCurrentPage, totalPages, totalData } = useFetchTransaksiOrtu()
     const { menuOutlet } = DropdownOutlet()
 
     const [filters, setFilters] = useState({
@@ -292,15 +289,8 @@ export const KeuanganPage = () => {
 
     const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
-    const DataTable = ({ data, columns, pageSize }) => {
-        // const filteredData = data.filter((item) =>
-        //     Object.values(item).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
-        // )
-        const filteredData = data
-
-        const totalPages = Math.ceil(filteredData.length / pageSize)
+    const  DataTable = ({ data, columns, pageSize }) => {
         const startIndex = (currentPage - 1) * pageSize
-        const paginatedData = filteredData.slice(startIndex, startIndex + pageSize)
 
         return (
             <div>
@@ -370,7 +360,7 @@ export const KeuanganPage = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {paginatedData.map((row, index) => (
+                                {data.map((row, index) => (
                                     <tr key={index} className="hover:bg-gray-50">
                                         {columns.map((column) => (
                                             <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -387,8 +377,8 @@ export const KeuanganPage = () => {
                 {totalPages > 1 && (
                     <div className="flex items-center justify-between">
                         <div className="text-sm text-gray-700">
-                            Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, filteredData.length)} dari{" "}
-                            {filteredData.length} data
+                            Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, totalData)} dari{" "}
+                            {totalData} data
                         </div>
                         <div className="flex space-x-2">
                             <Button
@@ -712,7 +702,8 @@ export const KeuanganPage = () => {
                                                     onValueChange={(value) =>
                                                         setFilters((prev) => ({ ...prev, outlet_id: value }))
                                                     }
-                                                    className="text-sm"
+                                                    disabled={menuOutlet.length == 0} // ✅ disable kalau tidak ada data
+                                                    className={`text-sm ${menuOutlet.length == 0 ? "opacity-50 cursor-not-allowed" : ""}`}
                                                 >
                                                     <SelectItem value="">Semua Outlet</SelectItem>
                                                     {menuOutlet.map((outlet, i) => (
@@ -721,6 +712,9 @@ export const KeuanganPage = () => {
                                                         </SelectItem>
                                                     ))}
                                                 </Select>
+                                                {menuOutlet.length === 0 && (
+                                                    <p className="text-xs text-gray-400 mt-1">Tidak ada outlet tersedia</p>
+                                                )}
                                             </div>
 
                                             {/* Kategori */}
@@ -802,7 +796,7 @@ export const KeuanganPage = () => {
                                     <DataTable
                                         data={data.data}
                                         columns={transactionColumns}
-                                        pageSize={10}
+                                        pageSize={25}
                                         searchTerm={searchTerm}
                                         setSearchTerm={setSearchTerm}
                                     />

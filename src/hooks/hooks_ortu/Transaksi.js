@@ -13,7 +13,7 @@ const useFetchTransaksiOrtu = () => {
     const [loading, setLoading] = useState(true);
     const [filtering, setFiltering] = useState(false);
     const [error, setError] = useState(null);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(25);
     const [totalData, setTotalData] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,9 +36,9 @@ const useFetchTransaksiOrtu = () => {
         console.log("fetchData called with filters:", filters, { force, isFilter });
 
         let url = `${API_BASE_URL}view-ortu/transaksi?santri_id=${activeChild?.id || idSantri}`;
-        // if (currentPage > 1) {
-        //     url += `&page=${currentPage}`;
-        // }
+        if (currentPage > 1) {
+            url += `&page=${currentPage}`;
+        }
         // // Handle search
         Object.keys(filters).forEach((key) => {
             if (filters[key]) {
