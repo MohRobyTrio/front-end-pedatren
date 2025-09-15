@@ -6,10 +6,12 @@ import { Navigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import useFetchProsesTagihan from "../../hooks/hooks_menu_pembayaran/ProsesTagihan";
-import { ModalAddOrEditTagihanSantri } from "../../components/modal/ModalFormProsesTagihan";
+import { ModalAddOrEditTagihanSantri, ModalDetailTagihanSantri } from "../../components/modal/ModalFormProsesTagihan";
 
 const ProsesTagihan = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [openDetail, setOpenDetail] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     const [prosesTagihanData, setProsesTagihanData] = useState("");
     const [feature, setFeature] = useState("");
     const { prosesTagihan, loadingProsesTagihan, error, fetchProsesTagihan, searchTerm, setSearchTerm } = useFetchProsesTagihan();
@@ -53,6 +55,7 @@ const ProsesTagihan = () => {
                         <FaSync className={`w-4 h-4 ${loadingProsesTagihan ? "animate-spin" : ""}`} />
                     </button> */}
                     <button onClick={() => {
+                        setSelectedId(null)
                         setFeature(1);
                         setProsesTagihanData(null);
                         setOpenModal(true);
@@ -62,6 +65,8 @@ const ProsesTagihan = () => {
             </div>
 
             <ModalAddOrEditTagihanSantri isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} />
+
+            <ModalDetailTagihanSantri isOpen={openDetail} onClose={() => setOpenDetail(false)} id={selectedId}/>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -113,7 +118,10 @@ const ProsesTagihan = () => {
                                         </tr>
                                     ) : (
                                         prosesTagihan.map((item, index) => (
-                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left cursor-pointer" onClick={() => {
+                                                setSelectedId(item.id)
+                                                setOpenDetail(true)
+                                            }}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
                                                 <td className="px-3 py-2 border-b">

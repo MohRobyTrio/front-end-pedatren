@@ -10,7 +10,6 @@ import useLogout from '../../hooks/Logout';
 import { Check, ChevronsUpDown, Filter, Users } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { OrbitProgress } from 'react-loading-indicators';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
 
 export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) => {
@@ -584,7 +583,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     );
 }
 
-export const ModalDetailSantriPotongan = ({ isOpen, onClose, id }) => {
+export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     console.log(id)
 
     const [data, setData] = useState(null)
@@ -594,7 +593,7 @@ export const ModalDetailSantriPotongan = ({ isOpen, onClose, id }) => {
         if (isOpen && id) {
             setLoading(true)
             const token = sessionStorage.getItem("token") || getCookie("token")
-            fetch(`${API_BASE_URL}santri-potongan/${id}`, {
+            fetch(`${API_BASE_URL}tagihan-santri/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -621,8 +620,26 @@ export const ModalDetailSantriPotongan = ({ isOpen, onClose, id }) => {
             day: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-            timeZone: "UTC"
+            timeZone: "UTC",
         })
+    }
+
+    const formatCurrency = (amount) => {
+        if (!amount) return "-"
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(Number.parseFloat(amount))
+    }
+
+    const getStatusBadge = (status) => {
+        const statusConfig = {
+            pending: { label: "Pending", class: "bg-yellow-100 text-yellow-800" },
+            lunas: { label: "Lunas", class: "bg-green-100 text-green-800" },
+            terlambat: { label: "Terlambat", class: "bg-red-100 text-red-800" },
+        }
+        const config = statusConfig[status] || { label: status, class: "bg-gray-100 text-gray-800" }
+        return <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.class}`}>{config.label}</span>
     }
 
     return (
@@ -650,54 +667,120 @@ export const ModalDetailSantriPotongan = ({ isOpen, onClose, id }) => {
                         leaveFrom="scale-100 opacity-100"
                         leaveTo="scale-95 opacity-0"
                     >
-                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-2xl w-full h-full relative max-h-[90vh] flex flex-col">
-                            <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
+                        <Dialog.Panel className="bg-white rounded-xl shadow-2xl max-w-4xl w-full relative max-h-[90vh] flex flex-col">
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                            >
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
                             </button>
 
                             <div className="pt-6 px-6">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Potongan Khusus</Dialog.Title>
+                                <Dialog.Title className="text-xl font-bold text-gray-900">Detail Tagihan Santri</Dialog.Title>
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-6 pt-4 text-left">
                                 {loading ? (
-                                    <div className="flex h-24 justify-center items-center">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                                    </div>
-                                ) : data ? (
                                     <div className="space-y-6">
-                                        <div className="bg-gray-50 p-4 rounded-lg">
-                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Informasi Potongan</h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                {[
-                                                    ["Nama Santri", data.data.nama_santri],
-                                                    ["Nama Potongan", data.data.nama_potongan],
-                                                    ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
-                                                    ["Berlaku", `${data.data.berlaku_dari} s.d. ${data.data.berlaku_sampai}`],
-                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
-                                                    ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
-                                                    ["Keterangan", data.data.keterangan],
-                                                ].map(([label, value]) => (
-                                                    <div key={label} className="flex flex-col">
-                                                        <span className="text-sm font-medium text-gray-600">{label}</span>
-                                                        <span className="text-sm text-gray-900 mt-1 break-words whitespace-pre-line">
-                                                            {value || "-"}
-                                                        </span>
+                                        <div className="bg-gray-50 p-6 rounded-xl">
+                                            <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {[...Array(6)].map((_, i) => (
+                                                    <div key={i} className="space-y-2">
+                                                        <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3"></div>
+                                                        <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
                                                     </div>
                                                 ))}
                                             </div>
+                                        </div>
+                                        <div className="bg-gray-50 p-6 rounded-xl">
+                                            <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                                            <div className="space-y-3">
+                                                {[...Array(3)].map((_, i) => (
+                                                    <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : data ? (
+                                    <div className="space-y-6">
+                                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
+                                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                                <div className="w-2 h-6 bg-blue-500 rounded-full mr-3"></div>
+                                                Informasi Tagihan
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {[
+                                                    ["Nama Tagihan", data.nama_tagihan],
+                                                    ["Tipe", data.tipe?.charAt(0).toUpperCase() + data.tipe?.slice(1).replace(/_/g, " ")],
+                                                    ["Nominal", formatCurrency(data.nominal)],
+                                                    ["Jatuh Tempo", formatDate(data.jatuh_tempo)],
+                                                    ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
+                                                    ["Tanggal Dibuat", formatDate(data.created_at)],
+                                                ].map(([label, value]) => (
+                                                    <div key={label} className="flex flex-col">
+                                                        <span className="text-sm font-semibold text-gray-600">{label}</span>
+                                                        <span className="text-base text-gray-900 mt-1 font-medium">{value || "-"}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
 
+                                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
+                                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                                <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
+                                                Detail Tagihan Santri ({data.tagihan_santri?.length || 0} santri)
+                                            </h3>
+                                            <div className="space-y-4">
+                                                {data.tagihan_santri?.map((item) => (
+                                                    <div key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                                                        <div className="flex justify-between items-start mb-3">
+                                                            <div>
+                                                                {/* <h4 className="font-semibold text-gray-900">Santri #{item.santri?.id}</h4> */}
+                                                                <p className="text-sm text-gray-600">NIS: {item.santri?.nis}</p>
+                                                            </div>
+                                                            {getStatusBadge(item.status)}
+                                                        </div>
+                                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                                                            <div>
+                                                                <span className="font-medium text-gray-600">Nominal:</span>
+                                                                <p className="text-gray-900 font-semibold">{formatCurrency(item.nominal)}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-600">Sisa:</span>
+                                                                <p className="text-gray-900 font-semibold">{formatCurrency(item.sisa)}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-600">Status Santri:</span>
+                                                                <p className="text-gray-900 capitalize">{item.santri?.status}</p>
+                                                            </div>
+                                                        </div>
+                                                        {item.keterangan && (
+                                                            <div className="mt-3 pt-3 border-t border-gray-100">
+                                                                <span className="font-medium text-gray-600">Keterangan:</span>
+                                                                <p className="text-gray-900 mt-1">{item.keterangan}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
-                                    <p className="text-red-500">Gagal memuat data potongan.</p>
+                                    <div className="flex flex-col items-center justify-center py-12">
+                                        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                            <FontAwesomeIcon icon={faTimes} className="text-red-500 text-xl" />
+                                        </div>
+                                        <p className="text-red-600 font-medium">Gagal memuat data tagihan</p>
+                                        <p className="text-gray-500 text-sm mt-1">Silakan coba lagi nanti</p>
+                                    </div>
                                 )}
                             </div>
 
-                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-6 py-3 rounded-b-lg border-t border-gray-300">
+                            <div className="pt-4 text-right bg-gray-50 px-6 py-4 rounded-b-xl border-t border-gray-200">
                                 <button
                                     onClick={onClose}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                                    className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
                                 >
                                     Tutup
                                 </button>
