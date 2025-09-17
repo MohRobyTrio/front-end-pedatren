@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { MoreVertical, Edit2, Trash2, Eye, EyeOff, Calendar, User } from "lucide-react"
+import { MoreVertical, Edit2, Trash2, Eye, EyeOff, Calendar } from "lucide-react"
 
 export const MessageCard = ({ message, onEdit, onDelete, onToggleRead }) => {
     const [showMenu, setShowMenu] = useState(false)

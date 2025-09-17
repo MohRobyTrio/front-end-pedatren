@@ -2,8 +2,10 @@ import { Fragment, useState } from 'react';
 import { Send } from 'lucide-react';
 import { Dialog, Transition } from '@headlessui/react';
 import { FaTimes } from 'react-icons/fa';
+import { useActiveChild } from './useActiveChild';
 
 export function NewMessageForm({ onSubmit, isOpen, onClose }) {
+    const { activeChild } = useActiveChild();
     const [form, setForm] = useState({
         studentName: '',
         subject: '',
@@ -46,24 +48,8 @@ export function NewMessageForm({ onSubmit, isOpen, onClose }) {
                         >
                             <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl text-left align-middle shadow-xl transition-all">
                                 {/* Header */}
-                                {/* <div className="flex items-center justify-between mb-6">
-                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                        Kirim Pesan Baru
-                                    </Dialog.Title>
-                                    <button
-                                        // onClick={handleClose}
-                                        // disabled={isUploading}
-                                        className="text-gray-400 hover:text-gray-600 transition-colors"
-                                    >
-                                        <FaTimes className="h-6 w-6" />
-                                    </button>
-                                </div> */}
                                 <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
                                     <div className="p-4 sm:p-6 border-b border-gray-200">
-                                        {/* <h2 className="flex items-center gap-2 text-lg sm:text-xl font-medium">
-                                            <Send className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
-                                            Kirim Pesan Baru
-                                        </h2> */}
                                         <div className="flex items-center justify-between">
                                             <Dialog.Title as="h3" className="flex items-center gap-2 text-lg sm:text-xl font-medium">
                                                 <Send className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
@@ -79,36 +65,20 @@ export function NewMessageForm({ onSubmit, isOpen, onClose }) {
                                     </div>
                                     <div className="p-4 sm:p-6">
                                         <form onSubmit={handleSubmit} className="space-y-4">
-                                            {/* <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <label htmlFor="newStudentName" className="block text-sm font-medium text-gray-700 mb-1">
-                                Nama Santri
-                            </label>
-                            <input
-                                id="newStudentName"
-                                type="text"
-                                placeholder="Masukkan nama santri"
-                                value={form.studentName}
-                                onChange={(e) => setForm(prev => ({ ...prev, studentName: e.target.value }))}
-                                required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="newSubject" className="block text-sm font-medium text-gray-700 mb-1">
-                                Subjek
-                            </label>
-                            <input
-                                id="newSubject"
-                                type="text"
-                                placeholder="Masukkan subjek pesan"
-                                value={form.subject}
-                                onChange={(e) => setForm(prev => ({ ...prev, subject: e.target.value }))}
-                                required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                            />
-                        </div>
-                    </div> */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                    Kirim kepada
+                                                </label>
+                                                <div className="px-3 py-3 border border-gray-200 bg-gray-50 rounded-md">
+                                                    <p className="text-gray-900 font-medium">
+                                                        {activeChild?.nama || "Santri"}
+                                                    </p>
+                                                    <p className="text-sm text-gray-600 mt-1">
+                                                        NIS: {activeChild?.nis || "-"}
+                                                    </p>
+                                                </div>
+                                            </div>
+
                                             <div>
                                                 <label htmlFor="newContent" className="block text-sm font-medium text-gray-700 mb-1">
                                                     Isi Pesan
