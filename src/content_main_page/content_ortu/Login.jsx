@@ -108,12 +108,17 @@ const LoginOrtuPage = () => {
                             id="phone"
                             type="text"
                             inputMode="numeric"
-                            onInput={(e) => {
-                                e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                            }}
+                            // onInput={(e) => {
+                            //     e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                            // }}
                             placeholder="Masukkan No HP"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                if (value.length <= 13) {
+                                    setPhone(value);
+                                }
+                            }}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
