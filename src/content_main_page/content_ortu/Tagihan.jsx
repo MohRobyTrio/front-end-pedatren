@@ -198,7 +198,7 @@ export const TagihanPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-blue-600">Total Tagihan</p>
-                                    <p className="text-3xl font-bold text-blue-700">{statistik?.total_tagihan}</p>
+                                    <p className="text-3xl font-bold text-blue-700">{statistik?.total_tagihan || 0}</p>
                                     <p className="text-sm text-gray-600">Tagihan keseluruhan</p>
                                 </div>
                                 <FileText className="h-12 w-12 text-blue-600" />
@@ -224,7 +224,7 @@ export const TagihanPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-emerald-600">Lunas</p>
-                                    <p className="text-3xl font-bold text-emerald-700">{statistik?.status_breakdown.lunas}</p>
+                                    <p className="text-3xl font-bold text-emerald-700">{statistik?.status_breakdown.lunas || 0}</p>
                                     <p className="text-sm text-gray-600">Tagihan terbayar</p>
                                 </div>
                                 <CheckCircle className="h-12 w-12 text-emerald-600" />
@@ -237,7 +237,7 @@ export const TagihanPage = () => {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-amber-600">Cicilan</p>
-                                    <p className="text-3xl font-bold text-amber-700">{statistik?.status_breakdown.sebagian}</p>
+                                    <p className="text-3xl font-bold text-amber-700">{statistik?.status_breakdown.sebagian || 0}</p>
                                     <p className="text-sm text-gray-600">Dibayar sebagian</p>
                                 </div>
                                 <Clock className="h-12 w-12 text-amber-600" />
@@ -284,7 +284,7 @@ export const TagihanPage = () => {
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <h4 className="font-semibold text-gray-900">{tagihan.tagihan.nama_tagihan}</h4>
-                                            <p className="text-sm text-gray-600">{tagihan.periode}</p>
+                                            <p className="text-sm text-gray-600">{tagihan.periode || "-"}</p>
                                             {/* <p className="text-xs text-gray-500 mt-1">{tagihan.deskripsi}</p> */}
                                         </div>
                                         <div className="flex items-center ml-2">
@@ -371,7 +371,7 @@ export const TagihanPage = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {tagihan.periode}
+                                                {tagihan.periode || "-"}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 <span className={isOverdue(tagihan.tanggal_jatuh_tempo) && tagihan.status !== "lunas" ? "text-red-600 font-medium" : "text-gray-900"}>
