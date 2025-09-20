@@ -30,7 +30,7 @@ const BankCard = ({ className }) => {
                 <div className="flex items-end justify-between">
                     <div>
                         <p className="text-sm uppercase text-white/70">Saldo</p>
-                        <p className="text-2xl font-bold">Rp. 100.000</p>
+                        <p className="text-2xl font-bold">Rp. 0</p>
                     </div>
                     {/* <div className="text-right">
                         <div className="text-xl font-bold italic">VISA</div>
