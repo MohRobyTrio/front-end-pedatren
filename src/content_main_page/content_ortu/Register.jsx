@@ -41,13 +41,13 @@ const RegisterOrtuPage = () => {
     const friendlyMessages = {
         no_kk: {
             required: "Nomor KK harus diisi",
-            string: "Nomor KK harus berupa teks",
+            string: "Nomor KK harus berupa angka",
             max: "Nomor KK maksimal 16 karakter",
             exists: "Nomor KK tidak terdaftar",
         },
         nis_anak: {
             required: "NIS anak harus diisi",
-            string: "NIS anak harus berupa teks",
+            string: "NIS anak harus berupa angka",
             max: "NIS anak maksimal 20 karakter",
             exists: "NIS anak tidak ditemukan",
         },
@@ -62,7 +62,6 @@ const RegisterOrtuPage = () => {
         },
         password: {
             required: "Password harus diisi",
-            string: "Password harus berupa teks",
             min: "Password minimal 8 karakter",
             confirmed: "Konfirmasi password tidak cocok",
         },
@@ -151,9 +150,15 @@ const RegisterOrtuPage = () => {
                         <input
                             id="no_kk"
                             type="text"
+                            inputMode="numeric"
                             placeholder="Masukkan No KK"
                             value={noKK}
-                            onChange={(e) => setNoKK(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                if (value.length <= 16) {
+                                    setNoKK(value);
+                                }
+                            }}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
@@ -166,8 +171,14 @@ const RegisterOrtuPage = () => {
                             id="nis_anak"
                             type="text"
                             placeholder="Masukkan NIS Anak"
+                            inputMode="numeric"
                             value={nisAnak}
-                            onChange={(e) => setNisAnak(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                if (value.length <= 16) {
+                                    setNisAnak(value);
+                                }
+                            }}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
@@ -181,7 +192,13 @@ const RegisterOrtuPage = () => {
                             type="text"
                             placeholder="Masukkan No HP"
                             value={noHP}
-                            onChange={(e) => setNoHP(e.target.value)}
+                            inputMode="numeric"
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                if (value.length <= 13) {
+                                    setNoHP(value);
+                                }
+                            }}
                             className="w-full border border-emerald-200 rounded-lg px-3 py-3 text-base focus:border-emerald-500 focus:ring focus:ring-emerald-200 outline-none"
                             disabled={loading}
                         />
