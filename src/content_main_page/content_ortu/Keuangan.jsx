@@ -695,7 +695,7 @@ export const KeuanganPage = () => {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                             {/* Outlet */}
-                                            <div>
+                                            {/* <div>
                                                 <label className="block text-xs font-medium text-gray-700 mb-1">Outlet</label>
                                                 <Select
                                                     value={filters.outlet_id}
@@ -717,7 +717,6 @@ export const KeuanganPage = () => {
                                                 )}
                                             </div>
 
-                                            {/* Kategori */}
                                             <div>
                                                 <label className="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
                                                 <Select
@@ -739,7 +738,7 @@ export const KeuanganPage = () => {
                                                 {menuKategori.length === 0 && (
                                                     <p className="text-xs text-gray-400 mt-1">Tidak ada kategori tersedia</p>
                                                 )}
-                                            </div>
+                                            </div> */}
 
 
                                             {/* Date From */}
