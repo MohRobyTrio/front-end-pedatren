@@ -59,6 +59,8 @@ import PresensiPage from './content_main_page/content_ortu/Presensi';
 import FeatureUnavailable from './content_main_page/FeatureUnavailable';
 import { TagihanPage } from './content_main_page/content_ortu/Tagihan';
 import { PesanPage } from './content_main_page/content_ortu/Pesan';
+import { CardScanPage } from './content_main_page/content_anjungan/ScanCard';
+import { PinEntryPage } from './content_main_page/content_anjungan/PinEntry';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -234,7 +236,10 @@ function App() {
     return (
         <Router>
             <RouteTracker>
+
                 <Routes>
+                    <Route path="/anjungan" element={<CardScanPage />} />
+                    <Route path="/pin-entry" element={<PinEntryPage />} />
                     {/* Public Route: Login hanya bisa diakses saat belum login */}
                     <Route element={<PublicRoute />}>
                         <Route path="/login" element={<LoginPage />} />

@@ -22,6 +22,7 @@ export const ModalAddOrEditVirtualAccount = ({ isOpen, onClose, data, refetchDat
     const [showSelectSantri, setShowSelectSantri] = useState(false);
     const { menuSantri } = useDropdownSantri();
     const [santri, setSantri] = useState("");
+    const [santriSelectionCancelled, setSantriSelectionCancelled] = useState(false)
 
     // state bank dropdown
     const [banks, setBanks] = useState([]);
@@ -118,6 +119,14 @@ export const ModalAddOrEditVirtualAccount = ({ isOpen, onClose, data, refetchDat
     }, [isOpen, feature, data, menuSantri]);
 
     useEffect(() => {
+        if (!isOpen) {
+            setSantri(null)
+            setSantriSelectionCancelled(false)
+            setShowSelectSantri(false)
+        }
+    }, [isOpen])
+
+    useEffect(() => {
         if (santri) {
             setFormData((prev) => ({
                 ...prev,
@@ -125,6 +134,23 @@ export const ModalAddOrEditVirtualAccount = ({ isOpen, onClose, data, refetchDat
             }));
         }
     }, [santri]);
+
+    useEffect(() => {
+        if (feature !== 1) return
+        if (isOpen && (santri === null || santri === "")) {
+            setShowSelectSantri(true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, feature])
+
+    useEffect(() => {
+        if (feature !== 1) return
+        // Only close modal if santri selection was explicitly cancelled and modal is not showing santri selector
+        if (!showSelectSantri && (santri === null || santri === "") && santriSelectionCancelled) {
+            onClose?.()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showSelectSantri, santri, feature, santriSelectionCancelled])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -411,8 +437,13 @@ export const ModalAddOrEditVirtualAccount = ({ isOpen, onClose, data, refetchDat
             {/* Modal pilih santri */}
             <ModalSelectSantri
                 isOpen={showSelectSantri}
-                onClose={() => setShowSelectSantri(false)}
-                onSantriSelected={(s) => setSantri(s)}
+                onClose={() => {
+                    setShowSelectSantri(false)
+                    if (!santri) {
+                        setSantriSelectionCancelled(true)
+                    }
+                }}
+                onSantriSelected={(santri) => setSantri(santri)}
                 list={2}
             />
         </Transition>
