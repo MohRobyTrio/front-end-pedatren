@@ -172,7 +172,7 @@ export const ProfilPage = () => {
                                 <User className="w-16 h-16 text-blue-600" />
                             )}
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">{santriData.nama}</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">{santriData.nama || "-"}</h2>
                         <div className="space-y-3">
                             {/* <span className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                                 Aktif
@@ -182,10 +182,10 @@ export const ProfilPage = () => {
                                     <span className="font-medium">ID:</span> {santriData.santri_id}
                                 </p> */}
                                 <p>
-                                    <span className="font-medium">NIK/No. Passport:</span> {santriData.identitas}
+                                    <span className="font-medium">NIK/No. Passport:</span> {santriData.identitas || "-"}
                                 </p>
                                 <p>
-                                    <span className="font-medium">NIS:</span> {activeChild.nis}
+                                    <span className="font-medium">NIS:</span> {activeChild.nis || "-"}
                                 </p>
                             </div>
                         </div>
@@ -206,53 +206,69 @@ export const ProfilPage = () => {
                             </div> */}
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Jenis Kelamin</label>
-                                <p className="text-base text-gray-800">{getGenderText(santriData.jenis_kelamin)}</p>
+                                <p className="text-base text-gray-800">{getGenderText(santriData.jenis_kelamin) || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Anak Ke</label>
-                                <p className="text-base text-gray-800">{santriData.anak_ke}</p>
+                                <p className="text-base text-gray-800">{santriData.anak_ke || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                                     Tempat, Tanggal Lahir
                                 </label>
                                 <p className="text-base text-gray-800">
-                                    {santriData.tempat_lahir}, {formatTanggal(santriData.tanggal_lahir)}
+                                    {[
+                                        santriData?.tempat_lahir || null,
+                                        santriData?.tanggal_lahir ? formatTanggal(santriData.tanggal_lahir) : null,
+                                    ]
+                                        .filter(Boolean) // buang null/undefined/empty string
+                                        .join(", ")}
                                 </p>
-                                <p className="text-sm text-blue-600 font-medium">Usia: {santriData.umur} tahun</p>
+                                <p className="text-sm text-blue-600 font-medium">
+                                    Usia: {santriData?.umur || "-"} tahun
+                                </p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Wilayah</label>
-                                <p className="text-base text-gray-800">{santriData.wilayah}</p>
+                                <p className="text-base text-gray-800">{santriData.wilayah || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Blok</label>
-                                <p className="text-base text-gray-800">{santriData.blok}</p>
+                                <p className="text-base text-gray-800">{santriData.blok || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Kamar</label>
-                                <p className="text-base text-gray-800">{santriData.kamar}</p>
+                                <p className="text-base text-gray-800">{santriData.kamar || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Lembaga</label>
-                                <p className="text-base text-gray-800">{santriData.lembaga}</p>
+                                <p className="text-base text-gray-800">{santriData.lembaga || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Jurusan</label>
-                                <p className="text-base text-gray-800">{santriData.jurusan}</p>
+                                <p className="text-base text-gray-800">{santriData.jurusan || "-"}</p>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Kelas</label>
                                 <p className="text-base text-gray-800">
-                                    {santriData.kelas} - {santriData.rombel}
+                                    {[
+                                        santriData?.kelas || null,
+                                        santriData?.rombel || null
+                                    ].filter(Boolean).join(" - ") || "-"}
                                 </p>
                             </div>
+
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center">
                                     <MapPin className="mr-2 h-4 w-4" /> Alamat
                                 </label>
                                 <p className="text-base text-gray-800">
-                                    {santriData.kecamatan}, {santriData.kabupaten}, {santriData.provinsi}, {santriData.negara}
+                                    {[
+                                        santriData?.kecamatan || null,
+                                        santriData?.kabupaten || null,
+                                        santriData?.provinsi || null,
+                                        santriData?.negara || null
+                                    ].filter(Boolean).join(", ") || "-"}
                                 </p>
                             </div>
                         </div>
@@ -280,7 +296,7 @@ export const ProfilPage = () => {
                                     >
                                         <User className={`h-5 w-5 ${ortu.status.includes("ayah") ? "text-blue-600" : "text-pink-600"}`} />
                                     </div>
-                                    <h4 className="text-lg font-bold text-gray-800 capitalize">{ortu.status}</h4>
+                                    <h4 className="text-lg font-bold text-gray-800 capitalize">{ortu.status || "-"}</h4>
                                     {ortu.wali === 1 && (
                                         <span className="ml-2 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">
                                             Wali
@@ -291,38 +307,43 @@ export const ProfilPage = () => {
                                 <div className="grid gap-4 md:grid-cols-2">
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nama</label>
-                                        <p className="text-base font-medium text-gray-800">{ortu.nama}</p>
+                                        <p className="text-base font-medium text-gray-800">{ortu.nama || "-"}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">NIK</label>
-                                        <p className="text-base text-gray-700">{ortu.nik}</p>
+                                        <p className="text-base text-gray-700">{ortu.nik || "-"}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center">
                                             <Phone className="mr-1 h-3 w-3" /> Telepon
                                         </label>
-                                        <p className="text-base text-gray-700">{ortu.no_telepon}</p>
+                                        <p className="text-base text-gray-700">{ortu.no_telepon || "-"}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center">
                                             <Mail className="mr-1 h-3 w-3" /> Email
                                         </label>
-                                        <p className="text-base text-gray-700">{ortu.email}</p>
+                                        <p className="text-base text-gray-700">{ortu.email || "-"}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pekerjaan</label>
-                                        <p className="text-base text-gray-700">{ortu.pekerjaan}</p>
+                                        <p className="text-base text-gray-700">{ortu.pekerjaan || "-"}</p>
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Penghasilan</label>
-                                        <p className="text-base font-medium text-emerald-600">{formatRupiah(ortu.penghasilan)}</p>
+                                        <p className="text-base font-medium text-emerald-600">{formatRupiah(ortu.penghasilan) || "-"}</p>
                                     </div>
                                     <div className="md:col-span-2 space-y-2">
                                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center">
                                             <Home className="mr-1 h-3 w-3" /> Alamat
                                         </label>
                                         <p className="text-base text-gray-700">
-                                            {ortu.jalan}, {ortu.nama_kabupaten}, {ortu.nama_provinsi}, {ortu.nama_negara}
+                                            {[
+                                                ortu?.jalan || null,
+                                                ortu?.nama_kabupaten || null,
+                                                ortu?.nama_provinsi || null,
+                                                ortu?.nama_negara || null
+                                            ].filter(Boolean).join(", ") || "-"}
                                         </p>
                                     </div>
                                 </div>
