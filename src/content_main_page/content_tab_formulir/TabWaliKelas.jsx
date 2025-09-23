@@ -441,8 +441,10 @@ const TabWaliKelas = () => {
                                             onChange={(e) => setJmlMurid(e.target.value)}
                                             maxLength={50}
                                             placeholder="Masukkan Jumlah Murid"
-                                            className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
-                                            disabled={!canEdit || selectedWaliKelasDetail?.status_aktif == "tidak aktif"}
+                                            // className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedWaliKelasDetail.status_aktif == "tidak aktif" ? "bg-gray-200 text-gray-500" : ""}`}
+                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500  bg-gray-200 text-gray-500"
+                                            // disabled={!canEdit || selectedWaliKelasDetail?.status_aktif == "tidak aktif"}
+                                            disabled
                                         />
                                     </div>
 

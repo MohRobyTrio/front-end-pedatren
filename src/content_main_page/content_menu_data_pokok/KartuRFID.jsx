@@ -7,7 +7,7 @@ import DoubleScrollbarTable from "../../components/DoubleScrollbarTable";
 import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import useFetchKartuRFID from "../../hooks/hooks_menu_data_pokok/KartuRFID";
-import { ModalAddKartuRFID } from "../../components/modal/ModalFormKartuRFID";
+import { ModalAddKartuRFID, ModalDetailTransaksiSantri } from "../../components/modal/ModalFormKartuRFID";
 import Filters from "../../components/Filters";
 import SearchBar from "../../components/SearchBar";
 import DropdownNegara from "../../hooks/hook_dropdown/DropdownNegara";
@@ -19,6 +19,8 @@ import Pagination from "../../components/Pagination";
 
 const KartuRFID = () => {
     const [openModal, setOpenModal] = useState(false);
+    const [openDetailModal, setOpenDetailModal] = useState(false);
+    const [idSantri, setIdSantri] = useState(null);
     const [kartuData, setKartuData] = useState("");
     const [feature, setFeature] = useState("");
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
@@ -241,6 +243,12 @@ const KartuRFID = () => {
                     feature={feature}
                 />
 
+                <ModalDetailTransaksiSantri
+                    isOpen={openDetailModal}
+                    onClose={() => setOpenDetailModal(false)}
+                    id={idSantri}
+                />
+
                 {error ? (
                     <div className="text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
@@ -279,7 +287,10 @@ const KartuRFID = () => {
                                     </tr>
                                 ) : (
                                     karturfid.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
+                                            setIdSantri(item.santri_id);
+                                            setOpenDetailModal(true);
+                                        }}>
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">{item.nis}</td>

@@ -24,7 +24,7 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
             (jurusan && jurusan !== "") ||
             (kelas && kelas !== "") ||
             (rombel && rombel !== "") ||
-            (watch("modalPegawai.jumlah_murid_wali") && watch("modalPegawai.jumlah_murid_wali") !== "") ||
+            // (watch("modalPegawai.jumlah_murid_wali") && watch("modalPegawai.jumlah_murid_wali") !== "") ||
             (watch("modalPegawai.periode_awal_wali") && watch("modalPegawai.periode_awal_wali") !== "");
 
         if (isWaliKelasDiisi) {
@@ -37,7 +37,7 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
         jurusan,
         kelas,
         rombel,
-        watch("modalPegawai.jumlah_murid_wali"),
+        // watch("modalPegawai.jumlah_murid_wali"),
         watch("modalPegawai.periode_awal_wali"),
         setValue
     ]);
@@ -115,7 +115,7 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
             <h1 className="text-red-500 italic font-semibold">* Silahkan isi form ini jika seorang Wali Kelas</h1>
             <Filters filterOptions={filterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} control={control} />
 
-            <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+            {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                 <label htmlFor="jumlah_murid_wali" className="md:w-1/4 text-black">
                     Jumlah Murid Wali
                 </label>
@@ -136,7 +136,7 @@ const FormWaliKelas = ({ register, watch, setValue, control, activeTab }) => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Tanggal Mulai Karyawan (nullable|date) */}
             <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
