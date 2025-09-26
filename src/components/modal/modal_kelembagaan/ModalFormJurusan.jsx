@@ -46,6 +46,7 @@ export const ModalAddOrEditJurusan = ({ isOpen, onClose, data, refetchData }) =>
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                handleFilterChangeLembaga({ lembaga: "" });
                 setFormData({
                     nama_jurusan: "",
                     lembaga_id: "",

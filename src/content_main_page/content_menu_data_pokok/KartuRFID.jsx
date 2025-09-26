@@ -309,7 +309,8 @@ const KartuRFID = () => {
                                             <td className="px-3 py-2 border-b">{item.tanggal_expired}</td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         setKartuData(item);
                                                         setFeature(2);
                                                         setOpenModal(true);
@@ -319,7 +320,10 @@ const KartuRFID = () => {
                                                     <FaEdit />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(item.id)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(item.id)
+                                                    }}
                                                     className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
                                                 >
                                                     <FaTrash />
