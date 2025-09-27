@@ -286,7 +286,7 @@ const Dashboard = () => {
                     {/* Header kiri */}
                     <div className="flex items-center gap-3 sm:gap-4">
                         <div className="relative">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0F1F40FF] rounded-2xl flex items-center justify-center shadow-lg">
                                 <FontAwesomeIcon icon={faChartLine} className="text-base sm:text-lg text-white" />
                             </div>
                             <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -303,7 +303,7 @@ const Dashboard = () => {
                     <button
                         onClick={refreshData}
                         disabled={loading}
-                        className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                        className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-[#0F1F40FF] hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-xl sm:rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
                         title={loading ? "Memuat data..." : "Refresh data"}
                     >
                         <FontAwesomeIcon

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { IdCard, Table } from "lucide-react";
 import useDropdownSantri from "../../hooks/hook_dropdown/DropdownSantri";
-import { FaFileImage, FaFilePdf, FaIdCard, FaLayerGroup , FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 
 export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit, currentPage, fields = [], endpoint }) => {
     const { clearAuthData } = useLogout();
@@ -19,10 +19,10 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
     const [allPages, setAllPages] = useState(false);
     const [activeTab, setActiveTab] = useState('data');
     const [santriQuery, setSantriQuery] = useState('');
-    const [errors, setErrors] = useState({});
+    // const [errors, setErrors] = useState({});
     const [exportType, setExportType] = useState('all');
-    const [exportFormat, setExportFormat] = useState('image');
-    const [cardSide, setCardSide] = useState('front');
+    // const [exportFormat, setExportFormat] = useState('image');
+    // const [cardSide, setCardSide] = useState('front');
     const [formData, setFormData] = useState({
         santri_ids: [],
     });
@@ -155,6 +155,104 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
 
     };
 
+    const handleExportCard = async () => {
+        const token = sessionStorage.getItem("token") || getCookie("token");
+
+        if (exportType === "selected" && selectedSantri.length === 0) {
+            Swal.fire({
+                icon: "warning",
+                title: "Pilih Santri",
+                text: "Anda harus memilih minimal 1 santri untuk export.",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK",
+            });
+            return;
+        }
+
+        try {
+            Swal.fire({
+                background: "transparent",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+                customClass: {
+                    popup: "p-0 shadow-none border-0 bg-transparent"
+                }
+            });
+
+            if (activeTab === "card") {
+                // ===== Export ID Card =====
+                const params = new URLSearchParams();
+
+                if (exportType === "selected" && formData.santri_ids.length > 0) {
+                    formData.santri_ids.forEach(id => params.append("santri_ids[]", id));
+                }
+
+                const response = await fetch(
+                    `${API_BASE_URL}id-card/kanzus?${params.toString()}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
+                );
+
+                Swal.close();
+                if (!response.ok) throw new Error("Gagal export ID Card");
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "id_card_kanzus.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                return;
+            }
+
+            // ===== Export Data (Excel) =====
+            const baseUrl = `${API_BASE_URL}${endpoint}`;
+            const params = new URLSearchParams();
+
+            // append filters dsb sesuai code lama...
+            if (filters?.status) params.append("status", filters.status);
+            if (searchTerm) params.append("nama", searchTerm);
+            if (!allPages) {
+                if (limit) params.append("limit", limit);
+                if (currentPage) params.append("page", currentPage);
+            }
+            selectedFields.forEach(field => params.append("fields[]", field));
+            if (allPages) params.append("all", "true");
+
+            const response = await fetch(`${baseUrl}?${params.toString()}`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            Swal.close();
+            if (!response.ok) throw new Error("Export gagal");
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "export-data.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+        } catch (err) {
+            Swal.close();
+            console.error("Export gagal:", err);
+            alert("Export gagal: " + err.message);
+        }
+    };
+
+
     const handleSantriToggle = (santriId) => {
         setFormData(prev => ({
             ...prev,
@@ -241,6 +339,11 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                                         <IdCard className="h-4 w-4 mr-2" />
                                         Kartu
                                     </Button>
+                                </div>
+                                <div className="mt-2 text-sm text-gray-500 text-center">
+                                    {activeTab === "data"
+                                        ? "Export Data akan menghasilkan file Excel (.xlsx)"
+                                        : "Export Kartu akan menghasilkan file PDF (.pdf)"}
                                 </div>
                             </CardHeader>
 
@@ -344,30 +447,12 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                                                                 Hapus Semua
                                                             </button>
                                                         </div>
-                                                        {/* <div className="flex flex-wrap gap-2">
-                                                            {selectedSantri.map((santri) => (
-                                                                <span
-                                                                    key={santri.id}
-                                                                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-white text-indigo-800 border border-indigo-200 shadow-sm"
-                                                                >
-                                                                    <span>{santri.label}</span>
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => handleSantriToggle(santri.id)}
-                                                                        className="inline-flex items-center justify-center w-5 h-5 rounded-full hover:bg-indigo-100 transition-colors"
-                                                                    >
-                                                                        <FaTimes className="w-3 h-3" />
-                                                                    </button>
-                                                                </span>
-                                                            ))}
-                                                        </div> */}
                                                     </div>
                                                 )}
 
                                                 {/* Santri list */}
                                                 <div
-                                                    className={`max-h-56 overflow-y-auto border-2 rounded-xl ${errors.santri_ids ? "border-red-300" : "border-gray-200"
-                                                        } bg-gray-50`}
+                                                    className={`max-h-56 overflow-y-auto border-2 rounded-xl border-gray-200 bg-gray-50`}
                                                 >
                                                     {filteredSantri.length === 0 ? (
                                                         <div className="p-6 text-center text-gray-500">
@@ -406,15 +491,15 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                                                     )}
                                                 </div>
 
-                                                {errors.santri_ids && (
+                                                {/* {errors.santri_ids && (
                                                     <p className="text-sm text-red-600 font-medium">
                                                         {errors.santri_ids}
                                                     </p>
-                                                )}
+                                                )} */}
                                             </>
                                         )}
 
-                                        <div className="space-y-3">
+                                        {/* <div className="space-y-3">
                                             <label className="block text-sm font-semibold text-gray-800">
                                                 Sisi Kartu <span className="text-red-500">*</span>
                                             </label>
@@ -492,8 +577,8 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                                                     </div>
                                                 </label>
                                             </div>
-                                        </div>
-                                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                        </div> */}
+                                        {/* <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                                             <label className="block text-sm font-semibold text-gray-800 mb-2">
                                                 Ringkasan Export
                                             </label>
@@ -514,7 +599,7 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                                                     {exportFormat === 'image' ? 'Gambar (PNG)' : 'PDF'}
                                                 </p>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 )}
                                 {/* Garis bawah */}
@@ -529,10 +614,10 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                             <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
                                 <button
                                     type="submit"
-                                    onClick={handleExport}
+                                    onClick={() => activeTab == "data" ? handleExport() : handleExportCard()}
                                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm cursor-pointer"
                                 >
-                                    Export Excel
+                                    Export
                                 </button>
                                 <button
                                     type="button"

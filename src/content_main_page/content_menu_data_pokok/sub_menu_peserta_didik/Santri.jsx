@@ -12,7 +12,6 @@ import DropdownLembaga from "../../../hooks/hook_dropdown/DropdownLembaga";
 import useFetchSantri from "../../../hooks/hooks_menu_data_pokok/hooks_sub_menu_peserta_didik/Santri";
 import ModalDetail from "../../../components/modal/ModalDetail";
 import DoubleScrollbarTable from "../../../components/DoubleScrollbarTable";
-import { ModalExport } from "../../../components/modal/ModalExport";
 import { FaEdit, FaFileExport, FaFileImport, FaPlus } from "react-icons/fa";
 import Access from "../../../components/Access";
 import ModalImport from "../../../components/modal/ModalImport";
@@ -22,6 +21,7 @@ import { Link, Navigate } from "react-router-dom";
 import DropdownAngkatan from "../../../hooks/hook_dropdown/DropdownAngkatan";
 import useDropdownBerkas from "../../../hooks/hook_dropdown/DropdownBerkas";
 import { hasAccess } from "../../../utils/hasAccess";
+import { ModalExportSantri } from "../../../components/modal/ModalExportSantri";
 
 const Santri = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -368,7 +368,7 @@ const Santri = () => {
                     )
                 )}
 
-                <ModalExport isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/santri" />
+                <ModalExportSantri isOpen={openModalExport} onClose={() => setOpenModalExport(false)} filters={updatedFilters} searchTerm={searchTerm} limit={limit} currentPage={currentPage} fields={fieldsExports} endpoint="export/santri" />
 
                 {isModalOpen && (
                     <ModalDetail
