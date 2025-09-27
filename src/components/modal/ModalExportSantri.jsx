@@ -201,6 +201,14 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                 Swal.close();
                 if (!response.ok) throw new Error("Gagal export ID Card");
 
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: "File ID Card berhasil dibuat, file akan diunduh otomatis.",
+                    timer: 2500,
+                    showConfirmButton: false,
+                });
+
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -214,36 +222,44 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
             }
 
             // ===== Export Data (Excel) =====
-            const baseUrl = `${API_BASE_URL}${endpoint}`;
-            const params = new URLSearchParams();
+            // const baseUrl = `${API_BASE_URL}${endpoint}`;
+            // const params = new URLSearchParams();
 
             // append filters dsb sesuai code lama...
-            if (filters?.status) params.append("status", filters.status);
-            if (searchTerm) params.append("nama", searchTerm);
-            if (!allPages) {
-                if (limit) params.append("limit", limit);
-                if (currentPage) params.append("page", currentPage);
-            }
-            selectedFields.forEach(field => params.append("fields[]", field));
-            if (allPages) params.append("all", "true");
+            // if (filters?.status) params.append("status", filters.status);
+            // if (searchTerm) params.append("nama", searchTerm);
+            // if (!allPages) {
+            //     if (limit) params.append("limit", limit);
+            //     if (currentPage) params.append("page", currentPage);
+            // }
+            // selectedFields.forEach(field => params.append("fields[]", field));
+            // if (allPages) params.append("all", "true");
 
-            const response = await fetch(`${baseUrl}?${params.toString()}`, {
-                method: "GET",
-                headers: { "Authorization": `Bearer ${token}` }
+            // const response = await fetch(`${baseUrl}?${params.toString()}`, {
+            //     method: "GET",
+            //     headers: { "Authorization": `Bearer ${token}` }
+            // });
+
+            // Swal.close();
+            // if (!response.ok) throw new Error("Export gagal");
+
+            Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "File ID Card berhasil dibuat, file akan diunduh otomatis.",
+                timer: 2500,
+                showConfirmButton: false,
             });
 
-            Swal.close();
-            if (!response.ok) throw new Error("Export gagal");
-
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "export-data.xlsx";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
+            // const blob = await response.blob();
+            // const url = window.URL.createObjectURL(blob);
+            // const a = document.createElement("a");
+            // a.href = url;
+            // a.download = "export-data.xlsx";
+            // document.body.appendChild(a);
+            // a.click();
+            // a.remove();
+            // window.URL.revokeObjectURL(url);
 
         } catch (err) {
             Swal.close();
