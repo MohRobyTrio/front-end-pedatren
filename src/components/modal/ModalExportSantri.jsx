@@ -198,18 +198,20 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                     }
                 );
 
-                Swal.close();
-                if (!response.ok) throw new Error("Gagal export ID Card");
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Berhasil",
-                    text: "File ID Card berhasil dibuat, file akan diunduh otomatis.",
-                    timer: 2500,
-                    showConfirmButton: false,
-                });
+                if (!response.ok) {
+                    Swal.close();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: "Gagal membuat ID Card. Silakan coba lagi.",
+                    });
+                    return;
+                }
 
                 const blob = await response.blob();
+                Swal.close(); // tutup loading setelah file siap
+
+                // Trigger download
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
@@ -218,7 +220,14 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                 a.click();
                 a.remove();
                 window.URL.revokeObjectURL(url);
-                return;
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: "File ID Card berhasil dibuat, unduhan sedang berlangsung.",
+                    timer: 2500,
+                    showConfirmButton: false,
+                });
             }
 
             // ===== Export Data (Excel) =====
