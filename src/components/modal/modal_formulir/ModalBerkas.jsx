@@ -29,10 +29,10 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file && file.size > 2 * 1024 * 1024) {
-            alert("Ukuran file maksimal 2MB");
-            return;
-        }
+        // if (file && file.size > 2 * 1024 * 1024) {
+        //     alert("Ukuran file maksimal 2MB");
+        //     return;
+        // }
         setSelectedFile(file);
     };
 

@@ -50,6 +50,19 @@ export default function TabBerkas() {
         setModalOpen(true);
     };
 
+    const errorMessages = {
+        "validation.required": "Field ini wajib diisi",
+        "validation.exists": "Data tidak valid",
+        "validation.mimes": "Format file tidak diizinkan",
+        "validation.max.file": "Ukuran file melebihi batas maksimal",
+        "validation.image": "File harus berupa gambar",
+        // tambahkan sesuai kebutuhan
+    };
+
+    function mapErrorMessage(messages) {
+        return messages.map(msg => errorMessages[msg] || msg);
+    }
+
     const handleSubmit = async ({ formData, id }) => {
 
         const confirmResult = await Swal.fire({
@@ -96,22 +109,35 @@ export default function TabBerkas() {
                 });
             }
 
-            window.dispatchEvent(new CustomEvent('biodataUpdated', { 
-                detail: { biodata_id } 
+            window.dispatchEvent(new CustomEvent('biodataUpdated', {
+                detail: { biodata_id }
             }));
-            
+
             Swal.close();
             setModalOpen(false);
             fetchBerkas();
         } catch (err) {
             console.log(err.message);
 
-            await Swal.fire({
-                icon: "error",
-                title: "Gagal",
-                text: err.message || "Terjadi kesalahan",
-            });
+            if (err.type === "validation") {
+                let pesan = "";
+                for (const [field, messages] of Object.entries(err.data)) {
+                    const friendly = mapErrorMessage(messages);
+                    pesan += friendly.join("\n") + "\n";
+                }
 
+                await Swal.fire({
+                    icon: "error",
+                    title: "Validasi Gagal",
+                    text: pesan.trim(),
+                });
+            } else {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: err.message || "Terjadi kesalahan",
+                });
+            }
         }
     };
 
@@ -128,8 +154,8 @@ export default function TabBerkas() {
             </div>
 
             {loading && <div className="flex justify-center items-center mt-4">
-                                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
-                            </div>}
+                <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+            </div>}
             {error && <p className="text-red-500">{error}</p>}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -169,7 +195,7 @@ export default function TabBerkas() {
 
                         {/* Preview Gambar atau Ikon */}
                         <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                            {berkas.file_path && isImage(berkas.file_path) && !imgErrorMap[berkas.file_path]  ? (
+                            {berkas.file_path && isImage(berkas.file_path) && !imgErrorMap[berkas.file_path] ? (
                                 <img
                                     src={berkas.file_path}
                                     alt={berkas.nama_jenis_berkas || 'berkas'}
