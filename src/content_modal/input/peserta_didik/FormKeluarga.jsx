@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const FormKeluarga = ({ register, setValue, keluargaForm }) => {
     const {
@@ -11,6 +11,8 @@ const FormKeluarga = ({ register, setValue, keluargaForm }) => {
     const isLainnyaAyah = dropdownValue.ayah == "Lainnya";
     const isLainnyaIbu = dropdownValue.ibu == "Lainnya";
     const isLainnyaWali = dropdownValue.wali == "Lainnya";
+    const [pilihanWali, setPilihanWali] = useState(""); // "ayah" | "ibu" | "lainnya"
+
 
     // Salin nilai input lainnya ke pekerjaan_ayah
     useEffect(() => {
@@ -183,44 +185,6 @@ const FormKeluarga = ({ register, setValue, keluargaForm }) => {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="pekerjaan_ayah" className="md:w-1/4 text-black">
-                        Pekerjaan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="pekerjaan_ayah"
-                                name="pekerjaan_ayah"
-                                type="text"
-                                placeholder="Masukkan Pekerjaan Ayah"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.pekerjaan_ayah", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="penghasilan_ayah" className="md:w-1/4 text-black">
-                        Penghasilan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="penghasilan_ayah"
-                                name="penghasilan_ayah"
-                                type="number"
-                                placeholder="1.000.000"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.penghasilan_ayah", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div> */}
 
                 {/* Pekerjaan */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
@@ -452,44 +416,6 @@ const FormKeluarga = ({ register, setValue, keluargaForm }) => {
                     </div>
                 </div>
 
-                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="pekerjaan_ibu" className="md:w-1/4 text-black">
-                        Pekerjaan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="pekerjaan_ibu"
-                                name="pekerjaan_ibu"
-                                type="text"
-                                placeholder="Masukkan Pekerjaan Ibu"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.pekerjaan_ibu", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="penghasilan_ibu" className="md:w-1/4 text-black">
-                        Penghasilan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="penghasilan_ibu"
-                                name="penghasilan_ibu"
-                                type="number"
-                                placeholder="1.000.000"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.penghasilan_ibu", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div> */}
-
                 {/* Pekerjaan */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="pekerjaan_ibu" className="md:w-1/4 text-black">Pekerjaan *</label>
@@ -581,7 +507,43 @@ const FormKeluarga = ({ register, setValue, keluargaForm }) => {
 
                 <hr className="border-t border-gray-500 mb-2 mt-8" />
                 <p className="font-bold text-xl">Data Wali</p>
+                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                    <p className="font-bold text-xl md:w-1/4 text-black">Data Wali</p>
+                    <div className="flex gap-4">
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="wali"
+                                value="ayah"
+                                checked={pilihanWali === "ayah"}
+                                onChange={(e) => setPilihanWali(e.target.value)}
+                            />
+                            Ayah
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="wali"
+                                value="ibu"
+                                checked={pilihanWali === "ibu"}
+                                onChange={(e) => setPilihanWali(e.target.value)}
+                            />
+                            Ibu
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="wali"
+                                value="lainnya"
+                                checked={pilihanWali === "lainnya"}
+                                onChange={(e) => setPilihanWali(e.target.value)}
+                            />
+                            Lainnya
+                        </label>
+                    </div>
+                </div> */}
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
+
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="nik_wali" className="md:w-1/4 text-black">
@@ -720,44 +682,6 @@ const FormKeluarga = ({ register, setValue, keluargaForm }) => {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="pekerjaan_wali" className="md:w-1/4 text-black">
-                        Pekerjaan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="pekerjaan_wali"
-                                name="pekerjaan_wali"
-                                type="text"
-                                placeholder="Masukkan Pekerjaan Wali"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.pekerjaan_wali", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <label htmlFor="penghasilan_wali" className="md:w-1/4 text-black">
-                        Penghasilan *
-                    </label>
-                    <div className="md:w-full md:max-w-md max-w-none">
-                        <div className="flex items-center rounded-md shadow-md bg-white pl-1 border border-gray-300 border-gray-500">
-                            <input
-                                id="penghasilan_wali"
-                                name="penghasilan_wali"
-                                type="number"
-                                placeholder="1.000.000"
-                                className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                {...register("modalPeserta.penghasilan_wali", { required: true })}
-                                required
-                            />
-                        </div>
-                    </div>
-                </div> */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="pekerjaan_wali" className="md:w-1/4 text-black">Pekerjaan *</label>
                     <div className="md:w-full md:max-w-md max-w-none">
