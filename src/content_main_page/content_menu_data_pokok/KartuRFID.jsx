@@ -287,10 +287,12 @@ const KartuRFID = () => {
                                     </tr>
                                 ) : (
                                     karturfid.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
-                                            setIdSantri(item.santri_id);
-                                            setOpenDetailModal(true);
-                                        }}>
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" 
+                                        // onClick={() => {
+                                        //     setIdSantri(item.santri_id);
+                                        //     setOpenDetailModal(true);
+                                        // }}
+                                        >
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nama}</td>
                                             <td className="px-3 py-2 border-b">{item.nis}</td>

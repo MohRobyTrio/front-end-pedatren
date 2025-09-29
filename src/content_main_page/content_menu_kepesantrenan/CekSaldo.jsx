@@ -374,6 +374,11 @@ const Scan = () => {
 
             if (e.key === "Enter") {
                 e.preventDefault();
+                if (idCard.length < 10) {
+                    console.log("Input terlalu pendek, kemungkinan bukan UID kartu");
+                    return;
+                }
+
                 console.log("Pathname CekSaldo:", location.pathname);
                 console.log("Submit ID Card:", idCard);
 
@@ -792,6 +797,12 @@ const Scan = () => {
                                                 value={pin}
                                                 onChange={(e) => setPin(e.target.value)}
                                                 placeholder="Masukkan PIN"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        e.preventDefault();
+                                                        handleSubmit();
+                                                    }
+                                                }}
                                                 maxLength="6"
                                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
                                             />

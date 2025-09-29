@@ -6,10 +6,10 @@ const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, 
     const handleChange = (e, onChange) => {
         const file = e.target.files[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            alert("Ukuran file maksimal 2MB");
-            return;
-        }
+        // if (file.size > 2 * 1024 * 1024) {
+        //     alert("Ukuran file maksimal 2MB");
+        //     return;
+        // }
         onFileChange(file);
         onChange(file); // penting: beritahu react-hook-form
     };
@@ -18,10 +18,10 @@ const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, 
         e.preventDefault();
         const file = e.dataTransfer.files[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            alert("Ukuran file maksimal 2MB");
-            return;
-        }
+        // if (file.size > 2 * 1024 * 1024) {
+        //     alert("Ukuran file maksimal 2MB");
+        //     return;
+        // }
         onFileChange(file);
         onChange(file); // penting: beritahu react-hook-form
     };
@@ -86,7 +86,7 @@ const FileDropInput = ({ id, label, required, selected, onRemove, onFileChange, 
                                     <p className="mb-2 text-sm text-gray-500">
                                         <span className="font-semibold">Klik untuk upload</span> atau drag & drop
                                     </p>
-                                    <p className="text-xs text-gray-500">PDF, JPG, PNG (max 2MB)</p>
+                                    <p className="text-xs text-gray-500">PDF, JPG, PNG</p>
                                 </div>
                             )}
 

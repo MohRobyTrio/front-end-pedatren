@@ -9,17 +9,17 @@ const DropdownWilayah = ({ withSisa = false } = {}) => {
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        const localData = sessionStorage.getItem("menuWilayah");
+    //     const localData = sessionStorage.getItem("menuWilayah");
 
-    if (localData) {
-      const parsed = JSON.parse(localData);
-            setData(parsed.wilayah);
-            setFilterWilayah({
-                wilayah: [{ value: "", label: "Semua Wilayah" }, ...parsed.wilayah.map(w => ({ value: w.id, label: `${w.nama_wilayah} (${w.kategori})`, nama: w.nama_wilayah }))],
-                    blok: [{ value: "", label: "Semua Blok" }],
-                    kamar: [{ value: "", label: "Semua Kamar" }]
-            });
-    } else {
+    // if (localData) {
+    //   const parsed = JSON.parse(localData);
+    //         setData(parsed.wilayah);
+    //         setFilterWilayah({
+    //             wilayah: [{ value: "", label: "Semua Wilayah" }, ...parsed.wilayah.map(w => ({ value: w.id, label: `${w.nama_wilayah} (${w.kategori})`, nama: w.nama_wilayah }))],
+    //                 blok: [{ value: "", label: "Semua Blok" }],
+    //                 kamar: [{ value: "", label: "Semua Kamar" }]
+    //         });
+    // } else {
         fetch(`${API_BASE_URL}dropdown/wilayah`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -44,7 +44,7 @@ const DropdownWilayah = ({ withSisa = false } = {}) => {
                     kamar: [{ value: "", label: "Semua Kamar" }]
                 });
             });
-        }
+        // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

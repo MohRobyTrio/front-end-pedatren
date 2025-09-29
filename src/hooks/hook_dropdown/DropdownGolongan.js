@@ -14,53 +14,53 @@ const DropdownGolongan = () => {
 
 
     useEffect(() => {
-        const localData = sessionStorage.getItem("menuGolongan");
+        // const localData = sessionStorage.getItem("menuGolongan");
 
-    if (localData) {   
-      const parsedData = JSON.parse(localData);
-        setGolonganData(parsedData);
+        // if (localData) {
+        //     const parsedData = JSON.parse(localData);
+        //     setGolonganData(parsedData);
 
-        // ⬅️ Tambahkan ini
-        setKategoriGolongan([
-            { label: "Kategori Golongan", value: "" },
-            ...parsedData.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
-        ]);
-    } else {
-        fetch(`${API_BASE_URL}dropdown/golongan`, {
+        //     // ⬅️ Tambahkan ini
+        //     setKategoriGolongan([
+        //         { label: "Kategori Golongan", value: "" },
+        //         ...parsedData.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
+        //     ]);
+        // } else {
+            fetch(`${API_BASE_URL}dropdown/golongan`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then((res) => res.json())
-            .then((data) => {
-                setKategoriGolongan([
-                    { label: "Kategori Golongan", value: "" },
-                    ...data.kategori_golongan.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
-                ]);
-                
-                sessionStorage.setItem("menuGolongan", JSON.stringify(data.kategori_golongan));
-                setGolonganData(data.kategori_golongan);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                setKategoriGolongan([{ label: "Kategori Golongan", value: "" }]);
-            });
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+                .then((res) => res.json())
+                .then((data) => {
+                    setKategoriGolongan([
+                        { label: "Kategori Golongan", value: "" },
+                        ...data.kategori_golongan.map(k => ({ value: k.id, label: k.kategoriGolongan_nama }))
+                    ]);
+
+                    sessionStorage.setItem("menuGolongan", JSON.stringify(data.kategori_golongan));
+                    setGolonganData(data.kategori_golongan);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setKategoriGolongan([{ label: "Kategori Golongan", value: "" }]);
+                });
+        // }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        if (!selectedKategori) {
-            setFilteredGolongan([{ label: "Golongan", value: "" }]);
-            setIsGolonganDisabled(true);
-        } else {
+        // if (!selectedKategori) {
+        //     setFilteredGolongan([{ label: "Golongan", value: "" }]);
+        //     setIsGolonganDisabled(true);
+        // } else {
             const golonganByKategori = golonganData.find(k => k.id == selectedKategori)?.golongan || [];
             setFilteredGolongan([
                 { label: "Golongan", value: "" },
                 ...golonganByKategori.map(g => ({ value: g.id, label: g.GolonganNama }))
             ]);
             setIsGolonganDisabled(false);
-        }
+        // }
     }, [selectedKategori, golonganData]);
 
     useEffect(() => {

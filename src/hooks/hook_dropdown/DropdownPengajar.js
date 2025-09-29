@@ -7,19 +7,19 @@ const useDropdownPengajar = () => {
   const token = sessionStorage.getItem("token") || getCookie("token");
 
   useEffect(() => {
-    const localData = sessionStorage.getItem("menuPengajar");
-    // console.log("Data dari sessionStorage:", localData);
+    // const localData = sessionStorage.getItem("menuPengajar");
+    // // console.log("Data dari sessionStorage:", localData);
 
-    if (localData) {
-      try {
-        const parsedData = JSON.parse(localData);
-        // console.log("Parsed sessionStorage data:", parsedData);
-        setMenuPengajar(parsedData);
-      } catch (error) {
-        console.error("Gagal parsing data dari sessionStorage:", error);
-        sessionStorage.removeItem("menuPengajar");
-      }
-    } else {
+    // if (localData) {
+    //   try {
+    //     const parsedData = JSON.parse(localData);
+    //     // console.log("Parsed sessionStorage data:", parsedData);
+    //     setMenuPengajar(parsedData);
+    //   } catch (error) {
+    //     console.error("Gagal parsing data dari sessionStorage:", error);
+    //     sessionStorage.removeItem("menuPengajar");
+    //   }
+    // } else {
       console.log("Mengambil data dari API...");
       fetch(`${API_BASE_URL}data-pokok/pengajar`, {
                 headers: {
@@ -65,7 +65,7 @@ const useDropdownPengajar = () => {
           console.error("Gagal mengambil data santri:", error);
           setMenuPengajar([{ label: "Pilih Pengajar", value: "", id: null }]);
         });
-    }
+    // }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

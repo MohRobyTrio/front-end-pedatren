@@ -9,17 +9,17 @@ const useDropdownSantri = () => {
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        const localData = sessionStorage.getItem("menuSantri");
+        // const localData = sessionStorage.getItem("menuSantri");
 
-        if (localData) {
-            try {
-                const parsedData = JSON.parse(localData);
-                setMenuSantri(parsedData);
-            } catch (error) {
-                console.error("Gagal parsing data dari sessionStorage:", error);
-                sessionStorage.removeItem("menuSantri");
-            }
-        } else {
+        // if (localData) {
+        //     try {
+        //         const parsedData = JSON.parse(localData);
+        //         setMenuSantri(parsedData);
+        //     } catch (error) {
+        //         console.error("Gagal parsing data dari sessionStorage:", error);
+        //         sessionStorage.removeItem("menuSantri");
+        //     }
+        // } else {
             fetch(`${API_BASE_URL}data-pokok/santri`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
@@ -69,22 +69,22 @@ const useDropdownSantri = () => {
                     console.error("Gagal mengambil data santri:", error);
                     setMenuSantri([{ label: "Pilih Santri", value: "", id: null }]);
                 });
-        }
+        // }
     }, [token]);
 
     // 🔽 Tambahan untuk menuSantriCatatan
     useEffect(() => {
-        const localDataCatatan = sessionStorage.getItem("menuSantriCatatan");
+        // const localDataCatatan = sessionStorage.getItem("menuSantriCatatan");
 
-        if (localDataCatatan) {
-            try {
-                const parsedData = JSON.parse(localDataCatatan);
-                setMenuSantriCatatan(parsedData);
-            } catch (error) {
-                console.error("Gagal parsing data menuSantriCatatan:", error);
-                sessionStorage.removeItem("menuSantriCatatan");
-            }
-        } else {
+        // if (localDataCatatan) {
+        //     try {
+        //         const parsedData = JSON.parse(localDataCatatan);
+        //         setMenuSantriCatatan(parsedData);
+        //     } catch (error) {
+        //         console.error("Gagal parsing data menuSantriCatatan:", error);
+        //         sessionStorage.removeItem("menuSantriCatatan");
+        //     }
+        // } else {
             fetch(`${API_BASE_URL}dropdown/anakasuhcatatan`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
@@ -113,7 +113,7 @@ const useDropdownSantri = () => {
                     console.error("Gagal mengambil data santri catatan:", error);
                     setMenuSantriCatatan([{ label: "Pilih Santri Catatan", value: "", id: null }]);
                 });
-        }
+        // }
     }, [token]);
 
     useEffect(() => {

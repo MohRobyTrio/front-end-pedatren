@@ -121,6 +121,7 @@ export default function TabBerkas() {
 
             if (err.type === "validation") {
                 let pesan = "";
+                // eslint-disable-next-line no-unused-vars
                 for (const [field, messages] of Object.entries(err.data)) {
                     const friendly = mapErrorMessage(messages);
                     pesan += friendly.join("\n") + "\n";

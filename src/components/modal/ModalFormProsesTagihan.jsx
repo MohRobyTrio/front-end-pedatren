@@ -200,7 +200,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: error.message || "Terjadi kesalahan saat mengirim data.",
+                text: "Terjadi kesalahan saat mengirim data.",
             });
         }
     };

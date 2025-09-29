@@ -7,15 +7,15 @@ const DropdownGolonganGabungan = () => {
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        const localData = sessionStorage.getItem("menuGolonganGabungan");
+        // const localData = sessionStorage.getItem("menuGolonganGabungan");
 
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setGabunganList([
-                { id: "", GolonganNama: "Pilih Golongan" },
-                ...parsedData
-            ]);
-        } else {
+        // if (localData) {
+        //     const parsedData = JSON.parse(localData);
+        //     setGabunganList([
+        //         { id: "", GolonganNama: "Pilih Golongan" },
+        //         ...parsedData
+        //     ]);
+        // } else {
             fetch(`${API_BASE_URL}dropdown/golongan-gabungan`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ const DropdownGolonganGabungan = () => {
                     console.error("Error fetching gabungan golongan:", err);
                     setGabunganList([{ id: "", GolonganNama: "Pilih Golongan" }]);
                 });
-        }
+        // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

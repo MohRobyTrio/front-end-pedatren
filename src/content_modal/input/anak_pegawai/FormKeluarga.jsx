@@ -138,8 +138,13 @@ const FormKeluargaAnakPegawai = ({ register, setValue, keluargaForm }) => {
                             <input
                                 id="no_telepon_ayah"
                                 name="no_telepon_ayah"
-                                type="number"
-                                placeholder="+62"
+                                type="text"
+                                maxLength={14}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalAnakPegawai.no_telepon_ayah", { required: true })}
                                 required
@@ -401,8 +406,13 @@ const FormKeluargaAnakPegawai = ({ register, setValue, keluargaForm }) => {
                             <input
                                 id="no_telepon_ibu"
                                 name="no_telepon_ibu"
-                                type="number"
-                                placeholder="+62"
+                                type="text"
+                                maxLength={14}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalAnakPegawai.no_telepon_ibu", { required: true })}
                                 required
@@ -665,8 +675,13 @@ const FormKeluargaAnakPegawai = ({ register, setValue, keluargaForm }) => {
                             <input
                                 id="no_telepon_wali"
                                 name="no_telepon_wali"
-                                type="number"
-                                placeholder="+62"
+                                type="text"
+                                maxLength={14}
+                                inputMode="numeric"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                }}
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalAnakPegawai.no_telepon_wali", { required: true })}
                                 required
