@@ -168,7 +168,7 @@ export default function ModalBerkas({ isOpen, onClose, onSubmit, initialData }) 
                                                     <p className="mb-2 text-sm text-gray-500">
                                                         <span className="font-semibold">Klik untuk upload</span> atau drag & drop
                                                     </p>
-                                                    <p className="text-xs text-gray-500">PDF, JPG, PNG (max 2MB)</p>
+                                                    <p className="text-xs text-gray-500">PDF, JPG, PNG</p>
                                                 </div>
                                             )}
 
