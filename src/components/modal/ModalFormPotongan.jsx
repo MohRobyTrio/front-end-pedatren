@@ -330,16 +330,37 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                     </label>
                                                     <div className="relative">
                                                         <input
-                                                            type="number"
                                                             id="nilai"
-                                                            value={formData.nilai}
-                                                            onChange={(e) => setFormData(prev => ({ ...prev, nilai: e.target.value }))}
+                                                            type="text"
+                                                            inputMode="numeric"
+                                                            onInput={(e) => {
+                                                                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                            }}
+                                                            value={
+                                                                formData.jenis === "nominal"
+                                                                    ? formData.nilai
+                                                                        ? new Intl.NumberFormat("id-ID").format(formData.nilai)
+                                                                        : ""
+                                                                    : formData.nilai
+                                                            }
+                                                            onChange={(e) => {
+                                                                const rawValue = e.target.value.replace(/\./g, ""); // hapus titik pemisah ribuan
+                                                                const val = rawValue === "" ? "" : parseInt(rawValue, 10);
+
+                                                                if (formData.jenis === "persentase") {
+                                                                    // batasi max 100
+                                                                    if (val === "" || val <= 100) {
+                                                                        setFormData((prev) => ({ ...prev, nilai: val.toString() }));
+                                                                    }
+                                                                } else {
+                                                                    // simpan nilai mentah (angka tanpa format)
+                                                                    setFormData((prev) => ({ ...prev, nilai: val || "" }));
+                                                                }
+                                                            }}
                                                             className={`w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none
-                                                                ${formData.jenis === 'nominal' ? 'pl-12' : 'pr-8'}`}
-                                                            placeholder={formData.jenis === 'persentase' ? '0-100' : '0'}
+        ${formData.jenis === "nominal" ? "pl-12" : "pr-8"}`}
+                                                            placeholder={formData.jenis === "persentase" ? "0-100" : "0"}
                                                             min="0"
-                                                            max={formData.jenis === 'persentase' ? '100' : undefined}
-                                                            step={formData.jenis === 'persentase' ? '0.01' : '1000'}
                                                         />
                                                         {formData.jenis === 'nominal' && (
                                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

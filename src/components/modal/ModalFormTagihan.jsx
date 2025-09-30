@@ -249,28 +249,47 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label htmlFor="nominal" className="block text-gray-700">Nominal *</label>
-                                                    <input
-                                                        type="number"
-                                                        id="nominal"
-                                                        name="nominal"
-                                                        value={formData.nominal}
-                                                        onChange={(e) => setFormData({ ...formData, nominal: e.target.value })}
-                                                        min="0"
-                                                        step="0.01"
-                                                        required
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                                        placeholder="Masukkan Nominal"
-                                                    />
+                                                    <label htmlFor="nominal" className="block text-gray-700">
+                                                        Nominal *
+                                                    </label>
+                                                    <div className="relative">
+                                                        <input
+                                                            type="text"
+                                                            id="nominal"
+                                                            name="nominal"
+                                                            value={
+                                                                formData.nominal
+                                                                    ? new Intl.NumberFormat("id-ID").format(formData.nominal)
+                                                                    : ""
+                                                            }
+                                                            onChange={(e) => {
+                                                                // hapus titik pemisah ribuan
+                                                                const rawValue = e.target.value.replace(/\./g, "");
+                                                                const val = rawValue === "" ? "" : parseInt(rawValue, 10);
+
+                                                                setFormData({ ...formData, nominal: val || "" });
+                                                            }}
+                                                            min="0"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 pl-10 pr-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                            placeholder="Masukkan Nominal"
+                                                        />
+
+                                                        {/* Prefix Rp */}
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <span className="text-gray-500 text-sm">Rp</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                                 <div>
-                                                    <label htmlFor="jatuh_tempo" className="block text-gray-700">Jatuh Tempo</label>
+                                                    <label htmlFor="jatuh_tempo" className="block text-gray-700">Jatuh Tempo *</label>
                                                     <input
                                                         type="date"
                                                         id="jatuh_tempo"
                                                         name="jatuh_tempo"
                                                         value={formData.jatuh_tempo}
                                                         onChange={(e) => setFormData({ ...formData, jatuh_tempo: e.target.value })}
+                                                        required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
                                                 </div>

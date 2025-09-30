@@ -27,7 +27,7 @@ export const ModalAddOrEditSantriPotongan = ({ isOpen, onClose, initialData = {}
     const navigate = useNavigate();
     const { clearAuthData } = useLogout()
     const { menuSantri } = useDropdownSantri()
-    const { potongan } = useFetchPotongan()
+    const { potongan, fetchPotongan } = useFetchPotongan()
     const [errors, setErrors] = useState({});
     const [potonganQuery, setPotonganQuery] = useState('');
     const [santriQuery, setSantriQuery] = useState('');
@@ -38,6 +38,7 @@ export const ModalAddOrEditSantriPotongan = ({ isOpen, onClose, initialData = {}
     // Reset form when modal opens/closes
     useEffect(() => {
         if (isOpen) {
+            fetchPotongan()
             setFormData({
                 potongan_id: initialData?.potongan_id || '',
                 santri_ids: initialData?.santri_id ? [initialData.santri_id] : [],
@@ -48,6 +49,7 @@ export const ModalAddOrEditSantriPotongan = ({ isOpen, onClose, initialData = {}
             });
             setErrors({});
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, initialData]);
 
     // Filter potongan based on search query

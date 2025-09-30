@@ -29,11 +29,11 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
     const [inputLainnyaAyah, setInputLainnyaAyah] = useState("");
     const [dropdownValueAyah, setDropdownValueAyah] = useState("");
 
-    
+
     const [inputLainnyaIbu, setInputLainnyaIbu] = useState("");
     const [dropdownValueIbu, setDropdownValueIbu] = useState("");
-    
-    
+
+
     const [inputLainnyaWali, setInputLainnyaWali] = useState("");
     const [dropdownValueWali, setDropdownValueWali] = useState("");
 
@@ -53,7 +53,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
         if (activeTab === 1) {
             const nikAyah = watch("modalPeserta.nik_ayah");
             const nikIbu = watch("modalPeserta.nik_ibu");
-            
+
 
             if (nikAyah && nikIbu && nikAyah === nikIbu) {
                 Swal.fire({
@@ -68,7 +68,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
         const nextTab = activeTab + 1;
         if (!unlockedTabs.includes(nextTab)) {
-        setUnlockedTabs([...unlockedTabs, nextTab]);
+            setUnlockedTabs([...unlockedTabs, nextTab]);
         }
         setActiveTab(nextTab);
     };
@@ -80,16 +80,16 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
     const getFieldsForTab = (tabId) => {
         switch (tabId) {
-        case 0:
-            return [];
-        case 1:
-            return [];
-        case 2:
-            return [];
-        case 3:
-            return [];
-        default:
-            return [];
+            case 0:
+                return [];
+            case 1:
+                return [];
+            case 2:
+                return [];
+            case 3:
+                return [];
+            default:
+                return [];
         }
     };
 
@@ -100,9 +100,9 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
         if (missingFiles.length > 0) {
             Swal.fire({
-            icon: "warning",
-            title: "Berkas wajib diunggah",
-            html: missingFiles.map(f => `- ${f.label}`).join("<br>")
+                icon: "warning",
+                title: "Berkas wajib diunggah",
+                html: missingFiles.map(f => `- ${f.label}`).join("<br>")
             });
             return;
         }
@@ -135,9 +135,9 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
             // Append all form data (singkat)
             if (data.modalPeserta) {
                 Object.entries(data.modalPeserta).forEach(([key, val]) => {
-                if (!key.startsWith("file_")) {
-                    formData.append(key, val);
-                }
+                    if (!key.startsWith("file_")) {
+                        formData.append(key, val);
+                    }
                 });
             }
 
@@ -160,7 +160,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
             });
 
             for (var pair of formData.entries()) {
-                console.log(pair[0]+ ':', pair[1]);
+                console.log(pair[0] + ':', pair[1]);
             }
 
             const token = getCookie("token") || sessionStorage.getItem("token");
@@ -169,7 +169,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,
             });
-            
+
             Swal.close();
             const result = await response.json();
 
@@ -189,26 +189,28 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
 
             if (!response.ok) {
-                const errorMessages = result.errors
-                ? Object.entries(result.errors).map(
-                    ([field, messages]) =>
-                        `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
-                    )
-                : result.error
-                    ? [`- ${result.error}`]
-                        : [result.message || "Gagal mengirim data"];
+                if (result && (result.errors || result.error || result.message)) {
+                    const errorMessages = result.errors
+                        ? Object.entries(result.errors).map(
+                            ([field, messages]) =>
+                                `- ${field.replace(/_/g, " ")}: ${messages.join(", ")}`
+                        )
+                        : result.error
+                            ? [`- ${result.error}`]
+                            : [result.message || "Gagal mengirim data"];
 
-                await Swal.fire({
-                    icon: "error",
-                    title: "Gagal",
-                    html: `<div style="text-align: left;">${errorMessages.join(
-                        "<br>"
-                    )}</div>`,
-                });
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        html: `<div style="text-align: left;">${errorMessages.join("<br>")}</div>`,
+                    });
 
-                throw new Error(result.message || "Terjadi Kesalahan pada server");
-            }            
-            
+                    return;
+                } else {
+                    throw new Error("Terjadi kesalahan pada server");
+                }
+            }
+
 
             await Swal.fire({
                 icon: "success",
@@ -238,21 +240,21 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
     const onInvalidSubmit = (errors) => {
         console.log(errors);
-        
+
         const fileErrors = Object.keys(errors)
-        .filter((key) => key.startsWith("file_"))
-        .map((key) => {
-            const id = parseInt(key.split("_")[1], 10);
-            const berkas = jenisBerkasList.find((item) => item.id === id);
-            return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
-        });
+            .filter((key) => key.startsWith("file_"))
+            .map((key) => {
+                const id = parseInt(key.split("_")[1], 10);
+                const berkas = jenisBerkasList.find((item) => item.id === id);
+                return `- ${berkas?.label || `Berkas ${id}`} wajib diisi`;
+            });
 
         if (fileErrors.length > 0) {
-        Swal.fire({
-            icon: "warning",
-            title: "Berkas wajib diunggah",
-            html: `<pre style="text-align: left;">${fileErrors.join("<br>")}</pre>`,
-        });
+            Swal.fire({
+                icon: "warning",
+                title: "Berkas wajib diunggah",
+                html: `<pre style="text-align: left;">${fileErrors.join("<br>")}</pre>`,
+            });
         }
     };
 
@@ -274,7 +276,7 @@ export function useMultiStepFormPesertaDidik(onClose, jenisBerkasList, refetchDa
 
         reset({ modalPeserta: allFields });
         setActiveTab(0);               // kembali ke tab pertama
-        setUnlockedTabs([0]);  
+        setUnlockedTabs([0]);
     }
 
     return {
