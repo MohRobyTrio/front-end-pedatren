@@ -37,7 +37,23 @@ export const TagihanPage = () => {
     const formatTanggal = (dateString) => {
         if (!dateString) return "-";
 
-        const date = new Date(dateString);
+        let date;
+
+        // Cek format DD/MM/YYYY
+        if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+            const [day, month, year] = dateString.split("/");
+            date = new Date(`${year}-${month}-${day}`);
+        }
+        // Cek format YYYY-MM-DD (ISO short)
+        else if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+            date = new Date(dateString);
+        }
+        // Coba fallback langsung parse
+        else {
+            date = new Date(dateString);
+        }
+
+        // Validasi hasil date
         if (isNaN(date.getTime())) return "-";
 
         return date.toLocaleDateString("id-ID", {
@@ -45,7 +61,7 @@ export const TagihanPage = () => {
             month: "2-digit",
             year: "numeric",
         });
-    };
+    };  
 
     const getStatusColor = (status) => {
         switch (status) {

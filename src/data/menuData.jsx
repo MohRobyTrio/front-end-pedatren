@@ -187,7 +187,7 @@ export const menuSholat = [
 
 export const menuKepegawaianItems = [
     { id: "cpegawai", icon: "fa-briefcase", text: "Pegawai", link: "/pegawai", content: <ContainerPegawai />, access: "c_pegawai" },
-    { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai />, access: "anak_pegawai" },
+    // { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/anak-pegawai", content: <AnakPegawai />, access: "anak_pegawai" },
     // { id: "presensipegawai", icon: "fa-calendar-check", text: "Presensi", link: "/presensi-pegawai", content: <PresensiPegawai /> },
     { id: "kategorigolongan", icon: "fa-tags", text: "Kategori Golongan", link: "/kategori-golongan", content: <KategoriGolongan />, access: "kategori_golongan" },
     { id: "golongan", icon: "fa-layer-group", text: "Golongan", link: "/golongan", content: <Golongan />, access: "golongan" },
@@ -278,7 +278,8 @@ export const subPesertaDidik = [
     { id: "santri", text: "Santri", link: "/peserta-didik/santri", content: <Santri />, access: "santri" },
     { id: "pelajar", text: "Pelajar", link: "/peserta-didik/pelajar", content: <Pelajar />, access: "pelajar" },
     { id: "santri-non-domisili", text: "Non-Domisili", link: "/peserta-didik/non-domisili", content: <SantriNonDomisili />, access: "santri_non_domisili" },
-    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung />, access: "bersaudara_kandung" }
+    { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung />, access: "bersaudara_kandung" },
+    { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/peserta-didik/anak-pegawai", content: <AnakPegawai />, access: "anak_pegawai" },
 ];
 
 // export const jenisBerkasList = [

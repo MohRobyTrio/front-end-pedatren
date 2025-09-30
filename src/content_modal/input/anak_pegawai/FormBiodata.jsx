@@ -443,7 +443,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab,
                                 id="no_telepon"
                                 name="no_telepon"
                                 type="tel"
-                                maxLength={20}
+                                maxLength={14}
                                 inputMode="numeric"
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");
@@ -468,7 +468,7 @@ const FormBiodataAnakPegawai = ({ register, watch, setValue, control, activeTab,
                                 id="no_telepon_2"
                                 name="no_telepon_2"
                                 type="tel"
-                                maxLength={20}
+                                maxLength={14}
                                 inputMode="numeric"
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(/[^0-9]/g, "");

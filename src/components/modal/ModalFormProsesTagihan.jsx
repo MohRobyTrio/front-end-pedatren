@@ -23,7 +23,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     const navigate = useNavigate();
     const { clearAuthData } = useLogout()
     const { menuSantri } = useDropdownSantri()
-    const { tagihan } = useFetchTagihan()
+    const { tagihan, fetchTagihan } = useFetchTagihan()
     const [errors, setErrors] = useState({});
     const [tagihanQuery, setTagihanQuery] = useState('');
     const [santriQuery, setSantriQuery] = useState('');
@@ -34,6 +34,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
 
     useEffect(() => {
         if (isOpen) {
+            fetchTagihan()
             setFormData({
                 tagihan_id: '',
                 santri_ids: [],
@@ -42,6 +43,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
             });
             setErrors({});
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Filter tagihan based on search query
