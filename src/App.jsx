@@ -61,6 +61,8 @@ import { TagihanPage } from './content_main_page/content_ortu/Tagihan';
 import { PesanPage } from './content_main_page/content_ortu/Pesan';
 import { CardScanPage } from './content_main_page/content_anjungan/ScanCard';
 import { PinEntryPage } from './content_main_page/content_anjungan/PinEntry';
+import AppAnjungan from './content_main_page/content_anjungan/AppLayout';
+import TambahPesertaDidikPage from './content_main_page/PSB';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -240,25 +242,13 @@ function App() {
                 <Routes>
                     <Route path="/anjungan" element={<CardScanPage />} />
                     <Route path="/pin-entry" element={<PinEntryPage />} />
+                    <Route path="/dashboard-anjungan" element={<AppAnjungan />} />
                     {/* Public Route: Login hanya bisa diakses saat belum login */}
                     <Route element={<PublicRoute />}>
                         <Route path="/login" element={<LoginPage />} />
                         {/* <Route path="/register" element={<RegisterPage />} /> */}
                         <Route path="/forgot" element={<ForgotPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
-                        {/* <Route path="/login-ortu" element={<LoginOrtuPage />} />
-                        <Route path="/register-ortu" element={<RegisterOrtuPage />} />
-                        <Route path="/wali" element={<AppLayout />}>
-                            <Route index element={<Navigate to="/wali/home" replace />} />
-                            <Route path="/wali/home" element={<DashboardPage />} />
-                            <Route path="/wali/hafalan" element={<HafalanPage />} />
-                            <Route path="/wali/akademik" element={<AkademikPage />} />
-                            <Route path="/wali/keuangan" element={<KeuanganPage />} />
-                            <Route path="/wali/profil" element={<ProfilPage />} />
-                        </Route> */}
-
-
-
                     </Route>
 
                     <Route element={<PublicRouteOrtu />}>
@@ -357,6 +347,7 @@ function App() {
                             <Route path="/login-ortu" element={<LoginOrtuPage />} />
                             <Route path="/register-ortu" element={<RegisterOrtuPage />} />
                             <Route path="/export-img" element={<ExportPage />} />
+                            <Route path="/psb" element={<TambahPesertaDidikPage />} />
                             {/* <Route path="/presensi-kartu" element={<RFIDScanner />} /> */}
                         </Route>
                     </Route>

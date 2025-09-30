@@ -87,9 +87,11 @@ import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
 import PotonganKhusus from "../content_main_page/content_menu_pembayaran/PotonganKhusus";
 import ProsesTagihan from "../content_main_page/content_menu_pembayaran/ProsesTagihan";
+// import TambahPesertaDidikPage from "../content_main_page/PSB";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
+    // { id: "psb", icon: "fa-user-plus", text: "PSB", link: "/psb", content:<TambahPesertaDidikPage/> },
     // { id: "scanqrcode", icon: "fas fa-qrcode", text: "Scan QRCode", link: "/scanqrcode", content: <ScanQRCode /> },
     // { id: "formulir", icon: "fas fa-file-alt", text: "Formulir", link: "/formulir", content: <Formulir /> },
 ];

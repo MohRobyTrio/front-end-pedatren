@@ -15,6 +15,7 @@ import { ChevronsUpDown } from "lucide-react"
 export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, feature }) => {
     const { clearAuthData } = useLogout()
     const navigate = useNavigate()
+    const [selectedOption, setSelectedOption] = useState(""); // hanya untuk handle dropdown
     const id = data?.id
     const [formData, setFormData] = useState({
         nama: "",
@@ -79,7 +80,9 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                     status: true,
                     keterangan: "",
                     tagihan_ids: [],
+
                 })
+                setSelectedOption("")
             }
         }
     }, [isOpen, feature, data])
@@ -258,7 +261,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                             </Dialog.Title>
 
                                             <div className="space-y-4">
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
                                                         Nama Potongan <span className="text-error-500">*</span>
                                                     </label>
@@ -271,6 +274,47 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                                                         placeholder="Masukkan nama potongan"
                                                         maxLength={100}
                                                     />
+                                                </div> */}
+                                                {/* Dropdown */}
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Nama Potongan <span className="text-error-500">*</span>
+                                                    </label>
+                                                    <select
+                                                        value={selectedOption}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value;
+                                                            setSelectedOption(val);
+                                                            if (val !== "lainnya") {
+                                                                // kalau bukan lainnya, langsung set ke formData.nama
+                                                                setFormData((prev) => ({ ...prev, nama: val }));
+                                                            } else {
+                                                                // kalau lainnya, kosongkan dulu biar input di bawah yang isi
+                                                                setFormData((prev) => ({ ...prev, nama: "" }));
+                                                            }
+                                                        }}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                                    >
+                                                        <option value="">-- Pilih Nama Potongan --</option>
+                                                        <option value="anak pegawai">Anak Pegawai</option>
+                                                        <option value="khadam">Khadam</option>
+                                                        <option value="bersaudara">Bersaudara</option>
+                                                        <option value="lainnya">Lainnya...</option>
+                                                    </select>
+
+                                                    {/* Input tambahan hanya muncul kalau pilih lainnya */}
+                                                    {selectedOption === "lainnya" && (
+                                                        <input
+                                                            type="text"
+                                                            value={formData.nama}
+                                                            onChange={(e) =>
+                                                                setFormData((prev) => ({ ...prev, nama: e.target.value }))
+                                                            }
+                                                            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                                                            placeholder="Masukkan nama potongan lainnya"
+                                                            maxLength={100}
+                                                        />
+                                                    )}
                                                 </div>
 
                                                 {/* Jenis Field */}
