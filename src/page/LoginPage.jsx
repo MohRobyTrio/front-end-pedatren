@@ -42,7 +42,7 @@ const LoginPage = () => {
             if (lowerRoles.includes("ustadz")) {
                 sessionStorage.setItem("kepesantrenan", "true");
                 return navigate("/hafalan/tahfidz", { replace: true });
-            } else if (lowerRoles.includes("biktren")) {
+            } else if (lowerRoles.includes("biktren") || lowerRoles.includes("kamtib")) {
                 sessionStorage.setItem("kepesantrenan", "true");
                 return navigate("/perizinan", { replace: true });
             } else if (lowerRoles.includes("wali_asuh")) {

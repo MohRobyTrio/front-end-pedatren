@@ -411,6 +411,23 @@ const Scan = () => {
         _recordTransaction()
     }
 
+    const pinRef = useRef(null);
+
+
+    useEffect(() => {
+        console.log("PIN Ref:", pinRef.current);
+        console.log("Customer Data:", customerData);
+
+        // Fokus ke input PIN kalau customerData ada
+        if (customerData && pinRef.current) {
+            console.log("Fokus ke input PIN");
+            setTimeout(() => {
+                pinRef.current.focus();
+                pinRef.current.select(); // optional, langsung select text
+            }, 300);
+        }
+    }, [customerData]);
+
     useEffect(() => {
         console.log(customerData);
 
@@ -624,6 +641,7 @@ const Scan = () => {
                                         <div>
                                             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">PIN</label>
                                             <input
+                                                ref={pinRef}
                                                 type="password"
                                                 value={pin}
                                                 onChange={(e) => setPin(e.target.value)}

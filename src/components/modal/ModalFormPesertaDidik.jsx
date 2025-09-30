@@ -173,16 +173,7 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
 
                             </form>
 
-                            <div className="mt-4 pt-4 flex justify-between">
-                                {/* {activeTab < tabs.length - 1 && (
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center gap-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
-                                    >
-                                        <FaTimes />
-                                        Reset
-                                    </button>
-                                )} */}
+                            {/* <div className="mt-4 pt-4 flex justify-between">
                                 {activeTab > 0 && (
                                     <button
                                         onClick={prevStep}
@@ -223,7 +214,51 @@ export default function MultiStepModal({ isOpen, onClose, formState }) {
                                         </button>
                                     )}
                                 </div>
+                            </div> */}
+                            <div className="mt-4 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                {activeTab > 0 && (
+                                    <button
+                                        onClick={prevStep}
+                                        className="inline-flex items-center justify-center gap-2 rounded-md bg-gray-300 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 w-full sm:w-auto"
+                                    >
+                                        <FaArrowLeft />
+                                        Sebelumnya
+                                    </button>
+                                )}
+
+                                <div className="flex flex-col sm:flex-row sm:ml-auto gap-2 w-full sm:w-auto">
+                                    {activeTab < tabs.length && (
+                                        <button
+                                            type="button"
+                                            onClick={handleResetClick}
+                                            className="inline-flex items-center justify-center gap-2 rounded-md bg-red-500 px-3 sm:px-4 py-2 text-sm font-medium text-white hover:bg-red-600 w-full sm:w-auto"
+                                        >
+                                            <FaUndo />
+                                            Reset
+                                        </button>
+                                    )}
+                                    {activeTab < tabs.length - 1 ? (
+                                        <button
+                                            type="button"
+                                            onClick={nextStep}
+                                            className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-3 sm:px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 w-full sm:w-auto"
+                                        >
+                                            Selanjutnya
+                                            <FaArrowRight />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={handleSubmit(onValidSubmit, onInvalidSubmit)}
+                                            className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-3 sm:px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 w-full sm:w-auto"
+                                        >
+                                            <FaSave />
+                                            Simpan
+                                        </button>
+                                    )}
+                                </div>
                             </div>
+
                         </Dialog.Panel>
                     </Transition.Child>
                 </div>

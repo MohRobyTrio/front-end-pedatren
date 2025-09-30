@@ -14,7 +14,7 @@ export const rolesWithAccess = {
     kelembagaan: ['admin', 'superadmin'],
     kewilayahan: ['admin', 'superadmin'],
   kewaliasuhan: ['admin', 'superadmin','wali_asuh'],
-  kepesantrenan: ['admin', 'superadmin','ustadz'],
+  kepesantrenan: ['admin', 'superadmin','ustadz', 'biktren', 'kamtib'],
     hafalan: ['admin', 'superadmin', 'ustadz'],
     csholat: ['admin', 'superadmin', 'ustadz'],
   kepegawaian: ['admin', 'superadmin'],
@@ -91,10 +91,10 @@ export const rolesWithAccess = {
   user_outlet: ['admin', 'superadmin'],
   kategori: ['admin', 'superadmin'],
   belanja: ['admin', 'superadmin', 'petugas'],
-  saldo: ['admin', 'superadmin'],
-    cek_saldo: ['admin', 'superadmin'],
-    topup: ['admin', 'superadmin'],
-    tarik: ['admin', 'superadmin'],
+  saldo: ['admin', 'superadmin', 'petugas'],
+    cek_saldo: ['admin', 'superadmin', 'petugas'],
+    topup: ['admin', 'superadmin', 'petugas'],
+    tarik: ['admin', 'superadmin', 'petugas'],
 
   // Pembayaran
   bank: ['admin', 'superadmin'],

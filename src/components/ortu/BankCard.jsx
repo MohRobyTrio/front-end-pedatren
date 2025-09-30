@@ -1,8 +1,26 @@
+import { toast } from "sonner";
+import useFetchDashboardOrtu from "../../hooks/hooks_ortu/Dashboard";
 import { useActiveChild } from "./useActiveChild";
 
 // bankcard.jsx
 const BankCard = ({ className }) => {
     const { activeChild } = useActiveChild()
+    const { data, error, loading } = useFetchDashboardOrtu();
+
+    const formatRupiah = (value) => {
+        if (!value) return "-";
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+            // maximumFractionDigits: 0,
+        }).format(value);
+    };
+
+    if (error) {
+        toast.error("Gagal memuat saldo");
+    }
+
     return (
         <div
             className={`relative overflow-hidden rounded-2xl p-6 text-white 
@@ -23,18 +41,21 @@ const BankCard = ({ className }) => {
 
                 {/* Card Number */}
                 <div className="mb-4">
-                    <p className="text-lg font-mono tracking-wider">4756 3216 90</p>
+                    <p className="text-lg font-mono tracking-wider">{activeChild?.nis || "-"}</p>
                 </div>
 
                 {/* Balance + Brand */}
                 <div className="flex items-end justify-between">
                     <div>
                         <p className="text-sm uppercase text-white/70">Saldo</p>
-                        <p className="text-2xl font-bold">Rp. 0</p>
+                        <p className="text-2xl font-bold">{loading ? (
+                            <span className="inline-block h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        ) : error ? (
+                            "-"
+                        ) : (
+                            formatRupiah(parseFloat(data?.data?.saldo))
+                        )}</p>
                     </div>
-                    {/* <div className="text-right">
-                        <div className="text-xl font-bold italic">VISA</div>
-                    </div> */}
                 </div>
             </div>
         </div>
