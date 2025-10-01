@@ -69,6 +69,11 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     const selectedTagihan = mockTagihan.find(p => p.id == formData.tagihan_id);
     const selectedSantri = mockSantri.filter(s => formData.santri_ids.includes(s.id));
 
+    useEffect(() => {
+        console.log("data santri", selectedTagihan);
+
+    }, [selectedTagihan])
+
     const validateForm = () => {
         const newErrors = {};
 
@@ -258,6 +263,16 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     //     )
     // }
 
+    const formatKategori = (kategori) => {
+        const map = {
+            anak_pegawai: "Anak Pegawai",
+            bersaudara: "Bersaudara",
+            khadam: "Khadam",
+            umum: "Umum",
+        }
+        return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || kategori || "-"
+    }
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -333,6 +348,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                         <label className="block text-sm font-semibold text-gray-800">
                                             Jenis Tagihan <span className="text-red-500">*</span>
                                         </label>
+
                                         <Combobox
                                             value={formData.tagihan_id}
                                             onChange={(value) =>
@@ -343,13 +359,14 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                 {/* Input */}
                                                 <Combobox.Input
                                                     className={`w-full rounded-md border ${errors?.tagihan_id
-                                                        ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                                                        : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                            ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                                                            : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                                                         } bg-white py-2 px-3 text-sm text-gray-900 focus:outline-none transition-all duration-200`}
                                                     displayValue={() =>
                                                         selectedTagihan
-                                                            ? `${selectedTagihan.nama_tagihan} - ${formatCurrency(selectedTagihan.nominal)
-                                                            }`
+                                                            ? `${selectedTagihan.nama_tagihan} - ${formatCurrency(
+                                                                selectedTagihan.nominal
+                                                            )}`
                                                             : ""
                                                     }
                                                     onChange={(event) => setTagihanQuery(event.target.value)}
@@ -389,7 +406,8 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                                                 className={`block truncate ${selected ? "font-medium" : "font-normal"
                                                                                     }`}
                                                                             >
-                                                                                {option.nama_tagihan} - {formatCurrency(option.nominal)}
+                                                                                {option.nama_tagihan} -{" "}
+                                                                                {formatCurrency(option.nominal)}
                                                                             </span>
                                                                             {selected && (
                                                                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
@@ -405,7 +423,26 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                 </Transition>
                                             </div>
                                         </Combobox>
+
+                                        {/* Tambahan keterangan potongan */}
+                                        {selectedTagihan?.potongans?.length > 0 && (
+                                            <div className="mt-1 text-xs text-gray-600 border rounded-md p-2 bg-gray-50">
+                                                <p className="font-medium text-gray-800 mb-1">Potongan terkait:</p>
+                                                <ul className="list-disc list-inside space-y-0.5">
+                                                    {selectedTagihan.potongans.map((p) => (
+                                                        <li key={p.id}>
+                                                            {p.nama} ({formatKategori(p.kategori)}) -{" "}
+                                                            {p.jenis === "persentase"
+                                                                ? `${p.nilai}%`
+                                                                : formatCurrency(p.nilai)}
+                                                            {/* {p.keterangan && ` | ${p.keterangan}`} */}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
                                     </div>
+
 
                                     <div className="space-y-3">
                                         <label className="block text-sm font-semibold text-gray-800">
@@ -583,7 +620,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                     }
                                                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
                                                 />
-                                                <span className="text-sm text-gray-700"><span className="text-gray-900">Semua Santri ({menuSantri.length} santri)</span></span>
+                                                <span className="text-sm text-gray-700"><span className="text-gray-900">Semua Santri</span></span>
                                             </label>
                                         </div>
                                         {/* </div>

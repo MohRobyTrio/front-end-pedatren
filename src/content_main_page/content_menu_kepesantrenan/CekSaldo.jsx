@@ -375,7 +375,7 @@ const Scan = () => {
             if (e.key === "Enter") {
                 e.preventDefault();
                 if (idCard.length < 10) {
-                    console.log("Input terlalu pendek, kemungkinan bukan UID kartu");
+                    // console.log("Input terlalu pendek, kemungkinan bukan UID kartu");
                     return;
                 }
 
@@ -972,6 +972,7 @@ const Scan = () => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
+                    list={3}
                 />
             </div>
         </div>

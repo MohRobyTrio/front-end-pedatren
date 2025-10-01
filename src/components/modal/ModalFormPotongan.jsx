@@ -393,7 +393,7 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
             khadam: "Khadam",
             umum: "Umum",
         }
-        return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || "-"
+        return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || kategori || "-"
     }
 
     return (

@@ -271,8 +271,8 @@ const KartuRFID = () => {
                                     <th className="px-3 py-2 border-b">NIS</th>
                                     <th className="px-3 py-2 border-b">UID Kartu</th>
                                     <th className="px-3 py-2 border-b">Status</th>
-                                    <th className="px-3 py-2 border-b">Tanggal Terbit</th>
-                                    <th className="px-3 py-2 border-b">Tanggal Kadaluarsa</th>
+                                    {/* <th className="px-3 py-2 border-b">Tanggal Terbit</th>
+                                    <th className="px-3 py-2 border-b">Tanggal Kadaluarsa</th> */}
                                     <th className="px-3 py-2 border-b text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -309,8 +309,8 @@ const KartuRFID = () => {
                                                     {item.aktif ? "Aktif" : "Nonaktif"}
                                                 </span>
                                             </td>
-                                            <td className="px-3 py-2 border-b">{item.tanggal_terbit}</td>
-                                            <td className="px-3 py-2 border-b">{item.tanggal_expired}</td>
+                                            {/* <td className="px-3 py-2 border-b">{item.tanggal_terbit}</td>
+                                            <td className="px-3 py-2 border-b">{item.tanggal_expired}</td> */}
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <div className="flex justify-center items-center space-x-2">
                                                     <ToggleStatus

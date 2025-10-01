@@ -378,6 +378,10 @@ const Scan = () => {
 
             if (e.key === "Enter") {
                 e.preventDefault();
+                if (idCard.length < 10) {
+                    // console.log("Input terlalu pendek, kemungkinan bukan UID kartu");
+                    return;
+                }
                 console.log("Pathname Tarik:", location.pathname);
                 console.log("Submit ID Card:", idCard);
 
@@ -674,6 +678,12 @@ const Scan = () => {
 
                                                         setNominal(num);
                                                     }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            handleSubmit();
+                                                        }
+                                                    }}
                                                     placeholder="0"
                                                     className="w-full pl-9 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
                                                 />
@@ -723,6 +733,7 @@ const Scan = () => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
+                    list={3}
                 />
             </div>
         </div>

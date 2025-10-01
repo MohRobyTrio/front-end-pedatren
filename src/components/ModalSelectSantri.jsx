@@ -66,14 +66,18 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
                                             <tr>
                                                 <th className="p-2">NIS</th>
                                                 <th className="p-2">Nama</th>
-                                                <th className="p-2">Lembaga</th>
-                                                <th className="p-2">Wilayah</th>
-                                                <th className="p-2">Kamar</th>
+                                                {list !== 3 && (
+                                                    <>
+                                                        <th className="p-2">Lembaga</th>
+                                                        <th className="p-2">Wilayah</th>
+                                                        <th className="p-2">Kamar</th>
+                                                    </>
+                                                )}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {menuSantriFilter
-                                                .filter(s => s.id !== null)
+                                                .filter(s => s.id !== null) 
                                                 .map((s, idx) => (
                                                     <tr
                                                         key={idx}
@@ -85,9 +89,13 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
                                                     >
                                                         <td className="p-2">{s.nis}</td>
                                                         <td className="p-2">{s.label}</td>
-                                                        <td className="p-2">{s.lembaga}</td>
-                                                        <td className="p-2">{s.wilayah}</td>
-                                                        <td className="p-2">{s.kamar}</td>
+                                                        {list !== 3 && (
+                                                            <>
+                                                                <td className="p-2">{s.lembaga}</td>
+                                                                <td className="p-2">{s.wilayah}</td>
+                                                                <td className="p-2">{s.kamar}</td>
+                                                            </>
+                                                        )}
                                                     </tr>
                                                 ))}
                                         </tbody>
