@@ -51,6 +51,8 @@ const DataPerizinan = () => {
     const [feature, setFeature] = useState("")
     const capitalizeFirstLetter = getRolesString()
 
+
+
     const openModal = (item) => {
         setSelectedItem(item)
         setIsModalOpen(true)
@@ -396,6 +398,32 @@ const PerizinanCard = ({
     const [approveError, setApproveError] = useState(null)
     const [isExpanded, setIsExpanded] = useState(false)
 
+    const [showRejectModal, setShowRejectModal] = useState(false);
+    const [rejectError, setRejectError] = useState(null);
+    const [isRejecting, setIsRejecting] = useState(false);
+
+    const handleReject = async (keterangan) => {
+        setRejectError(null);
+        setIsRejecting(true);
+        try {
+            // Buat objek payload
+            const payload = { keterangan };
+            // Kirim payload ke fungsi approvePerizinan
+            const success = await approvePerizinan(data.id, userRole, "reject", payload);
+
+            if (success) {
+                setShowRejectModal(false);
+                await refetchData(true);
+            } else {
+                setRejectError(error);
+            }
+        } catch (err) {
+            setRejectError(err.message);
+        } finally {
+            setIsRejecting(false);
+        }
+    };
+
     const canApprove = useMemo(() => {
         if (!userRole) return false
         const approvalStatus = {
@@ -595,7 +623,7 @@ const PerizinanCard = ({
                 </div>
 
                 <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
-                    {canApprove && (
+                    {canApprove && data.status == "sedang proses izin" && (
                         <Access action="approve">
                             <button
                                 onClick={(e) => {
@@ -605,8 +633,23 @@ const PerizinanCard = ({
                                 className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium shadow-sm hover:shadow-md transition-all duration-200 flex-1 sm:flex-none justify-center"
                             >
                                 <FaUserCheck className="text-xs" />
-                                <span className="hidden sm:inline">Approve</span>
-                                <span className="sm:hidden">OK</span>
+                                <span className="hidden sm:inline">Setujui</span>
+                                <span className="sm:hidden">Setujui</span>
+                            </button>
+                        </Access>
+                    )}
+                    {data.status == "sedang proses izin" && (
+                        <Access action="approve">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setShowRejectModal(true)
+                                }}
+                                className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-medium shadow-sm hover:shadow-md transition-all duration-200 flex-1 sm:flex-none justify-center"
+                            >
+                                <FaExclamationTriangle className="text-xs" />
+                                <span className="hidden sm:inline">Tolak</span>
+                                <span className="sm:hidden">Tolak</span>
                             </button>
                         </Access>
                     )}
@@ -622,7 +665,7 @@ const PerizinanCard = ({
                             >
                                 <FaSignOutAlt className="text-xs" />
                                 <span className="hidden sm:inline">Keluar</span>
-                                <span className="sm:hidden">Out</span>
+                                <span className="sm:hidden">Keluar</span>
                             </button>
                         )}
                         {data.status == "sudah berada diluar pondok" && (
@@ -635,7 +678,7 @@ const PerizinanCard = ({
                             >
                                 <FaSignInAlt className="text-xs" />
                                 <span className="hidden sm:inline">Kembali</span>
-                                <span className="sm:hidden">In</span>
+                                <span className="sm:hidden">Kembali</span>
                             </button>
                         )}
                     </Access>
@@ -961,6 +1004,14 @@ const PerizinanCard = ({
                 isLoading={showLoadingKembaliModal}
                 mode="kembali"
             />
+            <ModalApprove
+                isOpen={showRejectModal}
+                onClose={() => setShowRejectModal(false)}
+                onConfirm={handleReject}
+                isLoading={isRejecting}
+                roleName={userRole}
+                mode="reject"
+            />
 
             {approveError && (
                 <div className="mx-3 mb-3 bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-center gap-2">
@@ -968,6 +1019,15 @@ const PerizinanCard = ({
                     <div>
                         <p className="font-medium text-sm">Terjadi Kesalahan</p>
                         <p className="text-xs">{approveError}</p>
+                    </div>
+                </div>
+            )}
+            {rejectError && (
+                <div className="mx-3 mb-3 bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-center gap-2">
+                    <FaExclamationTriangle className="text-red-500 flex-shrink-0 text-sm" />
+                    <div>
+                        <p className="font-medium text-sm">Terjadi Kesalahan</p>
+                        <p className="text-xs">{rejectError}</p>
                     </div>
                 </div>
             )}

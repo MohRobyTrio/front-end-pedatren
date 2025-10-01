@@ -809,23 +809,35 @@ export const ModalApprove = ({
     title,
     message,
 }) => {
+    // Tambahkan state untuk menyimpan keterangan
+    const [keterangan, setKeterangan] = useState('');
+
+    // Reset state keterangan saat modal dibuka
+    useEffect(() => {
+        if (isOpen) {
+            setKeterangan('');
+        }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
-    // Default Judul dan Pesan
     const modeTitle = {
         approve: 'Konfirmasi Approval',
+        reject: 'Konfirmasi Penolakan',
         keluar: 'Konfirmasi Keluar Pondok',
         kembali: 'Konfirmasi Kembali ke Pondok',
     };
 
     const modeMessage = {
         approve: `Anda yakin ingin menyetujui perizinan ini sebagai ${roleName ? `<span class="font-semibold capitalize">${roleName}</span>` : '...'}?`,
+        reject: `Anda yakin ingin <span class="font-semibold text-red-600">MENOLAK</span> perizinan ini sebagai ${roleName ? `<span class="font-semibold capitalize">${roleName}</span>` : '...'}?`,
         keluar: 'Anda yakin ingin mengatur status santri menjadi <span class="font-semibold">Keluar Pondok</span>?',
         kembali: 'Anda yakin ingin mengatur status santri menjadi <span class="font-semibold">Sudah Kembali ke Pondok</span>?',
     };
 
     const buttonLabel = {
         approve: 'Ya, Setujui',
+        reject: 'Ya, Tolak',
         keluar: 'Ya, Set Keluar',
         kembali: 'Ya, Set Kembali',
     };
@@ -833,20 +845,7 @@ export const ModalApprove = ({
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50" onClose={onClose}>
-                {/* Background overlay */}
-                <Transition.Child
-                    as={Fragment}
-                    enter="transition-opacity duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-                </Transition.Child>
-
-                {/* Modal content wrapper */}
+                {/* ... (kode overlay) */}
                 <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
                     <Transition.Child
                         as={Fragment}
@@ -874,16 +873,32 @@ export const ModalApprove = ({
                                                 __html: message || modeMessage[mode],
                                             }}
                                         />
+                                        {/* Tampilkan textarea jika mode adalah 'reject' */}
+                                        {mode === 'reject' && (
+                                            <div className="text-left">
+                                                <label htmlFor="keterangan_penolakan" className="block text-sm font-medium text-gray-700">
+                                                    Keterangan Penolakan (Wajib)
+                                                </label>
+                                                <textarea
+                                                    id="keterangan_penolakan"
+                                                    name="keterangan"
+                                                    rows="3"
+                                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                    placeholder="Masukkan alasan penolakan..."
+                                                    value={keterangan}
+                                                    onChange={(e) => setKeterangan(e.target.value)}
+                                                ></textarea>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Footer Button */}
                             <div className="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg">
                                 <button
-                                    onClick={onConfirm}
-                                    disabled={isLoading}
-                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 flex items-center gap-2"
+                                    onClick={() => onConfirm(keterangan)}
+                                    disabled={isLoading || (mode === 'reject' && !keterangan.trim())}
+                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 flex items-center gap-2"
                                 >
                                     {isLoading ? (
                                         <>

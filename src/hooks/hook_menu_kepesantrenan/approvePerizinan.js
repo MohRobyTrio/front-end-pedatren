@@ -5,28 +5,40 @@ import Swal from 'sweetalert2';
 import useLogout from '../Logout';
 import { useNavigate } from 'react-router-dom';
 
-
 const useApprovePerizinan = () => {
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const [isApproving, setIsApproving] = useState(false);
     const [error, setError] = useState(null);
 
-    const approvePerizinan = async (id, role) => {
+    // Tambahkan parameter payload untuk data tambahan
+    const approvePerizinan = async (id, role, action = "approve", payload = null) => {
         setIsApproving(true);
         setError(null);
 
         try {
             const token = sessionStorage.getItem("token") || getCookie("token");
 
-            const endpoint = `${API_BASE_URL}approve/perizinan/${role}/${id}`;
-            const response = await fetch(endpoint, {
+            let endpoint = `${API_BASE_URL}approve/perizinan/${role}/${id}`;
+            if (action === "reject") {
+                endpoint = `${API_BASE_URL}reject/perizinan/${role}/${id}`;
+            }
+
+            // Siapkan opsi untuk fetch
+            const requestOptions = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-            });
+            };
+
+            // Jika ada payload, tambahkan ke body request
+            if (payload) {
+                requestOptions.body = JSON.stringify(payload);
+            }
+
+            const response = await fetch(endpoint, requestOptions);
 
             if (response.status == 401 && !window.sessionExpiredShown) {
                 window.sessionExpiredShown = true;
