@@ -532,35 +532,18 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                             Jenis Kelamin
                                         </label>
 
-                                        <div className="flex items-center gap-6">
-                                            <label className="inline-flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="jenis_kelamin"
-                                                    value="l"
-                                                    checked={formData.jenis_kelamin === "l"}
-                                                    onChange={(e) =>
-                                                        setFormData({ ...formData, jenis_kelamin: e.target.value })
-                                                    }
-                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                                                />
-                                                <span className="text-sm text-gray-700">Laki-laki</span>
-                                            </label>
-
-                                            <label className="inline-flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="jenis_kelamin"
-                                                    value="p"
-                                                    checked={formData.jenis_kelamin === "p"}
-                                                    onChange={(e) =>
-                                                        setFormData({ ...formData, jenis_kelamin: e.target.value })
-                                                    }
-                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                                                />
-                                                <span className="text-sm text-gray-700">Perempuan</span>
-                                            </label>
-                                        </div>
+                                        <select
+                                            name="jenis_kelamin"
+                                            value={formData.jenis_kelamin || ""}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, jenis_kelamin: e.target.value })
+                                            }
+                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                        >
+                                            <option value="">Semua Jenis Kelamin</option>
+                                            <option value="l">Laki-laki</option>
+                                            <option value="p">Perempuan</option>
+                                        </select>
 
                                         {errors.jenis_kelamin && (
                                             <p className="text-sm text-red-600 font-medium">
@@ -568,6 +551,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                             </p>
                                         )}
                                     </div>
+
                                     <div className="space-y-3">
                                         <label className="block text-sm font-semibold text-gray-800">
                                             Pilih Data Santri <span className="text-red-500">*</span>
@@ -617,7 +601,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                         value={santriQuery}
                                                         onChange={(e) => setSantriQuery(e.target.value)}
                                                         placeholder="Cari santri berdasarkan nama atau NIS..."
-                                                        className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                     />
                                                 </div>
 
