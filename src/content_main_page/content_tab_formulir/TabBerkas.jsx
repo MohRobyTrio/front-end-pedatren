@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImage, faFileAlt, faFilePdf, faEdit, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faFileImage, faFileAlt, faFilePdf, faEdit, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useBerkas } from '../../hooks/hooks_formulir/tabBerkas';
 import ModalBerkas from '../../components/modal/modal_formulir/ModalBerkas';
 import { useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { OrbitProgress } from 'react-loading-indicators';
 export default function TabBerkas() {
     const { biodata_id } = useParams();
     const bioId = biodata_id;
-    const { berkasList, loading, error, fetchBerkas, createBerkas, updateBerkas } = useBerkas(bioId);
+    const { berkasList, loading, error, fetchBerkas, createBerkas, updateBerkas, handleDelete } = useBerkas(bioId);
     const [modalOpen, setModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
 
@@ -150,7 +150,8 @@ export default function TabBerkas() {
                     onClick={handleOpenAdd}
                     className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-semibold flex items-center space-x-2 hover:bg-green-800 cursor-pointer"
                 >
-                    Tambah Berkas
+                    <i className="fas fa-plus"></i>
+                    <span>Tambah Berkas</span>
                 </button>
             </div>
 
@@ -167,27 +168,35 @@ export default function TabBerkas() {
                 {(berkasList ?? []).map((berkas) => (
                     <div
                         key={berkas.id}
-                        className="relative bg-white shadow rounded-lg overflow-hidden border group"
+                        className="relative bg-white shadow-md border border-gray-300 rounded-lg overflow-hidden group"
                     >
                         {/* Tombol Edit */}
                         <button
+                            onClick={() => handleDelete(berkas)}
+                            className="absolute top-2 right-20 z-10 bg-red-500 hover:bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full shadow cursor-pointer"
+                            title="Hapus berkas"
+                        >
+                            <FontAwesomeIcon icon={faTrash} />
+                        </button>
+
+                        <button
                             onClick={() => handleOpenEdit(berkas)}
-                            className="absolute top-2 right-10 z-10 text-yellow-500 hover:text-yellow-600"
+                            className="absolute top-2 right-11 z-10 bg-yellow-500 hover:bg-yellow-600 text-white w-8 h-8 flex items-center justify-center rounded-full shadow cursor-pointer"
                             title="Edit berkas"
                         >
                             <FontAwesomeIcon icon={faEdit} />
                         </button>
 
-                        {/* Tombol Download */}
                         <a
                             href={berkas.file_path}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="absolute top-2 right-2 z-10 text-gray-600 hover:text-blue-600"
+                            className="absolute top-2 right-2 z-10 bg-blue-500 hover:bg-blue-600 text-white w-8 h-8 flex items-center justify-center rounded-full shadow cursor-pointer"
                             title="Download"
                         >
                             <FontAwesomeIcon icon={faDownload} />
                         </a>
+
 
                         {/* Label Jenis Berkas */}
                         <div className="absolute top-2 left-2 bg-purple-200 text-purple-700 text-xs px-2 py-1 rounded shadow">
