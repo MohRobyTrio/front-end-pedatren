@@ -1,15 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import {
-    FileText,
-    Search,
-    ChevronLeft,
-    ChevronRight,
-    Clock,
-    CheckCircle,
-    AlertCircle,
-} from "lucide-react"
+import { FileText, Search, ChevronLeft, ChevronRight, Clock, CheckCircle, AlertCircle } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import { useTagihanSantri } from "../../hooks/hooks_ortu/Tagihan"
 
@@ -21,12 +13,7 @@ export const TagihanPage = () => {
     const [pageSize] = useState(10)
     const [statusFilter, setStatusFilter] = useState("semua")
 
-    const {
-        tagihanList,
-        statistik,
-        loading
-    } = useTagihanSantri();
-
+    const { tagihanList, statistik, loading, handleBayar } = useTagihanSantri()
 
     useEffect(() => {
         // setLoading(true)
@@ -35,33 +22,33 @@ export const TagihanPage = () => {
     }, [selectedChild])
 
     const formatTanggal = (dateString) => {
-        if (!dateString) return "-";
+        if (!dateString) return "-"
 
-        let date;
+        let date
 
         // Cek format DD/MM/YYYY
         if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
-            const [day, month, year] = dateString.split("/");
-            date = new Date(`${year}-${month}-${day}`);
+            const [day, month, year] = dateString.split("/")
+            date = new Date(`${year}-${month}-${day}`)
         }
         // Cek format YYYY-MM-DD (ISO short)
         else if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-            date = new Date(dateString);
+            date = new Date(dateString)
         }
         // Coba fallback langsung parse
         else {
-            date = new Date(dateString);
+            date = new Date(dateString)
         }
 
         // Validasi hasil date
-        if (isNaN(date.getTime())) return "-";
+        if (isNaN(date.getTime())) return "-"
 
         return date.toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-        });
-    };  
+        })
+    }
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -140,8 +127,7 @@ export const TagihanPage = () => {
     // Filter functions
     const filteredTagihan = tagihanList.filter((item) => {
         const statusMatch = statusFilter === "semua" || item.status === statusFilter
-        const searchMatch =
-            item.tagihan.nama_tagihan.toLowerCase().includes(searchTerm.toLowerCase())
+        const searchMatch = item.tagihan.nama_tagihan.toLowerCase().includes(searchTerm.toLowerCase())
         return statusMatch && searchMatch
     })
 
@@ -189,9 +175,7 @@ export const TagihanPage = () => {
         )
     }
 
-    const belum_lunas =
-        (statistik?.status_breakdown?.pending ?? 0) +
-        (statistik?.status_breakdown?.sebagian ?? 0);
+    const belum_lunas = (statistik?.status_breakdown?.pending ?? 0) + (statistik?.status_breakdown?.sebagian ?? 0)
 
     console.log("render TagihanPage")
 
@@ -208,7 +192,7 @@ export const TagihanPage = () => {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <Card className="border-blue-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
@@ -228,7 +212,7 @@ export const TagihanPage = () => {
                                 <div>
                                     <p className="text-sm font-medium text-red-600">Belum Lunas</p>
                                     <p className="text-3xl font-bold text-red-700">{belum_lunas}</p>
-                                    <p className="text-sm text-gray-600">Rp {statistik?.total_sisa}</p>
+                                    <p className="text-sm text-gray-600">Tagihan belum lunas</p>
                                 </div>
                                 <AlertCircle className="h-12 w-12 text-red-600" />
                             </div>
@@ -248,7 +232,7 @@ export const TagihanPage = () => {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-amber-100">
+                    {/* <Card className="border-amber-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -259,10 +243,10 @@ export const TagihanPage = () => {
                                 <Clock className="h-12 w-12 text-amber-600" />
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
 
-                {/* Filters */}
+                {/* Filters and Table Card */}
                 <div className={`bg-white rounded-lg border border-gray-200 shadow-sm`}>
                     <div className={`px-6 py-4 border-b border-gray-200`}>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -275,7 +259,7 @@ export const TagihanPage = () => {
                                 >
                                     <option value="semua">Semua Status</option>
                                     <option value="pending">Belum Lunas</option>
-                                    <option value="sebagian">Cicilan</option>
+                                    {/* <option value="sebagian">Cicilan</option> */}
                                     <option value="lunas">Lunas</option>
                                 </select>
                                 <div className="relative">
@@ -292,180 +276,198 @@ export const TagihanPage = () => {
                         </div>
                     </div>
 
-                    {/* Mobile Cards View */}
-                    <CardContent className="block md:hidden">
-                        <div className="space-y-4">
-                            {paginatedData.map((tagihan) => (
-                                <div key={tagihan.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold text-gray-900">{tagihan.tagihan.nama_tagihan}</h4>
-                                            <p className="text-sm text-gray-600">{tagihan.periode || "-"}</p>
-                                            {/* <p className="text-xs text-gray-500 mt-1">{tagihan.deskripsi}</p> */}
-                                        </div>
-                                        <div className="flex items-center ml-2">
-                                            {getStatusIcon(tagihan.status)}
-                                            <Badge className={`ml-2 ${getStatusColor(tagihan.status)}`}>
-                                                {tagihan.status === "lunas"
-                                                    ? "Lunas"
-                                                    : tagihan.status === "pending"
-                                                        ? "Belum Lunas"
-                                                        : tagihan.status === "sebagian"
-                                                            ? "Cicilan"
-                                                            : tagihan.status}
-                                            </Badge>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                            <p className="text-gray-600">Jumlah Tagihan</p>
-                                            <p className="font-semibold text-gray-900">Rp {tagihan.nominal}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-gray-600">Sisa Pembayaran</p>
-                                            <p className={`font-semibold ${tagihan.sisa > 0 ? "text-red-600" : "text-emerald-600"}`}>
-                                                Rp {tagihan.sisa}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between text-sm border-t border-gray-200 pt-3">
-                                        <div>
-                                            <p className="text-gray-600">Jatuh Tempo</p>
-                                            <p className={`font-medium ${isOverdue(tagihan.tanggal_jatuh_tempo) && tagihan.status !== "lunas" ? "text-red-600" : "text-gray-900"}`}>
-                                                {formatTanggal(tagihan.tanggal_jatuh_tempo)}
-                                            </p>
-                                        </div>
-                                        {/* {tagihan.status !== "lunas" && (
-                                            <Button variant="default" className="text-xs px-3 py-1">
-                                                Bayar Sekarang
-                                            </Button>
-                                        )} */}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-
-                    {/* Desktop Table View */}
-                    <CardContent className="hidden md:block">
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Nama Tagihan
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Periode
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Jatuh Tempo
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Jumlah
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Sisa
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
-                                        </th>
-                                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Aksi
-                                        </th> */}
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                    {/* --- START: Added Placeholder Logic --- */}
+                    {filteredTagihan.length === 0 ? (
+                        <CardContent>
+                            <div className="text-center py-16 text-gray-500">
+                                <FileText className="mx-auto h-12 w-12 text-gray-400" />
+                                <h3 className="mt-2 text-lg font-semibold text-gray-800">Tidak Ada Data</h3>
+                                <p className="mt-1 text-sm">Tidak ada tagihan yang cocok dengan filter Anda.</p>
+                            </div>
+                        </CardContent>
+                    ) : (
+                        <>
+                            {/* Mobile Cards View */}
+                            <CardContent className="block md:hidden">
+                                <div className="space-y-4">
                                     {paginatedData.map((tagihan) => (
-                                        <tr key={tagihan.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">{tagihan.tagihan.nama_tagihan}</div>
-                                                    {/* <div className="text-sm text-gray-500">{tagihan.deskripsi}</div> */}
+                                        <div key={tagihan.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    <h4 className="font-semibold text-gray-900">{tagihan.tagihan.nama_tagihan}</h4>
+                                                    <p className="text-sm text-gray-600">{tagihan.periode || "-"}</p>
+                                                    {/* <p className="text-xs text-gray-500 mt-1">{tagihan.deskripsi}</p> */}
                                                 </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {tagihan.periode || "-"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span className={isOverdue(tagihan.tanggal_jatuh_tempo) && tagihan.status !== "lunas" ? "text-red-600 font-medium" : "text-gray-900"}>
-                                                    {formatTanggal(tagihan.tanggal_jatuh_tempo)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                Rp {tagihan.nominal}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span className={`font-semibold ${tagihan.sisa > 0 ? "text-red-600" : "text-emerald-600"}`}>
-                                                    Rp {tagihan.sisa}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center ml-2">
                                                     {getStatusIcon(tagihan.status)}
                                                     <Badge className={`ml-2 ${getStatusColor(tagihan.status)}`}>
                                                         {tagihan.status === "lunas"
                                                             ? "Lunas"
                                                             : tagihan.status === "pending"
                                                                 ? "Belum Lunas"
-                                                                : tagihan.status === "sebagian"
-                                                                    ? "Cicilan"
-                                                                    : tagihan.status}
+                                                                : // : tagihan.status === "sebagian"
+                                                                //     ? "Cicilan"
+                                                                tagihan.status}
                                                     </Badge>
                                                 </div>
-                                            </td>
-                                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {tagihan.status !== "lunas" ? (
-                                                    <Button variant="default" className="text-xs px-3 py-1">
-                                                        Bayar
-                                                    </Button>
-                                                ) : (
-                                                    <span className="text-emerald-600">Selesai</span>
-                                                )}
-                                            </td> */}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </CardContent>
+                                            </div>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <div className="px-6 py-4 border-t border-gray-200">
-                            <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-700">
-                                    Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, filteredTagihan.length)} dari{" "}
-                                    {filteredTagihan.length} tagihan
+                                            <div className="text-sm">
+                                                <p className="text-gray-600">Total Tagihan</p>
+                                                <p className="text-xl font-bold text-gray-900">Rp {tagihan.total_tagihan}</p>
+                                                {tagihan.total_potongan !== "0,00" && tagihan.total_potongan !== "0" && (
+                                                    <p className="text-xs text-emerald-600 mt-1">Potongan: Rp {tagihan.total_potongan}</p>
+                                                )}
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm border-t border-gray-200 pt-3">
+                                                <div>
+                                                    <p className="text-gray-600">Jatuh Tempo</p>
+                                                    <p
+                                                        className={`font-medium ${isOverdue(tagihan.tanggal_jatuh_tempo) && tagihan.status !== "lunas" ? "text-red-600" : "text-gray-900"}`}
+                                                    >
+                                                        {formatTanggal(tagihan.tanggal_jatuh_tempo)}
+                                                    </p>
+                                                </div>
+                                                {tagihan.status !== "lunas" && (
+                                                    <Button variant="default"
+                                                        className="text-xs px-3 py-1"
+                                                        onClick={() => handleBayar(tagihan)}>
+                                                        Bayar Sekarang
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="flex space-x-2">
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                        disabled={currentPage === 1}
-                                    >
-                                        <ChevronLeft className="h-4 w-4" />
-                                    </Button>
-                                    <span className="px-3 py-2 text-sm text-gray-700">
-                                        {currentPage} / {totalPages}
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                        disabled={currentPage === totalPages}
-                                    >
-                                        <ChevronRight className="h-4 w-4" />
-                                    </Button>
+                            </CardContent>
+
+                            {/* Desktop Table View */}
+                            <CardContent className="hidden md:block">
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Nama Tagihan
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Periode
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Jatuh Tempo
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Total Tagihan
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Status
+                                                </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Aksi
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {paginatedData.map((tagihan) => (
+                                                <tr key={tagihan.id} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div>
+                                                            <div className="text-sm font-medium text-gray-900">{tagihan.tagihan.nama_tagihan}</div>
+                                                            {/* <div className="text-sm text-gray-500">{tagihan.deskripsi}</div> */}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                        {tagihan.periode || "-"}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                        <span
+                                                            className={
+                                                                isOverdue(tagihan.tanggal_jatuh_tempo) && tagihan.status !== "lunas"
+                                                                    ? "text-red-600 font-medium"
+                                                                    : "text-gray-900"
+                                                            }
+                                                        >
+                                                            {formatTanggal(tagihan.tanggal_jatuh_tempo)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div>
+                                                            <div className="text-sm font-bold text-gray-900">Rp {tagihan.total_tagihan}</div>
+                                                            {tagihan.total_potongan !== "0,00" && tagihan.total_potongan !== "0" && (
+                                                                <div className="text-xs text-emerald-600">Potongan: Rp {tagihan.total_potongan}</div>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            {getStatusIcon(tagihan.status)}
+                                                            <Badge className={`ml-2 ${getStatusColor(tagihan.status)}`}>
+                                                                {tagihan.status === "lunas"
+                                                                    ? "Lunas"
+                                                                    : tagihan.status === "pending"
+                                                                        ? "Belum Lunas"
+                                                                        : // : tagihan.status === "sebagian"
+                                                                        //     ? "Cicilan"
+                                                                        tagihan.status}
+                                                            </Badge>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                        {tagihan.status !== "lunas" ? (
+                                                            <Button variant="default" 
+                                                            className="text-xs px-3 py-1"
+                                                            onClick={() => handleBayar(tagihan)}>
+                                                                Bayar
+                                                            </Button>
+                                                        ) : (
+                                                            <span className="text-emerald-600">Selesai</span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
-                        </div>
+                            </CardContent>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="px-6 py-4 border-t border-gray-200">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-sm text-gray-700">
+                                            Menampilkan {startIndex + 1} - {Math.min(startIndex + pageSize, filteredTagihan.length)} dari{" "}
+                                            {filteredTagihan.length} tagihan
+                                        </div>
+                                        <div className="flex space-x-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                                disabled={currentPage === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </Button>
+                                            <span className="px-3 py-2 text-sm text-gray-700">
+                                                {currentPage} / {totalPages}
+                                            </span>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                                disabled={currentPage === totalPages}
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
+                    {/* --- END: Added Placeholder Logic --- */}
                 </div>
 
                 {/* Summary Cards - Mobile/Desktop */}
-                <div className="grid gap-4 md:grid-cols-2">
+                {/* <div className="grid gap-4 md:grid-cols-2">
                     <Card className="border-red-100">
                         <CardHeader>
                             <CardTitle className="text-lg text-red-700">Tagihan Belum Lunas</CardTitle>
@@ -529,7 +531,7 @@ export const TagihanPage = () => {
                             </div>
                         </CardContent>
                     </Card>
-                </div>
+                </div> */}
             </div>
         </div>
     )

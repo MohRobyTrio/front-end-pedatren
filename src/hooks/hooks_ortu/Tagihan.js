@@ -21,7 +21,7 @@ export const useTagihanSantri = () => {
     const abortControllerRef = useRef(null);
     const sessionExpiredRef = useRef(false);
 
-    const token = sessionStorage.getItem("token") || getCookie("token");
+    const token = sessionStorage.getItem("auth_token_ortu") || getCookie("token");
 
     // Stabilkan handleSessionExpired dengan useRef untuk menghindari re-creation
     const handleSessionExpiredRef = useRef();
@@ -37,7 +37,7 @@ export const useTagihanSantri = () => {
         });
 
         clearAuthData();
-        navigate("/login");
+        navigate("/ortu");
     };
 
     // Single fetch function dengan stabilitas maksimal
@@ -155,6 +155,71 @@ export const useTagihanSantri = () => {
         fetchTagihanData();
     }, [fetchTagihanData]);
 
+    const handleBayar = useCallback(async (tagihan) => {
+        const confirmResult = await Swal.fire({
+            title: `Bayar Tagihan?`,
+            html: `Anda akan melakukan pembayaran: <br><b>${tagihan.tagihan.nama_tagihan}</b><br>sebesar <b>Rp ${tagihan.total_tagihan}</b>`,
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Lanjutkan",
+            cancelButtonText: "Batal",
+            confirmButtonColor: "#3B82F6",
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        try {
+            Swal.fire({
+                background: "transparent",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+                customClass: { popup: 'p-0 shadow-none border-0 bg-transparent' }
+            });
+
+            const response = await fetch(`${API_BASE_URL}view-ortu/bayar`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // Menggunakan token dari scope hook
+                },
+                body: JSON.stringify({
+                    tagihan_santri_id: tagihan.id,
+                }),
+            });
+
+            Swal.close();
+
+            // Menggunakan handler session expired yang sudah ada
+            if (response.status === 401) {
+                await handleSessionExpiredRef.current();
+                return;
+            }
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Gagal memproses pembayaran.");
+            }
+
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: result.message || "Pembayaran berhasil.",
+            });
+            fetchTagihanData();
+
+        } catch (error) {
+            console.error("Error saat proses pembayaran:", error);
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: error.message || "Terjadi kesalahan saat memproses pembayaran.",
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
     return {
         santri,
         tagihanList,
@@ -163,5 +228,6 @@ export const useTagihanSantri = () => {
         loading,
         error,
         refreshData,
+        handleBayar
     };
 };
