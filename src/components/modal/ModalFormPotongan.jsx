@@ -31,8 +31,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
 
     const [tagihan, setTagihan] = useState([])
     const [loadingTagihan, setLoadingTagihan] = useState(false)
-    
-    // [DIUBAH] State dan hook untuk santri
+
     const { menuSantri } = useDropdownSantri()
     const [santriQuery, setSantriQuery] = useState('')
 
@@ -49,7 +48,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
         { value: 'umum', label: 'Umum' }
     ];
     const selectedKategori = KATEGORI_OPTIONS.find(option => option.value === formData.kategori);
-    
+
     // [DIUBAH] Filter dan data santri terpilih
     const mockSantri = menuSantri.slice(1); // Menghapus elemen pertama jika itu placeholder
     const filteredSantri = santriQuery === ''
@@ -83,7 +82,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
         if (isOpen) {
             fetchTagihan()
             // [DIHAPUS] fetchSantri() lokal dihapus karena sudah ditangani hook
-            
+
             if (feature === 2 && data) {
                 setFormData({
                     nama: data.nama || "",
@@ -118,7 +117,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                 : [...prev.tagihan_ids, tagihanId],
         }))
     }
-    
+
     // [DIUBAH] Nama handler disamakan untuk konsistensi
     const handleSantriToggle = (santriId) => {
         setFormData((prev) => ({
@@ -177,19 +176,19 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
                 navigate("/login");
                 return;
             }
-            
+
             if (response.status === 422 && result.errors) {
                 const errorMessages = Object.values(result.errors).flat().join("\n");
                 await Swal.fire({ icon: "error", title: "Validasi Gagal", text: errorMessages });
                 return;
             }
-            
+
             if (!response.ok || result.success === false) {
                 throw new Error(result.message || "Terjadi kesalahan pada server.");
             }
 
             await Swal.fire({ icon: "success", title: "Berhasil!", text: "Data berhasil dikirim." });
-            
+
             refetchData?.();
             onClose?.();
         } catch (error) {
@@ -344,6 +343,7 @@ export const ModalAddOrEditPotongan = ({ isOpen, onClose, data, refetchData, fea
     )
 }
 
+
 export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -372,36 +372,54 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
     }, [isOpen, id])
 
     // const formatDate = (dateString) => {
-    //     if (!dateString) return "-"
+    //     if (!dateString) return "-";
     //     return new Date(dateString).toLocaleString("id-ID", {
     //         year: "numeric", month: "long", day: "numeric",
     //         hour: "2-digit", minute: "2-digit", timeZone: "UTC"
-    //     })
-    // }
+    //     });
+    // };
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
-    };
+        return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(
+            amount,
+        )
+    }
 
     // Helper untuk format Kategori
     const formatKategori = (kategori) => {
         const map = {
-            'anak_pegawai': 'Anak Pegawai',
-            'bersaudara': 'Bersaudara',
-            'khadam': 'Khadam',
-            'umum': 'Umum'
-        };
-        return map[kategori] || kategori?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || "-";
-    };
+            anak_pegawai: "Anak Pegawai",
+            bersaudara: "Bersaudara",
+            khadam: "Khadam",
+            umum: "Umum",
+        }
+        return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || "-"
+    }
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
-                <Transition.Child as={Fragment} enter="transition-opacity duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity duration-300" leaveFrom="opacity-100" leaveTo="opacity-0">
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
                 </Transition.Child>
                 <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
-                    <Transition.Child as={Fragment} enter="transition-transform duration-300 ease-out" enterFrom="scale-95 opacity-0" enterTo="scale-100 opacity-100" leave="transition-transform duration-200 ease-in" leaveFrom="scale-100 opacity-100" leaveTo="scale-95 opacity-0">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-200 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
                         <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-2xl w-full relative max-h-[90vh] flex flex-col">
                             <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
                                 <FontAwesomeIcon icon={faTimes} className="text-xl" />
@@ -411,24 +429,35 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                             </div>
                             <div className="flex-1 overflow-y-auto px-6 pt-4 text-left">
                                 {loading ? (
-                                    <div className="flex h-24 justify-center items-center"><OrbitProgress variant="disc" color="#2a6999" size="small" /></div>
+                                    <div className="flex h-24 justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" />
+                                    </div>
                                 ) : data ? (
                                     <div className="space-y-6">
                                         <div className="bg-gray-50 p-4 rounded-lg">
                                             <h3 className="text-md font-semibold text-gray-800 mb-3">Informasi Potongan</h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {[
-                                                    ["Nama Potongan", data.data.nama],
-                                                    ["Kategori", formatKategori(data.data.kategori)],
-                                                    ["Status", data.data.status === 1 ? "Aktif" : "Nonaktif"],
-                                                    ["Nilai", data.data.jenis === 'persentase' ? `${data.data.nilai}%` : formatCurrency(data.data.nilai)],
-                                                    ["Keterangan", data.data.keterangan],
-                                                    // ["Tanggal Dibuat", formatDate(data.data.created_at)],
-                                                    // ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
+                                                    [
+                                                        ["Nama Potongan", data.data.nama],
+                                                        ["Kategori", formatKategori(data.data.kategori)],
+                                                        ["Status", data.data.status === 1 ? "Aktif" : "Nonaktif"],
+                                                        [
+                                                            "Nilai",
+                                                            data.data.jenis === "persentase"
+                                                                ? `${data.data.nilai}%`
+                                                                : formatCurrency(data.data.nilai),
+                                                        ],
+                                                        ["Keterangan", data.data.keterangan],
+                                                        // ["Tanggal Dibuat", formatDate(data.data.created_at)],
+                                                        // ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
+                                                    ],
                                                 ].map(([label, value]) => (
                                                     <div key={label} className="flex flex-col">
                                                         <span className="text-sm font-medium text-gray-600">{label}</span>
-                                                        <span className="text-sm text-gray-900 mt-1 break-words whitespace-pre-line">{value || "-"}</span>
+                                                        <span className="text-sm text-gray-900 mt-1 break-words whitespace-pre-line">
+                                                            {value || "-"}
+                                                        </span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -458,13 +487,39 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                                 <p className="text-gray-500 text-sm">Tidak ada tagihan terkait</p>
                                             )}
                                         </div>
+                                        <div className="bg-green-50 p-4 rounded-lg">
+                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Santri Terkait</h3>
+                                            {data.data.santris && data.data.santris.length > 0 ? (
+                                                <div className="space-y-3">
+                                                    {data.data.santris.map((santri) => (
+                                                        <div key={santri.id} className="bg-white p-3 rounded border border-green-200">
+                                                            <div className="flex justify-between items-start">
+                                                                <div>
+                                                                    <h4 className="font-medium text-gray-800">{santri.nama}</h4>
+                                                                    <p className="text-xs text-gray-600 mt-1">
+                                                                        <span className="font-medium">NIS:</span> {santri.nis}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-gray-500 text-sm">Tidak ada santri terkait</p>
+                                            )}
+                                        </div>
                                     </div>
                                 ) : (
                                     <p className="text-red-500">Gagal memuat data potongan.</p>
                                 )}
                             </div>
                             <div className="mt-auto pt-4 text-right space-x-2 bg-gray-100 px-6 py-3 rounded-b-lg border-t border-gray-200">
-                                <button onClick={onClose} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer">Tutup</button>
+                                <button
+                                    onClick={onClose}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                                >
+                                    Tutup
+                                </button>
                             </div>
                         </Dialog.Panel>
                     </Transition.Child>
