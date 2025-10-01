@@ -208,7 +208,7 @@ const Scan = () => {
             const data = await response.json()
 
             if (!response.ok || data.success == false || data.data.status == false) {
-                throw new Error(data.data.message || " tidak ditemukan")
+                throw new Error(data.data.message || data.message || " tidak ditemukan")
             }
 
             setCustomerData(data.data)
@@ -376,6 +376,10 @@ const Scan = () => {
 
             if (e.key === "Enter") {
                 e.preventDefault();
+                if (idCard.length < 10) {
+                    // console.log("Input terlalu pendek, kemungkinan bukan UID kartu");
+                    return;
+                }
                 console.log("Pathname Topup:", location.pathname);
                 console.log("Submit ID Card:", idCard);
 
@@ -623,7 +627,7 @@ const Scan = () => {
                                             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama</label>
                                             <input
                                                 type="text"
-                                                value={customerData.nama_ || customerData.nama_santri || customerData.label || ""}
+                                                value={customerData.nama || customerData.nama_santri || customerData.label || ""}
                                                 readOnly
                                                 className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg bg-gray-50 text-sm sm:text-base"
                                             />
@@ -676,6 +680,12 @@ const Scan = () => {
 
                                                         setNominal(num);
                                                     }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            handleSubmit();
+                                                        }
+                                                    }}
                                                     placeholder="0"
                                                     className="w-full pl-9 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base"
                                                 />
@@ -725,6 +735,7 @@ const Scan = () => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
+                    list={3}
                 />
             </div>
         </div>

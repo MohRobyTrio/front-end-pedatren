@@ -42,8 +42,8 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
         uid_kartu: "",
         pin: "",
         aktif: "",
-        tanggal_terbit: "",
-        tanggal_expired: "",
+        // tanggal_terbit: "",
+        // tanggal_expired: "",
     })
 
     useEffect(() => {
@@ -65,8 +65,8 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
                 uid_kartu: "",
                 pin: "",
                 aktif: "",
-                tanggal_terbit: "",
-                tanggal_expired: "",
+                // tanggal_terbit: "",
+                // tanggal_expired: "",
             })
         }
     }, [isOpen, feature])
@@ -86,8 +86,8 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
                 uid_kartu: data.uid_kartu || "",
                 pin: data.pin || "",
                 aktif: data.aktif ?? "",
-                tanggal_terbit: data.tanggal_terbit || "",
-                tanggal_expired: data.tanggal_expired || "",
+                // tanggal_terbit: data.tanggal_terbit || "",
+                // tanggal_expired: data.tanggal_expired || "",
             })
             if (data.uid_kartu) {
                 setIdCard(data.uid_kartu)
@@ -657,7 +657,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
                                                                 </div>
                                                             </div>
 
-                                                            <div>
+                                                            {/* <div>
                                                                 <label htmlFor="tanggal_terbit" className="block text-gray-700">
                                                                     Tanggal Terbit *
                                                                 </label>
@@ -686,7 +686,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
                                                                     required
                                                                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                                 />
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     )}
                                                 </>
