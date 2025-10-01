@@ -184,12 +184,95 @@ const useFetchKartuRFID = (filters) => {
         }
     };
 
+    const handleToggleStatus = async (data) => {
+            const confirmResult = await Swal.fire({
+                title: data.aktif == 1 ? "Nonaktifkan Data?" : "Aktifkan Data?",
+                text: data.aktif == 1
+                    ? "Data akan dinonaktifkan."
+                    : "Data akan diaktifkan kembali.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: data.aktif == 1 ? "Ya, nonaktifkan" : "Ya, aktifkan",
+                cancelButtonText: "Batal",
+            });
+    
+            if (!confirmResult.isConfirmed) return;
+    
+            try {
+                Swal.fire({
+                    background: "transparent",    // tanpa bg putih box
+                    showConfirmButton: false,     // tanpa tombol
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    customClass: {
+                        popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                    }
+                });
+    
+                const token = sessionStorage.getItem("token") || getCookie("token");
+                const response = await fetch(
+                    `${API_BASE_URL}kartu/${data.id}${data.aktif == 1 ? "" : "/activate"}`,
+                    {
+                        method: data.aktif == 1 ? "DELETE" : "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+    
+                Swal.close();
+    
+                if (response.status == 401 && !window.sessionExpiredShown) {
+                    window.sessionExpiredShown = true;
+                    await Swal.fire({
+                        title: "Sesi Berakhir",
+                        text: "Sesi anda telah berakhir, silakan login kembali.",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    clearAuthData();
+                    navigate("/login");
+                    return;
+                }
+    
+                if (!response.ok) {
+                    let result = {};
+                    try {
+                        result = await response.json();
+                    // eslint-disable-next-line no-empty, no-unused-vars
+                    } catch (_) { }
+                    throw new Error(result.message || "Gagal memperbarui status data.");
+                }
+    
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: data.aktif == 1
+                        ? "Data berhasil dinonaktifkan."
+                        : "Data berhasil diaktifkan.",
+                });
+    
+                fetchKartuRFID(true); // refresh data
+            } catch (error) {
+                console.error("Error saat mengubah status:", error);
+                await Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: error.message || "Terjadi kesalahan saat memperbarui status data.",
+                });
+            }
+        };
+
     return {
         karturfid,
         loadingKartuRFID,
         error,
         fetchKartuRFID,
         handleDelete,
+        handleToggleStatus,
         searchTerm,
         setSearchTerm,
         limit,

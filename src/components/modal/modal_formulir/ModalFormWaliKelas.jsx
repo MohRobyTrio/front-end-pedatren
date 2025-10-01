@@ -63,7 +63,7 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
         jurusan_id: "",
         kelas_id: "",
         rombel_id: "",
-        jumlah_murid: "",
+        // jumlah_murid: "",
         periode_awal: ""
     });
 
@@ -228,7 +228,7 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
                                             <div className="space-y-4">    
                                                 <Filters filterOptions={updatedFilterLembaga} onChange={handleFilterChangeLembaga} selectedFilters={selectedLembaga} />     
 
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="jumlah_murid" className="block text-gray-700">Jumlah Murid *</label>
                                                     <input
                                                         type="text"
@@ -245,7 +245,7 @@ export const ModalAddWaliKelasFormulir = ({ isOpen, onClose, biodataId, cardId, 
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Masukkan Jumlah Murid"
                                                     />
-                                                </div>
+                                                </div> */}
 
                                                 <div>
                                                     <label htmlFor="periode_awal" className="block text-gray-700">Periode Awal *</label>

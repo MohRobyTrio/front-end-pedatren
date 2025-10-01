@@ -538,25 +538,25 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
         }
     }, [isOpen, id])
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "-"
-        return new Date(dateString).toLocaleString("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "UTC"
-        })
-    }
+    // const formatDate = (dateString) => {
+    //     if (!dateString) return "-"
+    //     return new Date(dateString).toLocaleString("id-ID", {
+    //         year: "numeric",
+    //         month: "long",
+    //         day: "numeric",
+    //         hour: "2-digit",
+    //         minute: "2-digit",
+    //         timeZone: "UTC"
+    //     })
+    // }
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(amount);
-    };
+    // const formatCurrency = (amount) => {
+    //     return new Intl.NumberFormat('id-ID', {
+    //         style: 'currency',
+    //         currency: 'IDR',
+    //         minimumFractionDigits: 0
+    //     }).format(amount);
+    // };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -607,8 +607,8 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                                     ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
                                                     ["Nilai", data.data.nilai],
                                                     ["Keterangan", data.data.keterangan],
-                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
-                                                    ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
+                                                    // ["Tanggal Dibuat", formatDate(data.data.created_at)],
+                                                    // ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
                                                 ].map(([label, value]) => (
                                                     <div key={label} className="flex flex-col">
                                                         <span className="text-sm font-medium text-gray-600">{label}</span>
@@ -629,14 +629,14 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                                         <div key={tagihan.id} className="bg-white p-3 rounded border border-blue-200">
                                                             <div className="flex justify-between items-start">
                                                                 <h4 className="font-medium text-gray-800">{tagihan.nama_tagihan}</h4>
-                                                                <span
+                                                                {/* <span
                                                                     className={`px-2 py-1 text-xs rounded-full ${tagihan.status == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                                                                         }`}
                                                                 >
                                                                     {tagihan.status == 1 ? "Aktif" : "Nonaktif"}
-                                                                </span>
+                                                                </span> */}
                                                             </div>
-                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                                                            {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
                                                                 <div className="capitalize">
                                                                     <span className="font-medium">Tipe:</span> {tagihan.tipe}
                                                                 </div>
@@ -645,7 +645,7 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                                                 </div>
                                                                 <div>
                                                                     <span className="font-medium">Jatuh Tempo:</span>{" "}
-                                                                    {/* {formatDate(tagihan.jatuh_tempo)} */}
+                                                                    {formatDate(tagihan.jatuh_tempo)}
                                                                     {new Date(tagihan.jatuh_tempo).toLocaleString("id-ID", {
                                                                         year: "numeric",
                                                                         month: "long",
@@ -655,7 +655,7 @@ export const ModalDetailPotongan = ({ isOpen, onClose, id }) => {
                                                                 <div>
                                                                     <span className="font-medium">Dibuat:</span> {formatDate(tagihan.created_at)}
                                                                 </div>
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     ))}
                                                 </div>

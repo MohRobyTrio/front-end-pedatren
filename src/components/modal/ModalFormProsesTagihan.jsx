@@ -7,7 +7,7 @@ import { getCookie } from '../../utils/cookieUtils';
 import { API_BASE_URL } from '../../hooks/config';
 import { useNavigate } from 'react-router-dom';
 import useLogout from '../../hooks/Logout';
-import { Check, ChevronsUpDown, Filter, Users } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
@@ -18,6 +18,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
         santri_ids: [],
         periode: '',
         jenis_kelamin: '',
+        all: null,
     });
 
     const navigate = useNavigate();
@@ -27,6 +28,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     const [errors, setErrors] = useState({});
     const [tagihanQuery, setTagihanQuery] = useState('');
     const [santriQuery, setSantriQuery] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [activeTab, setActiveTab] = useState('otomatis'); // 'tahfidz' or 'nadhoman'
 
     const mockSantri = menuSantri.slice(1);
@@ -40,10 +42,11 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                 santri_ids: [],
                 periode: '',
                 jenis_kelamin: '',
+                all: null
             });
             setErrors({});
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Filter tagihan based on search query
@@ -80,20 +83,33 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
             newErrors.periode = "Periode tidak boleh lebih dari 20 karakter";
         }
 
-        if (activeTab === "manual") {
+        if (formData.all == 0) {
             // Manual → minimal pilih 1 santri
             if (!formData.santri_ids || formData.santri_ids.length === 0) {
                 newErrors.santri_ids = "Minimal satu santri harus dipilih";
             }
-        } else if (activeTab === "otomatis") {
-            // Otomatis → periode & jenis kelamin wajib
-            if (!formData.jenis_kelamin) {
-                newErrors.jenis_kelamin = "Jenis kelamin harus dipilih";
-            }
         }
+        // } else if (activeTab === "otomatis") {
+        // Otomatis → periode & jenis kelamin wajib
+        // if (!formData.jenis_kelamin) {
+        //     newErrors.jenis_kelamin = "Jenis kelamin harus dipilih";
+        // }
+        // }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        if (Object.keys(newErrors).length > 0) {
+            // gabungkan semua pesan error biar rapih
+            const pesanError = Object.values(newErrors).join("<br/>");
+            Swal.fire({
+                icon: "error",
+                title: "Validasi Gagal",
+                html: pesanError, // pakai html biar bisa line break
+                confirmButtonText: "OK"
+            });
+            return false;
+        }
+
+        return true;
     };
 
 
@@ -224,23 +240,23 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
         }).format(amount);
     };
 
-    const CardHeader = ({ children }) => <div className="px-6 py-4 border-b border-gray-200">{children}</div>
+    // const CardHeader = ({ children }) => <div className="px-6 py-4 border-b border-gray-200">{children}</div>
 
-    function Button({ children, variant = "default", onClick, className = "" }) {
-        const variants = {
-            default: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
-            ghost: "bg-transparent text-gray-600 hover:bg-gray-200",
-        }
+    // function Button({ children, variant = "default", onClick, className = "" }) {
+    //     const variants = {
+    //         default: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
+    //         ghost: "bg-transparent text-gray-600 hover:bg-gray-200",
+    //     }
 
-        return (
-            <button
-                onClick={onClick}
-                className={`inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${variants[variant]} ${className}`}
-            >
-                {children}
-            </button>
-        )
-    }
+    //     return (
+    //         <button
+    //             onClick={onClick}
+    //             className={`inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${variants[variant]} ${className}`}
+    //         >
+    //             {children}
+    //         </button>
+    //     )
+    // }
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -290,7 +306,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                     </Dialog.Title>
                                 </div>
 
-                                <CardHeader className="pb-4">
+                                {/* <CardHeader className="pb-4">
                                     <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
                                         <Button
                                             variant={activeTab === "otomatis" ? "default" : "ghost"}
@@ -309,7 +325,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                             Manual
                                         </Button>
                                     </div>
-                                </CardHeader>
+                                </CardHeader> */}
 
                                 {/* Isi Form (scrollable) */}
                                 <div className="px-6 py-4 space-y-4 flex-1 overflow-y-auto">
@@ -409,14 +425,13 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                         </div>
                                     </div>
 
-                                    {activeTab === "manual" ? (
+                                    {/* {activeTab === "manual" ? (
                                         // Santri Multi-Select
                                         <div className="space-y-3">
                                             <label className="block text-sm font-semibold text-gray-800">
                                                 Pilih Santri <span className="text-red-500">*</span>
                                             </label>
 
-                                            {/* Search input */}
                                             <div className="relative">
                                                 <input
                                                     type="text"
@@ -427,7 +442,6 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                 />
                                             </div>
 
-                                            {/* Selected santri display */}
                                             {selectedSantri.length > 0 && (
                                                 <div className="bg-indigo-50 rounded-xl p-4 border-2 border-indigo-100">
                                                     <div className="flex items-center justify-between mb-2">
@@ -464,7 +478,6 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                 </div>
                                             )}
 
-                                            {/* Santri list */}
                                             <div
                                                 className={`max-h-56 overflow-y-auto border-2 rounded-xl ${errors.santri_ids ? "border-red-300" : "border-gray-200"
                                                     } bg-gray-50`}
@@ -513,50 +526,190 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                             )}
                                         </div>
                                     ) : (
-                                        // Periode Input
-                                        <div className="space-y-3">
-                                            <label className="block text-sm font-semibold text-gray-800">
-                                                Jenis Kelamin <span className="text-red-500">*</span>
+                                        <> */}
+                                    <div className="space-y-3">
+                                        <label className="block text-sm font-semibold text-gray-800">
+                                            Jenis Kelamin
+                                        </label>
+
+                                        <div className="flex items-center gap-6">
+                                            <label className="inline-flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="jenis_kelamin"
+                                                    value="l"
+                                                    checked={formData.jenis_kelamin === "l"}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, jenis_kelamin: e.target.value })
+                                                    }
+                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                                />
+                                                <span className="text-sm text-gray-700">Laki-laki</span>
                                             </label>
 
-                                            <div className="flex items-center gap-6">
-                                                <label className="inline-flex items-center gap-2 cursor-pointer">
-                                                    <input
-                                                        type="radio"
-                                                        name="jenis_kelamin"
-                                                        value="l"
-                                                        checked={formData.jenis_kelamin === "l"}
-                                                        onChange={(e) =>
-                                                            setFormData({ ...formData, jenis_kelamin: e.target.value })
-                                                        }
-                                                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                                                    />
-                                                    <span className="text-sm text-gray-700">Laki-laki</span>
-                                                </label>
-
-                                                <label className="inline-flex items-center gap-2 cursor-pointer">
-                                                    <input
-                                                        type="radio"
-                                                        name="jenis_kelamin"
-                                                        value="p"
-                                                        checked={formData.jenis_kelamin === "p"}
-                                                        onChange={(e) =>
-                                                            setFormData({ ...formData, jenis_kelamin: e.target.value })
-                                                        }
-                                                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                                                    />
-                                                    <span className="text-sm text-gray-700">Perempuan</span>
-                                                </label>
-                                            </div>
-
-                                            {errors.jenis_kelamin && (
-                                                <p className="text-sm text-red-600 font-medium">
-                                                    {errors.jenis_kelamin}
-                                                </p>
-                                            )}
+                                            <label className="inline-flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="jenis_kelamin"
+                                                    value="p"
+                                                    checked={formData.jenis_kelamin === "p"}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, jenis_kelamin: e.target.value })
+                                                    }
+                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                                />
+                                                <span className="text-sm text-gray-700">Perempuan</span>
+                                            </label>
                                         </div>
 
-                                    )}
+                                        {errors.jenis_kelamin && (
+                                            <p className="text-sm text-red-600 font-medium">
+                                                {errors.jenis_kelamin}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="block text-sm font-semibold text-gray-800">
+                                            Pilih Data Santri <span className="text-red-500">*</span>
+                                        </label>
+
+                                        <div className="flex items-center gap-6">
+                                            <label className="inline-flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="all"
+                                                    value="0"
+                                                    checked={formData.all == 0}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, all: e.target.value })
+                                                    }
+                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                                />
+                                                <span className="text-sm text-gray-700">Pilih Santri</span>
+                                            </label>
+
+                                            <label className="inline-flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="all"
+                                                    value="1"
+                                                    checked={formData.all == 1}
+                                                    onChange={(e) =>
+                                                        setFormData({ ...formData, all: e.target.value })
+                                                    }
+                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                                                />
+                                                <span className="text-sm text-gray-700"><span className="text-gray-900">Semua Santri ({menuSantri.length} santri)</span></span>
+                                            </label>
+                                        </div>
+                                        {/* </div>
+                                            <div className="space-y-3"> */}
+                                        {/* <label className="block text-sm font-semibold text-gray-800">
+                                                Pilih Santri <span className="text-red-500">*</span>
+                                            </label> */}
+
+                                        {formData.all == 0 && (
+                                            <>
+                                                {/* Search input */}
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        value={santriQuery}
+                                                        onChange={(e) => setSantriQuery(e.target.value)}
+                                                        placeholder="Cari santri berdasarkan nama atau NIS..."
+                                                        className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                                                    />
+                                                </div>
+
+                                                {/* Selected santri display */}
+                                                {selectedSantri.length > 0 && (
+                                                    <div className="bg-indigo-50 rounded-xl p-4 border-2 border-indigo-100">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <div className="text-xs font-semibold text-indigo-800 uppercase tracking-wide">
+                                                                Santri Terpilih ({selectedSantri.length})
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setFormData((prev) => ({ ...prev, santri_ids: [] }))
+                                                                }
+                                                                className="text-xs font-medium text-red-600 hover:text-red-800 transition-colors"
+                                                            >
+                                                                Hapus Semua
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {selectedSantri.map((santri) => (
+                                                                <span
+                                                                    key={santri.id}
+                                                                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-white text-indigo-800 border border-indigo-200 shadow-sm"
+                                                                >
+                                                                    <span>{santri.label}</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleSantriToggle(santri.id)}
+                                                                        className="inline-flex items-center justify-center w-5 h-5 rounded-full hover:bg-indigo-100 transition-colors"
+                                                                    >
+                                                                        <FaTimes className="w-3 h-3" />
+                                                                    </button>
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Santri list */}
+                                                <div
+                                                    className={`max-h-56 overflow-y-auto border-2 rounded-xl ${errors.santri_ids ? "border-red-300" : "border-gray-200"
+                                                        } bg-gray-50`}
+                                                >
+                                                    {filteredSantri.length === 0 ? (
+                                                        <div className="p-6 text-center text-gray-500">
+                                                            <FaUsers className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                                            <div className="font-medium">
+                                                                {santriQuery
+                                                                    ? "Tidak ada santri ditemukan"
+                                                                    : "Tidak ada data santri"}
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="divide-y divide-gray-200">
+                                                            {filteredSantri.map((santri) => (
+                                                                <div
+                                                                    key={santri.id}
+                                                                    className="flex items-center p-4 hover:bg-white cursor-pointer transition-all duration-200 group"
+                                                                    onClick={() => handleSantriToggle(santri.id)}
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={formData.santri_ids.includes(santri.id)}
+                                                                        readOnly
+                                                                        className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-2 border-gray-300 rounded-md transition-colors"
+                                                                    />
+                                                                    <div className="ml-4 flex-1">
+                                                                        <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+                                                                            {santri.label}
+                                                                        </div>
+                                                                        <div className="text-xs text-gray-500 mt-1">
+                                                                            NIS: {santri.nis} - Wilayah {santri.wilayah}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {errors.santri_ids && (
+                                                    <p className="text-sm text-red-600 font-medium">
+                                                        {errors.santri_ids}
+                                                    </p>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* </>
+                                    )} */}
 
                                 </div>
 
@@ -748,10 +901,10 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                                 <span className="font-medium text-gray-600">Nominal:</span>
                                                                 <p className="text-gray-900 font-semibold">{formatCurrency(item.nominal)}</p>
                                                             </div>
-                                                            <div>
+                                                            {/* <div>
                                                                 <span className="font-medium text-gray-600">Sisa:</span>
                                                                 <p className="text-gray-900 font-semibold">{formatCurrency(item.sisa)}</p>
-                                                            </div>
+                                                            </div> */}
                                                             <div>
                                                                 <span className="font-medium text-gray-600">Status Santri:</span>
                                                                 <p className="text-gray-900 capitalize">{item.santri?.status}</p>

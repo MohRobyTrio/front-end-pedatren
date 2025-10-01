@@ -1,5 +1,5 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaToggleOff, FaToggleOn, FaTrash } from "react-icons/fa";
 import { useMemo, useState } from "react";
 // import useFetchGolongan from "../../hooks/hooks_menu_kepegawaian/KartuRFID";
 // import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
@@ -15,6 +15,7 @@ import DropdownWilayah from "../../hooks/hook_dropdown/DropdownWilayah";
 import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import Pagination from "../../components/Pagination";
+import ToggleStatus from "../../components/ToggleStatus";
 
 
 const KartuRFID = () => {
@@ -94,6 +95,7 @@ const KartuRFID = () => {
         error,
         fetchKartuRFID,
         handleDelete,
+        handleToggleStatus,
         searchTerm,
         setSearchTerm,
         limit,
@@ -310,6 +312,11 @@ const KartuRFID = () => {
                                             <td className="px-3 py-2 border-b">{item.tanggal_terbit}</td>
                                             <td className="px-3 py-2 border-b">{item.tanggal_expired}</td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
+                                                <div className="flex justify-center items-center space-x-2">
+                                                <ToggleStatus 
+                                                    active={item.aktif == 1}
+                                                    onClick={() => handleToggleStatus(item)}
+                                                />
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -330,6 +337,7 @@ const KartuRFID = () => {
                                                 >
                                                     <FaTrash />
                                                 </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

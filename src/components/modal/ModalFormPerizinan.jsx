@@ -227,13 +227,27 @@ export const ModalAddPerizinan = ({ isOpen, onClose, refetchData, feature, id, n
             // if ("status" in result && !result.status) {
             console.log(result);
             if (!("data" in result)) {
+                // Ambil pesan utama
+                let errorMessage = result.message || "Terjadi kesalahan.";
+
+                // Kalau ada detail errors, gabungkan
+                if (result.errors) {
+                    const errorList = Object.values(result.errors)
+                        .flat() // gabungkan array
+                        .map((msg) => `- ${msg}`) // tambahkan bullet
+                        .join("<br>"); // pisahkan per baris
+
+                    errorMessage += "<br><br>" + errorList;
+                }
+
                 await Swal.fire({
                     icon: "error",
                     title: "Gagal",
-                    html: `<div style="text-align: left;">${result.message}</div>`,
+                    html: `<div style="text-align: left;">${errorMessage}</div>`,
                 });
-                return; // Jangan lempar error, cukup berhenti
+                return; // berhenti, jangan lempar error
             }
+
 
 
             // ✅ Sukses

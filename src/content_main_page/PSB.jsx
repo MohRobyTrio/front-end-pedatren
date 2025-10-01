@@ -164,7 +164,7 @@ export default function TambahPesertaDidikPage() {
                     </form>
 
                     {/* Tombol Aksi di Footer */}
-                    <div className="mt-4 pt-4 border-t flex justify-between items-center">
+                    <div className="mt-4 pt-4 flex justify-between items-center">
                         <div>
                             {activeTab > 0 && (
                                 <button
