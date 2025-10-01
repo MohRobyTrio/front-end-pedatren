@@ -1,5 +1,5 @@
 import { OrbitProgress } from "react-loading-indicators";
-import { FaEdit, FaPlus, FaToggleOff, FaToggleOn, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useMemo, useState } from "react";
 // import useFetchGolongan from "../../hooks/hooks_menu_kepegawaian/KartuRFID";
 // import ModalAddOrEditGolongan from "../../components/modal/modal_kelembagaan/ModalFormGolongan";
@@ -289,7 +289,7 @@ const KartuRFID = () => {
                                     </tr>
                                 ) : (
                                     karturfid.map((item, index) => (
-                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" 
+                                        <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left"
                                         // onClick={() => {
                                         //     setIdSantri(item.santri_id);
                                         //     setOpenDetailModal(true);
@@ -313,30 +313,30 @@ const KartuRFID = () => {
                                             <td className="px-3 py-2 border-b">{item.tanggal_expired}</td>
                                             <td className="px-3 py-2 border-b text-center space-x-2 w-20">
                                                 <div className="flex justify-center items-center space-x-2">
-                                                <ToggleStatus 
-                                                    active={item.aktif == 1}
-                                                    onClick={() => handleToggleStatus(item)}
-                                                />
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setKartuData(item);
-                                                        setFeature(2);
-                                                        setOpenModal(true);
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDelete(item.id)
-                                                    }}
-                                                    className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
-                                                >
-                                                    <FaTrash />
-                                                </button>
+                                                    <ToggleStatus
+                                                        active={item.aktif == 1}
+                                                        onClick={() => handleToggleStatus(item)}
+                                                    />
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setKartuData(item);
+                                                            setFeature(2);
+                                                            setOpenModal(true);
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDelete(item.id)
+                                                        }}
+                                                        className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
