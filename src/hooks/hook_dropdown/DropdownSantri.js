@@ -151,7 +151,7 @@ const useDropdownSantri = () => {
                         const formatted = [
                             { label: "Pilih Santri Card", value: "", id: null },
                             ...resData.data.map((item) => ({
-                                id: item.id,
+                                id: item.santri_id,
                                 value: item.nama,
                                 label: item.nama,
                                 uid_kartu: item.uid_kartu || "-",
