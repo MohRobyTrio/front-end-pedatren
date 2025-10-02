@@ -8,6 +8,7 @@ import useFetchTagihan from "../../hooks/hooks_menu_pembayaran/tagihan";
 import SearchBar from "../../components/SearchBar";
 import Pagination from "../../components/Pagination";
 import { ModalAddOrEditTagihan } from "../../components/modal/ModalFormTagihan";
+import { ModalDetailTagihanSantri } from "../../components/modal/ModalFormProsesTagihan";
 
 const Tagihan = () => {
     // eslint-disable-next-line no-unused-vars
@@ -18,6 +19,8 @@ const Tagihan = () => {
     const [openModal, setOpenModal] = useState(false);
     const [tagihanData, setTagihanData] = useState("");
     const [feature, setFeature] = useState("");
+    const [openDetail, setOpenDetail] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
     // const [showFilters, setShowFilters] = useState(false)
     const { tagihan, loadingTagihan, error, fetchTagihan, handleDelete, searchTerm, setSearchTerm, totalPages, currentPage, setCurrentPage, totalData } = useFetchTagihan(filters);
 
@@ -70,6 +73,7 @@ const Tagihan = () => {
                 <h1 className="text-2xl font-bold">Data Tagihan</h1>
                 <div className="flex items-center space-x-2">
                     <button onClick={() => {
+                        setSelectedId(null)
                         setFeature(1);
                         setTagihanData(null);
                         setOpenModal(true);
@@ -78,6 +82,8 @@ const Tagihan = () => {
             </div>
 
             <ModalAddOrEditTagihan isOpen={openModal} onClose={() => setOpenModal(false)} data={tagihanData} refetchData={fetchTagihan} feature={feature} />
+
+            <ModalDetailTagihanSantri isOpen={openDetail} onClose={() => setOpenDetail(false)} id={selectedId} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -139,13 +145,16 @@ const Tagihan = () => {
                                         </tr>
                                     ) : (
                                         tagihan.map((item, index) => (
-                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
+                                            <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left" onClick={() => {
+                                                setSelectedId(item.id)
+                                                setOpenDetail(true)
+                                            }}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
                                                 <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
                                                 <td className="px-3 py-2 border-b">
-                                                    {item.tipe === 'bulanan' ? 'Bulanan' : 
-                                                     item.tipe === 'semester' ? 'Semester' :
-                                                     item.tipe === 'tahunan' ? 'Tahunan' : 'Sekali Bayar'}
+                                                    {item.tipe === 'bulanan' ? 'Bulanan' :
+                                                        item.tipe === 'semester' ? 'Semester' :
+                                                            item.tipe === 'tahunan' ? 'Tahunan' : 'Sekali Bayar'}
                                                 </td>
                                                 <td className="px-3 py-2 border-b">{formatCurrency(item.nominal)}</td>
                                                 <td className="px-3 py-2 border-b">{formatDate(item.jatuh_tempo)}</td>

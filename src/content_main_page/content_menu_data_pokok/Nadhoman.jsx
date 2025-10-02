@@ -163,7 +163,7 @@ export const Nadhoman = ({ nadhoman }) => {
                                                 <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama_santri}</span>
                                             </div>
                                         </div>
-                                        <div className="space-y-3">
+                                        {/* <div className="space-y-3">
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                                                     Kitab
@@ -176,7 +176,7 @@ export const Nadhoman = ({ nadhoman }) => {
                                                 </span>
                                                 <span className="text-lg font-semibold text-gray-800">{selectedStudent.total_bait} ({selectedStudent.persentase_selesai}%)</span>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -312,7 +312,7 @@ export const Nadhoman = ({ nadhoman }) => {
                                         <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                             <tr>
                                                 <th className="px-3 py-2 border-b w-16">#</th>
-                                                <th className="px-3 py-2 border-b">Tahun Ajaran</th>
+                                                {/* <th className="px-3 py-2 border-b">Tahun Ajaran</th> */}
                                                 <th className="px-3 py-2 border-b">NIS</th>
                                                 <th className="px-3 py-2 border-b">Nama Santri</th>
                                                 <th className="px-3 py-2 border-b">Nama Kitab</th>
@@ -331,7 +331,7 @@ export const Nadhoman = ({ nadhoman }) => {
                                                 detailNadhoman.data.rekap_nadhoman.map((student, index) => (
                                                     <tr key={student.nis} className="hover:bg-gray-50">
                                                         <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                        <td className="px-3 py-2 border-b">{student.tahun_ajaran}</td>
+                                                        {/* <td className="px-3 py-2 border-b">{student.tahun_ajaran}</td> */}
                                                         <td className="px-3 py-2 border-b">{student.nis}</td>
                                                         <td className="px-3 py-2 border-b">{student.santri_nama}</td>
                                                         <td className="px-3 py-2 border-b">{student.nama_kitab}</td>
@@ -691,11 +691,11 @@ export const NadhomanAllData = () => {
                                             <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                                 <tr>
                                                     <th className="px-3 py-2 border-b w-16">#</th>
-                                                    <th className="px-3 py-2 border-b">Nama Siswa</th>
                                                     <th className="px-3 py-2 border-b">NIS</th>
+                                                    <th className="px-3 py-2 border-b">Nama Siswa</th>
                                                     <th className="px-3 py-2 border-b">Kitab</th>
-                                                    <th className="px-3 py-2 border-b">Total Bait</th>
-                                                    <th className="px-3 py-2 border-b">Progress (%)</th>
+                                                    {/* <th className="px-3 py-2 border-b">Total Bait</th>
+                                                    <th className="px-3 py-2 border-b">Progress (%)</th> */}
                                                     <th className="px-3 py-2 border-b text-center w-24">Aksi</th>
                                                 </tr>
                                             </thead>
@@ -722,12 +722,12 @@ export const NadhomanAllData = () => {
                                                             }}
                                                         >
                                                             <td className="px-3 py-2 border-b text-center">{(currentPage - 1) * limit + index + 1}</td>
-                                                            <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
                                                             <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                            <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
                                                             <td className="px-3 py-2 border-b">{item.nama_kitab || "-"}</td>
-                                                            <td className="px-3 py-2 border-b">{item.total_bait || "-"}</td>
+                                                            {/* <td className="px-3 py-2 border-b">{item.total_bait || "-"}</td> */}
                                                             {/* <td className="px-3 py-2 border-b capitalize">{item.nilai || "-"}</td> */}
-                                                            <td className="px-3 py-2 border-b">
+                                                            {/* <td className="px-3 py-2 border-b">
                                                                 <div className="flex items-center">
                                                                     <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
                                                                         <div
@@ -737,7 +737,7 @@ export const NadhomanAllData = () => {
                                                                     </div>
                                                                     <span className="text-gray-600">{item.persentase_selesai}%</span>
                                                                 </div>
-                                                            </td>
+                                                            </td> */}
                                                             <td className="px-3 py-2 border-b text-center">
                                                                 <button
                                                                     onClick={(e) => {

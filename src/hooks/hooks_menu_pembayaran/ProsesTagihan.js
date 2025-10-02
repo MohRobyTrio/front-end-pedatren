@@ -53,7 +53,7 @@ const useFetchProsesTagihan = () => {
             if (!response.ok) throw new Error(`Error ${response.status}`);
             const result = await response.json();
 
-            setProsesTagihan(Array.isArray(result) ? result : []);
+            setProsesTagihan(Array.isArray(result.data) ? result.data : []);
         } catch (err) {
             console.error("Fetch error:", err);
             setError(err.message);

@@ -86,12 +86,12 @@ export const Tahfidz = ({ student }) => {
     useEffect(() => {
         if (detailTahfidz?.data) {
             console.log("Daftar Tahfidz:", detailTahfidz.data.tahfidz || "-");
-            console.log("Rekap Tahfidz:", detailTahfidz.data.rekap_tahfidz || "-");
+            console.log("Rekap Tahfidz:", rekap || "-");
 
             // contoh ambil satu nilai
-            console.log("Nama Santri:", detailTahfidz?.data?.rekap_tahfidz?.santri_nama || "-");
-            console.log("Tahun Ajaran:", detailTahfidz?.data?.rekap_tahfidz?.tahun_ajaran || "-");
-            console.log("Persentase Khatam:", detailTahfidz?.data?.rekap_tahfidz?.persentase_khatam || "-");
+            console.log("Nama Santri:", rekap.santri_nama || "-");
+            console.log("Tahun Ajaran:", rekap.tahun_ajaran || "-");
+            console.log("Persentase Khatam:", rekap.persentase_khatam || "-");
 
             // contoh loop tahfidz
             detailTahfidz.data.tahfidz.forEach((item) => {
@@ -109,6 +109,17 @@ export const Tahfidz = ({ student }) => {
 
     const [showFormModal, setShowFormModal] = useState(false)
     const formState = useMultiStepFormTahfidz(() => setShowFormModal(false), fetchData)
+
+    const rekap = detailTahfidz?.data?.rekap_tahfidz || {
+        persentase_khatam: 0,
+        total_surat: 0,
+        jumlah_setoran: 0,
+        surat_tersisa: 0,
+        sisa_persentase: 0,
+        tanggal_mulai: null,
+        tanggal_selesai: null,
+    };
+
 
     return (
         <div className="flex-1 overflow-y-auto">
@@ -166,7 +177,7 @@ export const Tahfidz = ({ student }) => {
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">Nama Santri</span>
                                                 <span className="text-lg font-semibold text-gray-800">{selectedStudent.nama_santri || "-"}</span>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                         <div className="space-y-3">
                                             <div className="flex flex-col">
@@ -341,21 +352,21 @@ export const Tahfidz = ({ student }) => {
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="text-sm font-medium text-gray-700">Persentase Khatam</span>
                                                     <span
-                                                        className={`text-sm font-bold ${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 50 ? "text-green-600" : Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 25 ? "text-yellow-600" : "text-red-600"}`}
+                                                        className={`text-sm font-bold ${Number.parseFloat(rekap.persentase_khatam || 0) > 50 ? "text-green-600" : Number.parseFloat(rekap.persentase_khatam) > 25 ? "text-yellow-600" : "text-red-600"}`}
                                                     >
-                                                        {Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam).toFixed(2)}%
+                                                        {Number.parseFloat(rekap.persentase_khatam || 0).toFixed(2)}%
                                                     </span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 rounded-full h-3">
                                                     <div
-                                                        className={`h-3 rounded-full transition-all duration-500 ${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 50
+                                                        className={`h-3 rounded-full transition-all duration-500 ${Number.parseFloat(rekap.persentase_khatam) > 50
                                                             ? "bg-green-500"
-                                                            : Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam) > 25
+                                                            : Number.parseFloat(rekap.persentase_khatam) > 25
                                                                 ? "bg-yellow-500"
                                                                 : "bg-red-500"
                                                             }`}
                                                         style={{
-                                                            width: `${Number.parseFloat(detailTahfidz.data.rekap_tahfidz.persentase_khatam)}%`,
+                                                            width: `${Number.parseFloat(rekap.persentase_khatam)}%`,
                                                         }}
                                                     ></div>
                                                 </div>
@@ -365,38 +376,38 @@ export const Tahfidz = ({ student }) => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                 <div className="bg-green-50 p-4 rounded-lg text-center">
                                                     <div className="text-2xl font-bold text-green-600">
-                                                        {detailTahfidz.data.rekap_tahfidz.total_surat}
+                                                        {rekap.total_surat}
                                                     </div>
                                                     <div className="text-sm text-gray-600">Total Surat</div>
                                                 </div>
 
                                                 <div className="bg-blue-50 p-4 rounded-lg text-center">
                                                     <div className="text-2xl font-bold text-blue-600">
-                                                        {detailTahfidz.data.rekap_tahfidz.jumlah_setoran}
+                                                        {rekap.jumlah_setoran}
                                                     </div>
                                                     <div className="text-sm text-gray-600">Jumlah Setoran</div>
                                                 </div>
 
                                                 <div className="bg-purple-50 p-4 rounded-lg text-center">
                                                     <div className="text-2xl font-bold text-purple-600">
-                                                        {detailTahfidz.data.rekap_tahfidz.surat_tersisa}
+                                                        {rekap.surat_tersisa}
                                                     </div>
                                                     <div className="text-sm text-gray-600">Surat Tersisa</div>
                                                 </div>
 
                                                 <div className="bg-yellow-50 p-4 rounded-lg text-center">
                                                     <div className="text-2xl font-bold text-yellow-600">
-                                                        {Number.parseFloat(detailTahfidz.data.rekap_tahfidz.sisa_persentase).toFixed(2)}%
+                                                        {Number.parseFloat(rekap.sisa_persentase).toFixed(2)}%
                                                     </div>
                                                     <div className="text-sm text-gray-600">Tersisa</div>
                                                 </div>
                                             </div>
 
                                             {/* Additional Information */}
-                                            {(detailTahfidz.data.rekap_tahfidz.tanggal_mulai ||
-                                                detailTahfidz.data.rekap_tahfidz.tanggal_selesai) && (
+                                            {(rekap.tanggal_mulai ||
+                                                rekap.tanggal_selesai) && (
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-                                                        {detailTahfidz.data.rekap_tahfidz.tanggal_mulai && (
+                                                        {rekap.tanggal_mulai && (
                                                             <div className="flex items-center space-x-3">
                                                                 <div className="bg-indigo-100 p-2 rounded-lg">
                                                                     <FaCalendarAlt className="text-indigo-600" />
@@ -404,7 +415,7 @@ export const Tahfidz = ({ student }) => {
                                                                 <div>
                                                                     <div className="text-sm text-gray-500">Tanggal Mulai</div>
                                                                     <div className="font-semibold text-gray-800">
-                                                                        {new Date(detailTahfidz.data.rekap_tahfidz.tanggal_mulai).toLocaleDateString(
+                                                                        {new Date(rekap.tanggal_mulai).toLocaleDateString(
                                                                             "id-ID",
                                                                             {
                                                                                 year: "numeric",
@@ -417,7 +428,7 @@ export const Tahfidz = ({ student }) => {
                                                             </div>
                                                         )}
 
-                                                        {detailTahfidz.data.rekap_tahfidz.tanggal_selesai && (
+                                                        {rekap.tanggal_selesai && (
                                                             <div className="flex items-center space-x-3">
                                                                 <div className="bg-emerald-100 p-2 rounded-lg">
                                                                     <FaCheckCircle className="text-emerald-600" />
@@ -425,7 +436,7 @@ export const Tahfidz = ({ student }) => {
                                                                 <div>
                                                                     <div className="text-sm text-gray-500">Tanggal Selesai</div>
                                                                     <div className="font-semibold text-gray-800">
-                                                                        {new Date(detailTahfidz.data.rekap_tahfidz.tanggal_selesai).toLocaleDateString(
+                                                                        {new Date(rekap.tanggal_selesai).toLocaleDateString(
                                                                             "id-ID",
                                                                             {
                                                                                 year: "numeric",
@@ -735,8 +746,8 @@ export const TahfidzRekap = () => {
                                     <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                         <tr>
                                             <th className="px-3 py-2 border-b w-16">#</th>
-                                            <th className="px-3 py-2 border-b">Nama Santri</th>
                                             <th className="px-3 py-2 border-b">NIS</th>
+                                            <th className="px-3 py-2 border-b">Nama Santri</th>
                                             <th className="px-3 py-2 border-b">Total Surat</th>
                                             <th className="px-3 py-2 border-b">Progress (%)</th>
                                             <th className="px-3 py-2 border-b text-center">Aksi</th>
@@ -766,8 +777,8 @@ export const TahfidzRekap = () => {
                                                     }}
                                                 >
                                                     <td className="px-3 py-2 border-b">{(currentPage - 1) * limit + index + 1 || "-"}</td>
-                                                    <td className="px-3 py-2 border-b">{item?.nama_santri || "-"}</td>
                                                     <td className="px-3 py-2 border-b">{item?.nis || "-"}</td>
+                                                    <td className="px-3 py-2 border-b">{item?.nama_santri || "-"}</td>
                                                     <td className="px-3 py-2 border-b">{item?.total_surat || "-"}</td>
                                                     <td className="px-3 py-2 border-b">
                                                         <div className="flex items-center">

@@ -42,7 +42,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
     useEffect(() => {
         if (activeTab !== 2) return;
-        
+
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             handleFilterChangeLembaga({ lembaga: lembaga });
         }
@@ -64,34 +64,34 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
         if (kamar && filterWilayah.kamar.length >= 1) {
             handleFilterChangeWilayah({ kamar: kamar });
         }
-        const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
-        const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
-        if (defaultSantri && angkatanSantri != "") {
-            setValue("modalAnakPegawai.angkatan_santri_id", defaultSantri.value);
-        }
-        if (defaultPelajar && angkatanPelajar != "") {
-            setValue("modalAnakPegawai.angkatan_pelajar_id", defaultPelajar.value);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
+        // const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
+        // if (defaultSantri && angkatanSantri != "") {
+        //     setValue("modalAnakPegawai.angkatan_santri_id", defaultSantri.value);
+        // }
+        // if (defaultPelajar && angkatanPelajar != "") {
+        //     setValue("modalAnakPegawai.angkatan_pelajar_id", defaultPelajar.value);
+        // }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     const Filters = ({ filterOptions, control, onChange, selectedFilters, disabled = false }) => {
         const wilayah = watch("modalAnakPegawai.wilayah_id");
-            return (
-                <div className="space-y-2">
-                    {Object.entries(filterOptions).map(([label, options], index) => {
-                        const isBlokOrKamar = label === "blok" || label === "kamar";
-                        const isDisabled = options.length <= 1 || disabled || (isBlokOrKamar && !wilayah);
+        return (
+            <div className="space-y-2">
+                {Object.entries(filterOptions).map(([label, options], index) => {
+                    const isBlokOrKamar = label === "blok" || label === "kamar";
+                    const isDisabled = options.length <= 1 || disabled || (isBlokOrKamar && !wilayah);
 
-                        return (
+                    return (
                         <div
                             key={`${label}-${index}`}
                             className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4"
                         >
                             <label htmlFor={label} className="md:w-1/4 text-black">
-                                {capitalize(label)} *
+                                {capitalize(label)}
                             </label>
                             <div className="md:w-full md:max-w-md max-w-none">
                                 <div
@@ -125,15 +125,16 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                 </div>
                             </div>
                         </div>
-                    )})}
-                </div>
-            );
-        };
+                    )
+                })}
+            </div>
+        );
+    };
 
     return (
-    <>
-        <div className="space-y-2">
-            <p className="font-bold text-xl">Mondok </p>
+        <>
+            <div className="space-y-2">
+                <p className="font-bold text-xl">Mondok </p>
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="mondok" className="md:w-1/4 text-black">
@@ -141,12 +142,12 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="mondok" value="1" className="w-4 h-4" {...register("modalAnakPegawai.mondok", { required: true })}
-                                required />
+                            required />
                         <span>Ya</span>
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="mondok" value="0" className="w-4 h-4" {...register("modalAnakPegawai.mondok", { required: true })}
-                                required />
+                            required />
                         <span>Tidak</span>
                     </label>
                 </div>
@@ -177,16 +178,16 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="angkatan_santri_id" className="md:w-1/4 text-black">
-                        Angkatan Santri *
+                        Angkatan Santri {!isDomisiliDisabled ? "*" : ""}
                     </label>
-                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
+                    <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled || menuAngkatanSantri.length < 1 ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
                             <select
                                 id="angkatan_santri_id"
                                 name="angkatan_santri_id"
-                                disabled={isDomisiliDisabled}
+                                disabled={isDomisiliDisabled || menuAngkatanSantri.length < 1}
                                 {...register("modalAnakPegawai.angkatan_santri_id")}
-                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}
+                                className={`w-full py-1.5 pr-3 pl-1 text-base text-gray-900 focus:outline-none sm:text-sm ${isDomisiliDisabled || menuAngkatanSantri.length < 1 ? "bg-gray-200 text-gray-500" : ""}`}
                             >
                                 {menuAngkatanSantri.map((santri, idx) => (
                                     <option key={idx} value={santri.value}>
@@ -200,7 +201,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggal_masuk_santri" className="md:w-1/4 text-black">
-                        Tanggal Masuk Santri *
+                        Tanggal Masuk Santri {!isDomisiliDisabled ? "*" : ""}
                     </label>
                     <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
@@ -225,7 +226,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggal_masuk_domisili" className="md:w-1/4 text-black">
-                        Tanggal Masuk Domisili *
+                        Tanggal Masuk Domisili
                     </label>
                     <div className={`md:w-full md:max-w-md max-w-none ${isDomisiliDisabled ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
@@ -248,7 +249,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                 {/* Nama Lengkap */}
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="no_induk" className="md:w-1/4 text-black">
-                        No. Induk *
+                        No. Induk
                     </label>
                     <div className="md:w-full md:max-w-md max-w-none">
                         <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 border-gray-500">
@@ -258,7 +259,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                                 type="text"
                                 placeholder="Masukkan No. Induk"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('modalAnakPegawai.no_induk')}
+                                {...register('modalAnakPegawai.no_induk')}
                             />
                         </div>
                     </div>
@@ -268,7 +269,7 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
 
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="angkatan_pelajar_id" className="md:w-1/4 text-black">
-                        Angkatan Pelajar *
+                        Angkatan Pelajar
                     </label>
                     <div className={`md:w-full md:max-w-md max-w-none ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
@@ -288,10 +289,10 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggal_masuk_pendidikan" className="md:w-1/4 text-black">
-                        Tanggal Masuk Pendidikan *
+                        Tanggal Masuk Pendidikan
                     </label>
                     <div className={`md:w-full md:max-w-md max-w-none ${!lembagaId ? "bg-gray-200 text-gray-500" : ""}`}>
                         <div className="flex items-center rounded-md shadow-md bg-white border border-gray-300 border-gray-500">
@@ -307,10 +308,10 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
                     </div>
                 </div>
 
-                
+
             </div>
-    </>
-)
+        </>
+    )
 };
 
 export default FormDomisiliPendidikanAnakPegawai;

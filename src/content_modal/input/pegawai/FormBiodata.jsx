@@ -1,16 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import DropdownNegara from "../../../hooks/hook_dropdown/DropdownNegara";
 import { Controller } from "react-hook-form";
 
 const FormBiodata = ({ register, watch, setValue, control, activeTab, exposeHandler, selectedTinggal, setSelectedTinggal, setLainnyaValue, isLainnya }) => {
-const isDeleting = useRef(false);
     const { filterNegara, selectedNegara, handleFilterChangeNegara } = DropdownNegara();
 
     useEffect(() => {
         if (exposeHandler) {
             exposeHandler({ handleFilterChangeNegara });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // kosong artinya hanya jalan sekali
 
     const kewarganegaraan = watch("modalPegawai.kewarganegaraan");
@@ -35,7 +34,7 @@ const isDeleting = useRef(false);
         // Saat field sudah terisi (dari register atau data yang diedit), panggil handler
         if (activeTab !== 0) return;
         // console.log("handle");
-        
+
         if (negara) {
             // console.log("negara handle ",negara);
             handleFilterChangeNegara({ negara: negara });
@@ -52,7 +51,7 @@ const isDeleting = useRef(false);
             // console.log("kecamatan handle ",kecamatan);
             handleFilterChangeNegara({ kecamatan: kecamatan });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab]);
 
     const updateFirstOptionLabel = (list, label) =>
@@ -318,7 +317,7 @@ const isDeleting = useRef(false);
                                 name="tempatLahir"
                                 type="text"
                                 placeholder="Masukkan Tempat Lahir"
-                                {...register('modalPegawai.tempat_lahir', { required: true })} 
+                                {...register('modalPegawai.tempat_lahir', { required: true })}
                                 required
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                             />
@@ -473,37 +472,14 @@ const isDeleting = useRef(false);
                                 id="no_telepon"
                                 name="no_telepon"
                                 type="tel"
-                                maxLength={20}
+                                maxLength={16}
                                 inputMode="numeric"
-                                onKeyDown={(e) => {
-                                    if (e.key === "Backspace") {
-                                        isDeleting.current = true;
-                                    } else {
-                                        isDeleting.current = false;
-                                    }
-                                }}
                                 onInput={(e) => {
-                                    let raw = e.target.value.replace(/\D/g, "");
-
-                                    // Jika sedang menghapus dan nilai kurang dari 4 digit (hanya "+62" atau "+6"), kosongkan saja
-                                    if (isDeleting.current && raw.length <= 2) {
-                                        e.target.value = "";
-                                        return;
-                                    }
-
-                                    // Hapus leading 0
-                                    if (raw.startsWith("0")) {
-                                        raw = raw.slice(1);
-                                    }
-
-                                    // Tambahkan 62 jika belum ada
-                                    if (!raw.startsWith("62")) {
-                                        raw = "62" + raw;
-                                    }
-
-                                    e.target.value = "+" + raw;
+                                    e.target.value = e.target.value
+                                        .replace(/(?!^)\+/g, "")
+                                        .replace(/[^0-9+]/g, "");
                                 }}
-                                placeholder="08812345678"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPegawai.no_telepon", { required: true })}
                                 required
@@ -523,37 +499,14 @@ const isDeleting = useRef(false);
                                 id="no_telepon_2"
                                 name="no_telepon_2"
                                 type="tel"
-                                maxLength={20}
+                                maxLength={16}
                                 inputMode="numeric"
-                                onKeyDown={(e) => {
-                                    if (e.key === "Backspace") {
-                                        isDeleting.current = true;
-                                    } else {
-                                        isDeleting.current = false;
-                                    }
-                                }}
                                 onInput={(e) => {
-                                    let raw = e.target.value.replace(/\D/g, "");
-
-                                    // Jika sedang menghapus dan nilai kurang dari 4 digit (hanya "+62" atau "+6"), kosongkan saja
-                                    if (isDeleting.current && raw.length <= 2) {
-                                        e.target.value = "";
-                                        return;
-                                    }
-
-                                    // Hapus leading 0
-                                    if (raw.startsWith("0")) {
-                                        raw = raw.slice(1);
-                                    }
-
-                                    // Tambahkan 62 jika belum ada
-                                    if (!raw.startsWith("62")) {
-                                        raw = "62" + raw;
-                                    }
-
-                                    e.target.value = "+" + raw;
+                                    e.target.value = e.target.value
+                                        .replace(/(?!^)\+/g, "")
+                                        .replace(/[^0-9+]/g, "");
                                 }}
-                                placeholder="08812345678"
+                                placeholder="08"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
                                 {...register("modalPegawai.no_telepon_2")}
                             />
@@ -665,12 +618,12 @@ const isDeleting = useRef(false);
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="wafat" value="0" className="w-4 h-4" {...register("modalPegawai.wafat", { required: true })}
-                                required />
+                            required />
                         <span>Tidak</span>
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="wafat" value="1" className="w-4 h-4" {...register("modalPegawai.wafat", { required: true })}
-                                required />
+                            required />
                         <span>Ya</span>
                     </label>
                 </div>

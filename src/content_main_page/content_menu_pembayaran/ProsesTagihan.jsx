@@ -25,14 +25,32 @@ const ProsesTagihan = () => {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
+    if (!dateString) return '-';
+    
+    const date = new Date(dateString);
+
+    // Cek apakah string input mengandung informasi waktu (ada huruf 'T')
+    const hasTime = dateString.includes('T');
+
+    if (hasTime) {
+        // JIKA ADA 'T', gunakan toLocaleString untuk menampilkan TANGGAL & WAKTU
+        return date.toLocaleString('id-ID', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    } else {
+        // JIKA TIDAK ADA 'T', gunakan toLocaleDateString untuk HANYA TANGGAL
         return date.toLocaleDateString('id-ID', {
             day: '2-digit',
-            month: '2-digit',
+            month: 'short',
             year: 'numeric'
         });
-    };
+    }
+};
 
     if (!hasAccess("proses_tagihan")) {
         return <Navigate to="/forbidden" replace />;
@@ -66,7 +84,7 @@ const ProsesTagihan = () => {
 
             <ModalAddOrEditTagihanSantri isOpen={openModal} onClose={() => setOpenModal(false)} data={prosesTagihanData} refetchData={fetchProsesTagihan} feature={feature} />
 
-            <ModalDetailTagihanSantri isOpen={openDetail} onClose={() => setOpenDetail(false)} id={selectedId}/>
+            <ModalDetailTagihanSantri isOpen={openDetail} onClose={() => setOpenDetail(false)} id={selectedId} />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (
@@ -96,11 +114,17 @@ const ProsesTagihan = () => {
                                 <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                     <tr>
                                         <th className="px-3 py-2 border-b w-10">#</th>
+                                        <th className="px-3 py-2 border-b">NIS</th>
+                                        <th className="px-3 py-2 border-b">Nama Santri</th>
                                         <th className="px-3 py-2 border-b">Nama Tagihan</th>
-                                        <th className="px-3 py-2 border-b">Tipe</th>
+                                        <th className="px-3 py-2 border-b">Periode</th>
                                         <th className="px-3 py-2 border-b">Nominal</th>
+                                        <th className="px-3 py-2 border-b">Total Potongan</th>
+                                        <th className="px-3 py-2 border-b">Total Tagihan</th>
+                                        <th className="px-3 py-2 border-b">Tanggal Bayar</th>
+                                        <th className="px-3 py-2 border-b">Keterangan</th>
                                         <th className="px-3 py-2 border-b">Jatuh Tempo</th>
-                                        <th className="px-3 py-2 border-b text-center">Jumlah Tagihan Santri</th>
+                                        {/* <th className="px-3 py-2 border-b text-center">Jumlah Tagihan Santri</th> */}
                                         <th className="px-3 py-2 border-b">Status</th>
                                         {/* <th className="px-3 py-2 border-b text-center">Aksi</th> */}
                                     </tr>
@@ -108,13 +132,13 @@ const ProsesTagihan = () => {
                                 <tbody className="text-gray-800">
                                     {loadingProsesTagihan ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center p-4">
+                                            <td colSpan="10" className="text-center p-4">
                                                 <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                             </td>
                                         </tr>
                                     ) : prosesTagihan.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" className="text-center py-6">Tidak ada data</td>
+                                            <td colSpan="10" className="text-center py-6">Tidak ada data</td>
                                         </tr>
                                     ) : (
                                         prosesTagihan.map((item, index) => (
@@ -123,23 +147,30 @@ const ProsesTagihan = () => {
                                                 setOpenDetail(true)
                                             }}>
                                                 <td className="px-3 py-2 border-b">{index + 1}</td>
-                                                <td className="px-3 py-2 border-b">{item.nama_tagihan}</td>
-                                                <td className="px-3 py-2 border-b">
-                                                    {item.tipe === 'bulanan' ? 'Bulanan' :
-                                                        item.tipe === 'semester' ? 'Semester' :
-                                                            item.tipe === 'tahunan' ? 'Tahunan' : 'Sekali Bayar'}
-                                                </td>
+                                                <td className="px-3 py-2 border-b">{item.nis || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_santri || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.nama_tagihan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{item.periode || "-"}</td>
+                                                {/* <td className="px-3 py-2 border-b">
+                                                    {item.tagihan.tipe === 'bulanan' ? 'Bulanan' :
+                                                        item.tagihan.tipe === 'semester' ? 'Semester' :
+                                                            item.tagihan.tipe === 'tahunan' ? 'Tahunan' : '-'}
+                                                </td> */}
                                                 <td className="px-3 py-2 border-b">{formatCurrency(item.nominal)}</td>
-                                                <td className="px-3 py-2 border-b">{formatDate(item.jatuh_tempo)}</td>
-                                                <td className="px-3 py-2 border-b text-center">{item.tagihan_santri_count}</td>
+                                                <td className="px-3 py-2 border-b text-center">{formatCurrency(item.total_potongan)}</td>
+                                                <td className="px-3 py-2 border-b text-center">{formatCurrency(item.total_tagihan)}</td>
+                                                <td className="px-3 py-2 border-b text-center">{formatDate(item.tanggal_bayar)}</td>
+                                                <td className="px-3 py-2 border-b text-center">{item.keterangan || "-"}</td>
+                                                <td className="px-3 py-2 border-b">{formatDate(item.tanggal_jatuh_tempo)}</td>
+                                                {/* <td className="px-3 py-2 border-b text-center">{item.tagihan_santri_count || "-"}</td> */}
                                                 <td className="px-3 py-2 border-b w-30">
                                                     <span
-                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-red-100 text-red-700"
+                                                        className={`text-sm font-semibold px-3 py-1 rounded-full ${item.status === 'lunas'
+                                                            ? "bg-green-100 text-green-700" // Style untuk Lunas
+                                                            : "bg-yellow-100 text-yellow-700" // Style untuk Pending
                                                             }`}
                                                     >
-                                                        {item.status ? "Aktif" : "Nonaktif"}
+                                                        {item.status === 'lunas' ? 'Lunas' : 'Pending'}
                                                     </span>
                                                 </td>
                                                 {/* <td className="px-3 py-2 border-b text-center space-x-2 w-20">

@@ -30,6 +30,7 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
     const [santriQuery, setSantriQuery] = useState('');
     // eslint-disable-next-line no-unused-vars
     const [activeTab, setActiveTab] = useState('otomatis'); // 'tahfidz' or 'nadhoman'
+    const [monthInputValue, setMonthInputValue] = useState('');
 
     const mockSantri = menuSantri.slice(1);
     const mockTagihan = tagihan
@@ -273,6 +274,31 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
         return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || kategori || "-"
     }
 
+    const handlePeriodeChange = (e) => {
+        const inputValue = e.target.value; // Nilainya adalah "YYYY-MM"
+        setMonthInputValue(inputValue);
+
+        if (inputValue) {
+            const [year, month] = inputValue.split('-');
+            const dateObject = new Date(year, month - 1, 1);
+            const formattedPeriode = dateObject.toLocaleDateString('id-ID', {
+                month: 'long',
+                year: 'numeric'
+            }).toUpperCase();
+
+            // Simpan format yang sudah benar ke state utama
+            setFormData(prevData => ({
+                ...prevData,
+                periode: formattedPeriode
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                periode: ''
+            }));
+        }
+    };
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -359,8 +385,8 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                                 {/* Input */}
                                                 <Combobox.Input
                                                     className={`w-full rounded-md border ${errors?.tagihan_id
-                                                            ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                                                            : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                        ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                                                        : "border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                                                         } bg-white py-2 px-3 text-sm text-gray-900 focus:outline-none transition-all duration-200`}
                                                     displayValue={() =>
                                                         selectedTagihan
@@ -450,13 +476,22 @@ export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) =>
                                         </label>
 
                                         {/* Search input */}
-                                        <div className="relative">
+                                        {/* <div className="relative">
                                             <input
                                                 type="text"
                                                 value={formData.periode}
                                                 onChange={(e) => setFormData({ ...formData, periode: e.target.value })}
                                                 placeholder="Masukkan periode"
                                                 maxLength={20}
+                                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                            />
+                                        </div> */}
+                                        <div className="relative">
+                                            <input
+                                                type="month" // Ubah tipe input menjadi "month"
+                                                value={monthInputValue}
+                                                onChange={handlePeriodeChange}
+                                                // Gunakan class yang sama untuk styling kotak inputnya
                                                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                             />
                                         </div>
@@ -763,13 +798,14 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     console.log(id)
 
     const [data, setData] = useState(null)
+    const [dataSantri, setDataSantri] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (isOpen && id) {
             setLoading(true)
             const token = sessionStorage.getItem("token") || getCookie("token")
-            fetch(`${API_BASE_URL}tagihan-santri/${id}`, {
+            fetch(`${API_BASE_URL}tagihan/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -788,17 +824,52 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
         }
     }, [isOpen, id])
 
+    useEffect(() => {
+        if (isOpen && id) {
+            setLoading(true)
+            const token = sessionStorage.getItem("token") || getCookie("token")
+            fetch(`${API_BASE_URL}tagihan-santri/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((res) => {
+                    if (!res.ok) throw new Error("Gagal mengambil data santri")
+                    return res.json()
+                })
+                .then((json) => setDataSantri(json))
+                .catch((err) => {
+                    console.error(err)
+                    setDataSantri(null)
+                })
+                .finally(() => setLoading(false))
+        }
+    }, [isOpen, id])
+
     const formatDate = (dateString) => {
-        if (!dateString) return "-"
-        return new Date(dateString).toLocaleString("id-ID", {
+        if (!dateString) return "-";
+
+        const date = new Date(dateString);
+        const hasTime = dateString.includes('T');
+
+        // Siapkan opsi dasar untuk tanggal
+        const options = {
             year: "numeric",
             month: "long",
             day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "UTC",
-        })
-    }
+            timeZone: "UTC", // Tetap pakai UTC agar tanggal tidak bergeser
+        };
+
+        // Jika ada 'T', tambahkan opsi untuk waktu
+        if (hasTime) {
+            options.hour = "2-digit";
+            options.minute = "2-digit";
+        }
+
+        // Gunakan toLocaleString yang akan otomatis menampilkan waktu jika opsinya ada
+        return date.toLocaleString("id-ID", options);
+    };
 
     const formatCurrency = (amount) => {
         if (!amount) return "-"
@@ -887,12 +958,12 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                             </h3>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {[
-                                                    ["Nama Tagihan", data.nama_tagihan],
-                                                    ["Tipe", data.tipe?.charAt(0).toUpperCase() + data.tipe?.slice(1).replace(/_/g, " ")],
-                                                    ["Nominal", formatCurrency(data.nominal)],
-                                                    ["Jatuh Tempo", formatDate(data.jatuh_tempo)],
-                                                    ["Status", data.status === 1 ? "Aktif" : "Nonaktif"],
-                                                    ["Tanggal Dibuat", formatDate(data.created_at)],
+                                                    ["Nama Tagihan", data.data.nama_tagihan],
+                                                    ["Tipe", data.data.tipe?.charAt(0).toUpperCase() + data.data.tipe?.slice(1).replace(/_/g, " ")],
+                                                    ["Nominal", formatCurrency(data.data.nominal)],
+                                                    ["Jatuh Tempo", formatDate(data.data.jatuh_tempo)],
+                                                    ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
+                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
                                                 ].map(([label, value]) => (
                                                     <div key={label} className="flex flex-col">
                                                         <span className="text-sm font-semibold text-gray-600">{label}</span>
@@ -902,13 +973,13 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                             </div>
                                         </div>
 
-                                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100">
+                                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
                                             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                                                 <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
                                                 Detail Tagihan Santri ({data.tagihan_santri?.length || 0} santri)
                                             </h3>
                                             <div className="space-y-4">
-                                                {data.tagihan_santri?.map((item) => (
+                                                {dataSantri.data?.map((item) => (
                                                     <div key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                                                         <div className="flex justify-between items-start mb-3">
                                                             <div>
