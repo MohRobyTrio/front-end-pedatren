@@ -85,7 +85,6 @@ import VirtualAccount from "../content_main_page/content_menu_pembayaran/Virtual
 import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
-import ProsesTagihan from "../content_main_page/content_menu_pembayaran/ProsesTagihan";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -161,7 +160,7 @@ export const menuPembayaranItems = [
     { id: "mastertagihan", icon: "fa-file-invoice", text: "Master Tagihan", link: "/pembayaran/master-tagihan", content: <Tagihan />, access: "tagihan" },
     { id: "masterpotongan", icon: "fa-scissors", text: "Master Potongan", link: "/pembayaran/master-potongan", content: <Potongan />, access: "potongan" },
     // { id: "potongankhusus", icon: "fa-gift", text: "Potongan Khusus", link: "/pembayaran/potongan-khusus", content: <PotonganKhusus />, access: "potongan_khusus" },
-    { id: "prosestagihan", icon: "fa-receipt", text: "Proses Tagihan", link: "/pembayaran/tagihan-santri", content: <ProsesTagihan />, access: "proses_tagihan" },
+    // { id: "prosestagihan", icon: "fa-receipt", text: "Proses Tagihan", link: "/pembayaran/tagihan-santri", content: <ProsesTagihan />, access: "proses_tagihan" },
 ]
 
 export const menuSaldo = [

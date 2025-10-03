@@ -801,6 +801,13 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     const [dataSantri, setDataSantri] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        perPage: 25, // Default item per halaman
+        lastPage: 1,
+        total: 0,
+    });
+
     useEffect(() => {
         if (isOpen && id) {
             setLoading(true)
@@ -826,26 +833,49 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
 
     useEffect(() => {
         if (isOpen && id) {
-            setLoading(true)
-            const token = sessionStorage.getItem("token") || getCookie("token")
-            fetch(`${API_BASE_URL}tagihan-santri/${id}`, {
+            setLoading(true);
+            const token = sessionStorage.getItem("token") || getCookie("token");
+
+            // Tambahkan parameter pagination ke URL
+            const url = `${API_BASE_URL}tagihan-santri/${id}?page=${pagination.currentPage}&per_page=${pagination.perPage}`;
+
+            fetch(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             })
                 .then((res) => {
-                    if (!res.ok) throw new Error("Gagal mengambil data santri")
-                    return res.json()
+                    if (!res.ok) throw new Error("Gagal mengambil data santri");
+                    return res.json();
                 })
-                .then((json) => setDataSantri(json))
+                .then((json) => {
+                    setDataSantri(json); // Ambil array data santri
+
+                    // Simpan informasi pagination dari API
+                    setPagination(prev => ({
+                        ...prev,
+                        lastPage: json.last_page,
+                        total: json.total,
+                    }));
+                })
                 .catch((err) => {
-                    console.error(err)
-                    setDataSantri(null)
+                    console.error(err);
+                    setDataSantri(null);
                 })
-                .finally(() => setLoading(false))
+                .finally(() => setLoading(false));
         }
-    }, [isOpen, id])
+        // Tambahkan pagination.currentPage sebagai dependency
+    }, [isOpen, id, pagination.currentPage, pagination.perPage]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.lastPage) {
+            setPagination(prev => ({
+                ...prev,
+                currentPage: newPage,
+            }));
+        }
+    };
 
     const formatDate = (dateString) => {
         if (!dateString) return "-";
@@ -856,7 +886,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
         // Siapkan opsi dasar untuk tanggal
         const options = {
             year: "numeric",
-            month: "long",
+            month: "2-digit",
             day: "numeric",
             timeZone: "UTC", // Tetap pakai UTC agar tanggal tidak bergeser
         };
@@ -976,41 +1006,82 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                         <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
                                             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                                                 <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
-                                                Detail Tagihan Santri ({data.tagihan_santri?.length || 0} santri)
+                                                Detail Tagihan Santri ({pagination.total || 0} santri)
                                             </h3>
-                                            <div className="space-y-4">
-                                                {dataSantri.data?.map((item) => (
-                                                    <div key={item.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                                                        <div className="flex justify-between items-start mb-3">
-                                                            <div>
-                                                                {/* <h4 className="font-semibold text-gray-900">Santri #{item.santri?.id}</h4> */}
-                                                                <p className="text-sm text-gray-600">NIS: {item.santri?.nis}</p>
-                                                            </div>
-                                                            {getStatusBadge(item.status)}
-                                                        </div>
-                                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                                                            <div>
-                                                                <span className="font-medium text-gray-600">Nominal:</span>
-                                                                <p className="text-gray-900 font-semibold">{formatCurrency(item.nominal)}</p>
-                                                            </div>
-                                                            {/* <div>
-                                                                <span className="font-medium text-gray-600">Sisa:</span>
-                                                                <p className="text-gray-900 font-semibold">{formatCurrency(item.sisa)}</p>
-                                                            </div> */}
-                                                            <div>
-                                                                <span className="font-medium text-gray-600">Status Santri:</span>
-                                                                <p className="text-gray-900 capitalize">{item.santri?.status}</p>
-                                                            </div>
-                                                        </div>
-                                                        {item.keterangan && (
-                                                            <div className="mt-3 pt-3 border-t border-gray-100">
-                                                                <span className="font-medium text-gray-600">Keterangan:</span>
-                                                                <p className="text-gray-900 mt-1">{item.keterangan}</p>
-                                                            </div>
+
+                                            {/* Wrapper untuk membuat tabel responsif di layar kecil */}
+                                            <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
+                                                <table className="w-full text-sm text-left text-gray-700">
+                                                    {/* Table Header */}
+                                                    <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                                        <tr>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">No.</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
+                                                            {/* <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th> */}
+                                                        </tr>
+                                                    </thead>
+
+                                                    {/* Table Body */}
+                                                    <tbody>
+                                                        {/* Kondisi jika tidak ada data */}
+                                                        {(!dataSantri?.data || dataSantri?.data?.length == 0) ? (
+                                                            <tr>
+                                                                <td colSpan="7" className="text-center py-6 text-gray-500">
+                                                                    Tidak ada data untuk ditampilkan.
+                                                                </td>
+                                                            </tr>
+                                                        ) : (
+                                                            /* Mapping data ke setiap baris tabel */
+                                                            dataSantri.data.map((item, index) => (
+                                                                <tr key={item.id} className="bg-white border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
+                                                                    <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
+                                                                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
+                                                                    <td className="px-4 py-3">{item.nis || "-"}</td>
+                                                                    <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
+                                                                    <td className="px-4 py-3 text-center">
+                                                                        {getStatusBadge(item.status)}
+                                                                    </td>
+                                                                    <td className="px-4 py-3">{formatDate(item.tanggal_bayar)}</td>
+                                                                    <td className="px-4 py-3">{item.keterangan || "-"}</td>
+                                                                    {/* <td className="px-4 py-3 text-center">
+                                                                        <button className="font-medium text-blue-600 hover:underline">
+                                                                            Detail
+                                                                        </button>
+                                                                    </td> */}
+                                                                </tr>
+                                                            ))
                                                         )}
-                                                    </div>
-                                                ))}
+                                                    </tbody>
+                                                </table>
                                             </div>
+                                            {dataSantri && pagination.total > pagination.perPage && (
+                                                <div className="flex items-center justify-between pt-4">
+                                                    <span className="text-sm text-gray-600">
+                                                        Halaman <span className="font-semibold">{pagination.currentPage}</span> dari <span className="font-semibold">{pagination.lastPage}</span>
+                                                    </span>
+                                                    <div className="inline-flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                                            disabled={pagination.currentPage === 1}
+                                                            className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            Sebelumnya
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                                            disabled={pagination.currentPage === pagination.lastPage}
+                                                            className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            Berikutnya
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (

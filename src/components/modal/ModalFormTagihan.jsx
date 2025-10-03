@@ -12,10 +12,12 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const id = data?.id;
+    const [monthInputValue, setMonthInputValue] = useState('');
     const [formData, setFormData] = useState({
-        kode_tagihan: "",
+        // kode_tagihan: "",
         nama_tagihan: "",
         tipe: "bulanan",
+        periode: "",
         nominal: "",
         jatuh_tempo: "",
         status: true,
@@ -25,19 +27,22 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
         if (isOpen) {
             if (feature == 2 && data) {
                 setFormData({
-                    kode_tagihan: data.kode_tagihan || "",
+                    // kode_tagihan: data.kode_tagihan || "",
                     nama_tagihan: data.nama_tagihan || "",
                     tipe: data.tipe || "bulanan",
+                    periode: data.periode || "",
                     nominal: data.nominal || "",
                     jatuh_tempo: data.jatuh_tempo || "",
                     status: data.status ?? true,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
+                setMonthInputValue('')
                 setFormData({
-                    kode_tagihan: "",
+                    // kode_tagihan: "",
                     nama_tagihan: "",
                     tipe: "bulanan",
+                    periode: "",
                     nominal: "",
                     jatuh_tempo: "",
                     status: true,
@@ -86,9 +91,10 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
 
             // Tentukan data yang dikirim
             const payload = {
-                kode_tagihan: formData.kode_tagihan,
+                // kode_tagihan: formData.kode_tagihan,
                 nama_tagihan: formData.nama_tagihan,
                 tipe: formData.tipe,
+                periode: formData.periode,
                 nominal: parseFloat(formData.nominal),
                 jatuh_tempo: formData.jatuh_tempo || null,
                 status: formData.status,
@@ -155,6 +161,31 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
         }
     };
 
+    const handlePeriodeChange = (e) => {
+        const inputValue = e.target.value; // Nilainya adalah "YYYY-MM"
+        setMonthInputValue(inputValue);
+
+        if (inputValue) {
+            const [year, month] = inputValue.split('-');
+            const dateObject = new Date(year, month - 1, 1);
+            const formattedPeriode = dateObject.toLocaleDateString('id-ID', {
+                month: 'long',
+                year: 'numeric'
+            }).toUpperCase();
+
+            // Simpan format yang sudah benar ke state utama
+            setFormData(prevData => ({
+                ...prevData,
+                periode: formattedPeriode
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                periode: ''
+            }));
+        }
+    };
+
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
@@ -204,7 +235,7 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
 
                                             {/* FORM ISI */}
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="kode_tagihan" className="block text-gray-700">Kode Tagihan *</label>
                                                     <input
                                                         type="text"
@@ -217,7 +248,7 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Masukkan Kode Tagihan"
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div>
                                                     <label htmlFor="nama_tagihan" className="block text-gray-700">Nama Tagihan *</label>
                                                     <input
@@ -248,6 +279,20 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                                                         <option value="sekali_bayar">Sekali Bayar</option>
                                                     </select>
                                                 </div>
+                                                <div>
+                                                    <label htmlFor="nama_tagihan" className="block text-gray-700">Periode *</label>
+                                                    <input
+                                                        type="month"
+                                                        id="nama_tagihan"
+                                                        name="nama_tagihan"
+                                                        value={monthInputValue}
+                                                        onChange={handlePeriodeChange}
+                                                        required
+                                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                                        placeholder="Pilih Periode"
+                                                    />
+                                                </div>
+
                                                 <div>
                                                     <label htmlFor="nominal" className="block text-gray-700">
                                                         Nominal *

@@ -948,6 +948,15 @@ const Scan = ({ refetch }) => {
 
     }, [customerData])
 
+    // const formatRupiah = (value) => {
+    //     if (!value) return "";
+    //     return new Intl.NumberFormat("id-ID", {
+    //         style: "currency",
+    //         currency: "IDR",
+    //         minimumFractionDigits: 0,
+    //     }).format(value);
+    // };
+
     return (
         <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
