@@ -157,8 +157,8 @@ export const menuTransaksiItems = [
 export const menuPembayaranItems = [
     { id: "bank", icon: "fa-university", text: "Bank", link: "/pembayaran/bank", content: <Bank />, access: "bank" },
     { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount />, access: "virtual_account" },
-    { id: "mastertagihan", icon: "fa-file-invoice", text: "Master Tagihan", link: "/pembayaran/master-tagihan", content: <Tagihan />, access: "tagihan" },
-    { id: "masterpotongan", icon: "fa-scissors", text: "Master Potongan", link: "/pembayaran/master-potongan", content: <Potongan />, access: "potongan" },
+    { id: "mastertagihan", icon: "fa-file-invoice", text: "Tagihan", link: "/pembayaran/master-tagihan", content: <Tagihan />, access: "tagihan" },
+    { id: "masterpotongan", icon: "fa-scissors", text: "Potongan", link: "/pembayaran/master-potongan", content: <Potongan />, access: "potongan" },
     // { id: "potongankhusus", icon: "fa-gift", text: "Potongan Khusus", link: "/pembayaran/potongan-khusus", content: <PotonganKhusus />, access: "potongan_khusus" },
     // { id: "prosestagihan", icon: "fa-receipt", text: "Proses Tagihan", link: "/pembayaran/tagihan-santri", content: <ProsesTagihan />, access: "proses_tagihan" },
 ]
