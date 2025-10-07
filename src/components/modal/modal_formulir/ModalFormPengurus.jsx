@@ -161,6 +161,7 @@ export const ModalAddPengurusFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                 value={formData.keterangan_jabatan}
                                                 onChange={(e) => setFormData({ ...formData, keterangan_jabatan: e.target.value })}
                                                 required
+                                                placeholder="Masukkan keterangan jabatan"
                                             />
                                         </div>
 

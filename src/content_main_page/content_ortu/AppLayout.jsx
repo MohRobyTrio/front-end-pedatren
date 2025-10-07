@@ -246,7 +246,7 @@ export const AppLayout = () => {
                                         className="w-full border border-gray-300 rounded px-2 py-1"
                                         value={selectedChild.id}
                                         onChange={(e) =>
-                                            handleChildSelect(user.children.find((c) => c.id === Number.parseInt(e.target.value)))
+                                            handleChildSelect(user.children.find((c) => c.id == Number.parseInt(e.target.value)))
                                         }
                                     >
                                         {user.children.map((child) => (
@@ -332,7 +332,7 @@ export const AppLayout = () => {
                                                             <button
                                                                 key={child.id}
                                                                 onClick={() => handleChildSelect(child)}
-                                                                className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${selectedChild?.id === child.id ? "bg-emerald-50 text-emerald-700" : "text-gray-700"}`}
+                                                                className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${selectedChild?.id == child.id ? "bg-emerald-50 text-emerald-700" : "text-gray-700"}`}
                                                             >
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">

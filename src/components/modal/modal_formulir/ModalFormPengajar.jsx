@@ -52,12 +52,13 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                 lembaga_id: "",
                 golongan_id: "",
                 jabatan: "",
-                tahun_masuk: ""
+                tahun_masuk: "",
+                keterangan_jabatan: ""
             });
             setForm({ nama_mapel: '' });
             setMateriList([]);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Ubah label index ke-0 menjadi "Pilih ..."
@@ -83,7 +84,8 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
         lembaga_id: "",
         golongan_id: "",
         jabatan: "",
-        tahun_masuk: ""
+        tahun_masuk: "",
+        keterangan_jabatan: ""
     });
     const [materiList, setMateriList] = useState([]);
     const [form, setForm] = useState({ kode_mapel: '', nama_mapel: '' });
@@ -99,8 +101,10 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
 
         setMateriList([
             ...materiList,
-            { kode_mapel: form.kode_mapel,
-            nama_mapel: form.nama_mapel }
+            {
+                kode_mapel: form.kode_mapel,
+                nama_mapel: form.nama_mapel
+            }
         ])
         setForm({ kode_mapel: '', nama_mapel: '' })
         closeAddMateriModal();
@@ -363,6 +367,18 @@ export const ModalAddPengajarFormulir = ({ isOpen, onClose, biodataId, cardId, r
                                                                     </option>
                                                                 ))}
                                                             </select>
+                                                        </div>
+
+                                                        <div>
+                                                            <label className="block text-gray-700">Keterangan Jabatan *</label>
+                                                            <input
+                                                                type="text"
+                                                                className="w-full mt-1 border border-gray-300 rounded-md p-2"
+                                                                value={formData.keterangan_jabatan}
+                                                                onChange={(e) => setFormData({ ...formData, keterangan_jabatan: e.target.value })}
+                                                                required
+                                                                placeholder="Masukkan keterangan jabatan"
+                                                            />
                                                         </div>
 
                                                         <div>

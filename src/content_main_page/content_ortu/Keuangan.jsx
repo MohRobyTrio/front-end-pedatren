@@ -17,8 +17,6 @@ import {
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
 import { FaClipboardList } from "react-icons/fa"
-import DropdownOutlet from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownOutlet"
-import DropdownKategori from "../../hooks/hook_dropdown/hook_dropdown_ortu/DropdownKategori"
 
 export const KeuanganPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
@@ -31,7 +29,7 @@ export const KeuanganPage = () => {
     // const [searchTerm, setSearchTerm] = useState("")
 
     const { data, loading, filtering, error, fetchData, searchTerm, setSearchTerm, currentPage, setCurrentPage, totalPages, totalData } = useFetchTransaksiOrtu()
-    const { menuOutlet } = DropdownOutlet()
+    // const { menuOutlet } = DropdownOutlet()
 
     const [filters, setFilters] = useState({
         outlet_id: "",
@@ -41,12 +39,12 @@ export const KeuanganPage = () => {
         q: ""
     })
 
-    const { menuKategori } = DropdownKategori(filters.outlet_id)
+    // const { menuKategori } = DropdownKategori(filters.outlet_id)
     const toggleFilter = () => setShowFilter((prev) => !prev);
 
     useEffect(() => {
         fetchData(filters, true, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters])
 
     // Mock data - replace with actual API calls
@@ -289,7 +287,7 @@ export const KeuanganPage = () => {
 
     const SelectItem = ({ value, children }) => <option value={value}>{children}</option>
 
-    const  DataTable = ({ data, columns, pageSize }) => {
+    const DataTable = ({ data, columns, pageSize }) => {
         const startIndex = (currentPage - 1) * pageSize
 
         return (
@@ -482,45 +480,70 @@ export const KeuanganPage = () => {
     //     totalTagihan: mockTagihanData.filter((t) => t.status !== "lunas").reduce((sum, t) => sum + t.sisa, 0),
     // }
 
+    const formatTanggalWaktuWIB = (dateString) => {
+        if (!dateString) return "-";
+
+        // 1. Buat objek Date. JavaScript akan otomatis mengonversi dari UTC ke lokal.
+        const date = new Date(dateString);
+
+        // 2. Format tanggal sesuai keinginan menggunakan Intl.DateTimeFormat (lebih modern)
+        return new Intl.DateTimeFormat("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false, // Gunakan format 24 jam (menampilkan 16:55 bukan 04:55 PM)
+        }).format(date);
+    };
+
     const transactionColumns = [
         {
             key: "tanggal",
-            label: "Tanggal",
-            sortable: true,
-            render: (value) => formatTanggalWaktu(value),
+            label: "Waktu Transaksi",
+            render: (value) => formatTanggalWaktuWIB(value),
         },
-        // {
-        //     key: "santri",
-        //     label: "Santri",
-        //     sortable: true,
-        //     render: (value) => value?.biodata?.nama || "-",
-        // },
         {
             key: "outlet",
-            label: "Outlet",
-            sortable: true,
-            render: (value) => value?.nama_outlet || "-",
+            label: "Outlet & Kategori", // Label diubah
+            render: (value, row) => (
+                <div>
+                    <div className="font-semibold text-gray-800">{value?.nama_outlet || "-"}</div>
+                    <div className="text-xs text-gray-500">{row.kategori?.nama_kategori || "-"}</div>
+                </div>
+            ),
         },
         {
-            key: "kategori",
-            label: "Kategori",
-            sortable: true,
+            key: "tipe",
+            label: "Tipe",
             render: (value) => (
-                value?.nama_kategori || "-"
+                <Badge className={
+                    value === 'topup' ? "bg-emerald-100 text-emerald-800" :
+                        value === 'debit' ? "bg-red-100 text-red-800" :
+                            "bg-gray-100 text-gray-800"
+                }>
+                    {value}
+                </Badge>
             ),
         },
         {
             key: "total_bayar",
             label: "Nominal",
-            sortable: true,
-            render: (value) => (
-                <span className="font-semibold text-red-600">
-                    -{formatRupiah(value)}
+            render: (value, row) => (
+                <span className={`font-semibold font-mono ${row.tipe === 'topup' ? "text-emerald-600" : "text-red-600"}`}>
+                    {row.tipe === 'topup' ? '+' : '-'}
+                    {formatRupiah(value)}
                 </span>
             ),
         },
+        {
+            key: "keterangan",
+            label: "Keterangan",
+            render: (value) => (
+                <div className="whitespace-normal">{value || "-"}</div>
+            )
+        },
     ];
-
 
     const transferColumns = [
         {
@@ -645,13 +668,41 @@ export const KeuanganPage = () => {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center">
                         <Wallet className="mr-3 h-6 w-6 text-purple-600" />
-                        Keuangan
+                        Transaksi
                     </h1>
-                    <p className="text-gray-600 mt-1">Kelola keuangan {selectedChild?.nama || "santri"}</p>
+                    <p className="text-gray-600 mt-1">Kelola transaksi {selectedChild?.nama || "santri"}</p>
                 </div>
 
                 {/* Tabs */}
                 <div className="space-y-6">
+                    {/* Tambahkan bagian ini di dalam return JSX, di atas Card Riwayat Transaksi */}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <Card className="text-center">
+                            <CardContent>
+                                <p className="text-sm text-gray-500">Total Top Up</p>
+                                <p className="text-xl font-bold text-emerald-600">{formatRupiah(data?.rekap?.total_topup || 0)}</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="text-center">
+                            <CardContent>
+                                <p className="text-sm text-gray-500">Total Debit</p>
+                                <p className="text-xl font-bold text-red-600">{formatRupiah(data?.rekap?.total_debit || 0)}</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="text-center">
+                            <CardContent>
+                                <p className="text-sm text-gray-500">Total Kredit</p>
+                                <p className="text-xl font-bold text-blue-600">{formatRupiah(data?.rekap?.total_kredit || 0)}</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="text-center">
+                            <CardContent>
+                                <p className="text-sm text-gray-500">Total Refund</p>
+                                <p className="text-xl font-bold text-amber-600">{formatRupiah(data?.rekap?.total_refund || 0)}</p>
+                            </CardContent>
+                        </Card>
+                    </div>
 
                     {activeTab === "transaksi" && (
                         <div className={`bg-white rounded-lg border border-gray-200 shadow-sm`}>
@@ -676,6 +727,7 @@ export const KeuanganPage = () => {
                                     </button>
                                 </div>
                             </CardHeader>
+
                             <div className="px-6 py-4">
                                 {showFilter && (
                                     <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">

@@ -32,6 +32,7 @@ import DetailSetoranTahfidz from "../../content_modal/detail/DetailSetoranTahfid
 import DetailNadhoman from "../../content_modal/detail/DetailNadhoman";
 import DetailRekapNadhoman from "../../content_modal/detail/DetailRekapNadhoman";
 import { FaPlus } from "react-icons/fa";
+import DetailRiwayatTransaksi from "../../content_modal/detail/DetailRiwayatTransaksi";
 
 // Placeholder untuk tab lainnya
 const WarPes = () => <h1 className="text-xl font-bold">Warga Pesantren</h1>;
@@ -103,6 +104,7 @@ const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
                 else if (menu === 23) endpoint = `data-pokok/pengunjung/${item.id}`;
                 else if (menu === 24) endpoint = `tahfidz/${item.santri_id}`;
                 else if (menu === 25) endpoint = `nadhoman/${item.santri_id}`;
+                else if (menu === 26) endpoint = `riwayatkartu/${item.id}`;
 
                 if (!endpoint) throw new Error('Menu tidak valid');
                 const token = sessionStorage.getItem("token") || getCookie("token");
@@ -154,7 +156,7 @@ const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
             fetchData();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [item, item.biodata_id, item.id, item.id_khadam, item.santri_id, item.Biodata_uuid, menu]);
+    }, [item, item?.biodata_id, item?.id, item?.id_khadam, item?.santri_id, item?.Biodata_uuid, menu]);
 
     const isOnlyError = data && Object.keys(data).length === 1 && data.error;
 
@@ -290,13 +292,18 @@ const ModalDetail = ({ title, menu, item, onClose, handleSelect }) => {
                 label: "Rekap Nadhoman",
                 content: <DetailRekapNadhoman rekapNadhoman={data?.rekap_nadhoman} />
             },
+            data?.RiwayatTransaksi && data?.RiwayatTransaksi?.length > 0 && {
+                id: "riwayat_transaksi",
+                label: "Riwayat Transaksi",
+                content: <DetailRiwayatTransaksi riwayat={data.RiwayatTransaksi} />
+            },
             data?.error && {
                 id: "error",
                 label: "Error",
                 content: <div>{data?.error}</div>
             },
         ].filter(Boolean); // Hapus tab yang tidak punya data    
-    }, [data, isOnlyError, item.id, menu, onClose]);
+    }, [data, isOnlyError, item?.id, menu, onClose]);
 
     const [activeTab, setActiveTab] = useState(null);
 

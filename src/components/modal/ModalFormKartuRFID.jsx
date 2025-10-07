@@ -512,7 +512,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
 
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep, location.pathname]); // tambahkan location.pathname ke dependency
 
     useEffect(() => {
@@ -520,7 +520,7 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
             ...formData,
             santri_id: santri?.id || "",
         })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [santri])
 
     useEffect(() => {
@@ -903,13 +903,14 @@ export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
     console.log(id)
 
     const [data, setData] = useState(null)
+    const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (isOpen && id) {
             setLoading(true)
             const token = sessionStorage.getItem("token") || getCookie("token")
-            fetch(`${API_BASE_URL}view-ortu/transaksi?santri_id=${id}`, {
+            fetch(`${API_BASE_URL}riwayatkartu/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -922,22 +923,22 @@ export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
                 .then((json) => setData(json))
                 .catch((err) => {
                     console.error(err)
+                    setError(err.message)
                     setData(null)
                 })
                 .finally(() => setLoading(false))
         }
     }, [isOpen, id])
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "-"
-        return new Date(dateString).toLocaleString("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "UTC"
-        })
+    const formatRupiah = (number) => {
+        if (number === null || number === undefined) return number || "-"
+        const parsedNumber = parseFloat(number)
+        if (isNaN(parsedNumber)) return "-"
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+        }).format(parsedNumber)
     }
 
     return (
@@ -971,41 +972,53 @@ export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
                             </button>
 
                             <div className="pt-6 px-6">
-                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Potongan Khusus</Dialog.Title>
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">Detail Transaksi Santri</Dialog.Title>
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-6 pt-4 text-left">
                                 {loading ? (
-                                    <div className="flex h-24 justify-center items-center">
-                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    <div className="flex h-40 justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" />
                                     </div>
-                                ) : data ? (
-                                    <div className="space-y-6">
-                                        <div className="bg-gray-50 p-4 rounded-lg">
-                                            <h3 className="text-md font-semibold text-gray-800 mb-3">Informasi Potongan</h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                {[
-                                                    ["Nama Santri", data.data.nama_santri],
-                                                    ["Nama Potongan", data.data.nama_potongan],
-                                                    ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
-                                                    ["Berlaku", `${data.data.berlaku_dari} s.d. ${data.data.berlaku_sampai}`],
-                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
-                                                    ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
-                                                    ["Keterangan", data.data.keterangan],
-                                                ].map(([label, value]) => (
-                                                    <div key={label} className="flex flex-col">
-                                                        <span className="text-sm font-medium text-gray-600">{label}</span>
-                                                        <span className="text-sm text-gray-900 mt-1 break-words whitespace-pre-line">
-                                                            {value || "-"}
+                                ) : error ? (
+                                    <p className="text-center text-red-500">{error}</p>
+                                ) : data?.data?.length > 0 ? (
+                                    <table className="min-w-full text-sm text-left">
+                                        <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
+                                            <tr>
+                                                <th className="px-3 py-2 border-b">#</th>
+                                                <th className="px-3 py-2 border-b">Outlet & Kategori</th>
+                                                <th className="px-3 py-2 border-b">Tipe</th>
+                                                <th className="text-right px-3 py-2 border-b">Jumlah</th>
+                                                <th className="px-3 py-2 border-b">Keterangan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="text-gray-800">
+                                            {data?.data?.map((trx, i) => (
+                                                <tr key={trx.id} className="hover:bg-gray-50 whitespace-nowrap text-center text-left">
+                                                    <td className="px-3 py-2 border-b align-middle">{i + 1}</td>
+                                                    <td className="p-3 align-middle border-b">
+                                                        <div className="font-semibold text-gray-800">{trx.nama_outlet}</div>
+                                                        <div className="text-xs text-gray-500">{trx.nama_kategori}</div>
+                                                    </td>
+                                                    <td className="p-3 align-middle border-b">
+                                                        <span className={`capitalize px-2 py-1 text-xs font-semibold rounded-full ${trx.tipe === 'debit' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                                                            {trx.tipe}
                                                         </span>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                                    </td>
+                                                    <td className={`p-3 border-b text-right font-mono font-semibold align-middle ${trx.tipe === 'debit' ? 'text-red-600' : 'text-green-600'}`}>
+                                                        {trx.tipe === 'debit' ? '-' : '+'}
+                                                        {formatRupiah(trx.jumlah)}
+                                                    </td>
+                                                    <td className="p-3 align-middle border-b">
+                                                        {trx.keterangan || "-"}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 ) : (
-                                    <p className="text-red-500">Gagal memuat data potongan.</p>
+                                    <p className="h-40 grid place-items-center text-gray-500">Tidak ada riwayat transaksi.</p>
                                 )}
                             </div>
 

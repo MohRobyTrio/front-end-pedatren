@@ -27,6 +27,7 @@ const TabPengajar = () => {
     const [selectedPengajarId, setSelectedPengajarId] = useState(null);
     const [selectedPengajarDetail, setSelectedPengajarDetail] = useState(null);
     const [jabatan, setJabatan] = useState("");
+    const [keteranganJabatan, setKeteranganJabatan] = useState("");
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const [feature, setFeature] = useState(null);
@@ -157,6 +158,7 @@ const TabPengajar = () => {
             setJabatan(result.data.jabatan_kontrak || "");
             setEndDate(result.data.tanggal_keluar || "");
             setStartDate(result.data.tanggal_masuk || "");
+            setKeteranganJabatan(result.data.keterangan_jabatan || "")
             const formattedMateri = result.data.materi.map(item => ({
                 id: item.materi_id || "-",
                 kode_mapel: item.kode_mapel || "-",
@@ -185,14 +187,14 @@ const TabPengajar = () => {
             return;
         }
 
-        if (materiList.length === 0) {
-            await Swal.fire({
-                icon: 'warning',
-                title: 'Materi Kosong',
-                text: 'Minimal satu materi harus ditambahkan.',
-            });
-            return;
-        }
+        // if (materiList.length === 0) {
+        //     await Swal.fire({
+        //         icon: 'warning',
+        //         title: 'Materi Kosong',
+        //         text: 'Minimal satu materi harus ditambahkan.',
+        //     });
+        //     return;
+        // }
 
         const confirmResult = await Swal.fire({
             title: "Yakin ingin mengirim data?",
@@ -209,6 +211,7 @@ const TabPengajar = () => {
             lembaga_id: lembaga,
             golongan_id: golongan,
             jabatan: jabatan,
+            keterangan_jabatan: keteranganJabatan,
             tahun_masuk: startDate
         };
 
@@ -681,6 +684,20 @@ const TabPengajar = () => {
                                                 value={endDate}
                                                 onChange={(e) => setEndDate(e.target.value)}
                                                 disabled
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="keteranganJabatan" className="block text-sm font-medium text-gray-700">
+                                                Keterangan Jabatan *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="keteranganJabatan"
+                                                value={keteranganJabatan}
+                                                onChange={(e) => setKeteranganJabatan(e.target.value)}
+                                                className={`mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!canEdit || selectedPengajarDetail.status_aktif == "tidak aktif" ? 'bg-gray-200 text-gray-500' : ''}`}
+                                                disabled={!canEdit || selectedPengajarDetail.status == "tidak aktif"}
+                                                placeholder="Masukkan keterangan"
                                             />
                                         </div>
                                     </div>
