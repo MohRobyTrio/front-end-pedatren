@@ -63,6 +63,7 @@ import { CardScanPage } from './content_main_page/content_anjungan/ScanCard';
 import { PinEntryPage } from './content_main_page/content_anjungan/PinEntry';
 import AppAnjungan from './content_main_page/content_anjungan/AppLayout';
 import TambahPesertaDidikPage from './content_main_page/PSB';
+import BatasPengeluaranPage from './content_main_page/content_ortu/BatasPengeluaran';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -264,7 +265,7 @@ function App() {
                             <Route path="/wali/hafalan" element={<HafalanPage />} />
                             <Route path="/wali/akademik" element={<AkademikPage />} />
                             <Route path="/wali/transaksi" element={<KeuanganPage />} />
-                            <Route path="/wali/batas-pengeluaran" element={<FeatureUnavailable />} />
+                            <Route path="/wali/batas-pengeluaran" element={<BatasPengeluaranPage />} />
                             <Route path="/wali/perizinan" element={<PerizinanPage />} />
                             <Route path="/wali/pelanggaran" element={<PelanggaranPage />} />
                             <Route path="/wali/presensi" element={<PresensiPage />} />
