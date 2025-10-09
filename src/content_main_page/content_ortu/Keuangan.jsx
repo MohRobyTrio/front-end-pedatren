@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
     Wallet,
     ArrowUpRight,
@@ -13,6 +13,8 @@ import {
     X,
     SlidersHorizontal,
     Loader2,
+    Save,
+    ShieldCheck,
 } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
@@ -653,6 +655,41 @@ export const KeuanganPage = () => {
         },
     ]
 
+    const [dailyLimit, setDailyLimit] = useState(50000) // Default limit Rp 50.000
+    const [isEditingLimit, setIsEditingLimit] = useState(false)
+    const [newLimitValue, setNewLimitValue] = useState(dailyLimit.toString())
+
+    const dailySpending = useMemo(() => {
+        if (!data?.data || data.data.length === 0) {
+            return 0
+        }
+        const today = new Date().toISOString().split("T")[0] // 'YYYY-MM-DD'
+        
+        return data.data
+            .filter(trx => 
+                trx.tanggal.startsWith(today) && trx.tipe === 'debit'
+            )
+            .reduce((sum, trx) => sum + trx.total_bayar, 0)
+    }, [data]) // Akan dihitung ulang hanya jika 'data' berubah
+
+    // ✨ BARU: Handler untuk menyimpan limit
+    const handleSaveLimit = () => {
+        const newLimit = parseInt(newLimitValue, 10)
+        if (!isNaN(newLimit) && newLimit >= 0) {
+            setDailyLimit(newLimit)
+            // Di aplikasi nyata, di sini Anda akan memanggil API untuk menyimpan ke backend
+            // await api.saveDailyLimit(selectedChild.id, newLimit)
+            console.log("Limit baru disimpan:", newLimit)
+        }
+        setIsEditingLimit(false)
+    }
+
+    // ✨ BARU: Handler untuk membatalkan edit
+    const handleCancelEdit = () => {
+        setNewLimitValue(dailyLimit.toString())
+        setIsEditingLimit(false)
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 p-4">
@@ -672,6 +709,73 @@ export const KeuanganPage = () => {
                     </h1>
                     <p className="text-gray-600 mt-1">Kelola transaksi {selectedChild?.nama || "santri"}</p>
                 </div>
+
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center">
+                                <ShieldCheck className="w-5 h-5 mr-2 text-blue-600" />
+                                Limit Transaksi Harian
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {isEditingLimit ? (
+                                // Tampilan saat mode edit
+                                <div className="space-y-4">
+                                    <div>
+                                        <label htmlFor="limitInput" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Atur Limit Harian (Rp)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            id="limitInput"
+                                            value={newLimitValue}
+                                            onChange={(e) => setNewLimitValue(e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Contoh: 50000"
+                                        />
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <Button variant="outline" onClick={handleCancelEdit}>Batal</Button>
+                                        <Button onClick={handleSaveLimit}>
+                                            <Save className="w-4 h-4 mr-2" />
+                                            Simpan
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Tampilan normal
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-baseline">
+                                        <span className="text-sm text-gray-600">Terpakai Hari Ini</span>
+                                        <span className="text-lg font-bold text-gray-800">{formatRupiah(dailySpending)}</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div 
+                                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" 
+                                            style={{ width: `${dailyLimit > 0 ? Math.min((dailySpending / dailyLimit) * 100, 100) : 0}%` }}
+                                        ></div>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">
+                                            Limit: <span className="font-semibold text-gray-700">{formatRupiah(dailyLimit)}</span>
+                                        </span>
+                                        <button 
+                                            onClick={() => setIsEditingLimit(true)} 
+                                            className="font-medium text-blue-600 hover:text-blue-800"
+                                        >
+                                            Ubah Limit
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card className="flex flex-col justify-center items-center bg-gray-100 border-dashed">
+                        <p className="text-gray-500">Informasi Tambahan</p>
+                    </Card>
+                </div> */}
 
                 {/* Tabs */}
                 <div className="space-y-6">

@@ -6,7 +6,7 @@ import { hasAccess } from "../../utils/hasAccess";
 import { Navigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 import useFetchRoles from "../../hooks/hooks_menu_manage/Roles";
-import { ModalAddOrEditRoles } from "../../components/modal/modal_kelembagaan/ModalFormRoles";
+import { ModalAddOrEditRoles, ModalDetailRoles } from "../../components/modal/modal_kelembagaan/ModalFormRoles";
 
 const Roles = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -62,11 +62,11 @@ const Roles = () => {
 
             <ModalAddOrEditRoles isOpen={openModal} onClose={() => setOpenModal(false)} data={rolesData} refetchData={fetchRoles} />
 
-            {/* <ModalDetailRoles
+            <ModalDetailRoles
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 id={selectedId}
-            /> */}
+            />
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 {error ? (

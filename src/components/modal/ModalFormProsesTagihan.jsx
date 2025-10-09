@@ -11,6 +11,7 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
+import { OrbitProgress } from 'react-loading-indicators';
 
 export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) => {
     const [formData, setFormData] = useState({
@@ -800,13 +801,35 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     const [data, setData] = useState(null)
     const [dataSantri, setDataSantri] = useState(null)
     const [loading, setLoading] = useState(true)
-
+    const [loadingSantri, setLoadingSantri] = useState(true)
+    const [refreshKey, setRefreshKey] = useState(0);
     const [pagination, setPagination] = useState({
         currentPage: 1,
         perPage: 25, // Default item per halaman
         lastPage: 1,
         total: 0,
     });
+
+    const [filter, setFilter] = useState({
+        search: "",
+        status: "", // "" berarti semua status
+    });
+
+    const [debouncedSearch, setDebouncedSearch] = useState(filter.search);
+
+    useEffect(() => {
+        // Set timer 500ms
+        const handler = setTimeout(() => {
+            setDebouncedSearch(filter.search);
+            // Reset ke halaman pertama setiap kali ada pencarian baru
+            setPagination(prev => ({ ...prev, currentPage: 1 }));
+        }, 500);
+
+        // Bersihkan timer setiap kali filter.search berubah (pengguna mengetik lagi)
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [filter.search]);
 
     useEffect(() => {
         if (isOpen && id) {
@@ -833,11 +856,25 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
 
     useEffect(() => {
         if (isOpen && id) {
-            setLoading(true);
+            setLoadingSantri(true);
             const token = sessionStorage.getItem("token") || getCookie("token");
 
-            // Tambahkan parameter pagination ke URL
-            const url = `${API_BASE_URL}tagihan-santri/${id}?page=${pagination.currentPage}&per_page=${pagination.perPage}`;
+            // 4. Bangun URL dengan parameter dinamis
+            const params = new URLSearchParams({
+                page: pagination.currentPage,
+                per_page: pagination.perPage,
+            });
+
+            // Tambahkan parameter search jika ada isinya
+            if (debouncedSearch) {
+                params.append('search', debouncedSearch);
+            }
+            // Anda juga bisa menambahkan parameter status di sini jika diperlukan
+            if (filter.status) {
+                params.append('status', filter.status);
+            }
+
+            const url = `${API_BASE_URL}tagihan-santri/${id}?${params.toString()}`;
 
             fetch(url, {
                 headers: {
@@ -850,9 +887,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                     return res.json();
                 })
                 .then((json) => {
-                    setDataSantri(json); // Ambil array data santri
-
-                    // Simpan informasi pagination dari API
+                    setDataSantri(json);
                     setPagination(prev => ({
                         ...prev,
                         lastPage: json.last_page,
@@ -863,10 +898,10 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                     console.error(err);
                     setDataSantri(null);
                 })
-                .finally(() => setLoading(false));
+                .finally(() => setLoadingSantri(false));
         }
-        // Tambahkan pagination.currentPage sebagai dependency
-    }, [isOpen, id, pagination.currentPage, pagination.perPage]);
+        // Tambahkan `debouncedSearch` sebagai dependency
+    }, [isOpen, id, pagination.currentPage, pagination.perPage, debouncedSearch, filter.status, refreshKey]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= pagination.lastPage) {
@@ -875,6 +910,73 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                 currentPage: newPage,
             }));
         }
+    };
+
+    const handleCancel = (tagihanSantriId) => {
+        Swal.fire({
+            title: 'Anda Yakin?',
+            text: "Transaksi yang dibatalkan tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, batalkan!',
+            cancelButtonText: 'Tidak'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    background: "transparent",    // tanpa bg putih box
+                    showConfirmButton: false,     // tanpa tombol
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    customClass: {
+                        popup: 'p-0 shadow-none border-0 bg-transparent' // hilangkan padding, shadow, border, bg
+                    }
+                });
+                try {
+                    const token = sessionStorage.getItem("token") || getCookie("token");
+
+                    // Ganti URL ini dengan endpoint API pembatalan Anda
+                    const response = await fetch(`${API_BASE_URL}tagihan-santri/batal`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        // ID sekarang diletakkan di dalam body request
+                        body: JSON.stringify({
+                            tagihan_santri_id: tagihanSantriId
+                        })
+                    });
+
+                    Swal.close();
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(errorData?.error || 'Gagal membatalkan transaksi.');
+                    }
+
+                    Swal.fire(
+                        'Dibatalkan!',
+                        'Transaksi telah berhasil dibatalkan.',
+                        'success'
+                    );
+
+                    // Memicu useEffect untuk fetch ulang data
+                    setRefreshKey(prevKey => prevKey + 1);
+
+                } catch (error) {
+                    console.error('Error saat membatalkan:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: error.message || 'Terjadi kesalahan pada server.',
+                    });
+                } 
+            }
+        });
     };
 
     const formatDate = (dateString) => {
@@ -913,7 +1015,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
         const statusConfig = {
             pending: { label: "Pending", class: "bg-yellow-100 text-yellow-800" },
             lunas: { label: "Lunas", class: "bg-green-100 text-green-800" },
-            terlambat: { label: "Terlambat", class: "bg-red-100 text-red-800" },
+            batal: { label: "Dibatalkan", class: "bg-red-100 text-red-800" },
         }
         const config = statusConfig[status] || { label: status, class: "bg-gray-100 text-gray-800" }
         return <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.class}`}>{config.label}</span>
@@ -1009,17 +1111,32 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                     <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
                                                     Detail Tagihan Santri ({pagination.total || 0} santri)
                                                 </h3>
-                                                {/* --- INPUT PENCARIAN --- */}
-                                                {/* <div className="relative w-full md:w-64 bg-white">
-                                                    <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Cari nama atau NIS..."
-                                                        // value={searchTerm}
-                                                        // onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                    />
-                                                </div> */}
+                                                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                                                    {/* Filter Status */}
+                                                    <select
+                                                        value={filter.status}
+                                                        onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+                                                        className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+                                                    >
+                                                        <option value="">Semua Status</option>
+                                                        <option value="lunas">Lunas</option>
+                                                        <option value="pending">Pending</option>
+                                                        <option value="batal">Batal</option>
+                                                        {/* Tambahkan opsi lain jika perlu */}
+                                                    </select>
+
+                                                    {/* Input Pencarian */}
+                                                    <div className="relative w-full sm:w-64 bg-white">
+                                                        <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Cari nama atau NIS..."
+                                                            value={filter.search}
+                                                            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+                                                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             {/* Wrapper untuk membuat tabel responsif di layar kecil */}
@@ -1035,16 +1152,25 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                             <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
-                                                            {/* <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th> */}
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th>
                                                         </tr>
                                                     </thead>
 
                                                     {/* Table Body */}
                                                     <tbody>
                                                         {/* Kondisi jika tidak ada data */}
-                                                        {(!dataSantri?.data || dataSantri?.data?.length == 0) ? (
+                                                        {loadingSantri ? (
                                                             <tr>
-                                                                <td colSpan="7" className="text-center py-6 text-gray-500">
+                                                                <td colSpan="8" className="text-center py-6">
+                                                                    <div className="flex flex-col items-center">
+                                                                        <OrbitProgress />
+                                                                        <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
+                                                            <tr>
+                                                                <td colSpan="8" className="text-center py-6 text-gray-500">
                                                                     Tidak ada data untuk ditampilkan.
                                                                 </td>
                                                             </tr>
@@ -1066,6 +1192,17 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                                             Detail
                                                                         </button>
                                                                     </td> */}
+                                                                    <td className="px-4 py-3 text-center">
+                                                                        {/* Hanya tampilkan tombol batal jika statusnya belum 'Dibatalkan' */}
+                                                                        {item.status != 'batal' && (
+                                                                            <button
+                                                                                onClick={() => handleCancel(item.id)}
+                                                                                className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                                                                            >
+                                                                                Batal
+                                                                            </button>
+                                                                        )}
+                                                                    </td>
                                                                 </tr>
                                                             ))
                                                         )}

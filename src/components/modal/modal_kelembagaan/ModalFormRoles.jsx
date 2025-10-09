@@ -426,18 +426,39 @@ export const ModalDetailRoles = ({ isOpen, onClose, id }) => {
                                         <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
                                     </div>
                                 ) : data ? (
-                                    <div className="space-y-2">
-                                        {[
-                                            ["Nama Roles", data.name],
-                                            ["Guard Name", data.guard_name],
-                                            ["Created At", formatWaktuIndonesiaSafe(data.created_at)],
-                                            ["Updated At", formatWaktuIndonesiaSafe(data.updated_at)],
-                                        ].map(([label, value]) => (
-                                            <div key={label} className="flex">
-                                                <div className="w-35 font-semibold text-gray-700">{label}</div>
-                                                <div className="flex-1 text-gray-900">: {value}</div>
-                                            </div>
-                                        ))}
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            {[
+                                                ["Nama Roles", data.name],
+                                                ["Guard Name", data.guard_name],
+                                                ["Created At", formatWaktuIndonesiaSafe(data.created_at)],
+                                                ["Updated At", formatWaktuIndonesiaSafe(data.updated_at)],
+                                            ].map(([label, value]) => (
+                                                <div key={label} className="flex">
+                                                    <div className="w-35 font-semibold text-gray-700">{label}</div>
+                                                    <div className="flex-1 text-gray-900">: {value}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="pt-2">
+                                            <h4 className="font-semibold text-gray-700 mb-2">Permissions:</h4>
+                                            {data.permissions && data.permissions.length > 0 ? (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {data.permissions.map((permission) => (
+                                                        <span
+                                                            key={permission.id}
+                                                            className="bg-sky-100 text-sky-800 text-sm font-medium px-3 py-1 rounded-full"
+                                                        >
+                                                            {permission.name}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-gray-500 italic text-sm">
+                                                    Tidak ada permission yang terhubung.
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                 ) : (
                                     <p className="text-red-500">Gagal memuat data.</p>
