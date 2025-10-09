@@ -13,7 +13,7 @@ export const TagihanPage = () => {
     const [pageSize] = useState(10)
     const [statusFilter, setStatusFilter] = useState("semua")
 
-    const { tagihanList, statistik, loading, handleBayar } = useTagihanSantri()
+    const { tagihanList, loading, handleBayar } = useTagihanSantri()
 
     useEffect(() => {
         // setLoading(true)
@@ -81,13 +81,13 @@ export const TagihanPage = () => {
     }
 
     // Custom components
-    const Card = ({ children, className = "" }) => (
-        <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
-    )
+    // const Card = ({ children, className = "" }) => (
+    //     <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>{children}</div>
+    // )
 
-    const CardHeader = ({ children, className = "" }) => (
-        <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>{children}</div>
-    )
+    // const CardHeader = ({ children, className = "" }) => (
+    //     <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>{children}</div>
+    // )
 
     const CardContent = ({ children, className = "" }) => <div className={`px-6 py-4 ${className}`}>{children}</div>
 
@@ -175,7 +175,15 @@ export const TagihanPage = () => {
         )
     }
 
-    const belum_lunas = (statistik?.status_breakdown?.pending ?? 0) + (statistik?.status_breakdown?.sebagian ?? 0)
+    // const belum_lunas = (statistik?.status_breakdown?.pending ?? 0) + (statistik?.status_breakdown?.sebagian ?? 0)
+    // Compute unpaid summary (count and nearest due date)
+    const unpaidList = tagihanList.filter((t) => t.status !== "lunas")
+    const unpaidCount = unpaidList.length
+    const nextDueDate =
+        unpaidList
+            .map((t) => t.tanggal_jatuh_tempo)
+            .filter(Boolean)
+            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())[0] || null
 
     console.log("render TagihanPage")
 
@@ -191,9 +199,29 @@ export const TagihanPage = () => {
                     <p className="text-gray-600 mt-1">Kelola tagihan {selectedChild?.nama || "santri"}</p>
                 </div>
 
+                {/* Unpaid Summary Banner (focus on 'belum lunas') */}
+                {unpaidCount >= 1 && (
+                    <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 sm:px-6 sm:py-4 flex items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-start sm:items-center gap-3">
+                            <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
+                            <div>
+                                <p className="text-sm font-medium text-red-700">Tagihan Belum Lunas</p>
+                                <p className="text-sm sm:text-base text-red-900 font-semibold">
+                                    {unpaidCount} tagihan • Jatuh tempo terdekat: {nextDueDate ? formatTanggal(nextDueDate) : "-"}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="hidden sm:block">
+                            <Button variant="default" onClick={() => setStatusFilter("pending")}>
+                                Lihat yang belum lunas
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Stats Cards */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {/* <Card className="border-blue-100">
+                {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"> */}
+                {/* <Card className="border-blue-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -206,8 +234,8 @@ export const TagihanPage = () => {
                         </CardContent>
                     </Card> */}
 
-                    {/* {belum_lunas && ( */}
-                        <Card className="border-red-100">
+                {/* {belum_lunas && ( */}
+                {/* <Card className="border-red-100">
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -218,10 +246,10 @@ export const TagihanPage = () => {
                                     <AlertCircle className="h-12 w-12 text-red-600" />
                                 </div>
                             </CardContent>
-                        </Card>
-                    {/* )} */}
+                        </Card> */}
+                {/* )} */}
 
-                    <Card className="border-emerald-100">
+                {/* <Card className="border-emerald-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -232,9 +260,9 @@ export const TagihanPage = () => {
                                 <CheckCircle className="h-12 w-12 text-emerald-600" />
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> */}
 
-                    {/* <Card className="border-amber-100">
+                {/* <Card className="border-amber-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -246,7 +274,7 @@ export const TagihanPage = () => {
                             </div>
                         </CardContent>
                     </Card> */}
-                </div>
+                {/* </div> */}
 
                 {/* Filters and Table Card */}
                 <div className={`bg-white rounded-lg border border-gray-200 shadow-sm`}>
@@ -308,7 +336,7 @@ export const TagihanPage = () => {
                                                             : tagihan.status === "pending"
                                                                 ? "Belum Lunas"
                                                                 : // : tagihan.status === "sebagian"
-                                                                //     ? "Cicilan"
+                                                                // ? "Cicilan"
                                                                 tagihan.status}
                                                     </Badge>
                                                 </div>
@@ -410,7 +438,7 @@ export const TagihanPage = () => {
                                                                     : tagihan.status === "pending"
                                                                         ? "Belum Lunas"
                                                                         : // : tagihan.status === "sebagian"
-                                                                        //     ? "Cicilan"
+                                                                        // ? "Cicilan"
                                                                         tagihan.status}
                                                             </Badge>
                                                         </div>
