@@ -98,6 +98,7 @@ export const Tahfidz = ({ student }) => {
                 console.log(item.tanggal || "-", item.jenis_setoran || "-", item.surat || "-");
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [detailTahfidz]);
 
     useEffect(() => {

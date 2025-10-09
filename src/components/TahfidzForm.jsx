@@ -32,8 +32,8 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
         surat: "",
         ayat_mulai: "",
         ayat_selesai: "",
-        juz_mulai: "",
-        juz_selesai: "",
+        // juz_mulai: "",
+        // juz_selesai: "",
         nilai: "",
         catatan: "",
         status: "proses",
@@ -174,15 +174,15 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
         let payload = { ...formData };
 
-        if (formData.jenis_setoran === "baru") {
-            delete payload.juz_mulai;
-            delete payload.juz_selesai;
-        } else if (formData.jenis_setoran === "murojaah") {
-            delete payload.surat;
-            delete payload.ayat_mulai;
-            delete payload.ayat_selesai;
-            delete payload.status;
-        }
+        // if (formData.jenis_setoran === "baru") {
+        //     delete payload.juz_mulai;
+        //     delete payload.juz_selesai;
+        // } else if (formData.jenis_setoran === "murojaah") {
+        //     delete payload.surat;
+        //     delete payload.ayat_mulai;
+        //     delete payload.ayat_selesai;
+        //     delete payload.status;
+        // }
 
         try {
             setIsSubmitting(true);
@@ -291,7 +291,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             <FaCalendarAlt className="inline mr-2 text-gray-600" />
-                            Tanggal
+                            Tanggal *
                         </label>
                         <input
                             type="date"
@@ -306,7 +306,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             <FaTasks className="inline mr-2 text-gray-600" />
-                            Jenis Setoran
+                            Jenis Setoran *
                         </label>
                         <select
                             name="jenis_setoran"
@@ -321,12 +321,12 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                         </select>
                     </div>
 
-                    {formData.jenis_setoran === "baru" && (
-                        <>
+                    {/* {formData.jenis_setoran === "baru" && (
+                        <> */}
                             <div className="relative" ref={surahWrapperRef}>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaQuran className="inline mr-2 text-gray-600" />
-                                    Surat
+                                    Surat *
                                 </label>
                                 <input
                                     type="text"
@@ -370,7 +370,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaListOl className="inline mr-2 text-gray-600" />
-                                    Ayat
+                                    Ayat *
                                 </label>
                                 <div className="flex items-center gap-2">
                                     <select
@@ -419,7 +419,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaStar className="inline mr-2 text-gray-600" />
-                                    Nilai
+                                    Nilai *
                                 </label>
                                 <select
                                     name="nilai"
@@ -438,13 +438,13 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaFlag className="inline mr-2 text-gray-600" />
-                                    Status
+                                    Status {formData.jenis_setoran == 'baru' ? '*' : ''}
                                 </label>
                                 <select
                                     name="status"
                                     value={formData.status}
                                     onChange={handleInputChange}
-                                    required
+                                    required={formData.jenis_setoran == 'baru'}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent"
                                 >
                                     <option value="proses">Proses</option>
@@ -457,10 +457,10 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                 )}
 
                             </div>
-                        </>
-                    )}
+                        {/* </>
+                    )} */}
 
-                    {formData.jenis_setoran === "murojaah" && (
+                    {/* {formData.jenis_setoran === "murojaah" && (
                         <>
                             < div >
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -468,7 +468,6 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                     Juz
                                 </label>
                                 <div className="flex items-center gap-2">
-                                    {/* Juz Mulai */}
                                     <select
                                         name="juz_mulai"
                                         value={formData.juz_mulai}
@@ -486,7 +485,6 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
 
                                     <span className="text-gray-500">s.d.</span>
 
-                                    {/* Juz Selesai */}
                                     <select
                                         name="juz_selesai"
                                         value={formData.juz_selesai}
@@ -525,7 +523,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                     <option value="kurang">Kurang</option>
                                 </select>
                             </div>
-                            {/* <div className="col-span-full">
+                            <div className="col-span-full">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     <FaFlag className="inline mr-2 text-gray-600" />
                                     Status
@@ -545,12 +543,12 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                                         * Mohon pastikan hafalan surat ini telah benar-benar lengkap sesuai target hafalan.
                                     </p>
                                 )}
-                            </div> */}
+                            </div>
                         </>
-                    )}
+                    )} */}
                 </div>
 
-                {formData.jenis_setoran && (
+                {/* {formData.jenis_setoran && ( */}
                     <div className="grid grid-cols-1 gap-6">
                         {/* <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -590,7 +588,7 @@ const TahfidzForm = ({ student, onSuccess, refetchDetail }) => {
                             />
                         </div>
                     </div>
-                )}
+                {/* )} */}
 
 
                 {/* Action Buttons */}

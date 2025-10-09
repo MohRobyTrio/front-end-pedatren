@@ -85,7 +85,8 @@ import VirtualAccount from "../content_main_page/content_menu_pembayaran/Virtual
 import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
-import ProsesTagihan from "../content_main_page/content_menu_pembayaran/ProsesTagihan";
+import Roles from "../content_main_page/content_menu_manage/Roles";
+import Permissions from "../content_main_page/content_menu_manage/Permissions";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -158,10 +159,10 @@ export const menuTransaksiItems = [
 export const menuPembayaranItems = [
     { id: "bank", icon: "fa-university", text: "Bank", link: "/pembayaran/bank", content: <Bank />, access: "bank" },
     { id: "virtualaccounts", icon: "fa-credit-card", text: "Virtual Accounts", link: "/pembayaran/virtual-accounts", content: <VirtualAccount />, access: "virtual_account" },
-    { id: "mastertagihan", icon: "fa-file-invoice", text: "Master Tagihan", link: "/pembayaran/master-tagihan", content: <Tagihan />, access: "tagihan" },
-    { id: "masterpotongan", icon: "fa-scissors", text: "Master Potongan", link: "/pembayaran/master-potongan", content: <Potongan />, access: "potongan" },
+    { id: "mastertagihan", icon: "fa-file-invoice", text: "Tagihan", link: "/pembayaran/master-tagihan", content: <Tagihan />, access: "tagihan" },
+    { id: "masterpotongan", icon: "fa-scissors", text: "Potongan", link: "/pembayaran/master-potongan", content: <Potongan />, access: "potongan" },
     // { id: "potongankhusus", icon: "fa-gift", text: "Potongan Khusus", link: "/pembayaran/potongan-khusus", content: <PotonganKhusus />, access: "potongan_khusus" },
-    { id: "prosestagihan", icon: "fa-receipt", text: "Proses Tagihan", link: "/pembayaran/tagihan-santri", content: <ProsesTagihan />, access: "proses_tagihan" },
+    // { id: "prosestagihan", icon: "fa-receipt", text: "Proses Tagihan", link: "/pembayaran/tagihan-santri", content: <ProsesTagihan />, access: "proses_tagihan" },
 ]
 
 export const menuSaldo = [
@@ -238,6 +239,8 @@ export const menuManageItems =[
     { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users />, access: "pengguna" },
     { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity />, access: "log" },
     { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/>, access: "jenis_berkas" },
+    { id: "permissions", icon: "fa-shield-halved", text: "Permissions", link: "/permissions", content: <Permissions/>, access: "permissions" },
+    { id: "roles", icon: "fa-user-tag", text: "Roles", link: "/roles", content: <Roles/>, access: "roles" },
 ];
 
 export const subKelembagaanItems = [

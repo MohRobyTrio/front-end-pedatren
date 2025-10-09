@@ -8,7 +8,7 @@ const BankCard = ({ className }) => {
     const { data, error, loading } = useFetchDashboardOrtu();
 
     const formatRupiah = (value) => {
-        if (!value) return "-";
+        if (typeof value !== 'number' || isNaN(value)) return "-";
         return new Intl.NumberFormat("id-ID", {
             style: "currency",
             currency: "IDR",

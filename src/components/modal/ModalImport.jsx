@@ -7,7 +7,7 @@ import { API_BASE_URL } from "../../hooks/config"
 import { getCookie } from "../../utils/cookieUtils"
 import Swal from "sweetalert2"
 
-const ModalImport = ({
+const   ModalImport = ({
     isOpen,
     onClose,
     onSuccess,
