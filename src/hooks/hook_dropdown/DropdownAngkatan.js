@@ -8,21 +8,21 @@ const DropdownAngkatan = () => {
     const token = sessionStorage.getItem("token") || getCookie("token");
 
     useEffect(() => {
-        // const localData = sessionStorage.getItem("menuAngkatan");
+        const localData = sessionStorage.getItem("menuAngkatan");
 
-        // if (localData) {
-        //     const parsedData = JSON.parse(localData);
+        if (localData) {
+            const parsedData = JSON.parse(localData);
 
-        //     setAngkatanPelajar([
-        //         { label: "Pilih Angkatan", value: "" },
-        //         ...parsedData.pelajar.map(a => ({ value: a.id, label: a.label }))
-        //     ]);
+            setAngkatanPelajar([
+                { label: "Pilih Angkatan", value: "" },
+                ...parsedData.pelajar.map(a => ({ value: a.id, label: a.label }))
+            ]);
 
-        //     setAngkatanSantri([
-        //         { label: "Pilih Angkatan", value: "" },
-        //         ...parsedData.santri.map(a => ({ value: a.id, label: a.label }))
-        //     ]);
-        // } else {
+            setAngkatanSantri([
+                { label: "Pilih Angkatan", value: "" },
+                ...parsedData.santri.map(a => ({ value: a.id, label: a.label }))
+            ]);
+        } else {
             fetch(`${API_BASE_URL}dropdown/angkatan`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -50,9 +50,9 @@ const DropdownAngkatan = () => {
                     setAngkatanPelajar([{ label: "Pilih Angkatan", value: "" }]);
                     setAngkatanSantri([{ label: "Pilih Angkatan", value: "" }]);
                 });
-        // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
 
     return { menuAngkatanPelajar, menuAngkatanSantri };
 };

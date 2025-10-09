@@ -72,8 +72,47 @@ const FormDomisiliPendidikanAnakPegawai = ({ register, control, watch, activeTab
         // if (defaultPelajar && angkatanPelajar != "") {
         //     setValue("modalAnakPegawai.angkatan_pelajar_id", defaultPelajar.value);
         // }
+        if (angkatanSantri && menuAngkatanSantri.length >= 1) {
+            setValue("modalAnakPegawai.angkatan_santri_id", angkatanSantri);
+        }
+        if (angkatanPelajar && menuAngkatanPelajar.length >= 1) {
+            setValue("modalAnakPegawai.angkatan_pelajar_id", angkatanPelajar);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length]);
+    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length, menuAngkatanSantri, menuAngkatanPelajar]);
+
+    useEffect(() => {
+        const currentYear = new Date().getFullYear().toString();
+
+        if (menuAngkatanSantri.length > 1 && !angkatanSantri && !isDomisiliDisabled) {
+            // 1. Coba cari tahun sekarang
+            let defaultSantri = menuAngkatanSantri.find(a => a.label == currentYear);
+
+            // 2. Jika tidak ketemu, cari pilihan valid pertama sebagai fallback
+            if (!defaultSantri) {
+                defaultSantri = menuAngkatanSantri.find(a => a.value !== "");
+            }
+
+            // 3. Set nilainya jika ditemukan salah satu dari logika di atas
+            if (defaultSantri) {
+                setValue("modalAnakPegawai.angkatan_santri_id", defaultSantri.value);
+            }
+        }
+
+        if (menuAngkatanPelajar.length > 1 && !angkatanPelajar && lembagaId) {
+
+            let defaultPelajar = menuAngkatanPelajar.find(a => a.label == currentYear);
+
+            if (!defaultPelajar) {
+                defaultPelajar = menuAngkatanPelajar.find(a => a.value !== "");
+            }
+
+            if (defaultPelajar) {
+                setValue("modalAnakPegawai.angkatan_pelajar_id", defaultPelajar.value);
+            }
+        }
+    }, [menuAngkatanSantri, menuAngkatanPelajar, angkatanSantri, angkatanPelajar, setValue, lembagaId, isDomisiliDisabled]);
+
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 

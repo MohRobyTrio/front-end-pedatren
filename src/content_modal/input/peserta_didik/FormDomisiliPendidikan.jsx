@@ -42,7 +42,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
 
     useEffect(() => {
         if (activeTab !== 2) return;
-        
+
         if (lembaga && filterLembaga.lembaga.length >= 1) {
             handleFilterChangeLembaga({ lembaga: lembaga });
         }
@@ -64,28 +64,66 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
         if (kamar && filterWilayah.kamar.length >= 1) {
             handleFilterChangeWilayah({ kamar: kamar });
         }
-        const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
-        const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
-        if (defaultSantri && angkatanSantri != "") {
-            setValue("modalPeserta.angkatan_santri_id", defaultSantri.value);
+        // const defaultSantri = menuAngkatanSantri.find(a => a.value !== ""); // pilih yang pertama
+        // const defaultPelajar = menuAngkatanPelajar.find(a => a.value !== ""); // pilih yang pertama
+        // if (defaultSantri && angkatanSantri != "") {
+        //     setValue("modalPeserta.angkatan_santri_id", defaultSantri.value);
+        // }
+        // if (defaultPelajar && angkatanPelajar != "") {
+        //     setValue("modalPeserta.angkatan_pelajar_id", defaultPelajar.value);
+        // }
+        if (angkatanSantri && menuAngkatanSantri.length >= 1) {
+            setValue("modalPeserta.angkatan_santri_id", angkatanSantri);
         }
-        if (defaultPelajar && angkatanPelajar != "") {
-            setValue("modalPeserta.angkatan_pelajar_id", defaultPelajar.value);
+        if (angkatanPelajar && menuAngkatanPelajar.length >= 1) {
+            setValue("modalPeserta.angkatan_pelajar_id", angkatanPelajar);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length, menuAngkatanSantri]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, filterLembaga.lembaga, filterLembaga.lembaga.length, filterWilayah.wilayah, filterWilayah, filterWilayah.wilayah.length, menuAngkatanSantri, menuAngkatanPelajar]);
+
+    useEffect(() => {
+        const currentYear = new Date().getFullYear().toString();
+
+        if (menuAngkatanSantri.length > 1 && !angkatanSantri && !isDomisiliDisabled) {
+            // 1. Coba cari tahun sekarang
+            let defaultSantri = menuAngkatanSantri.find(a => a.label == currentYear);
+
+            // 2. Jika tidak ketemu, cari pilihan valid pertama sebagai fallback
+            if (!defaultSantri) {
+                defaultSantri = menuAngkatanSantri.find(a => a.value !== "");
+            }
+
+            // 3. Set nilainya jika ditemukan salah satu dari logika di atas
+            if (defaultSantri) {
+                setValue("modalPeserta.angkatan_santri_id", defaultSantri.value);
+            }
+        }
+
+        if (menuAngkatanPelajar.length > 1 && !angkatanPelajar && lembagaId) {
+
+            let defaultPelajar = menuAngkatanPelajar.find(a => a.label == currentYear);
+
+            if (!defaultPelajar) {
+                defaultPelajar = menuAngkatanPelajar.find(a => a.value !== "");
+            }
+
+            if (defaultPelajar) {
+                setValue("modalPeserta.angkatan_pelajar_id", defaultPelajar.value);
+            }
+        }
+    }, [menuAngkatanSantri, menuAngkatanPelajar, angkatanSantri, angkatanPelajar, setValue, lembagaId, isDomisiliDisabled]);
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     const Filters = ({ filterOptions, control, onChange, selectedFilters, disabled = false }) => {
         const wilayah = watch("modalPeserta.wilayah_id");
-            return (
-                <div className="space-y-2">
-                    {Object.entries(filterOptions).map(([label, options], index) => {
-                        const isBlokOrKamar = label === "blok" || label === "kamar";
-                        const isDisabled = options.length <= 1 || disabled || (isBlokOrKamar && !wilayah);
+        return (
+            <div className="space-y-2">
+                {Object.entries(filterOptions).map(([label, options], index) => {
+                    const isBlokOrKamar = label === "blok" || label === "kamar";
+                    const isDisabled = options.length <= 1 || disabled || (isBlokOrKamar && !wilayah);
 
-                        return (
+                    return (
                         <div
                             key={`${label}-${index}`}
                             className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4"
@@ -125,15 +163,15 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 </div>
                             </div>
                         </div>
-                        )
-                    })}
-                </div>
-            );
-        };
+                    )
+                })}
+            </div>
+        );
+    };
 
     return (
-    <>
-        <div className="space-y-2">
+        <>
+            <div className="space-y-2">
                 <p className="font-bold text-xl">Mondok </p>
                 <hr className="border-t border-gray-500 mb-4 mt-2" />
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
@@ -142,12 +180,12 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="mondok" value="1" className="w-4 h-4" {...register("modalPeserta.mondok", { required: true })}
-                                required />
+                            required />
                         <span>Ya</span>
                     </label>
                     <label className="flex items-center space-x-2">
                         <input type="radio" name="mondok" value="0" className="w-4 h-4" {...register("modalPeserta.mondok", { required: true })}
-                                required />
+                            required />
                         <span>Tidak</span>
                     </label>
                 </div>
@@ -261,7 +299,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                                 }}
                                 placeholder="Masukkan No. Induk"
                                 className="w-full py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"
-                                 {...register('modalPeserta.no_induk')}
+                                {...register('modalPeserta.no_induk')}
                             />
                         </div>
                     </div>
@@ -291,7 +329,7 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                     <label htmlFor="tanggal_masuk_pendidikan" className="md:w-1/4 text-black">
                         Tanggal Masuk Pendidikan
@@ -310,10 +348,10 @@ const FormDomisiliPendidikan = ({ register, control, watch, activeTab, setValue 
                     </div>
                 </div>
 
-                
+
             </div>
-    </>
-)
+        </>
+    )
 };
 
 export default FormDomisiliPendidikan;

@@ -193,7 +193,7 @@ export const TagihanPage = () => {
 
                 {/* Stats Cards */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="border-blue-100">
+                    {/* <Card className="border-blue-100">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -204,20 +204,22 @@ export const TagihanPage = () => {
                                 <FileText className="h-12 w-12 text-blue-600" />
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> */}
 
-                    <Card className="border-red-100">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-red-600">Belum Lunas</p>
-                                    <p className="text-3xl font-bold text-red-700">{belum_lunas}</p>
-                                    <p className="text-sm text-gray-600">Tagihan belum lunas</p>
+                    {/* {belum_lunas && ( */}
+                        <Card className="border-red-100">
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm font-medium text-red-600">Belum Lunas</p>
+                                        <p className="text-3xl font-bold text-red-700">{belum_lunas}</p>
+                                        <p className="text-sm text-gray-600">Tagihan belum lunas</p>
+                                    </div>
+                                    <AlertCircle className="h-12 w-12 text-red-600" />
                                 </div>
-                                <AlertCircle className="h-12 w-12 text-red-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    {/* )} */}
 
                     <Card className="border-emerald-100">
                         <CardContent className="p-6">
@@ -415,9 +417,9 @@ export const TagihanPage = () => {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                         {tagihan.status !== "lunas" ? (
-                                                            <Button variant="default" 
-                                                            className="text-xs px-3 py-1"
-                                                            onClick={() => handleBayar(tagihan)}>
+                                                            <Button variant="default"
+                                                                className="text-xs px-3 py-1"
+                                                                onClick={() => handleBayar(tagihan)}>
                                                                 Bayar
                                                             </Button>
                                                         ) : (
