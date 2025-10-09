@@ -118,6 +118,8 @@ export const rolesWithAccess = {
   pengguna: ['admin', 'superadmin'],
   log: ['admin', 'superadmin'],
   jenis_berkas: ['admin', 'superadmin'],
+  roles: ['superadmin'],
+  permissions: ['superadmin'],
   
   ///Fitur///
   

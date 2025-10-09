@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '../../hooks/Logout';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
 
 export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) => {
@@ -1004,10 +1004,23 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                         </div>
 
                                         <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
-                                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                                <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
-                                                Detail Tagihan Santri ({pagination.total || 0} santri)
-                                            </h3>
+                                            <div className="flex flex-col md:flex-row justify-between items-left mb-4 gap-4">
+                                                <h3 className="text-lg font-bold text-gray-800 flex items-left">
+                                                    <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
+                                                    Detail Tagihan Santri ({pagination.total || 0} santri)
+                                                </h3>
+                                                {/* --- INPUT PENCARIAN --- */}
+                                                {/* <div className="relative w-full md:w-64 bg-white">
+                                                    <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Cari nama atau NIS..."
+                                                        // value={searchTerm}
+                                                        // onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                                    />
+                                                </div> */}
+                                            </div>
 
                                             {/* Wrapper untuk membuat tabel responsif di layar kecil */}
                                             <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">

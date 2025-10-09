@@ -987,20 +987,20 @@ export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
                                         <thead className="bg-gray-100 text-gray-700 whitespace-nowrap">
                                             <tr>
                                                 <th className="px-3 py-2 border-b">#</th>
-                                                <th className="px-3 py-2 border-b">Outlet & Kategori</th>
+                                                {/* <th className="px-3 py-2 border-b">Outlet & Kategori</th> */}
                                                 <th className="px-3 py-2 border-b">Tipe</th>
-                                                <th className="text-right px-3 py-2 border-b">Jumlah</th>
+                                                <th className="text-right px-3 py-2 border-b">Nominal</th>
                                                 <th className="px-3 py-2 border-b">Keterangan</th>
                                             </tr>
                                         </thead>
                                         <tbody className="text-gray-800">
                                             {data?.data?.map((trx, i) => (
-                                                <tr key={trx.id} className="hover:bg-gray-50 whitespace-nowrap text-center text-left">
+                                                <tr key={trx.id} className="hover:bg-gray-50 whitespace-nowrap text-left">
                                                     <td className="px-3 py-2 border-b align-middle">{i + 1}</td>
-                                                    <td className="p-3 align-middle border-b">
+                                                    {/* <td className="p-3 align-middle border-b">
                                                         <div className="font-semibold text-gray-800">{trx.nama_outlet}</div>
                                                         <div className="text-xs text-gray-500">{trx.nama_kategori}</div>
-                                                    </td>
+                                                    </td> */}
                                                     <td className="p-3 align-middle border-b">
                                                         <span className={`capitalize px-2 py-1 text-xs font-semibold rounded-full ${trx.tipe === 'debit' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
                                                             {trx.tipe}

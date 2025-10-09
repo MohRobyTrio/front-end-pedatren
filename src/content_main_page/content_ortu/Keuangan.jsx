@@ -503,16 +503,16 @@ export const KeuanganPage = () => {
             label: "Waktu Transaksi",
             render: (value) => formatTanggalWaktuWIB(value),
         },
-        {
-            key: "outlet",
-            label: "Outlet & Kategori", // Label diubah
-            render: (value, row) => (
-                <div>
-                    <div className="font-semibold text-gray-800">{value?.nama_outlet || "-"}</div>
-                    <div className="text-xs text-gray-500">{row.kategori?.nama_kategori || "-"}</div>
-                </div>
-            ),
-        },
+        // {
+        //     key: "outlet",
+        //     label: "Outlet & Kategori", // Label diubah
+        //     render: (value, row) => (
+        //         <div>
+        //             <div className="font-semibold text-gray-800">{value?.nama_outlet || "-"}</div>
+        //             <div className="text-xs text-gray-500">{row.kategori?.nama_kategori || "-"}</div>
+        //         </div>
+        //     ),
+        // },
         {
             key: "tipe",
             label: "Tipe",

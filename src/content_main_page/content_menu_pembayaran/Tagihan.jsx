@@ -206,7 +206,7 @@ const Tagihan = () => {
                 return;
             }
 
-            if (!response.ok) {
+            if (!response.ok || !result.success) {
                 if (result.errors) {
                     const errorMessages = Object.values(result.errors).flat().join("\n");
 
@@ -235,7 +235,7 @@ const Tagihan = () => {
             await Swal.fire({
                 icon: "error",
                 title: "Oops!",
-                text: "Terjadi kesalahan saat mengirim data.",
+                text: error.message || "Terjadi kesalahan saat mengirim data.",
             });
         }
     };
@@ -605,6 +605,7 @@ const Tagihan = () => {
                                                 onChange={(e) =>
                                                     setFormData({ ...formData, all: e.target.value })
                                                 }
+                                                required
                                                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
                                             />
                                             <span className="text-sm text-gray-700">Pilih Santri</span>
@@ -619,6 +620,7 @@ const Tagihan = () => {
                                                 onChange={(e) =>
                                                     setFormData({ ...formData, all: e.target.value })
                                                 }
+                                                required
                                                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
                                             />
                                             <span className="text-sm text-gray-700"><span className="text-gray-900">Semua Santri</span></span>

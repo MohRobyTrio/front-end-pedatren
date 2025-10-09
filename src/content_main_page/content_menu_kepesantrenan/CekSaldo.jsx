@@ -18,6 +18,7 @@ import {
     FiX,
 } from "react-icons/fi"
 import Swal from "sweetalert2"
+import { ArrowDownCircle, ArrowUpCircle, ClockIcon, ListIcon, MapPinIcon, RefreshCw, TagIcon } from "lucide-react"
 
 const CekSaldo = () => {
     useEffect(() => {
@@ -74,7 +75,7 @@ const Scan = () => {
     const location = useLocation()
 
     const [dataSaldo, setDataSaldo] = useState("")
-
+    const [showHistory, setShowHistory] = useState(false)
 
     useEffect(() => {
         checkNFCSupport()
@@ -434,6 +435,21 @@ const Scan = () => {
         console.log(customerData);
 
     }, [customerData])
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            minimumFractionDigits: 0,
+        }).format(amount);
+    };
+
+    // Fungsi bantuan untuk memformat tanggal (opsional, tapi direkomendasikan)
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }).replace(/\./g, ':');
+    }
 
     return (
         <div className="max-w-2xl mx-auto">
@@ -922,26 +938,134 @@ const Scan = () => {
                                     </div>
 
                                     {/* Tanggal */}
-                                    <div className="flex items-center justify-between text-gray-600 text-sm">
-                                        <div className="flex items-center space-x-2">
-                                            <FiClock className="w-5 h-5" />
-                                            <span>Terbit: {dataSaldo.kartu.tanggal_terbit}</span>
+                                    {dataSaldo.kartu.tanggal_terbit && dataSaldo.kartu.tanggal_expired && (
+                                        <div className="flex items-center justify-between text-gray-600 text-sm">
+                                            {dataSaldo.kartu.tanggal_terbit && (
+                                                <div className="flex items-center space-x-2">
+                                                    <FiClock className="w-5 h-5" />
+                                                    <span>Terbit: {dataSaldo.kartu.tanggal_terbit}</span>
+                                                </div>
+                                            )}
+                                            {dataSaldo.kartu.tanggal_expired && (
+                                                <div className="flex items-center space-x-2">
+                                                    <FiClock className="w-5 h-5" />
+                                                    <span>Expired: {dataSaldo.kartu.tanggal_expired}</span>
+                                                </div>
+                                            )}
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                                            <FiClock className="w-5 h-5" />
-                                            <span>Expired: {dataSaldo.kartu.tanggal_expired}</span>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {/* Tombol Scan Ulang */}
-                                <button
+                                {/* <button
                                     onClick={onScanUlang}
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center transition-colors"
                                 >
                                     <FiRefreshCw className="mr-2 animate-spin-slow" />
                                     Scan Ulang
-                                </button>
+                                </button> */}
+                                <div className="px-6 pb-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <button
+                                            onClick={onScanUlang}
+                                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center transition-colors"
+                                            type="button"
+                                        >
+                                            <RefreshCw className="mr-2 h-5 w-5" />
+                                            Scan Ulang
+                                        </button>
+
+                                        <button
+                                            onClick={() => setShowHistory((s) => !s)}
+                                            className="w-full bg-gray-200 hover:bg-gray-300 text-secondary-foreground py-3 rounded-lg font-semibold flex items-center justify-center transition-colors"
+                                            type="button"
+                                            aria-expanded={showHistory}
+                                            aria-controls="panel-riwayat"
+                                        >
+                                            <ListIcon className="mr-2 h-5 w-5" />
+                                            {showHistory ? "Tutup Riwayat" : "Lihat Riwayat"}
+                                        </button>
+                                    </div>
+
+                                    {showHistory && (
+                                        <>
+                                            {/* Panel Riwayat */}
+                                            <div className="w-full max-w-2xl mx-auto mt-4">
+                                                {/* --- CARD UTAMA --- */}
+                                                <div className="bg-white rounded-2xl border border-gray-300 overflow-hidden">
+                                                    {/* --- HEADER --- */}
+                                                    <div className="p-6 border-b border-gray-300">
+                                                        <h2 className="text-xl font-bold text-slate-800">Riwayat Transaksi</h2>
+                                                        <p className="mt-1 text-sm text-slate-500">Menampilkan semua aktivitas saldo Anda.</p>
+                                                    </div>
+
+                                                    {/* --- DAFTAR TRANSAKSI --- */}
+                                                    <ul className="divide-y divide-gray-300">
+                                                        {dataSaldo?.transaksi?.map((t) => {
+                                                            const isTopup = t.tipe.toLowerCase() === "topup";
+                                                            const amountColor = isTopup ? "text-green-600" : "text-red-600";
+                                                            const AmountIcon = isTopup ? ArrowUpCircle : ArrowDownCircle;
+
+                                                            // Menentukan judul utama transaksi
+                                                            const mainTitle = t.keterangan || "Transaksi";
+
+                                                            return (
+                                                                <li key={t.id} className="p-4 hover:bg-slate-50 transition-colors duration-150">
+                                                                    <div className="flex justify-between items-start gap-4">
+                                                                        {/* --- SISI KIRI: IKON & DETAIL --- */}
+                                                                        <div className="flex items-start gap-4">
+                                                                            <AmountIcon className={`h-6 w-6 flex-shrink-0 mt-0.5 ${amountColor}`} />
+                                                                            <div className="flex-1">
+                                                                                <p className="font-semibold text-slate-800">{mainTitle}</p>
+
+                                                                                {/* Keterangan tambahan jika ada & berbeda dari judul utama */}
+                                                                                {t.keterangan && t.keterangan != mainTitle && (
+                                                                                    <p className="mt-1 text-sm text-slate-600">{t.keterangan}</p>
+                                                                                )}
+
+                                                                                {/* Info Tambahan: Outlet, Kategori, Waktu */}
+                                                                                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                                                                                    {/* {t.outlet && t.outlet !== mainTitle && (
+                                                                                <span className="inline-flex items-center gap-1.5">
+                                                                                    <MapPinIcon className="h-3.5 w-3.5" /> {t.outlet}
+                                                                                </span>
+                                                                            )}
+                                                                            {t.kategori && t.kategori !== mainTitle && (
+                                                                                <span className="inline-flex items-center gap-1.5">
+                                                                                    <TagIcon className="h-3.5 w-3.5" /> {t.kategori}
+                                                                                </span>
+                                                                            )} */}
+                                                                                    <span className="inline-flex items-center gap-1.5">
+                                                                                        <ClockIcon className="h-3.5 w-3.5" /> {formatDate(t.tanggal)}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* --- SISI KANAN: JUMLAH --- */}
+                                                                        <div className="text-right flex-shrink-0">
+                                                                            <p className={`text-base font-semibold font-mono ${amountColor}`}>
+                                                                                {isTopup ? '+' : '-'} {formatCurrency(t.jumlah)}
+                                                                            </p>
+                                                                            <p className="mt-1 text-xs text-slate-400 capitalize">{t.tipe}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+
+                                                    {/* --- Kondisi jika tidak ada transaksi --- */}
+                                                    {!dataSaldo?.transaksi?.length && (
+                                                        <div className="text-center p-10">
+                                                            <p className="text-slate-500">Belum ada transaksi yang tercatat.</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
                         )}
@@ -975,7 +1099,7 @@ const Scan = () => {
                     list={3}
                 />
             </div>
-        </div>
+        </div >
     )
 }
 

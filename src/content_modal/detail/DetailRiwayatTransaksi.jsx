@@ -25,7 +25,7 @@ const DetailRiwayatTransaksi = ({ riwayat }) => {
                     <tr>
                         <th className="px-3 py-2 border-b">#</th>
                         <th className="px-3 py-2 border-b">UID Kartu</th>
-                        <th className="px-3 py-2 border-b">Outlet & Kategori</th>
+                        {/* <th className="px-3 py-2 border-b">Outlet & Kategori</th> */}
                         <th className="px-3 py-2 border-b">Tipe</th>
                         <th className="text-right px-3 py-2 border-b">Jumlah</th>
                         <th className="px-3 py-2 border-b">Keterangan</th>
@@ -38,10 +38,10 @@ const DetailRiwayatTransaksi = ({ riwayat }) => {
                             <td className="p-3 align-middle border-b">
                                 {trx.uid_kartu || "-"}
                             </td>
-                            <td className="p-3 align-middle border-b">
+                            {/* <td className="p-3 align-middle border-b">
                                 <div className="font-semibold text-gray-800">{trx.nama_outlet}</div>
                                 <div className="text-xs text-gray-500">{trx.nama_kategori}</div>
-                            </td>
+                            </td> */}
                             <td className="p-3 align-middle border-b">
                                 <span className={`capitalize px-2 py-1 text-xs font-semibold rounded-full ${trx.tipe === 'debit' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
                                     {trx.tipe}
