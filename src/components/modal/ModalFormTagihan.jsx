@@ -12,12 +12,12 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
     const { clearAuthData } = useLogout();
     const navigate = useNavigate();
     const id = data?.id;
-    const [monthInputValue, setMonthInputValue] = useState('');
+    // const [monthInputValue, setMonthInputValue] = useState('');
     const [formData, setFormData] = useState({
         // kode_tagihan: "",
         nama_tagihan: "",
         tipe: "bulanan",
-        periode: "",
+        // periode: "",
         nominal: "",
         jatuh_tempo: "",
         status: true,
@@ -30,19 +30,19 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                     // kode_tagihan: data.kode_tagihan || "",
                     nama_tagihan: data.nama_tagihan || "",
                     tipe: data.tipe || "bulanan",
-                    periode: data.periode || "",
+                    // periode: data.periode || "",
                     nominal: data.nominal || "",
                     jatuh_tempo: data.jatuh_tempo || "",
                     status: data.status ?? true,
                 });
             } else {
                 // Reset saat tambah (feature === 1)
-                setMonthInputValue('')
+                // setMonthInputValue('')
                 setFormData({
                     // kode_tagihan: "",
                     nama_tagihan: "",
                     tipe: "bulanan",
-                    periode: "",
+                    // periode: "",
                     nominal: "",
                     jatuh_tempo: "",
                     status: true,
@@ -94,7 +94,7 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                 // kode_tagihan: formData.kode_tagihan,
                 nama_tagihan: formData.nama_tagihan,
                 tipe: formData.tipe,
-                periode: formData.periode,
+                // periode: formData.periode,
                 nominal: parseFloat(formData.nominal),
                 jatuh_tempo: formData.jatuh_tempo || null,
                 status: formData.status,
@@ -161,30 +161,30 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
         }
     };
 
-    const handlePeriodeChange = (e) => {
-        const inputValue = e.target.value; // Nilainya adalah "YYYY-MM"
-        setMonthInputValue(inputValue);
+    // const handlePeriodeChange = (e) => {
+    //     const inputValue = e.target.value; // Nilainya adalah "YYYY-MM"
+    //     setMonthInputValue(inputValue);
 
-        if (inputValue) {
-            const [year, month] = inputValue.split('-');
-            const dateObject = new Date(year, month - 1, 1);
-            const formattedPeriode = dateObject.toLocaleDateString('id-ID', {
-                month: 'long',
-                year: 'numeric'
-            }).toUpperCase();
+    //     if (inputValue) {
+    //         const [year, month] = inputValue.split('-');
+    //         const dateObject = new Date(year, month - 1, 1);
+    //         const formattedPeriode = dateObject.toLocaleDateString('id-ID', {
+    //             month: 'long',
+    //             year: 'numeric'
+    //         }).toUpperCase();
 
-            // Simpan format yang sudah benar ke state utama
-            setFormData(prevData => ({
-                ...prevData,
-                periode: formattedPeriode
-            }));
-        } else {
-            setFormData(prevData => ({
-                ...prevData,
-                periode: ''
-            }));
-        }
-    };
+    //         // Simpan format yang sudah benar ke state utama
+    //         setFormData(prevData => ({
+    //             ...prevData,
+    //             periode: formattedPeriode
+    //         }));
+    //     } else {
+    //         setFormData(prevData => ({
+    //             ...prevData,
+    //             periode: ''
+    //         }));
+    //     }
+    // };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -279,7 +279,7 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                                                         <option value="sekali_bayar">Sekali Bayar</option>
                                                     </select>
                                                 </div>
-                                                <div>
+                                                {/* <div>
                                                     <label htmlFor="nama_tagihan" className="block text-gray-700">Periode *</label>
                                                     <input
                                                         type="month"
@@ -291,7 +291,7 @@ export const ModalAddOrEditTagihan = ({ isOpen, onClose, data, refetchData, feat
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Pilih Periode"
                                                     />
-                                                </div>
+                                                </div> */}
 
                                                 <div>
                                                     <label htmlFor="nominal" className="block text-gray-700">

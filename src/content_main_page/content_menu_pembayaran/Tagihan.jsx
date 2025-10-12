@@ -38,6 +38,7 @@ const Tagihan = () => {
     const [activeTab, setActiveTab] = useState("list")
     const [tagihanQuery, setTagihanQuery] = useState("")
     const [santriQuery, setSantriQuery] = useState("")
+    const [monthInputValue, setMonthInputValue] = useState('');
     const { tagihan, loadingTagihan, error, fetchTagihan, handleDelete, totalPages, currentPage, setCurrentPage } = useFetchTagihan(filters)
     const { menuSantri } = useDropdownSantri()
     const navigate = useNavigate()
@@ -209,6 +210,31 @@ const Tagihan = () => {
         }
     }
 
+    const handlePeriodeChange = (e) => {
+        const inputValue = e.target.value; // Nilainya adalah "YYYY-MM"
+        setMonthInputValue(inputValue);
+
+        if (inputValue) {
+            const [year, month] = inputValue.split('-');
+            const dateObject = new Date(year, month - 1, 1);
+            const formattedPeriode = dateObject.toLocaleDateString('id-ID', {
+                month: 'long',
+                year: 'numeric'
+            }).toUpperCase();
+
+            // Simpan format yang sudah benar ke state utama
+            setFormData(prevData => ({
+                ...prevData,
+                periode: formattedPeriode
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                periode: ''
+            }));
+        }
+    };
+
     const handleSantriToggle = (santriId) => {
         setFormData((prev) => ({
             ...prev,
@@ -304,7 +330,7 @@ const Tagihan = () => {
                                         <tr>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Tagihan</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nominal</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jatuh Tempo</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -336,8 +362,8 @@ const Tagihan = () => {
                                                 >
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.nama_tagihan || "-"}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.periode || "-"}</td>
-                                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.periode || "-"}</td> */}
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                         {item.tipe === "bulanan"
                                                             ? "Bulanan"
                                                             : item.tipe === "semester"
@@ -345,7 +371,7 @@ const Tagihan = () => {
                                                                 : item.tipe === "tahunan"
                                                                     ? "Tahunan"
                                                                     : "Sekali Bayar"}
-                                                    </td> */}
+                                                    </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatCurrency(item.nominal)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatDate(item.jatuh_tempo)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -448,6 +474,20 @@ const Tagihan = () => {
                                     </ul>
                                 </div>
                             )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="nama_tagihan" className="block text-gray-700">Periode *</label>
+                            <input
+                                type="month"
+                                id="nama_tagihan"
+                                name="nama_tagihan"
+                                value={monthInputValue}
+                                onChange={handlePeriodeChange}
+                                required
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Pilih Periode"
+                            />
                         </div>
 
                         <div className="space-y-2">
