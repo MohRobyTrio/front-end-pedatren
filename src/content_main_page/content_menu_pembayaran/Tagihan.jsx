@@ -304,7 +304,7 @@ const Tagihan = () => {
                                         <tr>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Tagihan</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Periode</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nominal</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jatuh Tempo</th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -335,8 +335,9 @@ const Tagihan = () => {
                                                     }}
                                                 >
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.nama_tagihan}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.nama_tagihan || "-"}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.periode || "-"}</td>
+                                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                                         {item.tipe === "bulanan"
                                                             ? "Bulanan"
                                                             : item.tipe === "semester"
@@ -344,7 +345,7 @@ const Tagihan = () => {
                                                                 : item.tipe === "tahunan"
                                                                     ? "Tahunan"
                                                                     : "Sekali Bayar"}
-                                                    </td>
+                                                    </td> */}
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatCurrency(item.nominal)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatDate(item.jatuh_tempo)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">

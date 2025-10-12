@@ -276,7 +276,7 @@ export const ModalDetailJenisBerkas = ({ isOpen, onClose, id }) => {
         if (isOpen && id) {
             const token = sessionStorage.getItem("token") || getCookie("token");
             setLoading(true);
-            fetch(`${API_BASE_URL}data-pokok/jenis-berkas/${id}`, {
+            fetch(`${API_BASE_URL}jenis-berkas/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -340,8 +340,8 @@ export const ModalDetailJenisBerkas = ({ isOpen, onClose, id }) => {
                                 ) : data ? (
                                     <div className="space-y-2">
                                         {[
-                                            ["Nama Jenis Berkas", data.data.nama_jenis_berkas],
-                                            ["Status", data.data.status ? "Aktif" : "Nonaktif"],
+                                            ["Nama Jenis Berkas", data.nama_jenis_berkas],
+                                            ["Status", data.status ? "Aktif" : "Nonaktif"],
                                         ].map(([label, value]) => (
                                             <div key={label} className="flex">
                                                 <div className="w-35 font-semibold text-gray-700">{label}</div>

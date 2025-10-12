@@ -72,7 +72,7 @@ export const useTagihanSantri = () => {
             console.log('🚀 Fetching tagihan for santri ID:', currentActiveChildId);
 
             const response = await fetch(
-                `${API_BASE_URL}tagihan-santri/santri/${currentActiveChildId}`,
+                `${API_BASE_URL}view-ortu/tagihan/${currentActiveChildId}`,
                 {
                     method: "GET",
                     headers: {

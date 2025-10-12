@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition, Combobox } from '@headlessui/react';
-import { FaTimes, FaUsers } from 'react-icons/fa';
+import { FaCheckCircle, FaClock, FaTimes, FaUsers } from 'react-icons/fa';
 import useDropdownSantri from '../../hooks/hook_dropdown/DropdownSantri';
 import Swal from 'sweetalert2';
 import { getCookie } from '../../utils/cookieUtils';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import useLogout from '../../hooks/Logout';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faSearch, faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
 import { OrbitProgress } from 'react-loading-indicators';
 
@@ -803,6 +803,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     const [loading, setLoading] = useState(true)
     const [loadingSantri, setLoadingSantri] = useState(true)
     const [refreshKey, setRefreshKey] = useState(0);
+    const [activeTab, setActiveTab] = useState('detail');
     const [pagination, setPagination] = useState({
         currentPage: 1,
         perPage: 25, // Default item per halaman
@@ -974,7 +975,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                         title: 'Gagal!',
                         text: error.message || 'Terjadi kesalahan pada server.',
                     });
-                } 
+                }
             }
         });
     };
@@ -990,7 +991,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
             year: "numeric",
             month: "2-digit",
             day: "numeric",
-            timeZone: "UTC", // Tetap pakai UTC agar tanggal tidak bergeser
+            timeZone: "Asia/Jakarta", // Tetap pakai UTC agar tanggal tidak bergeser
         };
 
         // Jika ada 'T', tambahkan opsi untuk waktu
@@ -1020,6 +1021,27 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
         const config = statusConfig[status] || { label: status, class: "bg-gray-100 text-gray-800" }
         return <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.class}`}>{config.label}</span>
     }
+
+    function Button({ children, variant = "default", onClick, className = "" }) {
+        const variants = {
+            default: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
+            ghost: "bg-transparent text-gray-600 hover:bg-gray-200",
+        };
+        return (
+            <button
+                onClick={onClick}
+                className={`inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${variants[variant]} ${className}`}
+            >
+                {children}
+            </button>
+        );
+    }
+
+    const formatKategori = (kategori) => {
+        if (!kategori) return "-";
+        // Mengubah "umum" menjadi "Umum"
+        return kategori.charAt(0).toUpperCase() + kategori.slice(1);
+    };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -1055,192 +1077,305 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                             </button>
 
                             <div className="pt-6 px-6">
-                                <Dialog.Title className="text-xl font-bold text-gray-900">Detail Tagihan Santri</Dialog.Title>
+                                <Dialog.Title className="text-xl font-bold text-gray-900">Detail Tagihan</Dialog.Title>
+                            </div>
+
+                            <div className="pt-6 px-6 pb-4 border-b border-gray-200">
+                                {/* <Dialog.Title className="text-xl font-bold text-gray-900 mb-4 text-left">
+                                    Detail Tagihan: {data?.data?.nama_tagihan || ""}
+                                </Dialog.Title> */}
+
+                                {/* Tab Switcher */}
+                                <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                                    <Button
+                                        variant={activeTab === "detail" ? "default" : "ghost"}
+                                        onClick={() => setActiveTab("detail")}
+                                        className="flex-1 rounded-md"
+                                    >
+                                        <FontAwesomeIcon icon={faInfoCircle} className="h-4 w-4 mr-2" />
+                                        Detail Tagihan
+                                    </Button>
+                                    <Button
+                                        variant={activeTab === "santri" ? "default" : "ghost"}
+                                        onClick={() => setActiveTab("santri")}
+                                        className="flex-1 rounded-md"
+                                    >
+                                        <FontAwesomeIcon icon={faUsers} className="h-4 w-4 mr-2" />
+                                        List Santri ({pagination?.total || 0})
+                                    </Button>
+                                </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto px-6 pt-4 text-left">
-                                {loading ? (
-                                    <div className="space-y-6">
-                                        <div className="bg-gray-50 p-6 rounded-xl">
-                                            <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {[...Array(6)].map((_, i) => (
-                                                    <div key={i} className="space-y-2">
-                                                        <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3"></div>
-                                                        <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                                {activeTab == "detail" ? (
+                                    loading ? (
+                                        <div className="space-y-6">
+                                            <div className="bg-gray-50 p-6 rounded-xl">
+                                                <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {[...Array(6)].map((_, i) => (
+                                                        <div key={i} className="space-y-2">
+                                                            <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3"></div>
+                                                            <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div className="bg-gray-50 p-6 rounded-xl">
+                                                <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                                                <div className="space-y-3">
+                                                    {[...Array(3)].map((_, i) => (
+                                                        <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : data ? (
+                                        <div className="space-y-6">
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                        <FaUsers className="w-6 h-6 text-blue-600" />
                                                     </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <div className="bg-gray-50 p-6 rounded-xl">
-                                            <div className="h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
-                                            <div className="space-y-3">
-                                                {[...Array(3)].map((_, i) => (
-                                                    <div key={i} className="h-16 bg-gray-200 rounded animate-pulse"></div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : data ? (
-                                    <div className="space-y-6">
-                                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
-                                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                                <div className="w-2 h-6 bg-blue-500 rounded-full mr-3"></div>
-                                                Informasi Tagihan
-                                            </h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {[
-                                                    ["Nama Tagihan", data.data.nama_tagihan],
-                                                    ["Tipe", data.data.tipe?.charAt(0).toUpperCase() + data.data.tipe?.slice(1).replace(/_/g, " ")],
-                                                    ["Nominal", formatCurrency(data.data.nominal)],
-                                                    ["Jatuh Tempo", formatDate(data.data.jatuh_tempo)],
-                                                    ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
-                                                    ["Tanggal Dibuat", formatDate(data.data.created_at)],
-                                                ].map(([label, value]) => (
-                                                    <div key={label} className="flex flex-col">
-                                                        <span className="text-sm font-semibold text-gray-600">{label}</span>
-                                                        <span className="text-base text-gray-900 mt-1 font-medium">{value || "-"}</span>
+                                                    <div>
+                                                        <div className="text-2xl font-bold text-blue-900">{data.data.total_santri_tagihan || 0}</div>
+                                                        <div className="text-sm font-medium text-blue-700">Total Santri</div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
-                                            <div className="flex flex-col md:flex-row justify-between items-left mb-4 gap-4">
-                                                <h3 className="text-lg font-bold text-gray-800 flex items-left">
-                                                    <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
-                                                    Detail Tagihan Santri ({pagination.total || 0} santri)
-                                                </h3>
-                                                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                                                    {/* Filter Status */}
-                                                    <select
-                                                        value={filter.status}
-                                                        onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-                                                        className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
-                                                    >
-                                                        <option value="">Semua Status</option>
-                                                        <option value="lunas">Lunas</option>
-                                                        <option value="pending">Pending</option>
-                                                        <option value="batal">Batal</option>
-                                                        {/* Tambahkan opsi lain jika perlu */}
-                                                    </select>
-
-                                                    {/* Input Pencarian */}
-                                                    <div className="relative w-full sm:w-64 bg-white">
-                                                        <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Cari nama atau NIS..."
-                                                            value={filter.search}
-                                                            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-                                                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                        />
+                                                </div>
+                                                <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                                        <FaCheckCircle className="w-6 h-6 text-green-600" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-2xl font-bold text-green-900">{data.data.total_lunas || 0}</div>
+                                                        <div className="text-sm font-medium text-green-700">Lunas</div>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                                        <FaClock className="w-6 h-6 text-yellow-600" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-2xl font-bold text-yellow-900">{data.data.total_pending || 0}</div>
+                                                        <div className="text-sm font-medium text-yellow-700">Pending</div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100">
+                                                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                                    <div className="w-2 h-6 bg-blue-500 rounded-full mr-3"></div>
+                                                    Informasi Tagihan
+                                                </h3>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {[
+                                                        ["Nama Tagihan", data.data.nama_tagihan],
+                                                        ["Periode", data.data.periode],
+                                                        ["Tipe", data.data.tipe?.charAt(0).toUpperCase() + data.data.tipe?.slice(1).replace(/_/g, " ")],
+                                                        ["Nominal", formatCurrency(data.data.nominal)],
+                                                        ["Jatuh Tempo", formatDate(data.data.jatuh_tempo)],
+                                                        ["Status", data.data.status == 1 ? "Aktif" : "Nonaktif"],
+                                                        ["Tanggal Dibuat", formatDate(data.data.created_at)],
+                                                        ["Tanggal Diperbarui", formatDate(data.data.updated_at)],
+                                                    ].map(([label, value]) => (
+                                                        <div key={label} className="flex flex-col">
+                                                            <span className="text-sm font-semibold text-gray-600">{label}</span>
+                                                            <span className="text-base text-gray-900 mt-1 font-medium">{value || "-"}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
 
-                                            {/* Wrapper untuk membuat tabel responsif di layar kecil */}
-                                            <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
-                                                <table className="w-full text-sm text-left text-gray-700">
-                                                    {/* Table Header */}
-                                                    <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                            <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+                                                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                                                    Potongan Terkait
+                                                </h3>
+
+                                                {data.data.potongans && data.data.potongans.length > 0 ? (
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full min-w-full">
+                                                            <thead className="bg-gray-50">
+                                                                <tr>
+                                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Potongan</th>
+                                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                                                    <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                                {data.data.potongans.map((potongan, i) => (
+                                                                    <tr key={potongan.id}>
+                                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{i + 1}</td>
+                                                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                                                            {potongan.nama}
+                                                                        </td>
+                                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                                                                            {formatKategori(potongan.kategori)}
+                                                                        </td>
+                                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-800 text-right">
+                                                                            {potongan.jenis === 'persentase'
+                                                                                ? `${potongan.nilai}%`
+                                                                                : formatCurrency(potongan.nilai)}
+                                                                        </td>
+                                                                        <td className="px-4 py-2 whitespace-nowrap">
+                                                                            <span
+                                                                                className={`px-3 py-1 text-xs font-semibold rounded-full ${potongan.status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                                                                            >
+                                                                                {potongan.status ? "Aktif" : "Nonaktif"}
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                                                                            {potongan.keterangan}
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-center py-4 px-4 bg-gray-50 rounded-lg">
+                                                        <p className="text-sm text-gray-500">Tidak ada potongan yang terkait dengan tagihan ini.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-12">
+                                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                                <FontAwesomeIcon icon={faTimes} className="text-red-500 text-xl" />
+                                            </div>
+                                            <p className="text-red-600 font-medium">Gagal memuat data tagihan</p>
+                                            <p className="text-gray-500 text-sm mt-1">Silakan coba lagi nanti</p>
+                                        </div>
+                                    )) : (
+                                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
+                                        <div className="flex flex-col md:flex-row justify-between items-left mb-4 gap-4">
+                                            <h3 className="text-lg font-bold text-gray-800 flex items-left">
+                                                <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
+                                                Detail Tagihan Santri ({pagination.total || 0} santri)
+                                            </h3>
+                                            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                                                {/* Filter Status */}
+                                                <select
+                                                    value={filter.status}
+                                                    onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+                                                    className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+                                                >
+                                                    <option value="">Semua Status</option>
+                                                    <option value="lunas">Lunas</option>
+                                                    <option value="pending">Pending</option>
+                                                    <option value="batal">Batal</option>
+                                                    {/* Tambahkan opsi lain jika perlu */}
+                                                </select>
+
+                                                {/* Input Pencarian */}
+                                                <div className="relative w-full sm:w-64 bg-white">
+                                                    <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Cari nama atau NIS..."
+                                                        value={filter.search}
+                                                        onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+                                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Wrapper untuk membuat tabel responsif di layar kecil */}
+                                        <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
+                                            <table className="w-full text-sm text-left text-gray-700">
+                                                {/* Table Header */}
+                                                <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                                    <tr>
+                                                        <th scope="col" className="px-4 py-3 font-semibold">No.</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
+                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th>
+                                                    </tr>
+                                                </thead>
+
+                                                {/* Table Body */}
+                                                <tbody>
+                                                    {/* Kondisi jika tidak ada data */}
+                                                    {loadingSantri ? (
                                                         <tr>
-                                                            <th scope="col" className="px-4 py-3 font-semibold">No.</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
-                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th>
+                                                            <td colSpan="8" className="text-center py-6">
+                                                                <div className="flex flex-col items-center">
+                                                                    <OrbitProgress />
+                                                                    <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
+                                                                </div>
+                                                            </td>
                                                         </tr>
-                                                    </thead>
-
-                                                    {/* Table Body */}
-                                                    <tbody>
-                                                        {/* Kondisi jika tidak ada data */}
-                                                        {loadingSantri ? (
-                                                            <tr>
-                                                                <td colSpan="8" className="text-center py-6">
-                                                                    <div className="flex flex-col items-center">
-                                                                        <OrbitProgress />
-                                                                        <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
-                                                                    </div>
+                                                    ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
+                                                        <tr>
+                                                            <td colSpan="8" className="text-center py-6 text-gray-500">
+                                                                Tidak ada data untuk ditampilkan.
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        /* Mapping data ke setiap baris tabel */
+                                                        dataSantri.data.map((item, index) => (
+                                                            <tr key={item.id} className="bg-white border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
+                                                                <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
+                                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
+                                                                <td className="px-4 py-3">{item.nis || "-"}</td>
+                                                                <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
+                                                                <td className="px-4 py-3 text-center">
+                                                                    {getStatusBadge(item.status)}
                                                                 </td>
-                                                            </tr>
-                                                        ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
-                                                            <tr>
-                                                                <td colSpan="8" className="text-center py-6 text-gray-500">
-                                                                    Tidak ada data untuk ditampilkan.
-                                                                </td>
-                                                            </tr>
-                                                        ) : (
-                                                            /* Mapping data ke setiap baris tabel */
-                                                            dataSantri.data.map((item, index) => (
-                                                                <tr key={item.id} className="bg-white border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
-                                                                    <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
-                                                                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
-                                                                    <td className="px-4 py-3">{item.nis || "-"}</td>
-                                                                    <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
-                                                                    <td className="px-4 py-3 text-center">
-                                                                        {getStatusBadge(item.status)}
-                                                                    </td>
-                                                                    <td className="px-4 py-3">{formatDate(item.tanggal_bayar)}</td>
-                                                                    <td className="px-4 py-3">{item.keterangan || "-"}</td>
-                                                                    {/* <td className="px-4 py-3 text-center">
+                                                                <td className="px-4 py-3">{formatDate(item.tanggal_bayar)}</td>
+                                                                <td className="px-4 py-3">{item.keterangan || "-"}</td>
+                                                                {/* <td className="px-4 py-3 text-center">
                                                                         <button className="font-medium text-blue-600 hover:underline">
                                                                             Detail
                                                                         </button>
                                                                     </td> */}
-                                                                    <td className="px-4 py-3 text-center">
-                                                                        {/* Hanya tampilkan tombol batal jika statusnya belum 'Dibatalkan' */}
-                                                                        {item.status != 'batal' && (
-                                                                            <button
-                                                                                onClick={() => handleCancel(item.id)}
-                                                                                className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
-                                                                            >
-                                                                                Batal
-                                                                            </button>
-                                                                        )}
-                                                                    </td>
-                                                                </tr>
-                                                            ))
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            {dataSantri && pagination.total > pagination.perPage && (
-                                                <div className="flex items-center justify-between pt-4">
-                                                    <span className="text-sm text-gray-600">
-                                                        Halaman <span className="font-semibold">{pagination.currentPage}</span> dari <span className="font-semibold">{pagination.lastPage}</span>
-                                                    </span>
-                                                    <div className="inline-flex items-center gap-2">
-                                                        <button
-                                                            onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                                            disabled={pagination.currentPage === 1}
-                                                            className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        >
-                                                            Sebelumnya
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                                            disabled={pagination.currentPage === pagination.lastPage}
-                                                            className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        >
-                                                            Berikutnya
-                                                        </button>
-                                                    </div>
+                                                                <td className="px-4 py-3 text-center">
+                                                                    {/* Hanya tampilkan tombol batal jika statusnya belum 'Dibatalkan' */}
+                                                                    {item.status != 'batal' && (
+                                                                        <button
+                                                                            onClick={() => handleCancel(item.id)}
+                                                                            className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                                                                        >
+                                                                            Batal
+                                                                        </button>
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {dataSantri && pagination.total > pagination.perPage && (
+                                            <div className="flex items-center justify-between pt-4">
+                                                <span className="text-sm text-gray-600">
+                                                    Halaman <span className="font-semibold">{pagination.currentPage}</span> dari <span className="font-semibold">{pagination.lastPage}</span>
+                                                </span>
+                                                <div className="inline-flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                                        disabled={pagination.currentPage === 1}
+                                                        className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        Sebelumnya
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                                        disabled={pagination.currentPage === pagination.lastPage}
+                                                        className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        Berikutnya
+                                                    </button>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center py-12">
-                                        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                            <FontAwesomeIcon icon={faTimes} className="text-red-500 text-xl" />
-                                        </div>
-                                        <p className="text-red-600 font-medium">Gagal memuat data tagihan</p>
-                                        <p className="text-gray-500 text-sm mt-1">Silakan coba lagi nanti</p>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
