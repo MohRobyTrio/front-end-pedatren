@@ -16,12 +16,15 @@ import DropdownAngkatan from "../../hooks/hook_dropdown/DropdownAngkatan";
 import DropdownLembaga from "../../hooks/hook_dropdown/DropdownLembaga";
 import Pagination from "../../components/Pagination";
 import ToggleStatus from "../../components/ToggleStatus";
+import { ModalAddLimitSaldo } from "../../components/modal/ModalFormLimitSaldo";
 
 
 const KartuRFID = () => {
     const [openModal, setOpenModal] = useState(false);
     const [openDetailModal, setOpenDetailModal] = useState(false);
     const [idSantri, setIdSantri] = useState(null);
+    const [openLimitModal, setOpenLimitModal] = useState(false);
+    const [selectedSantri, setSelectedSantri] = useState(null);
     const [kartuData, setKartuData] = useState("");
     const [feature, setFeature] = useState("");
     const { menuAngkatanPelajar, menuAngkatanSantri } = DropdownAngkatan();
@@ -118,6 +121,12 @@ const KartuRFID = () => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
+    };
+
+    const handleOpenLimitModal = (item, e) => {
+        e.stopPropagation();
+        setSelectedSantri(item);
+        setOpenLimitModal(true);
     };
 
     const filter4 = {
@@ -251,6 +260,13 @@ const KartuRFID = () => {
                     id={idSantri}
                 />
 
+                <ModalAddLimitSaldo
+                    isOpen={openLimitModal}
+                    onClose={() => setOpenLimitModal(false)}
+                    refetchData={fetchKartuRFID}
+                    data={selectedSantri}
+                />
+
                 {error ? (
                     <div className="text-center py-10">
                         <p className="text-red-600 font-semibold mb-4">Terjadi kesalahan saat mengambil data.</p>
@@ -290,10 +306,10 @@ const KartuRFID = () => {
                                 ) : (
                                     karturfid.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left"
-                                        onClick={() => {
-                                            setIdSantri(item.id);
-                                            setOpenDetailModal(true);
-                                        }}
+                                            onClick={() => {
+                                                setIdSantri(item.id);
+                                                setOpenDetailModal(true);
+                                            }}
                                         >
                                             <td className="px-3 py-2 border-b">{index + 1}</td>
                                             <td className="px-3 py-2 border-b">{item.nama}</td>
@@ -318,12 +334,20 @@ const KartuRFID = () => {
                                                         onClick={() => handleToggleStatus(item)}
                                                     />
                                                     <button
+                                                        onClick={(e) => handleOpenLimitModal(item, e)}
+                                                        className="p-1.25 text-sm text-white bg-green-500 hover:bg-green-600 rounded cursor-pointer transition-colors"
+                                                        title="Atur Limit Saldo"
+                                                    >
+                                                        <span className="font-bold">Rp</span>
+                                                    </button>
+                                                    <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setKartuData(item);
                                                             setFeature(2);
                                                             setOpenModal(true);
                                                         }}
+                                                        title="Edit Data"
                                                         className="p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded cursor-pointer"
                                                     >
                                                         <FaEdit />
@@ -333,6 +357,7 @@ const KartuRFID = () => {
                                                             e.stopPropagation();
                                                             handleDelete(item.id)
                                                         }}
+                                                        title="Hapus Data"
                                                         className="p-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded cursor-pointer"
                                                     >
                                                         <FaTrash />
