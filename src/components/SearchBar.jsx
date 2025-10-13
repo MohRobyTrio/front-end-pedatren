@@ -76,6 +76,7 @@ const SearchBar = ({
                 {onRefresh && (
                     <button
                         aria-label="refresh"
+                        title="Refresh Data"
                         className={`p-3 bg-blue-500 text-white rounded flex items-center justify-center cursor-pointer ${loadingRefresh
                                     ? "opacity-50 cursor-not-allowed"
                                     : "hover:bg-blue-700"
