@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition, Combobox } from '@headlessui/react';
-import { FaCheckCircle, FaClock, FaTimes, FaUsers } from 'react-icons/fa';
+import { FaCheckCircle, FaClock, FaFilter, FaTimes, FaUsers } from 'react-icons/fa';
 import useDropdownSantri from '../../hooks/hook_dropdown/DropdownSantri';
 import Swal from 'sweetalert2';
 import { getCookie } from '../../utils/cookieUtils';
@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faSearch, faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
 import { OrbitProgress } from 'react-loading-indicators';
+import DoubleScrollbarTable from '../DoubleScrollbarTable';
+import useDropdownPeriode from '../../hooks/hook_dropdown/DropdownPeriode';
 
 export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) => {
     const [formData, setFormData] = useState({
@@ -804,6 +806,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     const [loadingSantri, setLoadingSantri] = useState(true)
     const [refreshKey, setRefreshKey] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [pagination, setPagination] = useState({
         currentPage: 1,
         perPage: 25, // Default item per halaman
@@ -814,7 +817,10 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
     const [filter, setFilter] = useState({
         search: "",
         status: "", // "" berarti semua status
+        periode: "", // "" berarti semua status
     });
+
+    const { menuPeriode } = useDropdownPeriode();
 
     const [debouncedSearch, setDebouncedSearch] = useState(filter.search);
 
@@ -875,6 +881,10 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                 params.append('status', filter.status);
             }
 
+            if (filter.periode) {
+                params.append('periode', filter.periode);
+            }
+
             const url = `${API_BASE_URL}tagihan-santri/${id}?${params.toString()}`;
 
             fetch(url, {
@@ -902,7 +912,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                 .finally(() => setLoadingSantri(false));
         }
         // Tambahkan `debouncedSearch` sebagai dependency
-    }, [isOpen, id, pagination.currentPage, pagination.perPage, debouncedSearch, filter.status, refreshKey]);
+    }, [isOpen, id, pagination.currentPage, pagination.perPage, debouncedSearch, filter.status, refreshKey, filter.periode]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= pagination.lastPage) {
@@ -1169,7 +1179,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {[
                                                         ["Nama Tagihan", data.data.nama_tagihan],
-                                                        ["Periode", data.data.periode],
+                                                        // ["Periode", data.data.periode],
                                                         ["Tipe", data.data.tipe?.charAt(0).toUpperCase() + data.data.tipe?.slice(1).replace(/_/g, " ")],
                                                         ["Nominal", formatCurrency(data.data.nominal)],
                                                         ["Jatuh Tempo", formatDate(data.data.jatuh_tempo)],
@@ -1191,7 +1201,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                 </h3>
 
                                                 {data.data.potongans && data.data.potongans.length > 0 ? (
-                                                    <div className="overflow-x-auto">
+                                                    <DoubleScrollbarTable>
                                                         <table className="w-full min-w-full">
                                                             <thead className="bg-gray-50">
                                                                 <tr>
@@ -1232,7 +1242,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                                 ))}
                                                             </tbody>
                                                         </table>
-                                                    </div>
+                                                    </DoubleScrollbarTable>
                                                 ) : (
                                                     <div className="text-center py-4 px-4 bg-gray-50 rounded-lg">
                                                         <p className="text-sm text-gray-500">Tidak ada potongan yang terkait dengan tagihan ini.</p>
@@ -1251,108 +1261,135 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                     )) : (
                                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100 mb-2">
                                         <div className="flex flex-col md:flex-row justify-between items-left mb-4 gap-4">
-                                            <h3 className="text-lg font-bold text-gray-800 flex items-left">
+                                            <h3 className="text-lg font-bold text-gray-800 flex items-center shrink-0">
                                                 <div className="w-2 h-6 bg-green-500 rounded-full mr-3"></div>
                                                 Detail Tagihan Santri ({pagination.total || 0} santri)
                                             </h3>
-                                            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                                                {/* Filter Status */}
+
+                                            <div className="flex flex-col items-end gap-3 w-full md:w-auto">
+                                                <div className="flex flex-row items-center gap-2 w-full">
+
+                                                    <div className="relative flex-1 bg-white">
+                                                        <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Cari nama atau NIS..."
+                                                            value={filter.search}
+                                                            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+                                                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => setIsFilterVisible(!isFilterVisible)}
+                                                        className="flex items-center justify-center shrink-0 sm:gap-2 h-10 w-10 sm:w-auto sm:px-4 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-blue-500"
+                                                    >
+                                                        <FaFilter className="text-gray-600" />
+                                                        <span className="hidden sm:inline font-medium text-gray-700">Filter</span>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        {isFilterVisible && (
+                                            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto p-4 bg-gray-50 rounded-lg border border-gray-200 animate-fade-in-down">
+
+                                                <select
+                                                    value={filter.periode}
+                                                    onChange={(e) => setFilter({ ...filter, periode: e.target.value })}
+                                                    className="w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors bg-white"
+                                                >
+                                                    {menuPeriode.map((periode) => (
+                                                        <option key={periode.value} value={periode.value}>
+                                                            {periode.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
                                                 <select
                                                     value={filter.status}
                                                     onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-                                                    className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+                                                    className="w-full sm:w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors bg-white"
                                                 >
                                                     <option value="">Semua Status</option>
                                                     <option value="lunas">Lunas</option>
                                                     <option value="pending">Pending</option>
                                                     <option value="batal">Batal</option>
-                                                    {/* Tambahkan opsi lain jika perlu */}
                                                 </select>
-
-                                                {/* Input Pencarian */}
-                                                <div className="relative w-full sm:w-64 bg-white">
-                                                    <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Cari nama atau NIS..."
-                                                        value={filter.search}
-                                                        onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-                                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                    />
-                                                </div>
                                             </div>
-                                        </div>
+                                        )}
 
-                                        {/* Wrapper untuk membuat tabel responsif di layar kecil */}
-                                        <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
-                                            <table className="w-full text-sm text-left text-gray-700">
-                                                {/* Table Header */}
-                                                <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
-                                                    <tr>
-                                                        <th scope="col" className="px-4 py-3 font-semibold">No.</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
-                                                        <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th>
-                                                    </tr>
-                                                </thead>
+                                        <DoubleScrollbarTable>
+                                            <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
+                                                <table className="w-full text-sm text-left text-gray-700">
+                                                    {/* Table Header */}
+                                                    <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                                        <tr>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">No.</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Keterangan</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold text-center">Aksi</th>
+                                                        </tr>
+                                                    </thead>
 
-                                                {/* Table Body */}
-                                                <tbody>
-                                                    {/* Kondisi jika tidak ada data */}
-                                                    {loadingSantri ? (
-                                                        <tr>
-                                                            <td colSpan="8" className="text-center py-6">
-                                                                <div className="flex flex-col items-center">
-                                                                    <OrbitProgress />
-                                                                    <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
-                                                        <tr>
-                                                            <td colSpan="8" className="text-center py-6 text-gray-500">
-                                                                Tidak ada data untuk ditampilkan.
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        /* Mapping data ke setiap baris tabel */
-                                                        dataSantri.data.map((item, index) => (
-                                                            <tr key={item.id} className="bg-white border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
-                                                                <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
-                                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
-                                                                <td className="px-4 py-3">{item.nis || "-"}</td>
-                                                                <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
-                                                                <td className="px-4 py-3 text-center">
-                                                                    {getStatusBadge(item.status)}
+                                                    {/* Table Body */}
+                                                    <tbody>
+                                                        {/* Kondisi jika tidak ada data */}
+                                                        {loadingSantri ? (
+                                                            <tr>
+                                                                <td colSpan="8" className="text-center py-6">
+                                                                    <div className="flex flex-col items-center">
+                                                                        <OrbitProgress />
+                                                                        <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
+                                                                    </div>
                                                                 </td>
-                                                                <td className="px-4 py-3">{formatDate(item.tanggal_bayar)}</td>
-                                                                <td className="px-4 py-3">{item.keterangan || "-"}</td>
-                                                                {/* <td className="px-4 py-3 text-center">
+                                                            </tr>
+                                                        ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
+                                                            <tr>
+                                                                <td colSpan="8" className="text-center py-6 text-gray-500">
+                                                                    Tidak ada data untuk ditampilkan.
+                                                                </td>
+                                                            </tr>
+                                                        ) : (
+                                                            /* Mapping data ke setiap baris tabel */
+                                                            dataSantri.data.map((item, index) => (
+                                                                <tr key={item.id} className="bg-white border-b border-gray-300 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
+                                                                    <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
+                                                                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
+                                                                    <td className="px-4 py-3">{item.nis || "-"}</td>
+                                                                    <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
+                                                                    <td className="px-4 py-3 text-center">
+                                                                        {getStatusBadge(item.status)}
+                                                                    </td>
+                                                                    <td className="px-4 py-3">{formatDate(item.tanggal_bayar)}</td>
+                                                                    <td className="px-4 py-3">{item.keterangan || "-"}</td>
+                                                                    {/* <td className="px-4 py-3 text-center">
                                                                         <button className="font-medium text-blue-600 hover:underline">
                                                                             Detail
                                                                         </button>
                                                                     </td> */}
-                                                                <td className="px-4 py-3 text-center">
-                                                                    {/* Hanya tampilkan tombol batal jika statusnya belum 'Dibatalkan' */}
-                                                                    {item.status != 'batal' && (
-                                                                        <button
-                                                                            onClick={() => handleCancel(item.id)}
-                                                                            className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
-                                                                        >
-                                                                            Batal
-                                                                        </button>
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                                    <td className="px-4 py-3 text-center">
+                                                                        {/* Hanya tampilkan tombol batal jika statusnya belum 'Dibatalkan' */}
+                                                                        {item.status != 'batal' && (
+                                                                            <button
+                                                                                onClick={() => handleCancel(item.id)}
+                                                                                className="px-3 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                                                                            >
+                                                                                Batal
+                                                                            </button>
+                                                                        )}
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </DoubleScrollbarTable>
                                         {dataSantri && pagination.total > pagination.perPage && (
                                             <div className="flex items-center justify-between pt-4">
                                                 <span className="text-sm text-gray-600">
