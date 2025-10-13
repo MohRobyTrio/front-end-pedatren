@@ -189,7 +189,7 @@ export const ModalExportSantri = ({ isOpen, onClose, filters, searchTerm, limit,
                 }
 
                 const response = await fetch(
-                    `${API_BASE_URL}id-card/nurul-quran?${params.toString()}`,
+                    `${API_BASE_URL}id-card/Arrofiah?${params.toString()}`,
                     {
                         method: "GET",
                         headers: {
