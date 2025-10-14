@@ -13,7 +13,6 @@ import { faInfoCircle, faSearch, faTimes, faUsers } from '@fortawesome/free-soli
 import useFetchTagihan from '../../hooks/hooks_menu_pembayaran/tagihan';
 import { OrbitProgress } from 'react-loading-indicators';
 import DoubleScrollbarTable from '../DoubleScrollbarTable';
-import useDropdownPeriode from '../../hooks/hook_dropdown/DropdownPeriode';
 
 export const ModalAddOrEditTagihanSantri = ({ isOpen, onClose, refetchData }) => {
     const [formData, setFormData] = useState({
@@ -820,7 +819,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
         periode: "", // "" berarti semua status
     });
 
-    const { menuPeriode } = useDropdownPeriode();
+    const [menuPeriode, setMenuPeriode] = useState([]);
 
     const [debouncedSearch, setDebouncedSearch] = useState(filter.search);
 
@@ -858,6 +857,29 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                     setData(null)
                 })
                 .finally(() => setLoading(false))
+
+        fetch(`${API_BASE_URL}tagihan-santri/pembayaran/filters`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => res.json())
+            .then((resData) => {
+                if (Array.isArray(resData.periodes)) {
+                    const formattedPeriodes = resData.periodes.map((periode) => ({
+                        value: periode,
+                        label: periode,
+                    }));
+
+                    setMenuPeriode(formattedPeriodes);
+                } else {
+                    throw new Error("Data dari API tidak valid");
+                }
+            })
+            .catch((error) => {
+                console.error("Gagal mengambil data periode:", error);
+                setMenuPeriode([]);
+            });
         }
     }, [isOpen, id])
 
@@ -1320,7 +1342,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                         )}
 
                                         <DoubleScrollbarTable>
-                                            <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
+                                            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                                                 <table className="w-full text-sm text-left text-gray-700">
                                                     {/* Table Header */}
                                                     <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
@@ -1328,6 +1350,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                             <th scope="col" className="px-4 py-3 font-semibold">No.</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold">Nama Santri</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold">NIS</th>
+                                                            <th scope="col" className="px-4 py-3 font-semibold">Periode</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold text-center">Total Tagihan</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold text-center">Status</th>
                                                             <th scope="col" className="px-4 py-3 font-semibold">Tanggal Bayar</th>
@@ -1341,7 +1364,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                         {/* Kondisi jika tidak ada data */}
                                                         {loadingSantri ? (
                                                             <tr>
-                                                                <td colSpan="8" className="text-center py-6">
+                                                                <td colSpan="9" className="text-center py-6">
                                                                     <div className="flex flex-col items-center">
                                                                         <OrbitProgress />
                                                                         <span className="mt-2 text-sm text-gray-500">Memuat data santri...</span>
@@ -1350,7 +1373,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                             </tr>
                                                         ) : (!dataSantri?.data || dataSantri?.data?.length == 0) ? (
                                                             <tr>
-                                                                <td colSpan="8" className="text-center py-6 text-gray-500">
+                                                                <td colSpan="9" className="text-center py-6 text-gray-500">
                                                                     Tidak ada data untuk ditampilkan.
                                                                 </td>
                                                             </tr>
@@ -1361,6 +1384,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                                     <td className="px-4 py-3 font-medium text-gray-900">{(pagination.currentPage - 1) * pagination.perPage + index + 1}</td>
                                                                     <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{item.nama_santri || "-"}</td>
                                                                     <td className="px-4 py-3">{item.nis || "-"}</td>
+                                                                    <td className="px-4 py-3">{item.periode || "-"}</td>
                                                                     <td className="px-4 py-3 text-right font-mono font-semibold">{formatCurrency(item.total_tagihan)}</td>
                                                                     <td className="px-4 py-3 text-center">
                                                                         {getStatusBadge(item.status)}

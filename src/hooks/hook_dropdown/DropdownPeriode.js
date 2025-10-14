@@ -31,7 +31,7 @@ const useDropdownPeriode = () => {
                 console.error("Gagal mengambil data periode:", error);
                 setMenuPeriode([]);
             });
-    }, [token]);
+    }, []);
 
     const menuPeriodeWithOptions = [
         { value: "", label: "Semua Periode" },
