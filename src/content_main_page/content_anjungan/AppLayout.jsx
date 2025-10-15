@@ -22,7 +22,8 @@ const mockStudent = {
     photo: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2',
     balance: 750000,
     pin: '1234',
-    cardId: 'CARD001'
+    cardId: 'CARD001',
+    lastTransaction: new Date('2024-12-10T10:00:00'), 
 };
 
 const mockTransactions = [
@@ -177,6 +178,9 @@ const AppAnjungan = () => {
         } else {
             updatedStudent.balance -= amount;
         }
+
+        updatedStudent.lastTransaction = newTransaction.timestamp;
+
         setCurrentStudent(updatedStudent);
 
         setCurrentState('dashboard');
@@ -239,6 +243,7 @@ const AppAnjungan = () => {
             title={getPageTitle()}
             showBack={currentState !== 'card-scanner' && currentState !== 'dashboard'}
             onBack={() => setCurrentState('dashboard')}
+            onLogout={handleLogout}
         >
             {currentState === 'card-scanner' && (
                 <CardScanner onCardScanned={handleCardScanned} />
@@ -253,7 +258,7 @@ const AppAnjungan = () => {
 
             {currentState === 'dashboard' && currentStudent && (
                 <div className="space-y-6">
-                    <div className="flex justify-between items-center">
+                    {/* <div className="flex justify-between items-center">
                         <div />
                         <button
                             onClick={handleLogout}
@@ -261,7 +266,7 @@ const AppAnjungan = () => {
                         >
                             Keluar
                         </button>
-                    </div>
+                    </div> */}
 
                     <StudentProfile student={currentStudent} />
                     <QuickActions onAction={handleQuickAction} unreadMessages={unreadMessages} />
