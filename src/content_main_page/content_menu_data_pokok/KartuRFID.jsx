@@ -129,6 +129,13 @@ const KartuRFID = () => {
         setOpenLimitModal(true);
     };
 
+    const handleOpendDetailModal = (item, e) => {
+        e.stopPropagation();
+        setSelectedSantri(item);
+        setOpenDetailModal(true);
+        setIdSantri(item.id);
+    };
+
     const filter4 = {
         jenisKelamin: [
             { label: "Pilih Jenis Kelamin", value: "" },
@@ -258,6 +265,7 @@ const KartuRFID = () => {
                     isOpen={openDetailModal}
                     onClose={() => setOpenDetailModal(false)}
                     id={idSantri}
+                    dataItem={selectedSantri}
                 />
 
                 <ModalAddLimitSaldo
@@ -306,9 +314,10 @@ const KartuRFID = () => {
                                 ) : (
                                     karturfid.map((item, index) => (
                                         <tr key={item.id} className="hover:bg-gray-50 whitespace-nowrap text-left"
-                                            onClick={() => {
-                                                setIdSantri(item.id);
-                                                setOpenDetailModal(true);
+                                            onClick={(e) => {
+                                                // setIdSantri(item.id);
+                                                // setOpenDetailModal(true);
+                                                handleOpendDetailModal(item, e);
                                             }}
                                         >
                                             <td className="px-3 py-2 border-b">{index + 1}</td>

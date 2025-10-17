@@ -735,7 +735,6 @@ const Scan = () => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
-                    list={3}
                 />
             </div>
         </div>

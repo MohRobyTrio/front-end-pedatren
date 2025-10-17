@@ -899,9 +899,10 @@ export const ModalAddKartuRFID = ({ isOpen, onClose, data, refetchData, feature 
     )
 }
 
-export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
-    console.log(id)
+export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id, dataItem }) => {
+    // console.log(dataItem)
 
+    const navigate = useNavigate()
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -1024,10 +1025,19 @@ export const ModalDetailTransaksiSantri = ({ isOpen, onClose, id }) => {
 
                             <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-6 py-3 rounded-b-lg border-t border-gray-300">
                                 <button
-                                    onClick={onClose}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                                    onClick={() => {
+                                        console.log("Tombol diklik!"); // Cek apakah pesan ini muncul di console
+                                        console.log("Data item:", dataItem); // Cek isi dari dataItem
+                                        // if (dataItem?.biodata_id) {
+                                        navigate(`/formulir/${dataItem.biodata_id}/biodata`);
+                                        onClose();
+                                        // } else { 
+                                        //     console.error("biodata_id tidak ditemukan!");
+                                        // }
+                                    }}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
                                 >
-                                    Tutup
+                                    Selengkapnya
                                 </button>
                             </div>
                         </Dialog.Panel>

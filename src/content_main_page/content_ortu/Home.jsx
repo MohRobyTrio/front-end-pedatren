@@ -6,7 +6,6 @@ import {
     Calendar,
     GraduationCap,
     AlertTriangle,
-    Settings,
     MessageSquare
 } from "lucide-react";
 import BankCard from "../../components/ortu/BankCard";
@@ -70,13 +69,13 @@ export const DashboardPage = () => {
             iconColor: "text-red-500 bg-red-100",
             href: "/wali/tagihan",
         },
-        {
-            title: "Batas Pengeluaran",
-            subtitle: "Pengaturan",
-            icon: Settings,
-            iconColor: "text-gray-500 bg-gray-100",
-            href: "/wali/batas-pengeluaran",
-        },
+        // {
+        //     title: "Batas Pengeluaran",
+        //     subtitle: "Pengaturan",
+        //     icon: Settings,
+        //     iconColor: "text-gray-500 bg-gray-100",
+        //     href: "/wali/batas-pengeluaran",
+        // },
     ]
 
     const getGreeting = () => {
@@ -111,7 +110,7 @@ export const DashboardPage = () => {
                 </div>
 
                 {/* Services Grid */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                     {services.map((service, index) => (
                         <ServiceItem
                             key={index}
