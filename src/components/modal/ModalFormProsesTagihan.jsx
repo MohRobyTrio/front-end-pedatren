@@ -1321,6 +1321,7 @@ export const ModalDetailTagihanSantri = ({ isOpen, onClose, id }) => {
                                                     onChange={(e) => setFilter({ ...filter, periode: e.target.value })}
                                                     className="w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors bg-white"
                                                 >
+                                                    <option value="">Semua Periode</option>
                                                     {menuPeriode.map((periode) => (
                                                         <option key={periode.value} value={periode.value}>
                                                             {periode.label}
