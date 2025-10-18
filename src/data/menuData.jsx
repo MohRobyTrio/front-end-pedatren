@@ -85,8 +85,6 @@ import VirtualAccount from "../content_main_page/content_menu_pembayaran/Virtual
 import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
-import Roles from "../content_main_page/content_menu_manage/Roles";
-import Permissions from "../content_main_page/content_menu_manage/Permissions";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -239,8 +237,8 @@ export const menuManageItems =[
     { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users />, access: "pengguna" },
     { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity />, access: "log" },
     { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/>, access: "jenis_berkas" },
-    { id: "permissions", icon: "fa-shield-halved", text: "Permissions", link: "/permissions", content: <Permissions/>, access: "permissions" },
-    { id: "roles", icon: "fa-user-tag", text: "Roles", link: "/roles", content: <Roles/>, access: "roles" },
+    // { id: "permissions", icon: "fa-shield-halved", text: "Permissions", link: "/permissions", content: <Permissions/>, access: "permissions" },
+    // { id: "roles", icon: "fa-user-tag", text: "Roles", link: "/roles", content: <Roles/>, access: "roles" },
 ];
 
 export const subKelembagaanItems = [
