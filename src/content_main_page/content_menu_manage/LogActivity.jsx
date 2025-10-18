@@ -181,7 +181,7 @@ const LogActivity = () => {
                                                 <td className="px-3 py-2 border-b">
                                                     <div className="flex items-center gap-2">
                                                         <FaUser className="text-gray-500 text-xs flex-shrink-0" />
-                                                        <span className="font-semibold">{log.causer_username}</span>
+                                                        <span className="font-semibold">{log.causer_username == "-" || null || log.causer_username == "" ? "Wali Santri" : log.causer_username}</span>
                                                     </div>
                                                 </td>
 

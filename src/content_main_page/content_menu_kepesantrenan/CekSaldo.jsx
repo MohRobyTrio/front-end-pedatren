@@ -18,7 +18,7 @@ import {
     FiX,
 } from "react-icons/fi"
 import Swal from "sweetalert2"
-import { ArrowDownCircle, ArrowUpCircle, ClockIcon, ListIcon, MapPinIcon, RefreshCw, TagIcon } from "lucide-react"
+import { ArrowDownCircle, ArrowUpCircle, ClockIcon, ListIcon, RefreshCw } from "lucide-react"
 
 const CekSaldo = () => {
     useEffect(() => {
@@ -1096,7 +1096,6 @@ const Scan = () => {
                         setCustomerData(santri)
                         setShowSelectSantri(false)
                     }}
-                    list={3}
                 />
             </div>
         </div >

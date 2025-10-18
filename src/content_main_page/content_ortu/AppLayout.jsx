@@ -31,7 +31,7 @@ const navigation = [
     { name: "Transaksi", href: "/wali/transaksi", icon: Wallet },
     { name: "Tagihan", href: "/wali/tagihan", icon: ReceiptText },
     { name: "Pesan", href: "/wali/pesan", icon: MessageCircle },
-    { name: "Batas Pengeluaran", href: "/wali/batas-pengeluaran", icon: Settings },
+    // { name: "Batas Pengeluaran", href: "/wali/batas-pengeluaran", icon: Settings },
     { name: "Profil Santri", href: "/wali/profil", icon: User },
 ]
 
@@ -89,8 +89,8 @@ export const AppLayout = () => {
                 return "Perizinan";
             case "/wali/pelanggaran":
                 return "Pelanggaran";
-            case "/wali/batas-pengeluaran":
-                return "Batas Pelanggaran";
+            // case "/wali/batas-pengeluaran":
+            //     return "Batas Pelanggaran";
             case "/wali/presensi":
                 return "Presensi";
             case "/wali/profil":
