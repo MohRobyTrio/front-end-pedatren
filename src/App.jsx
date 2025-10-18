@@ -265,7 +265,7 @@ function App() {
                             <Route path="/wali/hafalan" element={<HafalanPage />} />
                             <Route path="/wali/akademik" element={<AkademikPage />} />
                             <Route path="/wali/transaksi" element={<KeuanganPage />} />
-                            <Route path="/wali/batas-pengeluaran" element={<BatasPengeluaranPage />} />
+                            {/* <Route path="/wali/batas-pengeluaran" element={<BatasPengeluaranPage />} /> */}
                             <Route path="/wali/perizinan" element={<PerizinanPage />} />
                             <Route path="/wali/pelanggaran" element={<PelanggaranPage />} />
                             <Route path="/wali/presensi" element={<PresensiPage />} />

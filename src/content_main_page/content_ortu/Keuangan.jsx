@@ -15,10 +15,12 @@ import {
     Loader2,
     Save,
     ShieldCheck,
+    Pencil,
 } from "lucide-react"
 import { useActiveChild } from "../../components/ortu/useActiveChild"
 import useFetchTransaksiOrtu from "../../hooks/hooks_ortu/Transaksi"
 import { FaClipboardList } from "react-icons/fa"
+import { ModalAddLimitSaldoOrtu } from "../../components/ortu/ModalFormLimitSaldo"
 
 export const KeuanganPage = () => {
     const { activeChild: selectedChild } = useActiveChild()
@@ -451,6 +453,9 @@ export const KeuanganPage = () => {
         return typeMatch && dateMatch
     })
 
+    const [openLimitModal, setOpenLimitModal] = useState(false);
+    const [selectedSantri, setSelectedSantri] = useState(null);
+
     // const exportToCSV = (data, filename) => {
     //     const headers = Object.keys(data[0]).join(",")
     //     const csvContent = [
@@ -664,9 +669,9 @@ export const KeuanganPage = () => {
             return 0
         }
         const today = new Date().toISOString().split("T")[0] // 'YYYY-MM-DD'
-        
+
         return data.data
-            .filter(trx => 
+            .filter(trx =>
                 trx.tanggal.startsWith(today) && trx.tipe === 'debit'
             )
             .reduce((sum, trx) => sum + trx.total_bayar, 0)
@@ -690,6 +695,10 @@ export const KeuanganPage = () => {
         setIsEditingLimit(false)
     }
 
+    const remainingBudget = Math.max(dailyLimit - dailySpending, 0)
+    const usagePercentage = dailyLimit > 0 ? Math.round((dailySpending / dailyLimit) * 100) : 0
+    const isOverBudget = dailySpending > dailyLimit
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 p-4">
@@ -700,6 +709,14 @@ export const KeuanganPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 p-4">
+
+            <ModalAddLimitSaldoOrtu
+                isOpen={openLimitModal}
+                onClose={() => setOpenLimitModal(false)}
+                refetchData={fetchData}
+                data={selectedSantri}
+            />
+
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div>
@@ -710,7 +727,7 @@ export const KeuanganPage = () => {
                     <p className="text-gray-600 mt-1">Kelola transaksi {selectedChild?.nama || "santri"}</p>
                 </div>
 
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* <div className="grid grid-cols-1 gap-6 mb-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -771,29 +788,71 @@ export const KeuanganPage = () => {
                             )}
                         </CardContent>
                     </Card>
-
-                    <Card className="flex flex-col justify-center items-center bg-gray-100 border-dashed">
-                        <p className="text-gray-500">Informasi Tambahan</p>
-                    </Card>
                 </div> */}
+                <Card className="relative">
+                    <Button
+                        onClick={() => {
+                            setSelectedSantri(selectedChild);
+                            setOpenLimitModal(true);
+                        }}
+                        variant="default"
+                        size="sm"
+                        className="absolute top-4 right-4"
+                    >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Atur Limit
+                    </Button>
+
+                    <CardContent>
+                        <div className="space-y-3">
+                            <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Pengeluaran Hari Ini</p>
+                            <div className="flex items-end justify-between">
+                                <p className="text-4xl font-bold text-gray-900">{formatRupiah(dailySpending)}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardContent>
+                        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                            <div className="space-y-1">
+                                <p className="text-xs text-gray-500 font-medium">Limit Harian</p>
+                                {/* Logika 'hasLimit' langsung dimasukkan di sini */}
+                                <p className="text-lg font-bold text-gray-900">
+                                    {dailyLimit > 0 ? formatRupiah(dailyLimit) : '∞'}
+                                </p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs text-gray-500 font-medium">Sisa Budget</p>
+                                {/* Logika 'hasLimit' juga langsung dimasukkan di sini */}
+                                {dailyLimit > 0 ? (
+                                    <p className={`text-lg font-bold ${isOverBudget ? "text-red-600" : "text-green-600"}`}>
+                                        {isOverBudget ? "-" : ""}
+                                        {formatRupiah(remainingBudget)}
+                                    </p>
+                                ) : (
+                                    <p className="text-lg font-bold text-green-600">Tak Terbatas</p>
+                                )}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {/* Tabs */}
                 <div className="space-y-6">
                     {/* Tambahkan bagian ini di dalam return JSX, di atas Card Riwayat Transaksi */}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Top Up</p>
                                 <p className="text-xl font-bold text-emerald-600">{formatRupiah(data?.rekap?.total_topup || 0)}</p>
                             </CardContent>
                         </Card>
-                        <Card className="text-center">
+                        {/* <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Debit</p>
                                 <p className="text-xl font-bold text-red-600">{formatRupiah(data?.rekap?.total_debit || 0)}</p>
                             </CardContent>
-                        </Card>
+                        </Card> */}
                         <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Kredit</p>
