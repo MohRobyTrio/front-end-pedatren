@@ -19,6 +19,18 @@ const RegisterOrtuPage = () => {
     const navigate = useNavigate();
 
     const validateForm = () => {
+        if (!noKK.trim()) {
+            setError("Nomor KK harus diisi");
+            return false;
+        }
+        if (!nisAnak.trim()) {
+            setError("NIS anak harus diisi");
+            return false;
+        }
+        if (!noHP.trim()) {
+            setError("Nomor HP harus diisi");
+            return false;
+        }
         if (!email.trim()) {
             setError("Email harus diisi");
             return false;
