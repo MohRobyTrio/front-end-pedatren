@@ -23,6 +23,7 @@ import {
     menuTransaksiItems,
     subKelembagaanItems,
     subMenuPegawai,
+    subMenuUsers,
     subPelajaranItems,
     // menuRWSItems, 
     subPesertaDidik, tabsFormulir
@@ -56,14 +57,13 @@ import PerizinanPage from './content_main_page/content_ortu/Perizinan';
 import PelanggaranPage from './content_main_page/content_ortu/Pelanggaran';
 import { HafalanPage } from './content_main_page/content_ortu/Hafalan';
 import PresensiPage from './content_main_page/content_ortu/Presensi';
-import FeatureUnavailable from './content_main_page/FeatureUnavailable';
 import { TagihanPage } from './content_main_page/content_ortu/Tagihan';
 import { PesanPage } from './content_main_page/content_ortu/Pesan';
 import { CardScanPage } from './content_main_page/content_anjungan/ScanCard';
 import { PinEntryPage } from './content_main_page/content_anjungan/PinEntry';
 import AppAnjungan from './content_main_page/content_anjungan/AppLayout';
 import TambahPesertaDidikPage from './content_main_page/PSB';
-import BatasPengeluaranPage from './content_main_page/content_ortu/BatasPengeluaran';
+import ContainerUsers from './content_main_page/content_menu_manage/ContainerUsers';
 // import RFIDScanner from './content_main_page/UstadzDashboard';
 
 window.sessionExpiredShown = false;
@@ -315,6 +315,11 @@ function App() {
                                     <Route key={tab.id} path={tab.link} element={tab.content} />
                                 ))}
                             </Route>
+                            <Route path="user-pusdatren" element={<ContainerUsers />}>
+                                {subMenuUsers.map((tab) => (
+                                    <Route key={tab.id} path={tab.link} element={tab.content} />
+                                ))}
+                            </Route>
 
                             {/* Semua menu */}
                             {[
@@ -338,7 +343,7 @@ function App() {
                                 ...menuBelanja,
                                 ...menuOrangTua,
                                 ...menuTransaksiItems,
-                                ...menuPembayaranItems
+                                ...menuPembayaranItems,
                             ].map((tab) => (
                                 <Route key={tab.id} path={tab.link} element={tab.content} />
                             ))}

@@ -46,7 +46,7 @@ export const useTagihanSantri = () => {
         const currentToken = token;
 
         // Early return jika tidak ada data yang dibutuhkan
-        
+
         // if (!currentActiveChildId || !currentToken) {
         //     setSantri(null);
         //     setTagihanList([]);
@@ -123,8 +123,8 @@ export const useTagihanSantri = () => {
                 setLoading(false);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeChild.id]); 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeChild.id]);
 
     // Effect utama - langsung menggunakan primitive values sebagai dependency
     useEffect(() => {
@@ -136,8 +136,8 @@ export const useTagihanSantri = () => {
                 abortControllerRef.current.abort();
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeChild.id]); 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeChild.id]);
 
     // Cleanup effect
     useEffect(() => {
@@ -156,6 +156,7 @@ export const useTagihanSantri = () => {
     }, [fetchTagihanData]);
 
     const handleBayar = useCallback(async (tagihan) => {
+        // 1. Konfirmasi awal (sama seperti sebelumnya)
         const confirmResult = await Swal.fire({
             title: `Bayar Tagihan?`,
             html: `Anda akan melakukan pembayaran: <br><b>${tagihan.tagihan.nama_tagihan}</b><br>sebesar <b>Rp ${tagihan.total_tagihan}</b>`,
@@ -168,6 +169,37 @@ export const useTagihanSantri = () => {
 
         if (!confirmResult.isConfirmed) return;
 
+        // 2. BARU: Munculkan dialog untuk meminta password
+        const { value: password } = await Swal.fire({
+            title: 'Masukkan Password Anda',
+            text: 'Untuk mengonfirmasi pembayaran, silakan masukkan password Anda.',
+            input: 'password',
+            inputPlaceholder: 'Masukkan password Anda',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off',
+                minlength: 8
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Konfirmasi & Bayar',
+            cancelButtonText: 'Batal',
+            // Validasi input agar tidak kosong dan sesuai aturan backend (min: 8)
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Password tidak boleh kosong!';
+                }
+                if (value.length < 8) {
+                    return 'Password minimal harus 8 karakter!';
+                }
+            }
+        });
+
+        // Jika pengguna menekan "Batal" atau tidak mengisi password, hentikan proses
+        if (!password) {
+            return;
+        }
+
+        // 3. Lanjutkan proses pembayaran dengan menyertakan password
         try {
             Swal.fire({
                 background: "transparent",
@@ -181,22 +213,28 @@ export const useTagihanSantri = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Menggunakan token dari scope hook
+                    Authorization: `Bearer ${token}`,
                 },
+                // MODIFIKASI: Tambahkan password ke dalam body request
                 body: JSON.stringify({
                     tagihan_santri_id: tagihan.id,
+                    password: password,
                 }),
             });
 
             Swal.close();
 
-            // Menggunakan handler session expired yang sudah ada
             if (response.status === 401) {
                 await handleSessionExpiredRef.current();
                 return;
             }
 
             const result = await response.json();
+
+            // Jika password salah (biasanya backend akan response 422 Unprocessable Entity)
+            if (response.status === 422) {
+                throw new Error(result.message || "Password yang Anda masukkan salah.");
+            }
 
             if (!response.ok || !result.success) {
                 throw new Error(result.message || "Gagal memproses pembayaran.");
@@ -217,7 +255,7 @@ export const useTagihanSantri = () => {
                 text: error.message || "Terjadi kesalahan saat memproses pembayaran.",
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     return {

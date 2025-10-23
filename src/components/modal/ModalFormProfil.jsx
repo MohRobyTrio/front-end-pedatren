@@ -7,10 +7,13 @@ import useLogout from "../../hooks/Logout";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { getCookie } from "../../utils/cookieUtils";
 import { API_BASE_URL } from "../../hooks/config";
-import { FaSave, FaUndo } from "react-icons/fa";
+import { FaPen, FaSave, FaSearch, FaUndo, FaUserGraduate, FaUserTie } from "react-icons/fa";
 import FormBiodataUser from "../../content_modal/input/user/FormBiodata";
 import FormUser from "../../content_modal/input/user/FormUser";
 import { toast } from "sonner";
+import { ModalSelectSantri } from "../ModalSelectSantri";
+import { ModalSelectPegawai } from "../ModalSelectPegawai";
+import { OrbitProgress } from "react-loading-indicators";
 
 export const ModalUpdateProfil = ({ isOpen, onClose }) => {
     const { clearAuthData } = useLogout();
@@ -883,6 +886,12 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
     const contentRef = useRef(null);
 
+    const [biodataInputMode, setBiodataInputMode] = useState('new');
+    const [isSantriModalOpen, setIsSantriModalOpen] = useState(false);
+    const [isPegawaiModalOpen, setIsPegawaiModalOpen] = useState(false);
+    const [selectedDataSantri, setSelectedDataSantri] = useState(null);
+    const [selectedDataPegawai, setSelectedDataPegawai] = useState(null);
+
     useEffect(() => {
         if (contentRef.current) {
             contentRef.current.scrollTop = 0;
@@ -908,8 +917,31 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
         if (result.isConfirmed) {
             resetData();
+            setBiodataInputMode('new');
+            setSelectedDataPegawai(null);
+            setSelectedDataSantri(null);
             toast.success("Data berhasil direset");
         }
+    };
+
+    const handleSantriSelected = (santri) => {
+        resetData(); 
+        setSelectedDataPegawai(null);
+        setSelectedDataSantri(santri);
+        console.log('santri', santri);
+        setValue('modalUser.biodata_id', santri.bio_id);
+        toast.success(`Data santri ${santri?.label} berhasil dimuat`);
+        setIsSantriModalOpen(false);
+    };
+
+    const handlePegawaiSelected = (pegawai) => {
+        resetData();
+        console.log('pegawai', pegawai);
+        setSelectedDataSantri(null);
+        setSelectedDataPegawai(pegawai);
+        setValue('modalUser.biodata_id', pegawai.biodata_id);
+        toast.success(`Data pegawai ${pegawai?.nama} berhasil dimuat`);
+        setIsPegawaiModalOpen(false);
     };
 
     return (
@@ -986,37 +1018,118 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
 
                                     {/* Biodata Section with matching styling */}
                                     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                                        <div className="flex items-center gap-3 mb-6">
-                                            <div className="p-2 bg-blue-50 rounded-lg">
-                                                <svg
-                                                    className="w-5 h-5 text-blue-500"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                    />
-                                                </svg>
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-blue-50 rounded-lg">
+                                                    <svg
+                                                        className="w-5 h-5 text-blue-500"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="text-lg font-medium text-gray-900">
+                                                    Biodata
+                                                </h3>
                                             </div>
-                                            <h3 className="text-lg font-medium text-gray-900">
-                                                Biodata
-                                            </h3>
+
+                                            {/* Toggle Input Mode */}
+                                            <div className="flex items-center gap-2 rounded-lg bg-gray-100 p-1 self-start sm:self-center">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setBiodataInputMode('new')}
+                                                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${biodataInputMode === 'new'
+                                                        ? 'bg-white text-blue-600 shadow-sm'
+                                                        : 'text-gray-600 hover:text-gray-800'
+                                                        }`}
+                                                >
+                                                    <FaPen className="inline mr-1.5 h-3 w-3" />
+                                                    Input Baru
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setBiodataInputMode('select')}
+                                                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${biodataInputMode === 'select'
+                                                        ? 'bg-white text-blue-600 shadow-sm'
+                                                        : 'text-gray-600 hover:text-gray-800'
+                                                        }`}
+                                                >
+                                                    <FaSearch className="inline mr-1.5 h-3 w-3" />
+                                                    Pilih Data
+                                                </button>
+                                            </div>
                                         </div>
-                                        <FormBiodataUser
-                                            isOpen={isOpen}
-                                            register={register}
-                                            watch={watch}
-                                            setValue={setValue}
-                                            control={control}
-                                            selectedTinggal={selectedTinggal}
-                                            setSelectedTinggal={setSelectedTinggal}
-                                            isLainnya={isLainnya}
-                                            setLainnyaValue={setLainnyaValue}
-                                        />
+
+                                        {/* Render Kondisional */}
+                                        {biodataInputMode === 'new' ? (
+                                            <>
+                                                {/* Tampilkan data tertaut jika ada */}
+                                                {/* {watch('modalUser.biodata.linked_santri_id') && (
+                                                    <div className="mb-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800 border border-blue-200">
+                                                        Data biodata diisi dari Santri: <strong>{watch('modalUser.biodata.nama_lengkap')}</strong> (NIS: {watch('modalUser.biodata.nis')})
+                                                    </div>
+                                                )}
+                                                {watch('modalUser.biodata.linked_pegawai_id') && (
+                                                    <div className="mb-4 p-3 bg-green-50 rounded-lg text-sm text-green-800 border border-green-200">
+                                                        Data biodata diisi dari Pegawai: <strong>{watch('modalUser.biodata.nama_lengkap')}</strong> (NIP: {watch('modalUser.biodata.nip')})
+                                                    </div>
+                                                )} */}
+
+                                                {/* Form Input Manual */}
+                                                <FormBiodataUser
+                                                    isOpen={isOpen}
+                                                    register={register}
+                                                    watch={watch}
+                                                    setValue={setValue}
+                                                    control={control}
+                                                    selectedTinggal={selectedTinggal}
+                                                    setSelectedTinggal={setSelectedTinggal}
+                                                    isLainnya={isLainnya}
+                                                    setLainnyaValue={setLainnyaValue}
+                                                />
+                                            </>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                {selectedDataSantri && (
+                                                    <div className="mb-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800 border border-blue-200">
+                                                        Data biodata diisi dari Santri: <strong>{selectedDataSantri?.label}</strong> (NIS: {selectedDataSantri?.nis})
+                                                    </div>
+                                                )}
+                                                {selectedDataPegawai && (
+                                                    <div className="mb-4 p-3 bg-green-50 rounded-lg text-sm text-green-800 border border-green-200">
+                                                        Data biodata diisi dari Pegawai: <strong>{selectedDataPegawai?.nama}</strong> (NIK/No. Passport: {selectedDataPegawai?.nik_or_passport})
+                                                    </div>
+                                                )}
+                                                <p className="text-sm text-gray-600">
+                                                    Pilih data santri atau pegawai yang sudah ada untuk mengisi biodata secara otomatis.
+                                                </p>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setIsSantriModalOpen(true)}
+                                                        className="flex items-center justify-center gap-3 p-4 w-full bg-blue-50 text-blue-700 rounded-lg border-2 border-blue-200 border-dashed hover:bg-blue-100 hover:border-blue-300 transition-all"
+                                                    >
+                                                        <FaUserGraduate className="h-6 w-6" />
+                                                        <span className="font-medium">Pilih Santri</span>
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setIsPegawaiModalOpen(true)}
+                                                        className="flex items-center justify-center gap-3 p-4 w-full bg-green-50 text-green-700 rounded-lg border-2 border-green-200 border-dashed hover:bg-green-100 hover:border-green-300 transition-all"
+                                                    >
+                                                        <FaUserTie className="h-6 w-6" />
+                                                        <span className="font-medium">Pilih Pegawai</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </form>
@@ -1038,6 +1151,204 @@ export const MultiStepModalUsers = ({ isOpen, onClose, formState }) => {
                                 >
                                     <FaSave />
                                     Simpan
+                                </button>
+                            </div>
+                        </Dialog.Panel>
+                    </Transition.Child>
+                </div>
+
+                <ModalSelectSantri
+                    isOpen={isSantriModalOpen}
+                    onClose={() => setIsSantriModalOpen(false)}
+                    onSantriSelected={handleSantriSelected}
+                    list={1} // Sesuaikan 'list' jika perlu
+                />
+
+                <ModalSelectPegawai
+                    isOpen={isPegawaiModalOpen}
+                    onClose={() => setIsPegawaiModalOpen(false)}
+                    onPegawaiSelected={handlePegawaiSelected}
+                />
+
+            </Dialog>
+        </Transition>
+    );
+}
+
+const DetailRow = ({ label, value }) => (
+    <div className="flex flex-col sm:flex-row">
+        <div className="w-full sm:w-40 font-semibold text-gray-700">{label}</div>
+        <div className="flex-1 text-gray-900">
+            <span className="hidden sm:inline">: </span>
+            {value || "-"}
+        </div>
+    </div>
+);
+
+export const ModalDetailUser = ({ isOpen, onClose, id }) => {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (isOpen && id) {
+            const token = sessionStorage.getItem("token") || getCookie("token");
+            setLoading(true);
+            setData(null); // Reset data sebelumnya
+
+            // !!! Sesuaikan URL endpoint ini jika berbeda !!!
+            fetch(`${API_BASE_URL}users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((res) => {
+                    if (!res.ok) throw new Error("Gagal mengambil data user");
+                    return res.json();
+                })
+                .then((json) => {
+                    // Berdasarkan JSON Anda, data user ada di root
+                    // Jika API Anda membungkusnya di { data: ... }, 
+                    // ubah ini menjadi setData(json.data)
+                    setData(json);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    setData(null);
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [isOpen, id]);
+
+    // Format nilai untuk ditampilkan
+    const getGender = (gender) => {
+        if (gender === 'l') return 'Laki-laki';
+        if (gender === 'p') return 'Perempuan';
+        return '-';
+    };
+
+    const getStatus = (status) => (status ? "Aktif" : "Nonaktif");
+
+    const getPendidikan = (jenjang, nama) => {
+        if (jenjang && nama) return `${jenjang.toUpperCase()} - ${nama}`;
+        if (jenjang) return jenjang.toUpperCase();
+        if (nama) return nama;
+        return '-';
+    };
+
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={onClose}>
+                {/* Background overlay */}
+                <Transition.Child
+                    as={Fragment}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+                </Transition.Child>
+
+                {/* Modal content wrapper */}
+                <div className="flex items-center justify-center min-h-screen px-4 py-8 text-center">
+                    <Transition.Child
+                        as={Fragment}
+                        enter="transition-transform duration-300 ease-out"
+                        enterFrom="scale-95 opacity-0"
+                        enterTo="scale-100 opacity-100"
+                        leave="transition-transform duration-200 ease-in"
+                        leaveFrom="scale-100 opacity-100"
+                        leaveTo="scale-95 opacity-0"
+                    >
+                        <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-lg w-full h-full relative max-h-[90vh] flex flex-col">
+                            {/* Tombol Close */}
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+                            >
+                                <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                            </button>
+
+                            {/* Header */}
+                            <div className="pt-6">
+                                <Dialog.Title className="text-lg font-semibold text-gray-900">
+                                    Detail User
+                                </Dialog.Title>
+                            </div>
+
+                            {/* Body */}
+                            <div className="flex-1 overflow-y-auto pr-8 pl-8 pt-4 text-left">
+                                {loading ? (
+                                    <div className="flex h-48 justify-center items-center">
+                                        <OrbitProgress variant="disc" color="#2a6999" size="small" text="" textColor="" />
+                                    </div>
+                                ) : data ? (
+                                    <div className="space-y-4">
+                                        {/* Bagian Akun */}
+                                        <div>
+                                            <h4 className="text-md font-semibold text-blue-700 border-b pb-1 mb-2">
+                                                Detail Akun
+                                            </h4>
+                                            <div className="space-y-2">
+                                                <DetailRow label="Nama Akun" value={data.name} />
+                                                <DetailRow label="Email Akun" value={data.email} />
+                                                <DetailRow label="Role" value={data.roles?.[0]?.name} />
+                                                <DetailRow label="Status Akun" value={getStatus(data.status)} />
+                                            </div>
+                                        </div>
+
+                                        {/* Bagian Biodata */}
+                                        {data.biodata ? (
+                                            <div>
+                                                <h4 className="text-md font-semibold text-blue-700 border-b pb-1 mb-2">
+                                                    Detail Biodata
+                                                </h4>
+                                                <div className="space-y-2">
+                                                    <DetailRow label="Nama Lengkap" value={data.biodata.nama} />
+                                                    <DetailRow label="NIK" value={data.biodata.nik} />
+                                                    <DetailRow label="No. Passport" value={data.biodata.no_passport} />
+                                                    <DetailRow label="Jenis Kelamin" value={getGender(data.biodata.jenis_kelamin)} />
+                                                    <DetailRow label="Tempat Lahir" value={data.biodata.tempat_lahir} />
+                                                    <DetailRow label="Tanggal Lahir" value={data.biodata.tanggal_lahir?.split('T')[0]} />
+                                                    <DetailRow label="No. Telepon" value={data.biodata.no_telepon} />
+                                                    <DetailRow label="No. Telepon 2" value={data.biodata.no_telepon_2} />
+                                                    <DetailRow label="Email Biodata" value={data.biodata.email} />
+                                                    <DetailRow 
+                                                        label="Pendidikan" 
+                                                        value={getPendidikan(
+                                                            data.biodata.jenjang_pendidikan_terakhir,
+                                                            data.biodata.nama_pendidikan_terakhir
+                                                        )}
+                                                    />
+                                                    <DetailRow label="Anak Ke" value={data.biodata.anak_keberapa} />
+                                                    <DetailRow label="Dari Saudara" value={data.biodata.dari_saudara} />
+                                                    <DetailRow label="Tinggal Bersama" value={data.biodata.tinggal_bersama} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <p className="text-gray-500 text-center py-4">
+                                                Biodata tidak terhubung.
+                                            </p>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p className="text-red-500 text-center py-4">
+                                        Gagal memuat data.
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="mt-4 pt-4 text-right space-x-2 bg-gray-100 px-4 py-3 rounded-b-lg border-t border-gray-300">
+                                <button
+                                    onClick={onClose}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
+                                >
+                                    Tutup
                                 </button>
                             </div>
                         </Dialog.Panel>

@@ -252,6 +252,28 @@ const Tagihan = () => {
         return map[kategori] || kategori?.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) || kategori || "-"
     }
 
+    const formatDateLong = (dateString) => {
+        if (!dateString) return "-";
+        try {
+            // Mengubah "2025-01-10" menjadi format "10 Januari 2025"
+            const date = new Date(dateString);
+            return date.toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            });
+        // eslint-disable-next-line no-unused-vars
+        } catch (error) {
+            return dateString; // fallback jika format tidak valid
+        }
+    };
+
+    // Helper untuk format tipe (misal: "bulanan" -> "Bulanan")
+    const formatTipe = (tipe) => {
+        if (!tipe) return "-";
+        return tipe.charAt(0).toUpperCase() + tipe.slice(1);
+    };
+
     if (!hasAccess("tagihan")) {
         return <Navigate to="/forbidden" replace />
     }
@@ -462,16 +484,43 @@ const Tagihan = () => {
                                     </Transition>
                                 </div>
                             </Combobox>
-                            {selectedTagihan?.potongans?.length > 0 && (
-                                <div className="mt-2 text-xs text-gray-600 border rounded-md p-3 bg-gray-50">
-                                    <p className="font-medium text-gray-800 mb-1">Potongan terkait:</p>
-                                    <ul className="list-disc list-inside space-y-0.5">
-                                        {selectedTagihan.potongans.map((p) => (
-                                            <li key={p.id}>
-                                                {p.nama} ({formatKategori(p.kategori)}) - {p.jenis === "persentase" ? `${p.nilai}%` : formatCurrency(p.nilai)}
-                                            </li>
-                                        ))}
-                                    </ul>
+                            {selectedTagihan && (
+                                <div className="space-y-2">
+
+                                    {/* --- BLOK BARU: Menampilkan Detail Tagihan --- */}
+                                    <div className="mt-2 text-sm text-gray-700 border rounded-md p-3 bg-gray-50">
+                                        <h4 className="font-medium text-gray-900 mb-2">Detail Tagihan:</h4>
+                                        {/* Menggunakan Definition List <dl> agar rapi */}
+                                        <dl className="grid grid-cols-2 gap-x-4 gap-y-1">
+                                            <dt className="font-medium">Tipe</dt>
+                                            <dd className="text-right">{formatTipe(selectedTagihan.tipe)}</dd>
+
+                                            <dt className="font-medium">Jatuh Tempo</dt>
+                                            <dd className="text-right">{formatDateLong(selectedTagihan.jatuh_tempo)}</dd>
+
+                                            <dt className="font-medium">Nominal Asli</dt>
+                                            <dd className="text-right font-semibold text-gray-900">
+                                                {formatCurrency(selectedTagihan.nominal)}
+                                            </dd>
+                                        </dl>
+                                    </div>
+
+                                    {/* --- Blok Potongan Anda yang sudah ada --- */}
+                                    {selectedTagihan.potongans?.length > 0 && (
+                                        <div className="mt-2 text-xs text-gray-600 border rounded-md p-3 bg-gray-50">
+                                            <p className="font-medium text-gray-800 mb-1">Potongan terkait:</p>
+                                            <ul className="list-disc list-inside space-y-0.5">
+                                                {selectedTagihan.potongans.map((p) => (
+                                                    <li key={p.id}>
+                                                        {p.nama} ({formatKategori(p.kategori)}) -{" "}
+                                                        {p.jenis === "persentase"
+                                                            ? `${p.nilai}%`
+                                                            : formatCurrency(p.nilai)}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
