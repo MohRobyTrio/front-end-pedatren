@@ -7,7 +7,6 @@ import {
     AlertTriangle,
     GraduationCap,
     Wallet,
-    Settings,
     User,
     LogOut,
     ChevronDown,

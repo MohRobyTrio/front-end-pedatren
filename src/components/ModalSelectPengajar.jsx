@@ -10,8 +10,8 @@ export const ModalSelectPengajar = ({ isOpen, onClose, onPengajarSelected }) => 
         } = useDropdownPengajar();
 
     const menuPengajarFilter = menuPengajar.filter((s) =>
-        s.nama?.toLowerCase().includes(search.toLowerCase()) ||
-        s.niup?.toString().includes(search)
+        s.nama?.toLowerCase().includes(search.toLowerCase())
+        // s.niup?.toString().includes(search)
     );
 
     return (

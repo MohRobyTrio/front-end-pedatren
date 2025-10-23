@@ -54,7 +54,7 @@ import Rombel from "../content_main_page/content_menu_akademik/Rombel";
 import TahunAjaran from "../content_main_page/content_menu_akademik/TahunAjaran";
 import Semester from "../content_main_page/content_menu_akademik/Semester";
 import Angkatan from "../content_main_page/content_menu_akademik/Angkatan";
-import Users from "../content_main_page/content_menu_manage/Users";
+import Users from "../content_main_page/content_menu_manage/UserPusdatren";
 import { NadhomanAllData } from "../content_main_page/content_menu_data_pokok/Nadhoman";
 import { TahfidzRekap } from "../content_main_page/content_menu_data_pokok/Tahfidz";
 import PresensiSholat from "../content_main_page/content_menu_kepesantrenan/PresensiSholat";
@@ -85,6 +85,8 @@ import VirtualAccount from "../content_main_page/content_menu_pembayaran/Virtual
 import Tagihan from "../content_main_page/content_menu_pembayaran/Tagihan";
 import JenisBerkas from "../content_main_page/content_menu_manage/JenisBerkas";
 import Potongan from "../content_main_page/content_menu_pembayaran/Potongan";
+import ContainerUsers from "../content_main_page/content_menu_manage/ContainerUsers";
+import UserOrtu from "../content_main_page/content_menu_manage/UserOrtu";
 
 export const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", text: "Dashboard", link: "/dashboard", content: <Dashboard />, access: "dashboard" },
@@ -234,7 +236,7 @@ export const menuAkademikItems =[
 ];
 
 export const menuManageItems =[
-    { id: "users", icon: "fa-users", text: "Pengguna", link: "/pengguna", content: <Users />, access: "pengguna" },
+    { id: "users", icon: "fa-users", text: "Pengguna", link: "/user-pusdatren", content: <ContainerUsers />, access: "c_users" },
     { id: "logactivity", icon: "fa-file-alt", text: "Catatan Aktivitas", link: "/catatan-aktivitas", content: <LogActivity />, access: "log" },
     { id: "jenisberkas", icon: "fa-folder", text: "Jenis Berkas", link: "/jenis-berkas", content: <JenisBerkas/>, access: "jenis_berkas" },
     // { id: "permissions", icon: "fa-shield-halved", text: "Permissions", link: "/permissions", content: <Permissions/>, access: "permissions" },
@@ -279,6 +281,11 @@ export const subPesertaDidik = [
     { id: "santri-non-domisili", text: "Non-Domisili", link: "/peserta-didik/non-domisili", content: <SantriNonDomisili />, access: "santri_non_domisili" },
     { id: "bersaudara-kandung", text: "Bersaudara Kandung", link: "/peserta-didik/bersaudara-kandung", content: <BersaudaraKandung />, access: "bersaudara_kandung" },
     { id: "anakpegawai", icon: "fa-book", text: "Anak Pegawai", link: "/peserta-didik/anak-pegawai", content: <AnakPegawai />, access: "anak_pegawai" },
+];
+
+export const subMenuUsers = [
+    { id: "userpusdatren", text: "User Pusdatren", link: "/user-pusdatren", content: <Users />, access: "user_pusdatren" },
+    { id: "userortu", text: "User Orang Tua", link: "/user-pusdatren/ortu", content: <UserOrtu />, access: "user_ortu" },
 ];
 
 // export const jenisBerkasList = [

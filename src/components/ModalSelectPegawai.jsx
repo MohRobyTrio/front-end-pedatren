@@ -1,27 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
 // --- MODIFIKASI: Tambahkan useMemo ---
 import { Fragment, useState, useMemo } from "react";
-import useDropdownSantri from "../hooks/hook_dropdown/DropdownSantri";
+import useDropdownPegawai from "../hooks/hook_dropdown/DropdownPegawai";
 // --- BARU: Import ikon sorting ---
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
-export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 }) => {
+export const ModalSelectPegawai = ({ isOpen, onClose, onPegawaiSelected }) => {
     const [search, setSearch] = useState("");
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'default' });
 
-    const { menuSantri, menuSantriCatatan, menuSantriCard } = useDropdownSantri();
+    const { menuPegawai } = useDropdownPegawai();
 
-    const sources = {
-        1: menuSantri,
-        2: menuSantriCatatan,
-        3: menuSantriCard,
-    };
+    const dataSource = menuPegawai || [];
 
-    const dataSource = sources[list] || [];
-
-    const menuSantriFilter = dataSource.filter((s) =>
-        s.value.toLowerCase().includes(search.toLowerCase()) ||
-        s.nis?.toString().includes(search)
+    const menuPegawaiFilter = dataSource.filter((p) =>
+        p.nama?.toLowerCase().includes(search.toLowerCase()) ||
+        p.nik_or_passport?.toString().includes(search)
     );
 
     const handleSort = (key) => {
@@ -29,12 +23,11 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
             if (currentConfig.key !== key) {
                 return { key: key, direction: 'asc' };
             }
-
             if (currentConfig.direction === 'asc') {
-                return { key: key, direction: 'desc' };
+                return { key: key, direction: 'desc' }; 
             }
             if (currentConfig.direction === 'desc') {
-                return { key: key, direction: 'default' };
+                return { key: key, direction: 'default' }; 
             }
             return { key: key, direction: 'asc' };
         });
@@ -54,24 +47,16 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
     };
 
     const sortedData = useMemo(() => {
-        const activeSantri = menuSantriFilter.filter(
-            s => s.id !== null
+        const activePegawai = menuPegawaiFilter.filter(
+            p => p.biodata_id != null && p.status_aktif.toLowerCase() == "aktif"
         );
 
-        const dataToDisplay = [...activeSantri];
+        const dataToDisplay = [...activePegawai]; 
 
         if (sortConfig.direction !== 'default' && sortConfig.key) {
             dataToDisplay.sort((a, b) => {
                 const valA = a[sortConfig.key] || '';
                 const valB = b[sortConfig.key] || '';
-
-                if (sortConfig.key === 'nis') {
-                    const numA = parseInt(valA, 10) || 0;
-                    const numB = parseInt(valB, 10) || 0;
-                    if (numA < numB) return sortConfig.direction === 'asc' ? -1 : 1;
-                    if (numA > numB) return sortConfig.direction === 'asc' ? 1 : -1;
-                    return 0;
-                }
 
                 if (valA < valB) {
                     return sortConfig.direction === 'asc' ? -1 : 1;
@@ -79,13 +64,13 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
                 if (valA > valB) {
                     return sortConfig.direction === 'asc' ? 1 : -1;
                 }
-                return 0;
+                return 0; 
             });
         }
 
         return dataToDisplay;
 
-    }, [menuSantriFilter, sortConfig]); 
+    }, [menuPegawaiFilter, sortConfig]); 
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -115,12 +100,12 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
                         >
                             <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl">
                                 <Dialog.Title className="text-lg font-medium text-gray-900 mb-4 text-center">
-                                    Pilih Santri
+                                    Pilih Pegawai
                                 </Dialog.Title>
 
                                 <input
                                     type="text"
-                                    placeholder="Cari nama atau NIS..."
+                                    placeholder="Cari nama, NIP, atau NIK..."
                                     className="w-full p-2 border rounded mb-4"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
@@ -132,59 +117,46 @@ export const ModalSelectSantri = ({ isOpen, onClose, onSantriSelected, list = 1 
                                             <tr>
                                                 <th
                                                     className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
-                                                    onClick={() => handleSort('nis')}
+                                                    onClick={() => handleSort('nama')}
                                                 >
-                                                    NIS {getSortIcon('nis')}
+                                                    Nama {getSortIcon('nama')}
                                                 </th>
                                                 <th
                                                     className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
-                                                    onClick={() => handleSort('label')}
+                                                    onClick={() => handleSort('nik_or_passport')}
                                                 >
-                                                    Nama {getSortIcon('label')}
+                                                    NIK/No. Passport {getSortIcon('nik_or_passport')}
                                                 </th>
-                                                {list !== 3 && (
-                                                    <>
-                                                        <th
-                                                            className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
-                                                            onClick={() => handleSort('lembaga')}
-                                                        >
-                                                            Lembaga {getSortIcon('lembaga')}
-                                                        </th>
-                                                        <th
-                                                            className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
-                                                            onClick={() => handleSort('wilayah')}
-                                                        >
-                                                            Wilayah {getSortIcon('wilayah')}
-                                                        </th>
-                                                        <th
-                                                            className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
-                                                            onClick={() => handleSort('kamar')}
-                                                        >
-                                                            Kamar {getSortIcon('kamar')}
-                                                        </th>
-                                                    </>
-                                                )}
+                                                <th
+                                                    className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
+                                                    onClick={() => handleSort('jenis_kelamin')}
+                                                >
+                                                    Jenis Kelamin {getSortIcon('jenis_kelamin')}
+                                                </th>
+                                                <th
+                                                    className="p-2 cursor-pointer hover:bg-gray-200 transition-colors"
+                                                    onClick={() => handleSort('status')}
+                                                >
+                                                    Status {getSortIcon('status')}
+                                                </th>
                                             </tr>
                                         </thead>
+                                        {/* --- TBODY DIMODIFIKASI --- */}
                                         <tbody>
-                                            {sortedData.map((s, idx) => (
+                                            {/* Gunakan 'sortedData' dan hapus filter di sini */}
+                                            {sortedData.map((p, idx) => (
                                                 <tr
                                                     key={idx}
                                                     className="hover:bg-blue-50 cursor-pointer"
                                                     onClick={() => {
-                                                        onSantriSelected(s); 
+                                                        onPegawaiSelected(p);
                                                         onClose();
                                                     }}
                                                 >
-                                                    <td className="p-2">{s.nis}</td>
-                                                    <td className="p-2">{s.label}</td>
-                                                    {list !== 3 && (
-                                                        <>
-                                                            <td className="p-2">{s.lembaga}</td>
-                                                            <td className="p-2">{s.wilayah}</td>
-                                                            <td className="p-2">{s.kamar}</td>
-                                                        </>
-                                                    )}
+                                                    <td className="p-2">{p.nama}</td>
+                                                    <td className="p-2">{p.nik_or_passport}</td>
+                                                    <td className="p-2">{p.jenis_kelamin}</td>
+                                                    <td className="p-2">{p.status}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
