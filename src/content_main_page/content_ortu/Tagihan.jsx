@@ -211,11 +211,11 @@ export const TagihanPage = () => {
                                 </p>
                             </div>
                         </div>
-                        <div className="hidden sm:block">
+                        {/* <div className="hidden sm:block">
                             <Button variant="default" onClick={() => setStatusFilter("pending")}>
                                 Lihat yang belum lunas
                             </Button>
-                        </div>
+                        </div> */}
                     </div>
                 )}
 

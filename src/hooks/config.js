@@ -115,7 +115,9 @@ export const rolesWithAccess = {
     proses_alumni_santri: ['admin', 'superadmin'],
 
   // Manage
-  pengguna: ['admin', 'superadmin'],
+  c_users: ['admin', 'superadmin'],
+    user_pusdatren: ['admin', 'superadmin'],
+    user_ortu: ['admin', 'superadmin'],
   log: ['admin', 'superadmin'],
   jenis_berkas: ['admin', 'superadmin'],
   roles: ['superadmin'],
