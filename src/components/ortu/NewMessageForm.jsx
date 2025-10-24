@@ -4,19 +4,25 @@ import { Dialog, Transition } from '@headlessui/react';
 import { FaTimes } from 'react-icons/fa';
 import { useActiveChild } from './useActiveChild';
 
-export function NewMessageForm({ onSubmit, isOpen, onClose }) {
+export function NewMessageForm({ onSubmit, isOpen, onClose, isSending, error }) {
     const { activeChild } = useActiveChild();
-    const [form, setForm] = useState({
-        studentName: '',
-        subject: '',
-        content: ''
-    });
+    
+    // 2. Sederhanakan state, kita hanya perlu 'content'
+    const [content, setContent] = useState('');
 
-    const handleSubmit = (e) => {
+    // 3. Ubah handleSubmit menjadi async
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (form.studentName.trim() && form.subject.trim() && form.content.trim()) {
-            onSubmit(form);
-            setForm({ studentName: '', subject: '', content: '' });
+        
+        // Panggil onSubmit (yang terhubung ke kirimPesan di hook)
+        // kirimPesan akan mengembalikan true jika berhasil
+        
+        const berhasil = await onSubmit(content);
+
+        if (berhasil) {
+            setContent(''); // Kosongkan form jika berhasil
+            // Biarkan parent (PesanPage) yang memutuskan untuk menutup modal
+            // onClose(); 
         }
     };
 
@@ -58,6 +64,7 @@ export function NewMessageForm({ onSubmit, isOpen, onClose }) {
                                             <button
                                                 onClick={onClose}
                                                 className="text-gray-400 hover:text-gray-600 transition-colors"
+                                                disabled={isSending} // Disable tombol close saat mengirim
                                             >
                                                 <FaTimes className="h-6 w-6" />
                                             </button>
@@ -85,20 +92,32 @@ export function NewMessageForm({ onSubmit, isOpen, onClose }) {
                                                 </label>
                                                 <textarea
                                                     id="newContent"
-                                                    placeholder="Tulis pesan Anda di sini..."
-                                                    value={form.content}
-                                                    onChange={(e) => setForm(prev => ({ ...prev, content: e.target.value }))}
+                                                    placeholder="Tulis pesan Anda di sini (min. 5 karakter)..."
+                                                    value={content} // Gunakan state 'content'
+                                                    onChange={(e) => setContent(e.target.value)} // Gunakan 'setContent'
                                                     rows={4}
                                                     required
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                                                    minLength={5} // Tambahkan validasi HTML
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-100"
+                                                    disabled={isSending} // 4. Disable saat loading
                                                 />
                                             </div>
+                                            
+                                            {/* 4. Tampilkan error jika ada */}
+                                            {/* {error && (
+                                                <p className="text-sm text-red-600">
+                                                    {error}
+                                                </p>
+                                            )} */}
+
                                             <button
                                                 type="submit"
-                                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-medium transition-colors flex items-center justify-center gap-2"
+                                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                                disabled={isSending || content.length < 5} // 4. Disable saat loading
                                             >
                                                 <Send className="h-4 w-4" />
-                                                Kirim Pesan
+                                                {/* 4. Ubah teks tombol saat loading */}
+                                                {isSending ? 'Mengirim...' : 'Kirim Pesan'}
                                             </button>
                                         </form>
                                     </div>

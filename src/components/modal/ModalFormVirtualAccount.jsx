@@ -444,7 +444,7 @@ export const ModalAddOrEditVirtualAccount = ({ isOpen, onClose, data, refetchDat
                     }
                 }}
                 onSantriSelected={(santri) => setSantri(santri)}
-                list={2}
+                list={1}
             />
         </Transition>
     );

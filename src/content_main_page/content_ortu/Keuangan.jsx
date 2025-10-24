@@ -660,44 +660,55 @@ export const KeuanganPage = () => {
         },
     ]
 
-    const [dailyLimit, setDailyLimit] = useState(50000) // Default limit Rp 50.000
-    const [isEditingLimit, setIsEditingLimit] = useState(false)
-    const [newLimitValue, setNewLimitValue] = useState(dailyLimit.toString())
+    // const [dailyLimit, setDailyLimit] = useState(50000) // Default limit Rp 50.000
+    // const [isEditingLimit, setIsEditingLimit] = useState(false)
+    // const [newLimitValue, setNewLimitValue] = useState(dailyLimit.toString())
 
-    const dailySpending = useMemo(() => {
-        if (!data?.data || data.data.length === 0) {
-            return 0
-        }
-        const today = new Date().toISOString().split("T")[0] // 'YYYY-MM-DD'
+    // const dailySpending = useMemo(() => {
+    //     if (!data?.data || data.data.length === 0) {
+    //         return 0
+    //     }
+    //     const today = new Date().toISOString().split("T")[0] // 'YYYY-MM-DD'
 
-        return data.data
-            .filter(trx =>
-                trx.tanggal.startsWith(today) && trx.tipe === 'debit'
-            )
-            .reduce((sum, trx) => sum + trx.total_bayar, 0)
-    }, [data]) // Akan dihitung ulang hanya jika 'data' berubah
+    //     return data.data
+    //         .filter(trx =>
+    //             trx.tanggal.startsWith(today) && trx.tipe === 'debit'
+    //         )
+    //         .reduce((sum, trx) => sum + trx.total_bayar, 0)
+    // }, [data]) // Akan dihitung ulang hanya jika 'data' berubah
 
     // ✨ BARU: Handler untuk menyimpan limit
-    const handleSaveLimit = () => {
-        const newLimit = parseInt(newLimitValue, 10)
-        if (!isNaN(newLimit) && newLimit >= 0) {
-            setDailyLimit(newLimit)
-            // Di aplikasi nyata, di sini Anda akan memanggil API untuk menyimpan ke backend
-            // await api.saveDailyLimit(selectedChild.id, newLimit)
-            console.log("Limit baru disimpan:", newLimit)
-        }
-        setIsEditingLimit(false)
-    }
+    // const handleSaveLimit = () => {
+    //     const newLimit = parseInt(newLimitValue, 10)
+    //     if (!isNaN(newLimit) && newLimit >= 0) {
+    //         setDailyLimit(newLimit)
+    //         // Di aplikasi nyata, di sini Anda akan memanggil API untuk menyimpan ke backend
+    //         // await api.saveDailyLimit(selectedChild.id, newLimit)
+    //         console.log("Limit baru disimpan:", newLimit)
+    //     }
+    //     setIsEditingLimit(false)
+    // }
 
     // ✨ BARU: Handler untuk membatalkan edit
-    const handleCancelEdit = () => {
-        setNewLimitValue(dailyLimit.toString())
-        setIsEditingLimit(false)
-    }
+    // const handleCancelEdit = () => {
+    //     setNewLimitValue(dailyLimit.toString())
+    //     setIsEditingLimit(false)
+    // }
 
-    const remainingBudget = Math.max(dailyLimit - dailySpending, 0)
-    const usagePercentage = dailyLimit > 0 ? Math.round((dailySpending / dailyLimit) * 100) : 0
-    const isOverBudget = dailySpending > dailyLimit
+    const limitString = data?.rekap?.limit_saldo || "0";
+
+    // 2. Bersihkan string (hapus semua titik) dan ubah menjadi angka (integer)
+    const limitNumeric = parseInt(limitString.replace(/\./g, ''), 10);
+
+    // 3. Buat variabel boolean untuk logika pengecekan
+    const hasLimit = limitNumeric > 0;
+
+    // 4. (ASUMSI) Pastikan 'remainingBudget' dan 'isOverBudget' 
+    //    dihitung menggunakan 'limitNumeric' yang sudah bersih.
+    //    Contoh:
+    const pengeluaran = data?.rekap?.pengeluaran_hari_ini || 0;
+    const remainingBudget = limitNumeric - pengeluaran;
+    const isOverBudget = hasLimit && (remainingBudget < 0);
 
     if (loading) {
         return (
@@ -715,6 +726,7 @@ export const KeuanganPage = () => {
                 onClose={() => setOpenLimitModal(false)}
                 refetchData={fetchData}
                 data={selectedSantri}
+                currentLimit={limitNumeric}
             />
 
             <div className="max-w-7xl mx-auto space-y-6">
@@ -807,7 +819,7 @@ export const KeuanganPage = () => {
                         <div className="space-y-3">
                             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Pengeluaran Hari Ini</p>
                             <div className="flex items-end justify-between">
-                                <p className="text-4xl font-bold text-gray-900">{formatRupiah(dailySpending)}</p>
+                                <p className="text-4xl font-bold text-gray-900">{formatRupiah(data?.rekap?.pengeluaran_hari_ini || 0)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -815,15 +827,13 @@ export const KeuanganPage = () => {
                         <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
                             <div className="space-y-1">
                                 <p className="text-xs text-gray-500 font-medium">Limit Harian</p>
-                                {/* Logika 'hasLimit' langsung dimasukkan di sini */}
                                 <p className="text-lg font-bold text-gray-900">
-                                    {dailyLimit > 0 ? formatRupiah(dailyLimit) : '∞'}
+                                    {hasLimit ? `Rp ${data?.rekap?.limit_saldo}` : '∞'}
                                 </p>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-xs text-gray-500 font-medium">Sisa Budget</p>
-                                {/* Logika 'hasLimit' juga langsung dimasukkan di sini */}
-                                {dailyLimit > 0 ? (
+                                {hasLimit ? (
                                     <p className={`text-lg font-bold ${isOverBudget ? "text-red-600" : "text-green-600"}`}>
                                         {isOverBudget ? "-" : ""}
                                         {formatRupiah(remainingBudget)}
@@ -840,19 +850,19 @@ export const KeuanganPage = () => {
                 <div className="space-y-6">
                     {/* Tambahkan bagian ini di dalam return JSX, di atas Card Riwayat Transaksi */}
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Top Up</p>
                                 <p className="text-xl font-bold text-emerald-600">{formatRupiah(data?.rekap?.total_topup || 0)}</p>
                             </CardContent>
                         </Card>
-                        {/* <Card className="text-center">
+                        <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Debit</p>
                                 <p className="text-xl font-bold text-red-600">{formatRupiah(data?.rekap?.total_debit || 0)}</p>
                             </CardContent>
-                        </Card> */}
+                        </Card>
                         <Card className="text-center">
                             <CardContent>
                                 <p className="text-sm text-gray-500">Total Kredit</p>

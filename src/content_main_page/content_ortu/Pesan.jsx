@@ -1,72 +1,93 @@
 "use client"
 
-import { Filter, MessageSquare, Plus } from "lucide-react"
+import { Filter, MessageSquare, MessageSquarePlus, Plus } from "lucide-react"
 import { useState } from "react"
 import { NewMessageForm } from "../../components/ortu/NewMessageForm"
 import { MessageCard } from "../../components/ortu/MessageCard"
+import useFetchPesanOrtu from "../../hooks/hooks_ortu/Pesan"
 
 
-const initialMessages = [
-    {
-        id: "1",
-        content:
-            "Assalamu'alaikum Ahmad. Mohon diingat bahwa kegiatan tahfidz dimulai pukul 07:00 WIB besok pagi. Jangan lupa membawa Al-Quran dan buku catatan.",
-        isRead: false,
-        sentAt: new Date("2025-01-15T10:30:00"),
-    },
-    {
-        id: "2",
-        content:
-            "Assalamu'alaikum Siti. Reminder bahwa tugas hafalan hadits 40 Nawawi harus diselesaikan minggu ini. Silakan hubungi saya jika ada kesulitan.",
-        isRead: true,
-        sentAt: new Date("2025-01-14T15:45:00"),
-    },
-    {
-        id: "3",
-        content:
-            "Assalamu'alaikum Ridho. Silakan datang ke ruang konseling besok setelah sholat Maghrib untuk membahas progres belajar Anda.",
-        isRead: false,
-        sentAt: new Date("2025-01-13T11:20:00"),
-    },
-]
+// const initialMessages = [
+//     {
+//         id: "1",
+//         content:
+//             "Assalamu'alaikum Ahmad. Mohon diingat bahwa kegiatan tahfidz dimulai pukul 07:00 WIB besok pagi. Jangan lupa membawa Al-Quran dan buku catatan.",
+//         isRead: false,
+//         sentAt: new Date("2025-01-15T10:30:00"),
+//     },
+//     {
+//         id: "2",
+//         content:
+//             "Assalamu'alaikum Siti. Reminder bahwa tugas hafalan hadits 40 Nawawi harus diselesaikan minggu ini. Silakan hubungi saya jika ada kesulitan.",
+//         isRead: true,
+//         sentAt: new Date("2025-01-14T15:45:00"),
+//     },
+//     {
+//         id: "3",
+//         content:
+//             "Assalamu'alaikum Ridho. Silakan datang ke ruang konseling besok setelah sholat Maghrib untuk membahas progres belajar Anda.",
+//         isRead: false,
+//         sentAt: new Date("2025-01-13T11:20:00"),
+//     },
+// ]
+
+const MessageCardSkeleton = () => (
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 animate-pulse">
+        <div className="flex gap-3">
+            <div className="flex-shrink-0 bg-gray-200 rounded-full h-10 w-10"></div>
+            <div className="flex-1 space-y-3 py-1">
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/4 pt-2"></div>
+            </div>
+            <div className="h-6 w-6 bg-gray-200 rounded"></div>
+        </div>
+    </div>
+);
 
 export const PesanPage = () => {
-    const [messages, setMessages] = useState(initialMessages)
+    // const [messages, setMessages] = useState()
     const [filter, setFilter] = useState("all")
     const [showNewMessageForm, setShowNewMessageForm] = useState(false)
 
-    const handleNewMessage = (newMessage) => {
-        const message = {
-            id: Date.now().toString(),
-            ...newMessage,
-            isRead: false,
-            sentAt: new Date(),
+    const { data, loading, error, kirimPesan, isSending, sendError } = useFetchPesanOrtu();
+
+    const handleNewMessage = async (newMessage) => {
+        // Asumsi: NewMessageForm mengembalikan objek { content: "..." }
+        // Jika hanya mengembalikan string, ubah menjadi: await kirimPesan(newMessage)
+        console.log(newMessage);
+
+        const berhasil = await kirimPesan(newMessage);
+
+        if (berhasil) {
+            setShowNewMessageForm(false); // Tutup form jika sukses
+            // Tidak perlu 'setMessages', hook akan me-refresh 'data' secara otomatis
         }
-        setMessages((prev) => [message, ...prev])
+        // Jika gagal, 'sendError' akan terisi dan form tetap terbuka
     }
 
-    const handleEditMessage = (id, updatedMessage) => {
-        setMessages((prev) => prev.map((message) => (message.id === id ? { ...message, ...updatedMessage } : message)))
-    }
+    // const handleEditMessage = (id, updatedMessage) => {
+    //     setMessages((prev) => prev.map((message) => (message.id === id ? { ...message, ...updatedMessage } : message)))
+    // }
 
-    const handleDeleteMessage = (id) => {
-        setMessages((prev) => prev.filter((message) => message.id !== id))
-    }
+    // const handleDeleteMessage = (id) => {
+    //     setMessages((prev) => prev.filter((message) => message.id !== id))
+    // }
 
-    const handleToggleRead = (id) => {
-        setMessages((prev) =>
-            prev.map((message) => (message.id === id ? { ...message, isRead: !message.isRead } : message)),
-        )
-    }
+    // const handleToggleRead = (id) => {
+    //     setMessages((prev) =>
+    //         prev.map((message) => (message.id === id ? { ...message, isRead: !message.isRead } : message)),
+    //     )
+    // }
 
-    const filteredMessages = messages.filter((message) => {
-        if (filter === "read") return message.isRead
-        if (filter === "unread") return !message.isRead
+    const filteredMessages = data.filter((message) => {
+        if (filter == "read") return message.tanggal_baca
+        if (filter == "unread") return !message.tanggal_baca
         return true
     })
 
-    const unreadCount = messages.filter((m) => !m.isRead).length
-    const readCount = messages.filter((m) => m.isRead).length
+    const unreadCount = data.filter((m) => !m.tanggal_baca).length
+    const readCount = data.filter((m) => m.tanggal_baca).length
 
     return (
         <div className="min-h-screen bg-gray-50 relative">
@@ -97,14 +118,13 @@ export const PesanPage = () => {
                         //         <h3 className="text-lg font-medium text-gray-900">Pesan Baru</h3>
                         //     </div>
                         //     <div className="p-4">
-                                <NewMessageForm
-                                    onSubmit={(newMessage) => {
-                                        handleNewMessage(newMessage)
-                                        // setShowNewMessageForm(false)
-                                    }}
-                                    isOpen={showNewMessageForm}
-                                    onClose={() => setShowNewMessageForm(false)}
-                                />
+                        <NewMessageForm
+                            onSubmit={handleNewMessage} // Kirim handler async
+                            isSending={isSending}     // Kirim loading state
+                            error={sendError}         // Kirim error state
+                            isOpen={showNewMessageForm}
+                            onClose={() => setShowNewMessageForm(false)}
+                        />
                         //     </div>
                         // </div>
                     )}
@@ -114,7 +134,7 @@ export const PesanPage = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                                 <div className="flex flex-wrap gap-2">
                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-gray-100 text-gray-800">
-                                        Total: {messages.length}
+                                        Total: {data.length}
                                     </span>
                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-800">
                                         Belum Dibaca: {unreadCount}
@@ -131,8 +151,8 @@ export const PesanPage = () => {
                                     <button
                                         onClick={() => setFilter("all")}
                                         className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${filter === "all"
-                                                ? "bg-emerald-600 text-white"
-                                                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                                            ? "bg-emerald-600 text-white"
+                                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                                             }`}
                                     >
                                         Semua
@@ -140,8 +160,8 @@ export const PesanPage = () => {
                                     <button
                                         onClick={() => setFilter("unread")}
                                         className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${filter === "unread"
-                                                ? "bg-emerald-600 text-white"
-                                                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                                            ? "bg-emerald-600 text-white"
+                                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                                             }`}
                                     >
                                         Belum Dibaca
@@ -149,8 +169,8 @@ export const PesanPage = () => {
                                     <button
                                         onClick={() => setFilter("read")}
                                         className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${filter === "read"
-                                                ? "bg-emerald-600 text-white"
-                                                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                                            ? "bg-emerald-600 text-white"
+                                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                                             }`}
                                     >
                                         Sudah Dibaca
@@ -161,7 +181,19 @@ export const PesanPage = () => {
                     </div>
 
                     <div className="space-y-4">
-                        {filteredMessages.length === 0 ? (
+                        {loading ? (
+                            // Tampilkan 3 skeleton saat loading
+                            <>
+                                <MessageCardSkeleton />
+                                <MessageCardSkeleton />
+                                <MessageCardSkeleton />
+                            </>
+                        ) : error ? (
+                            <div className="text-center py-12">
+                                <p className="text-red-500 text-sm sm:text-base">Gagal memuat data: {error}</p>
+                            </div>
+                            // Gunakan 'filteredMessages' (yang sudah diadaptasi)
+                        ) : filteredMessages.length === 0 ? (
                             <div className="text-center py-12">
                                 <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                                 <p className="text-gray-500 text-sm sm:text-base">
@@ -173,13 +205,14 @@ export const PesanPage = () => {
                                 </p>
                             </div>
                         ) : (
+                            // Render 'filteredMessages'
                             filteredMessages.map((message) => (
                                 <MessageCard
                                     key={message.id}
-                                    message={message}
-                                    onEdit={handleEditMessage}
-                                    onDelete={handleDeleteMessage}
-                                    onToggleRead={handleToggleRead}
+                                    message={message} // 'message' sekarang dalam format yang diharapkan MessageCard
+                                // onEdit={...}
+                                // onDelete={...}
+                                // onToggleRead={...}
                                 />
                             ))
                         )}
@@ -192,7 +225,8 @@ export const PesanPage = () => {
                 className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 transition-all duration-200 flex items-center justify-center z-50 hover:scale-105 active:scale-95"
                 aria-label="Tambah pesan baru"
             >
-                <Plus className="h-6 w-6" />
+                {/* Ganti ikon di sini */}
+                <MessageSquarePlus className="h-6 w-6" />
             </button>
         </div>
     )

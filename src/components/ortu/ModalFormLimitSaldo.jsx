@@ -2,13 +2,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { API_BASE_URL } from "../../hooks/config";
-import { getCookie } from "../../utils/cookieUtils";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/Logout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export const ModalAddLimitSaldoOrtu = ({ isOpen, onClose, data, refetchData }) => {
+export const ModalAddLimitSaldoOrtu = ({ isOpen, onClose, data, refetchData, currentLimit }) => {
     console.log(data);
     
     const { clearAuthData } = useLogout();
@@ -22,11 +21,11 @@ export const ModalAddLimitSaldoOrtu = ({ isOpen, onClose, data, refetchData }) =
     useEffect(() => {
         if (isOpen) {
             setFormData({
-                limit_saldo: data.limit_saldo || "",
-                tak_terbatas: data.limit_saldo ? 0 : 1,
+                limit_saldo: currentLimit || "",
+                tak_terbatas: currentLimit ? 0 : 1,
             });
         }
-    }, [isOpen, data]);
+    }, [isOpen, currentLimit]);
 
     const handleToggleTakTerbatas = () => {
         const newTakTerbatasValue = formData.tak_terbatas == 1 ? 0 : 1;
@@ -140,7 +139,7 @@ export const ModalAddLimitSaldoOrtu = ({ isOpen, onClose, data, refetchData }) =
                 text: result.message || "Data berhasil dikirim.",
             });
 
-            refetchData?.(true);
+            refetchData?.({}, true, false);
             onClose?.();
         } catch (error) {
             console.error("Terjadi kesalahan:", error);

@@ -29,11 +29,11 @@ const schema = yup.object({
         ),
     nama: yup.string().required('Nama wajib diisi'),
     jenis_kelamin: yup.string().required('Jenis Kelamin harus dipilih').oneOf(['p', 'l'], 'Pilihan jenis kelamin tidak valid'),
-    tempat_lahir: yup.string().required('Tempat Lahir wajib diisi'),
+    tempat_lahir: yup.string().optional(),
     tanggal_lahir: yup.object({
-        tahun: yup.string().required('Tahun lahir wajib diisi'),
-        bulan: yup.string().required('Bulan lahir wajib diisi'),
-        tanggal: yup.string().required('Tanggal lahir wajib diisi')
+        tahun: yup.string().optional(),
+        bulan: yup.string().optional(),
+        tanggal: yup.string().optional(),
     }),
     // dari_saudara: yup.number().optional(),
     tinggal_bersama: yup.string().optional(),
@@ -852,7 +852,7 @@ const TabBiodata = () => {
                     {/* Tempat Lahir */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="tempat_lahir" className="lg:w-1/4 text-black">
-                            Tempat Lahir *
+                            Tempat Lahir
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -873,7 +873,7 @@ const TabBiodata = () => {
                     {/* Tanggal Lahir */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="tanggalLahir" className="lg:w-1/4 text-black">
-                            Tanggal Lahir *
+                            Tanggal Lahir
                         </label>
                         <div className="flex flex-col min-[833px]:flex-row space-y-2 min-[833px]:space-y-0">
                             <div className="flex space-x-1 mr-2">
@@ -928,7 +928,7 @@ const TabBiodata = () => {
                     {/* Anak Ke */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label className="lg:w-1/4 text-black">
-                            Anak Ke *
+                            Anak Ke
                         </label>
                         <div className="flex space-x-4 items-center">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1077,7 +1077,7 @@ const TabBiodata = () => {
                     {/* Nomor Telepon 1 */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="telepon1" className="lg:w-1/4 text-black">
-                            Nomor Telepon 1 *
+                            Nomor Telepon 1
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex flex-col rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1155,7 +1155,7 @@ const TabBiodata = () => {
                     {(kondisiFormState == "kondisi1" || kondisiFormState == "kondisi3") && (
                         <>
                             <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                                <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan *</label>
+                                <label htmlFor="pekerjaan" className="md:w-1/4 text-black">Pekerjaan</label>
                                 <div className="lg:w-3/4 max-w-md">
                                     <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                                         <select
@@ -1199,7 +1199,7 @@ const TabBiodata = () => {
                             </div>
 
                             <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
-                                <label htmlFor="penghasilan" className="md:w-1/4 text-black">Penghasilan *</label>
+                                <label htmlFor="penghasilan" className="md:w-1/4 text-black">Penghasilan</label>
                                 <div className="lg:w-3/4 max-w-md">
                                     <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
                                         <select
@@ -1226,7 +1226,7 @@ const TabBiodata = () => {
                     {/* Negara */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="negara" className="lg:w-1/4 text-black">
-                            Negara *
+                            Negara
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1249,7 +1249,7 @@ const TabBiodata = () => {
                     {/* Provinsi */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="Provinsi" className="lg:w-1/4 text-black">
-                            Provinsi *
+                            Provinsi
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1272,7 +1272,7 @@ const TabBiodata = () => {
                     {/* Kabupaten */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="Kabupaten" className="lg:w-1/4 text-black">
-                            Kabupaten *
+                            Kabupaten
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1296,7 +1296,7 @@ const TabBiodata = () => {
                     {/* Kecamatan */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="Provinsi" className="lg:w-1/4 text-black">
-                            Kecamatan *
+                            Kecamatan
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1320,7 +1320,7 @@ const TabBiodata = () => {
                     {/* Jalan */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="jalan" className="lg:w-1/4 text-black">
-                            Jalan *
+                            Jalan
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">
@@ -1338,7 +1338,7 @@ const TabBiodata = () => {
                     {/* Kode Pos */}
                     <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-4">
                         <label htmlFor="kode_pos" className="lg:w-1/4 text-black">
-                            Kode Pos *
+                            Kode Pos
                         </label>
                         <div className="lg:w-3/4 max-w-md">
                             <div className="flex items-center rounded-md shadow-md bg-white pl-3 border border-gray-300 focus-within:border-gray-500">

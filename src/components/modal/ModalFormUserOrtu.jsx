@@ -241,11 +241,16 @@ export const ModalAddUserOrtu = ({ isOpen, onClose, data, refetchData }) => {
                                                     <label htmlFor="no_kk" className="block text-gray-700">No KK *</label>
                                                     <input
                                                         type="text"
+                                                        inputMode="numeric"
+                                                        onInput={(e) => {
+                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                        }}
                                                         id="no_kk"
                                                         name="no_kk"
                                                         value={formData.no_kk}
                                                         onChange={(e) => setFormData({ ...formData, no_kk: e.target.value })}
-                                                        maxLength={255}
+                                                        maxLength={16}
+                                                        minLength={16}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Masukkan No KK"
@@ -256,11 +261,16 @@ export const ModalAddUserOrtu = ({ isOpen, onClose, data, refetchData }) => {
                                                     <label htmlFor="no_hp" className="block text-gray-700">No Handphone *</label>
                                                     <input
                                                         type="text"
+                                                        inputMode="numeric"
+                                                        onInput={(e) => {
+                                                            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                                                        }}
                                                         id="no_hp"
                                                         name="no_hp"
                                                         value={formData.no_hp}
                                                         onChange={(e) => setFormData({ ...formData, no_hp: e.target.value })}
-                                                        maxLength={255}
+                                                        maxLength={14}
+                                                        minLength={10}
                                                         required
                                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                                         placeholder="Masukkan No Handphone"

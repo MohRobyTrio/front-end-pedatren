@@ -82,8 +82,8 @@ const useFetchKartuRFID = (filters) => {
                     icon: "warning",
                     confirmButtonText: "OK",
                 });
-                clearAuthData();
                 navigate("/login");
+                clearAuthData();
                 return;
             }
             if (!response.ok) throw new Error(`Error ${response.status}`);
@@ -153,8 +153,8 @@ const useFetchKartuRFID = (filters) => {
                     icon: "warning",
                     confirmButtonText: "OK",
                 });
-                clearAuthData();
                 navigate("/login");
+                clearAuthData();
                 return;
             }
 
@@ -233,8 +233,8 @@ const useFetchKartuRFID = (filters) => {
                     icon: "warning",
                     confirmButtonText: "OK",
                 });
-                clearAuthData();
                 navigate("/login");
+                clearAuthData();
                 return;
             }
 
